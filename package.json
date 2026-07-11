@@ -1,0 +1,40 @@
+{
+  "name": "personalized-english-platform",
+  "version": "1.1.0",
+  "private": true,
+  "packageManager": "pnpm@11.7.0",
+  "engines": {
+    "node": ">=24.0.0"
+  },
+  "scripts": {
+    "build": "pnpm -r --if-present build",
+    "contract:generate": "pnpm --filter @english/api-contract generate",
+    "predev": "pnpm --filter @english/shared build && pnpm --filter @english/database build",
+    "dev": "node scripts/run-with-env.mjs --parallel --filter @english/api --filter @english/worker --filter @english/web dev",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "node scripts/check-boundaries.mjs && node scripts/check-openapi-routes.mjs && pnpm -r --if-present lint",
+    "typecheck": "pnpm --filter @english/shared build && pnpm --filter @english/database build && pnpm -r --if-present typecheck",
+    "test": "pnpm -r --if-present test",
+    "test:e2e": "node --env-file=.env tests/e2e/smoke.mjs",
+    "test:performance": "node --env-file=.env tests/performance/load.mjs",
+    "test:security": "node scripts/run-with-env.mjs --filter @english/database test:security",
+    "test:coverage": "pnpm -r --if-present test:coverage",
+    "db:migrate": "node scripts/run-with-env.mjs --filter @english/database migrate",
+    "db:seed": "node scripts/run-with-env.mjs --filter @english/database seed",
+    "db:reset": "node scripts/run-with-env.mjs --filter @english/database reset",
+    "infra:up": "docker compose up -d postgres redis minio minio-init",
+    "infra:down": "docker compose down",
+    "infra:logs": "docker compose logs -f --tail=200",
+    "stack:up": "docker compose up -d --build",
+    "stack:demo": "docker compose --profile demo up -d --build",
+    "stack:down": "docker compose down"
+  },
+  "devDependencies": {
+    "@types/node": "26.1.1",
+    "prettier": "3.9.5",
+    "tsx": "4.23.0",
+    "typescript": "7.0.2",
+    "vitest": "4.1.10"
+  }
+}

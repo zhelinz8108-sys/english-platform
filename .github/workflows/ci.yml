@@ -1,0 +1,75 @@
+name: quality-gates
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.7.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm format:check
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+
+      - name: Start integration dependencies
+        run: |
+          cp .env.example .env
+          docker compose up -d postgres redis minio minio-init
+
+      - name: Migrate and seed
+        run: |
+          pnpm db:migrate
+          pnpm db:seed
+
+      - name: Start API and Worker
+        run: |
+          node --env-file=.env apps/api/dist/main.js > api.log 2>&1 &
+          echo $! > api.pid
+          node --env-file=.env apps/worker/dist/main.js > worker.log 2>&1 &
+          echo $! > worker.pid
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:4000/health/ready >/dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat api.log
+          exit 1
+
+      - run: pnpm test:security
+      - run: pnpm test:e2e
+      - run: pnpm test:performance
+
+      - name: Print service logs on failure
+        if: failure()
+        run: |
+          cat api.log || true
+          cat worker.log || true
+          docker compose logs --tail=200 || true
+
+      - name: Stop integration stack
+        if: always()
+        run: |
+          if test -f api.pid; then kill $(cat api.pid) || true; fi
+          if test -f worker.pid; then kill $(cat worker.pid) || true; fi
+          docker compose down -v

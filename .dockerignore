@@ -1,0 +1,11 @@
+.git
+.env
+node_modules
+**/node_modules
+**/dist
+**/.next
+coverage
+outputs
+*.docx
+*.xlsx
+*.log

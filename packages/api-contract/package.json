@@ -1,0 +1,21 @@
+{
+  "name": "@english/api-contract",
+  "version": "1.1.0",
+  "private": true,
+  "type": "module",
+  "types": "./src/schema.d.ts",
+  "exports": {
+    ".": {
+      "types": "./src/schema.d.ts"
+    }
+  },
+  "scripts": {
+    "generate": "openapi-typescript ../../outputs/english-platform-v1-1/openapi-v1.yaml -o src/schema.d.ts",
+    "build": "pnpm generate",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "openapi-typescript": "7.13.0",
+    "typescript": "5.9.3"
+  }
+}

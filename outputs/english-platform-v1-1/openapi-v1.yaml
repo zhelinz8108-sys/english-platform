@@ -1,0 +1,5135 @@
+openapi: 3.1.0
+jsonSchemaDialect: https://json-schema.org/draft/2020-12/schema
+info:
+  title: 个性化英语学习平台 API
+  version: 1.1.0
+  summary: General 与 TOEFL 核心学习闭环的官方 Web API 契约
+  description: |
+    本契约是 V1.1 服务端与官方 Web 端之间的唯一接口真相源。
+
+    所有租户资源均位于 `/api/v1/tenants/{tenantId}/...`。服务端必须先验证当前
+    用户的有效租户成员关系，再在数据库事务内设置租户、用户和成员上下文，由
+    PostgreSQL RLS 执行第二道隔离。调用者无权知道目标资源是否存在时统一返回
+    `404`；资源本身对调用者可见、但当前操作不被允许时才返回 `403`。
+
+    日期时间字段必须是 UTC RFC 3339（以 `Z` 结尾），标识符均为 UUID。列表使用
+    不透明游标分页。错误响应使用 RFC 7807 `application/problem+json`。
+
+    官方 Web 端使用 HttpOnly Access Cookie。所有有状态写请求还必须携带
+    `X-CSRF-Token`，其值与可读 CSRF Cookie 组成双提交校验。标记了
+    `Idempotency-Key` 的命令在相同主体、租户、路由和请求体下重试时必须返回首次
+    结果；同键不同请求体返回 `409`。自动保存使用 `If-Match` 与响应 `ETag`，并以
+    `revision` 提供可观测的乐观并发版本。
+  contact:
+    name: English Platform Engineering
+  license:
+    name: Proprietary
+    identifier: LicenseRef-Proprietary
+servers:
+  - url: /
+    description: Same-origin official Web application
+tags:
+  - name: Authentication
+    description: CSRF bootstrap, login, refresh, and session lifecycle
+  - name: Current User
+    description: Current identity and accessible tenants
+  - name: Student Profile
+    description: Tenant-scoped student profile and exam goals
+  - name: Student Dashboard
+    description: Student summary and next actions
+  - name: Student Tasks
+    description: Materialized student task items, attempts, autosave, and submission
+  - name: Student Paths
+    description: General and TOEFL learning-path enrollments
+  - name: Student Progress
+    description: Basic progress aggregates
+  - name: Student Feedback
+    description: Returned grades and teacher feedback
+  - name: Teacher Dashboard
+    description: Teacher workload and class summary
+  - name: Teacher Students
+    description: Relationship-scoped student views
+  - name: Teacher Classes
+    description: Multi-teacher classes and rosters
+  - name: Teacher Assignments
+    description: Task assignment drafts and publication
+  - name: Teacher Assessment
+    description: Overrides, grading, and returned work
+  - name: Admin Memberships
+    description: Tenant memberships and roles
+  - name: Admin Content
+    description: Stable content entities and immutable versions
+  - name: Admin Questions
+    description: Stable question entities and immutable versions
+  - name: Admin Tasks
+    description: Stable task definitions and immutable versions
+  - name: Admin Paths
+    description: Stable learning paths and immutable versions
+  - name: Admin Audit
+    description: Immutable tenant audit events
+  - name: Files
+    description: Direct-to-object-storage upload lifecycle
+security:
+  - accessCookie: []
+paths:
+  /api/v1/auth/csrf:
+    get:
+      tags: [Authentication]
+      summary: Bootstrap CSRF protection
+      operationId: getCsrfToken
+      security: []
+      responses:
+        '200':
+          description: CSRF token returned and mirrored in a SameSite CSRF cookie
+          headers:
+            Set-Cookie:
+              description: Non-HttpOnly CSRF cookie; never contains an authentication secret
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CsrfTokenResponse'
+              example:
+                token: 2f75eac8-62e5-49fb-bcc3-4f260141c6aa
+                expiresAt: '2026-07-10T13:00:00Z'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /api/v1/auth/login:
+    post:
+      tags: [Authentication]
+      summary: Sign in to the official Web application
+      description: Origin and Fetch Metadata validation are required in addition to the CSRF token.
+      operationId: login
+      security:
+        - csrfHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+            example:
+              email: learner@example.cn
+              password: correct-horse-battery-staple
+      responses:
+        '200':
+          description: Authenticated; rotating Access and Refresh cookies are set
+          headers:
+            Set-Cookie:
+              $ref: '#/components/headers/AuthSetCookie'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /api/v1/auth/refresh:
+    post:
+      tags: [Authentication]
+      summary: Rotate the session cookies
+      description: Refresh-token reuse revokes the entire token family and returns 401.
+      operationId: refreshSession
+      security:
+        - refreshCookie: []
+          csrfHeader: []
+      responses:
+        '200':
+          description: Session rotated
+          headers:
+            Set-Cookie:
+              $ref: '#/components/headers/AuthSetCookie'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SessionResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/CsrfForbidden'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+  /api/v1/auth/session:
+    delete:
+      tags: [Authentication]
+      summary: Sign out and revoke the active refresh-token family
+      operationId: logout
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      responses:
+        '204':
+          description: Session revoked; authentication cookies are expired
+          headers:
+            Set-Cookie:
+              $ref: '#/components/headers/AuthSetCookie'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/CsrfForbidden'
+  /api/v1/me:
+    get:
+      tags: [Current User]
+      summary: Get the current global user
+      operationId: getCurrentUser
+      responses:
+        '200':
+          description: Current identity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurrentUser'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/v1/me/tenants:
+    get:
+      tags: [Current User]
+      summary: List active tenant memberships
+      operationId: listMyTenants
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+      responses:
+        '200':
+          description: Tenants the current user may enter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TenantMembershipPage'
+              example:
+                data:
+                  - membershipId: 41ec3ace-bff1-4dc2-a997-61d9611febd3
+                    tenant:
+                      id: d61f2d08-a85e-4bbc-b860-dfdcbec68dc9
+                      name: 上海示范英语中心
+                      slug: sh-demo
+                    roles: [student]
+                    status: active
+                page:
+                  nextCursor: null
+                  hasMore: false
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /api/v1/tenants/{tenantId}/student/profile:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags: [Student Profile]
+      summary: Get the current student's tenant profile
+      operationId: getStudentProfile
+      responses:
+        '200':
+          description: Student profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentProfile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags: [Student Profile]
+      summary: Update editable student profile fields and exam goals
+      operationId: updateStudentProfile
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateStudentProfileRequest'
+      responses:
+        '200':
+          description: Updated student profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentProfile'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/CsrfForbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/student/dashboard:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags: [Student Dashboard]
+      summary: Get the current student's dashboard
+      operationId: getStudentDashboard
+      responses:
+        '200':
+          description: Dashboard aggregates and next task items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentDashboard'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/student/task-items:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags: [Student Tasks]
+      summary: List materialized task items for the current student
+      operationId: listStudentTaskItems
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+        - name: resolutionState
+          in: query
+          schema:
+            $ref: '#/components/schemas/ResolutionState'
+        - name: workflowState
+          in: query
+          schema:
+            $ref: '#/components/schemas/WorkflowState'
+        - name: availability
+          in: query
+          schema:
+            $ref: '#/components/schemas/Availability'
+        - name: dueBefore
+          in: query
+          schema:
+            $ref: '#/components/schemas/UtcDateTime'
+      responses:
+        '200':
+          description: Stable ordering is dueAt ascending, createdAt ascending, id ascending.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentTaskItemPage'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/student/task-items/{taskItemId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/TaskItemId'
+    get:
+      tags: [Student Tasks]
+      summary: Get a task item with frozen task and question versions
+      operationId: getStudentTaskItem
+      responses:
+        '200':
+          description: Task item detail; answer keys are never included.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentTaskItemDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/student/task-items/{taskItemId}/attempts:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/TaskItemId'
+    post:
+      tags: [Student Tasks]
+      summary: Start the first attempt or an explicit student retry
+      description: Return never creates a new attempt. intent=retry increments attemptNumber and is rejected when another attempt is open or maxAttempts is exhausted.
+      operationId: createTaskAttempt
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAttemptRequest'
+            example:
+              intent: start
+              clientStartedAt: '2026-07-10T12:00:00Z'
+      responses:
+        '201':
+          description: Attempt created; ETag identifies initial draft revision 1.
+          headers:
+            ETag:
+              $ref: '#/components/headers/ETag'
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskAttempt'
+              example:
+                id: ae12ba7d-04af-4fd9-b715-23e3a8f98921
+                tenantId: d61f2d08-a85e-4bbc-b860-dfdcbec68dc9
+                taskItemId: 71dcf7ae-ad69-43f6-bf2b-0fb1cb9966aa
+                attemptNumber: 1
+                state: in_progress
+                revision: 1
+                submissionRevision: 0
+                latestSubmissionSnapshotId: null
+                snapshotHash: 3d17133c75012af8a62d9db9f13064685efc9e5697f1c63fb8358117b2fd63bb
+                startedAt: '2026-07-10T12:00:01Z'
+                submittedAt: null
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/CsrfForbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/student/attempts/{attemptId}/draft:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/AttemptId'
+    patch:
+      tags: [Student Tasks]
+      summary: Autosave an attempt draft with optimistic concurrency
+      description: Saving a returned attempt reopens the same attempt for editing; it does not increment attemptNumber.
+      operationId: saveAttemptDraft
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IfMatch'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SaveDraftRequest'
+            example:
+              baseRevision: 3
+              answers:
+                - questionVersionId: a99d69be-72e8-4440-931a-21cb34d1b479
+                  value: B
+                - questionVersionId: e1204d52-a8dd-44f3-bd5d-c408b633e1b2
+                  value: My response draft.
+      responses:
+        '200':
+          description: Draft saved; clients must use the new ETag on the next save.
+          headers:
+            ETag:
+              $ref: '#/components/headers/ETag'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DraftSaveResult'
+              example:
+                attemptId: ae12ba7d-04af-4fd9-b715-23e3a8f98921
+                revision: 4
+                savedAt: '2026-07-10T12:08:00Z'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/CsrfForbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+  /api/v1/tenants/{tenantId}/student/attempts/{attemptId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/AttemptId'
+    get:
+      tags: [Student Tasks]
+      summary: Reload the current attempt draft and revision
+      operationId: getTaskAttempt
+      responses:
+        '200':
+          description: Current mutable draft or immutable submitted snapshot
+          headers:
+            ETag:
+              $ref: '#/components/headers/ETag'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskAttemptDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/student/attempts/{attemptId}/submit:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/AttemptId'
+    post:
+      tags: [Student Tasks]
+      summary: Submit an immutable answer snapshot
+      description: The first successful command for a submission revision wins. A returned attempt may be edited and submitted again; this appends the next immutable SubmissionSnapshot revision on the same attempt. An exact idempotent retry returns the original receipt.
+      operationId: submitAttempt
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+        - $ref: '#/components/parameters/IfMatch'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitAttemptRequest'
+            example:
+              baseRevision: 4
+              clientSubmittedAt: '2026-07-10T12:10:00Z'
+      responses:
+        '200':
+          description: Attempt submitted or original response replayed
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubmissionReceipt'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/CsrfForbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '412':
+          $ref: '#/components/responses/PreconditionFailed'
+        '428':
+          $ref: '#/components/responses/PreconditionRequired'
+  /api/v1/tenants/{tenantId}/student/learning-paths:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags: [Student Paths]
+      summary: List active and historical learning-path enrollments
+      operationId: listStudentLearningPaths
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+        - name: track
+          in: query
+          schema:
+            $ref: '#/components/schemas/LearningTrack'
+      responses:
+        '200':
+          description: Learning-path enrollments
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningPathEnrollmentPage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/student/learning-paths/{enrollmentId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/EnrollmentId'
+    get:
+      tags: [Student Paths]
+      summary: Get a path enrollment and its resolved milestones
+      operationId: getStudentLearningPath
+      responses:
+        '200':
+          description: Path enrollment detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningPathEnrollmentDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/student/progress:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags: [Student Progress]
+      summary: Get basic progress aggregates
+      operationId: getStudentProgress
+      parameters:
+        - name: from
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+        - name: to
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Progress summary; no advanced analytics are exposed in V1.1.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentProgress'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/student/feedback:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags: [Student Feedback]
+      summary: List published grades and teacher feedback
+      operationId: listStudentFeedback
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+        - name: unreadOnly
+          in: query
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Feedback visible to the current student
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeedbackPage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/teacher/dashboard:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags: [Teacher Dashboard]
+      summary: Get teacher workload and class summary
+      operationId: getTeacherDashboard
+      responses:
+        '200':
+          description: Dashboard restricted to related classes and students
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherDashboard'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/teacher/students:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags: [Teacher Students]
+      summary: List students related through a class or direct teacher link
+      operationId: listTeacherStudents
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+        - name: classId
+          in: query
+          schema:
+            $ref: '#/components/schemas/Uuid'
+        - name: query
+          in: query
+          description: Prefix search over display name or tenant-local student number
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 100
+      responses:
+        '200':
+          description: Relationship-scoped students
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherStudentPage'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/teacher/students/{studentMembershipId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/StudentMembershipId'
+    get:
+      tags: [Teacher Students]
+      summary: Get a related student's basic profile and progress
+      operationId: getTeacherStudent
+      responses:
+        '200':
+          description: Student overview; private fields outside the teaching purpose are omitted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherStudentDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/teacher/students/{studentMembershipId}/learning-path-enrollments:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/StudentMembershipId'
+    post:
+      tags: [Teacher Students]
+      summary: Enroll a related student in a published General or TOEFL path version
+      operationId: createLearningPathEnrollment
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLearningPathEnrollmentRequest'
+      responses:
+        '201':
+          description: Enrollment created; path task materialization is queued via Outbox.
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningPathEnrollment'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/teacher/students/{studentMembershipId}/learning-path-enrollments/{enrollmentId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/StudentMembershipId'
+      - $ref: '#/components/parameters/EnrollmentId'
+    patch:
+      tags: [Teacher Students]
+      summary: Pause, resume, complete, or cancel a related student's path enrollment
+      operationId: updateLearningPathEnrollment
+      description: Pausing or cancelling inactivates only unstarted path sources; task, attempt, submission, and grade history remain.
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateLearningPathEnrollmentRequest'
+      responses:
+        '200':
+          description: Enrollment state changed and task re-resolution queued.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningPathEnrollment'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/teacher/classes:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags: [Teacher Classes]
+      summary: List classes taught or administered by the current member
+      operationId: listTeacherClasses
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/ClassStatus'
+      responses:
+        '200':
+          description: Related classes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassPage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags: [Teacher Classes]
+      summary: Create a class
+      operationId: createClass
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateClassRequest'
+      responses:
+        '201':
+          description: Class created
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Class'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/teacher/classes/{classId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/ClassId'
+    get:
+      tags: [Teacher Classes]
+      summary: Get a class, its teachers, and roster summary
+      operationId: getClass
+      responses:
+        '200':
+          description: Related class
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClassDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags: [Teacher Classes]
+      summary: Update class metadata
+      operationId: updateClass
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateClassRequest'
+      responses:
+        '200':
+          description: Updated class
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Class'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/teacher/classes/{classId}/students/{studentMembershipId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/ClassId'
+      - $ref: '#/components/parameters/StudentMembershipId'
+    put:
+      tags: [Teacher Classes]
+      summary: Add a student to a class idempotently
+      operationId: addStudentToClass
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      responses:
+        '204':
+          description: Student is a current class member
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      tags: [Teacher Classes]
+      summary: End a student's class membership without deleting history
+      operationId: removeStudentFromClass
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      responses:
+        '204':
+          description: Membership ended; historical task sources and submissions remain.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/teacher/classes/{classId}/teachers/{teacherMembershipId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/ClassId'
+      - $ref: '#/components/parameters/TeacherMembershipId'
+    put:
+      tags: [Teacher Classes]
+      summary: Add a teacher to a class idempotently
+      operationId: addTeacherToClass
+      description: Restricted to tenant administrators and authorized lead teachers.
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      responses:
+        '204':
+          description: Teacher is a current class teacher.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+    delete:
+      tags: [Teacher Classes]
+      summary: End a teacher's class relation without deleting history
+      operationId: removeTeacherFromClass
+      description: The last active class teacher cannot be removed.
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      responses:
+        '204':
+          description: Teacher relation ended.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/teacher/task-assignments:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags: [Teacher Assignments]
+      summary: List assignment configurations
+      operationId: listTaskAssignments
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/AssignmentStatus'
+      responses:
+        '200':
+          description: Assignment configurations visible to the current teacher
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskAssignmentPage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags: [Teacher Assignments]
+      summary: Create a task assignment draft with typed targets
+      operationId: createTaskAssignment
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskAssignmentRequest'
+            example:
+              taskVersionId: 0198a352-01be-75a6-8e96-8ce78921799a
+              sourceType: class
+              slotKey: toefl.reading.week-01.practice-01
+              explicitPriority: 20
+              occurrenceKey: class-2026-summer-w01-reading-01
+              scheduleMode: absolute
+              availableAt: '2026-07-11T00:00:00Z'
+              dueAt: '2026-07-18T15:59:59Z'
+              closeAt: '2026-07-20T15:59:59Z'
+              maxAttempts: 2
+              latePolicy: allow_with_penalty
+              targets:
+                studentMembershipIds: []
+                classIds: [0198a352-aad0-7388-b5df-fbbb02a60a49]
+                pathNodeIds: []
+      responses:
+        '201':
+          description: Assignment draft created
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskAssignment'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/teacher/task-assignments/{assignmentId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/AssignmentId'
+    get:
+      tags: [Teacher Assignments]
+      summary: Get an assignment configuration and resolution counts
+      operationId: getTaskAssignment
+      responses:
+        '200':
+          description: Assignment detail
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskAssignmentDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      tags: [Teacher Assignments]
+      summary: Edit a draft assignment
+      operationId: updateTaskAssignment
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTaskAssignmentRequest'
+      responses:
+        '200':
+          description: Updated assignment draft
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskAssignment'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/teacher/task-assignments/{assignmentId}/publish:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/AssignmentId'
+    post:
+      tags: [Teacher Assignments]
+      summary: Publish an assignment and enqueue deterministic materialization
+      operationId: publishTaskAssignment
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '202':
+          description: Publication accepted; task items are materialized asynchronously via Outbox.
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcceptedCommand'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/teacher/task-assignments/{assignmentId}/cancel:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/AssignmentId'
+    post:
+      tags: [Teacher Assignments]
+      summary: Cancel a published assignment without deleting historical work
+      operationId: cancelTaskAssignment
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CancelTaskAssignmentRequest'
+      responses:
+        '202':
+          description: Cancellation committed; source inactivation and task re-resolution are queued via Outbox.
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcceptedCommand'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/teacher/task-items/{taskItemId}/overrides:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/TaskItemId'
+    post:
+      tags: [Teacher Assessment]
+      summary: Append a task-item override
+      description: Overrides are immutable events; restore or reschedule appends a new event. require_redo records the requirement but never creates an attempt; the student must explicitly call createTaskAttempt with intent=retry.
+      operationId: createTaskOverride
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskOverrideRequest'
+            example:
+              action: reschedule
+              dueAt: '2026-07-20T15:59:59Z'
+              reason: 学生请假，经任课教师确认延后两天。
+      responses:
+        '201':
+          description: Override appended and effective state recalculated
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskOverride'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/teacher/attempts/{attemptId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/AttemptId'
+    get:
+      tags: [Teacher Assessment]
+      summary: Read the latest immutable submission snapshot for grading
+      description: Returns frozen prompts, options, and submitted responses without answer keys. Ordinary teachers must have a current direct or class relationship to the student; owner and admin may review any tenant submission.
+      operationId: getAttemptForGrading
+      responses:
+        '200':
+          description: Latest immutable submission and its grading context
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TeacherAttemptReview'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/teacher/attempts/{attemptId}/grades:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/AttemptId'
+    post:
+      tags: [Teacher Assessment]
+      summary: Create an immutable teacher-confirmed grade snapshot
+      operationId: gradeAttempt
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GradeAttemptRequest'
+            example:
+              submissionSnapshotId: 0198a3de-89ae-76ef-b918-1ba007691ed4
+              score: 24
+              maxScore: 30
+              feedback: 论点清晰；下一稿请加强段落之间的衔接。
+              rubricScores:
+                - criterionKey: organization
+                  score: 4
+                  maxScore: 5
+                  comment: 结构完整。
+      responses:
+        '201':
+          description: Teacher-confirmed grade created and made final unless an admin override exists.
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GradeSnapshot'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/teacher/attempts/{attemptId}/return:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/AttemptId'
+    post:
+      tags: [Teacher Assessment]
+      summary: Return a graded attempt to the student
+      operationId: returnAttempt
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReturnAttemptRequest'
+      responses:
+        '200':
+          description: Attempt returned for edits on the same attempt. Return does not increment attemptNumber or consume maxAttempts.
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskAttempt'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/admin/memberships:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags: [Admin Memberships]
+      summary: List tenant memberships
+      operationId: listMemberships
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+        - name: role
+          in: query
+          schema:
+            $ref: '#/components/schemas/TenantRole'
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/MembershipStatus'
+      responses:
+        '200':
+          description: Tenant memberships
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MembershipPage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags: [Admin Memberships]
+      summary: Create a tenant membership and its role rows
+      operationId: createMembership
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMembershipRequest'
+      responses:
+        '201':
+          description: Membership created
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Membership'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/admin/memberships/{membershipId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/MembershipId'
+    patch:
+      tags: [Admin Memberships]
+      summary: Replace roles or change membership lifecycle status
+      operationId: updateMembership
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMembershipRequest'
+      responses:
+        '200':
+          description: Updated membership
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Membership'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/admin/contents:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags: [Admin Content]
+      summary: List tenant-owned content and official content from the separate platform schema
+      operationId: listContents
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+        - name: ownership
+          in: query
+          schema:
+            $ref: '#/components/schemas/CatalogOwnership'
+        - name: kind
+          in: query
+          schema:
+            $ref: '#/components/schemas/ContentKind'
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/EntityStatus'
+      responses:
+        '200':
+          description: Official objects from the separate platform schema are exposed as read-only projections.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentPage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags: [Admin Content]
+      summary: Create tenant content or clone an official version from the separate platform schema
+      operationId: createContent
+      description: Supplying cloneFromPlatformVersionId copies the dependency graph into a new tenant-owned entity and version; the separate platform schema is never modified.
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateContentRequest'
+      responses:
+        '201':
+          description: Tenant-owned content created
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Content'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/admin/contents/{contentId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/ContentId'
+    get:
+      tags: [Admin Content]
+      summary: Get a content entity and version metadata
+      operationId: getContent
+      responses:
+        '200':
+          description: Content entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/admin/contents/{contentId}/versions:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/ContentId'
+    post:
+      tags: [Admin Content]
+      summary: Create an immutable content draft version
+      operationId: createContentVersion
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateContentVersionRequest'
+      responses:
+        '201':
+          description: Draft version created
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentVersion'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/admin/content-versions/{versionId}/publish:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/VersionId'
+    post:
+      tags: [Admin Content]
+      summary: Publish a content version immutably
+      operationId: publishContentVersion
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Published version
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentVersion'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/admin/questions:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags: [Admin Questions]
+      summary: List tenant-owned questions and official questions from the separate platform schema
+      operationId: listQuestions
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+        - name: ownership
+          in: query
+          schema:
+            $ref: '#/components/schemas/CatalogOwnership'
+        - name: kind
+          in: query
+          schema:
+            $ref: '#/components/schemas/QuestionKind'
+      responses:
+        '200':
+          description: Official question projections from the separate platform schema are read-only.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionPage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags: [Admin Questions]
+      summary: Create a tenant question or clone an official version from the separate platform schema
+      operationId: createQuestion
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateQuestionRequest'
+      responses:
+        '201':
+          description: Tenant-owned question created
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/admin/questions/{questionId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/QuestionId'
+    get:
+      tags: [Admin Questions]
+      summary: Get a question entity and version metadata
+      operationId: getQuestion
+      responses:
+        '200':
+          description: Question entity
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/admin/questions/{questionId}/versions:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/QuestionId'
+    post:
+      tags: [Admin Questions]
+      summary: Create an immutable question draft version
+      operationId: createQuestionVersion
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateQuestionVersionRequest'
+      responses:
+        '201':
+          description: Question draft version created
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionVersionAdmin'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/admin/question-versions/{versionId}/publish:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/VersionId'
+    post:
+      tags: [Admin Questions]
+      summary: Publish a question version immutably
+      operationId: publishQuestionVersion
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Published question version
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuestionVersionAdmin'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/admin/tasks:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags: [Admin Tasks]
+      summary: List tenant-owned tasks and official tasks from the separate platform schema
+      operationId: listTasks
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+        - name: ownership
+          in: query
+          schema:
+            $ref: '#/components/schemas/CatalogOwnership'
+      responses:
+        '200':
+          description: Task catalog
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDefinitionPage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags: [Admin Tasks]
+      summary: Create a tenant task or clone an official version from the separate platform schema
+      operationId: createTaskDefinition
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskDefinitionRequest'
+      responses:
+        '201':
+          description: Tenant-owned task created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskDefinition'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/admin/tasks/{taskId}/versions:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/TaskId'
+    post:
+      tags: [Admin Tasks]
+      summary: Create an immutable task draft version
+      operationId: createTaskVersion
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTaskVersionRequest'
+      responses:
+        '201':
+          description: Task draft version created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskVersionAdmin'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/admin/task-versions/{versionId}/publish:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/VersionId'
+    post:
+      tags: [Admin Tasks]
+      summary: Publish a task version immutably
+      operationId: publishTaskVersion
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Published task version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TaskVersionAdmin'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/admin/learning-paths:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags: [Admin Paths]
+      summary: List tenant-owned paths and official paths from the separate platform schema
+      operationId: listLearningPaths
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+        - name: ownership
+          in: query
+          schema:
+            $ref: '#/components/schemas/CatalogOwnership'
+        - name: track
+          in: query
+          schema:
+            $ref: '#/components/schemas/LearningTrack'
+      responses:
+        '200':
+          description: Learning-path catalog
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningPathPage'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      tags: [Admin Paths]
+      summary: Create a tenant path or clone an official version from the separate platform schema
+      operationId: createLearningPath
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLearningPathRequest'
+      responses:
+        '201':
+          description: Tenant-owned learning path created
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningPath'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/admin/learning-paths/{pathId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/PathId'
+    get:
+      tags: [Admin Paths]
+      summary: Get a learning path and version metadata
+      operationId: getLearningPath
+      responses:
+        '200':
+          description: Learning path
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningPathDetail'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/admin/learning-paths/{pathId}/versions:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/PathId'
+    post:
+      tags: [Admin Paths]
+      summary: Create an immutable learning-path draft version
+      operationId: createLearningPathVersion
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLearningPathVersionRequest'
+      responses:
+        '201':
+          description: Learning-path draft version created
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningPathVersion'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/admin/learning-path-versions/{versionId}/publish:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/VersionId'
+    post:
+      tags: [Admin Paths]
+      summary: Publish a learning-path version immutably
+      operationId: publishLearningPathVersion
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Published learning-path version
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LearningPathVersion'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/admin/audit-events:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags: [Admin Audit]
+      summary: List immutable tenant audit events
+      operationId: listAuditEvents
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/PageSize'
+        - name: actorMembershipId
+          in: query
+          schema:
+            $ref: '#/components/schemas/Uuid'
+        - name: action
+          in: query
+          schema:
+            type: string
+            maxLength: 100
+        - name: occurredAfter
+          in: query
+          schema:
+            $ref: '#/components/schemas/UtcDateTime'
+      responses:
+        '200':
+          description: Audit events ordered by occurredAt descending, id descending.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuditEventPage'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/files/presigned-uploads:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    post:
+      tags: [Files]
+      summary: Reserve a tenant-scoped file and create a presigned upload
+      operationId: createPresignedUpload
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreatePresignedUploadRequest'
+            example:
+              purpose: content_attachment
+              fileName: reading-passage.pdf
+              contentType: application/pdf
+              sizeBytes: 483129
+              sha256: 3d17133c75012af8a62d9db9f13064685efc9e5697f1c63fb8358117b2fd63bb
+      responses:
+        '201':
+          description: Upload reservation and short-lived S3-compatible PUT URL
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PresignedUpload'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '413':
+          $ref: '#/components/responses/PayloadTooLarge'
+  /api/v1/tenants/{tenantId}/files/{fileId}/complete:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - $ref: '#/components/parameters/FileId'
+    post:
+      tags: [Files]
+      summary: Verify and complete a direct upload
+      operationId: completeUpload
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompleteUploadRequest'
+      responses:
+        '200':
+          description: File verified or original completion replayed
+          headers:
+            Idempotency-Replayed:
+              $ref: '#/components/headers/IdempotencyReplayed'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileObject'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/learning/toefl/listening:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags: [TOEFL Learning]
+      summary: List tenant TOEFL listening audio assets
+      operationId: listToeflListeningAssets
+      parameters:
+        - name: query
+          in: query
+          schema:
+            type: string
+            maxLength: 120
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 300
+            default: 300
+      responses:
+        '200':
+          description: Listening assets ordered by collection and sequence
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data, page]
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ToeflListeningAsset'
+                  page:
+                    $ref: '#/components/schemas/PageInfo'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/learning/toefl/listening/{assetId}/playback:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - name: assetId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Uuid'
+    get:
+      tags: [TOEFL Learning]
+      summary: Create a short-lived private playback URL
+      operationId: createToeflListeningPlayback
+      responses:
+        '200':
+          description: Authorized private object playback URL
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [url, expiresAt]
+                properties:
+                  url:
+                    type: string
+                    format: uri
+                  expiresAt:
+                    $ref: '#/components/schemas/UtcDateTime'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  securitySchemes:
+    accessCookie:
+      type: apiKey
+      in: cookie
+      name: access_token
+      description: Short-lived, HttpOnly, Secure, SameSite=Lax signed access cookie.
+    refreshCookie:
+      type: apiKey
+      in: cookie
+      name: refresh_token
+      description: Rotating, HttpOnly, Secure, SameSite=Strict opaque refresh cookie; only its hash is stored.
+    csrfHeader:
+      type: apiKey
+      in: header
+      name: X-CSRF-Token
+      description: Double-submit token that must match the readable csrf_token cookie on every state-changing request.
+  parameters:
+    TenantId:
+      name: tenantId
+      in: path
+      required: true
+      description: Tenant UUID from the current user's active membership list.
+      schema:
+        $ref: '#/components/schemas/Uuid'
+    TaskItemId:
+      name: taskItemId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Uuid'
+    AttemptId:
+      name: attemptId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Uuid'
+    EnrollmentId:
+      name: enrollmentId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Uuid'
+    StudentMembershipId:
+      name: studentMembershipId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Uuid'
+    TeacherMembershipId:
+      name: teacherMembershipId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Uuid'
+    ClassId:
+      name: classId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Uuid'
+    AssignmentId:
+      name: assignmentId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Uuid'
+    MembershipId:
+      name: membershipId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Uuid'
+    ContentId:
+      name: contentId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Uuid'
+    QuestionId:
+      name: questionId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Uuid'
+    TaskId:
+      name: taskId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Uuid'
+    PathId:
+      name: pathId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Uuid'
+    VersionId:
+      name: versionId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Uuid'
+    FileId:
+      name: fileId
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/Uuid'
+    Cursor:
+      name: cursor
+      in: query
+      description: Opaque cursor returned as page.nextCursor; clients must not parse or construct it.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 512
+    PageSize:
+      name: pageSize
+      in: query
+      description: Requested page size.
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: |
+        Client-generated key retained for at least 24 hours. Scope is user, tenant, method,
+        and canonical route. Reusing a key with an identical body replays the original status,
+        headers, and body; reusing it with a different body returns 409.
+      schema:
+        type: string
+        minLength: 16
+        maxLength: 128
+        pattern: '^[A-Za-z0-9._:-]+$'
+    IfMatch:
+      name: If-Match
+      in: header
+      required: true
+      description: Strong ETag received from attempt creation or the latest draft save.
+      schema:
+        type: string
+        pattern: '^"[A-Za-z0-9._:-]+"$'
+        example: '"attempt-ae12ba7d-r4"'
+  headers:
+    AuthSetCookie:
+      description: One or more Set-Cookie values for access_token and refresh_token rotation or expiry.
+      schema:
+        type: string
+    ETag:
+      description: Strong validator for the returned attempt revision.
+      schema:
+        type: string
+        example: '"attempt-ae12ba7d-r4"'
+    IdempotencyReplayed:
+      description: true when this response replays a previously completed idempotent command.
+      schema:
+        type: boolean
+        default: false
+  responses:
+    ValidationProblem:
+      description: Request validation failed.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            type: https://api.example.cn/problems/validation-error
+            title: 请求参数无效
+            status: 400
+            detail: 一个或多个字段未通过校验。
+            instance: /api/v1/tenants/d61f2d08-a85e-4bbc-b860-dfdcbec68dc9/student/progress
+            requestId: 0198a371-8261-7e53-9905-c81722fc08db
+            errors:
+              - field: to
+                code: date_range_invalid
+                message: to 必须不早于 from。
+    Unauthorized:
+      description: Authentication is absent, expired, revoked, or refresh-token reuse was detected.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    CsrfForbidden:
+      description: CSRF, Origin, or Fetch Metadata validation failed.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    Forbidden:
+      description: The resource is visible to the caller, but the caller's role or relationship forbids this operation.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    NotFound:
+      description: Resource not found, tenant membership inactive, relationship absent, or existence intentionally concealed to prevent enumeration.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            type: https://api.example.cn/problems/not-found
+            title: 未找到资源
+            status: 404
+            detail: 请求的资源不存在或不可访问。
+            requestId: 0198a371-8261-7e53-9905-c81722fc08db
+    Conflict:
+      description: State transition, idempotency-key reuse, duplicate relation, or logical concurrent update conflict.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          examples:
+            idempotencyMismatch:
+              value:
+                type: https://api.example.cn/problems/idempotency-key-reused
+                title: 幂等键已用于不同请求
+                status: 409
+                detail: 请为不同的请求体生成新的 Idempotency-Key。
+                requestId: 0198a371-8261-7e53-9905-c81722fc08db
+            idempotencyInProgress:
+              value:
+                type: https://api.example.cn/problems/idempotency-in-progress
+                title: 相同命令仍在处理中
+                status: 409
+                detail: 请使用相同 Idempotency-Key 稍后重试。
+                requestId: 0198a371-8261-7e53-9905-c81722fc08db
+            stateConflict:
+              value:
+                type: https://api.example.cn/problems/state-conflict
+                title: 当前状态不允许该操作
+                status: 409
+                detail: 此作答已由另一请求提交。
+                requestId: 0198a371-8261-7e53-9905-c81722fc08db
+    PreconditionFailed:
+      description: If-Match does not equal the current strong ETag; reload the latest draft before merging.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+          example:
+            type: https://api.example.cn/problems/etag-mismatch
+            title: 草稿版本已变化
+            status: 412
+            detail: If-Match 与当前草稿版本不一致。
+            requestId: 0198a371-8261-7e53-9905-c81722fc08db
+            currentEtag: '"attempt-ae12ba7d-r5"'
+            currentRevision: 5
+    PreconditionRequired:
+      description: Required If-Match header is missing.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    PayloadTooLarge:
+      description: Declared or observed upload size exceeds the configured limit.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+    TooManyRequests:
+      description: Rate limit exceeded.
+      headers:
+        Retry-After:
+          description: Seconds until another request should be attempted.
+          schema:
+            type: integer
+            minimum: 1
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetails'
+  schemas:
+    Uuid:
+      type: string
+      format: uuid
+      description: Server-generated UUIDv7; clients treat it as an opaque UUID on the wire.
+      example: 0198a352-01be-75a6-8e96-8ce78921799a
+    UtcDateTime:
+      type: string
+      format: date-time
+      pattern: '^(?:[0-9]{4})-(?:0[1-9]|1[0-2])-(?:0[1-9]|[12][0-9]|3[01])T(?:[01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](?:\.[0-9]+)?Z$'
+      description: UTC RFC 3339 timestamp serialized from PostgreSQL timestamptz; offsets other than Z are rejected.
+      example: '2026-07-10T12:00:00Z'
+    ContentHash:
+      type: string
+      pattern: '^[a-f0-9]{64}$'
+      description: Lowercase SHA-256 digest of the canonical immutable snapshot.
+    PageInfo:
+      type: object
+      additionalProperties: false
+      required: [nextCursor, hasMore]
+      properties:
+        nextCursor:
+          type: [string, 'null']
+          maxLength: 512
+        hasMore:
+          type: boolean
+    ProblemFieldError:
+      type: object
+      additionalProperties: false
+      required: [field, code, message]
+      properties:
+        field:
+          type: string
+        code:
+          type: string
+        message:
+          type: string
+    ProblemDetails:
+      type: object
+      description: RFC 7807 problem detail with stable platform extensions.
+      required: [type, title, status, requestId]
+      properties:
+        type:
+          type: string
+          format: uri-reference
+        title:
+          type: string
+        status:
+          type: integer
+          minimum: 400
+          maximum: 599
+        detail:
+          type: string
+        instance:
+          type: string
+          format: uri-reference
+        requestId:
+          $ref: '#/components/schemas/Uuid'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProblemFieldError'
+      additionalProperties: true
+    CsrfTokenResponse:
+      type: object
+      additionalProperties: false
+      required: [token, expiresAt]
+      properties:
+        token:
+          type: string
+          minLength: 32
+          maxLength: 256
+        expiresAt:
+          $ref: '#/components/schemas/UtcDateTime'
+    LoginRequest:
+      type: object
+      additionalProperties: false
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        password:
+          type: string
+          format: password
+          minLength: 8
+          maxLength: 128
+    PlatformRole:
+      type: string
+      enum: [none, super_admin]
+    CurrentUser:
+      type: object
+      additionalProperties: false
+      required: [id, email, displayName, platformRole, createdAt]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        email:
+          type: string
+          format: email
+        displayName:
+          type: string
+          minLength: 1
+          maxLength: 100
+        platformRole:
+          $ref: '#/components/schemas/PlatformRole'
+        createdAt:
+          $ref: '#/components/schemas/UtcDateTime'
+    SessionResponse:
+      type: object
+      additionalProperties: false
+      required: [user, accessExpiresAt, refreshExpiresAt]
+      properties:
+        user:
+          $ref: '#/components/schemas/CurrentUser'
+        accessExpiresAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        refreshExpiresAt:
+          $ref: '#/components/schemas/UtcDateTime'
+    TenantRole:
+      type: string
+      enum: [owner, admin, teacher, student, content_editor, analyst]
+    MembershipStatus:
+      type: string
+      enum: [invited, active, suspended, left]
+    TenantSummary:
+      type: object
+      additionalProperties: false
+      required: [id, name, slug]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        slug:
+          type: string
+          pattern: '^[a-z0-9][a-z0-9-]{1,62}[a-z0-9]$'
+    TenantMembershipSummary:
+      type: object
+      additionalProperties: false
+      required: [membershipId, tenant, roles, status]
+      properties:
+        membershipId:
+          $ref: '#/components/schemas/Uuid'
+        tenant:
+          $ref: '#/components/schemas/TenantSummary'
+        roles:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/TenantRole'
+        status:
+          $ref: '#/components/schemas/MembershipStatus'
+    TenantMembershipPage:
+      type: object
+      additionalProperties: false
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TenantMembershipSummary'
+        page:
+          $ref: '#/components/schemas/PageInfo'
+    ExamKind:
+      type: string
+      enum: [toefl]
+      description: V1.1 supports TOEFL; additional exams require a contract version update.
+    ExamGoalStatus:
+      type: string
+      enum: [active, achieved, cancelled]
+    StudentExamGoal:
+      type: object
+      additionalProperties: false
+      required: [id, exam, targetScore, targetDate, status]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        exam:
+          $ref: '#/components/schemas/ExamKind'
+        targetScore:
+          type: number
+          minimum: 0
+          maximum: 120
+        targetDate:
+          type: [string, 'null']
+          format: date
+        status:
+          $ref: '#/components/schemas/ExamGoalStatus'
+    ExamGoalInput:
+      type: object
+      additionalProperties: false
+      required: [exam, targetScore]
+      properties:
+        id:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+          description: Existing goal ID when updating; null or omitted creates a goal.
+        exam:
+          $ref: '#/components/schemas/ExamKind'
+        targetScore:
+          type: number
+          minimum: 0
+          maximum: 120
+        targetDate:
+          type: [string, 'null']
+          format: date
+        status:
+          $ref: '#/components/schemas/ExamGoalStatus'
+    StudentProfile:
+      type: object
+      additionalProperties: false
+      required: [membershipId, userId, displayName, studentNumber, locale, timezone, examGoals, createdAt, updatedAt]
+      properties:
+        membershipId:
+          $ref: '#/components/schemas/Uuid'
+        userId:
+          $ref: '#/components/schemas/Uuid'
+        displayName:
+          type: string
+          minLength: 1
+          maxLength: 100
+        studentNumber:
+          type: [string, 'null']
+          maxLength: 64
+        locale:
+          type: string
+          enum: [zh-CN, en-US]
+        timezone:
+          type: string
+          example: Asia/Shanghai
+        examGoals:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentExamGoal'
+        createdAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        updatedAt:
+          $ref: '#/components/schemas/UtcDateTime'
+    UpdateStudentProfileRequest:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        displayName:
+          type: string
+          minLength: 1
+          maxLength: 100
+        locale:
+          type: string
+          enum: [zh-CN, en-US]
+        timezone:
+          type: string
+          minLength: 1
+          maxLength: 64
+        examGoals:
+          type: array
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/ExamGoalInput'
+    ResolutionState:
+      type: string
+      enum: [active, hidden, superseded]
+      description: Effective `student_task_items.resolution_state` after applying append-only overrides.
+    ResolutionReason:
+      type: string
+      enum: [winner, override_hidden, source_inactive, slot_conflict, replaced]
+      description: Deterministic reason for the effective resolution state.
+    WorkflowState:
+      type: string
+      enum: [not_started, in_progress, submitted, grading, returned, completed, cancelled]
+      description: Student task workflow state; availability and lateness are modeled separately.
+    Availability:
+      type: string
+      enum: [locked, upcoming, available]
+      description: Derived from prerequisites and availability windows; not persisted as workflow state.
+    TaskKind:
+      type: string
+      enum: [lesson, practice, assessment, writing]
+    TaskSourceType:
+      type: string
+      enum: [admin_forced, individual, class, exam_path, general]
+      description: Precedence is admin_forced 500, individual 400, class 300, exam_path 200, general 100; ties use explicitPriority, publishedAt, then ID descending.
+    StudentTaskSource:
+      type: object
+      additionalProperties: false
+      required: [id, sourceType, sourceRefId, occurrenceKey, slotKey, precedenceScore, explicitPriority, publishedAt, active]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        sourceType:
+          $ref: '#/components/schemas/TaskSourceType'
+        sourceRefId:
+          $ref: '#/components/schemas/Uuid'
+        occurrenceKey:
+          type: string
+          minLength: 1
+          maxLength: 180
+        slotKey:
+          type: string
+          minLength: 1
+          maxLength: 180
+        precedenceScore:
+          type: integer
+          enum: [100, 200, 300, 400, 500]
+        explicitPriority:
+          type: integer
+          minimum: 0
+          maximum: 99
+        publishedAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        active:
+          type: boolean
+    StudentTaskItem:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - tenantId
+        - studentMembershipId
+        - taskVersionId
+        - occurrenceKey
+        - slotKey
+        - title
+        - kind
+        - resolutionState
+        - resolutionReason
+        - workflowState
+        - availability
+        - availableAt
+        - dueAt
+        - closeAt
+        - isOverdue
+        - isLate
+        - sourceCount
+        - createdAt
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        tenantId:
+          $ref: '#/components/schemas/Uuid'
+        studentMembershipId:
+          $ref: '#/components/schemas/Uuid'
+        taskVersionId:
+          $ref: '#/components/schemas/Uuid'
+        occurrenceKey:
+          type: string
+          minLength: 1
+          maxLength: 180
+        slotKey:
+          type: string
+          minLength: 1
+          maxLength: 180
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        kind:
+          $ref: '#/components/schemas/TaskKind'
+        resolutionState:
+          $ref: '#/components/schemas/ResolutionState'
+        resolutionReason:
+          $ref: '#/components/schemas/ResolutionReason'
+        workflowState:
+          $ref: '#/components/schemas/WorkflowState'
+        availability:
+          $ref: '#/components/schemas/Availability'
+        availableAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+        dueAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+        closeAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+        isOverdue:
+          type: boolean
+          description: Derived true when an unfinished available item is past due.
+        isLate:
+          type: boolean
+          description: Derived true when the immutable submission timestamp is later than its effective dueAt.
+        sourceCount:
+          type: integer
+          minimum: 1
+        createdAt:
+          $ref: '#/components/schemas/UtcDateTime'
+    StudentTaskItemPage:
+      type: object
+      additionalProperties: false
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentTaskItem'
+        page:
+          $ref: '#/components/schemas/PageInfo'
+    QuestionOption:
+      type: object
+      additionalProperties: false
+      required: [id, label, content]
+      properties:
+        id:
+          type: string
+          minLength: 1
+          maxLength: 64
+        label:
+          type: string
+          minLength: 1
+          maxLength: 16
+        content:
+          type: string
+          minLength: 1
+    StructuredDocument:
+      type: object
+      description: Versioned structured rich-text JSON; HTML and executable content are forbidden.
+      additionalProperties: true
+    QuestionForStudent:
+      type: object
+      additionalProperties: false
+      description: Frozen question projection; correct answers and private scoring rules are excluded.
+      required: [questionVersionId, kind, prompt, options, position]
+      properties:
+        questionVersionId:
+          $ref: '#/components/schemas/Uuid'
+        kind:
+          $ref: '#/components/schemas/QuestionKind'
+        prompt:
+          $ref: '#/components/schemas/StructuredDocument'
+        options:
+          type: array
+          description: Frozen randomized option order for this attempt.
+          items:
+            $ref: '#/components/schemas/QuestionOption'
+        position:
+          type: integer
+          minimum: 1
+        maxScore:
+          type: number
+          minimum: 0
+    TaskVersionForStudent:
+      type: object
+      additionalProperties: false
+      required: [id, versionNumber, title, instructions, kind, contentHash, questions]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        versionNumber:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+        instructions:
+          $ref: '#/components/schemas/StructuredDocument'
+        kind:
+          $ref: '#/components/schemas/TaskKind'
+        contentHash:
+          $ref: '#/components/schemas/ContentHash'
+        questions:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/QuestionForStudent'
+    StudentTaskItemDetail:
+      type: object
+      additionalProperties: false
+      required: [item, taskSnapshot, sources, currentAttempt]
+      properties:
+        item:
+          $ref: '#/components/schemas/StudentTaskItem'
+        taskSnapshot:
+          $ref: '#/components/schemas/TaskVersionForStudent'
+        sources:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/StudentTaskSource'
+        currentAttempt:
+          oneOf:
+            - $ref: '#/components/schemas/TaskAttempt'
+            - type: 'null'
+    AttemptState:
+      type: string
+      enum: [in_progress, submitted, grading, returned, completed, cancelled]
+      description: Draft data lives in attempt_drafts; autosaving a returned attempt transitions it back to in_progress.
+    TaskAttempt:
+      type: object
+      additionalProperties: false
+      required: [id, tenantId, taskItemId, attemptNumber, state, revision, submissionRevision, latestSubmissionSnapshotId, snapshotHash, startedAt, submittedAt]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        tenantId:
+          $ref: '#/components/schemas/Uuid'
+        taskItemId:
+          $ref: '#/components/schemas/Uuid'
+        attemptNumber:
+          type: integer
+          minimum: 1
+        state:
+          $ref: '#/components/schemas/AttemptState'
+        revision:
+          type: integer
+          minimum: 1
+        submissionRevision:
+          type: integer
+          minimum: 0
+          description: Number of immutable SubmissionSnapshot rows appended for this attempt.
+        latestSubmissionSnapshotId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+        snapshotHash:
+          $ref: '#/components/schemas/ContentHash'
+        startedAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        submittedAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+    TaskAttemptDetail:
+      type: object
+      additionalProperties: false
+      required: [attempt, answers, grade]
+      properties:
+        attempt:
+          $ref: '#/components/schemas/TaskAttempt'
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnswerDraft'
+        grade:
+          oneOf:
+            - $ref: '#/components/schemas/GradeSnapshot'
+            - type: 'null'
+    CreateAttemptRequest:
+      type: object
+      additionalProperties: false
+      required: [intent, clientStartedAt]
+      properties:
+        intent:
+          type: string
+          enum: [start, retry]
+          description: start creates attempt 1; retry explicitly consumes one remaining attempt and increments attemptNumber.
+        clientStartedAt:
+          $ref: '#/components/schemas/UtcDateTime'
+    AnswerValue:
+      oneOf:
+        - type: string
+        - type: number
+        - type: boolean
+        - type: array
+          items:
+            type: string
+        - type: object
+          additionalProperties: true
+        - type: 'null'
+    AnswerDraft:
+      type: object
+      additionalProperties: false
+      required: [questionVersionId, value]
+      properties:
+        questionVersionId:
+          $ref: '#/components/schemas/Uuid'
+        value:
+          $ref: '#/components/schemas/AnswerValue'
+    SaveDraftRequest:
+      type: object
+      additionalProperties: false
+      required: [baseRevision, answers]
+      properties:
+        baseRevision:
+          type: integer
+          minimum: 1
+        answers:
+          type: array
+          maxItems: 200
+          items:
+            $ref: '#/components/schemas/AnswerDraft'
+    DraftSaveResult:
+      type: object
+      additionalProperties: false
+      required: [attemptId, revision, savedAt]
+      properties:
+        attemptId:
+          $ref: '#/components/schemas/Uuid'
+        revision:
+          type: integer
+          minimum: 1
+        savedAt:
+          $ref: '#/components/schemas/UtcDateTime'
+    SubmitAttemptRequest:
+      type: object
+      additionalProperties: false
+      required: [baseRevision, clientSubmittedAt]
+      properties:
+        baseRevision:
+          type: integer
+          minimum: 1
+        clientSubmittedAt:
+          $ref: '#/components/schemas/UtcDateTime'
+    SubmissionReceipt:
+      type: object
+      additionalProperties: false
+      required: [attemptId, taskItemId, submissionSnapshotId, previousSubmissionSnapshotId, workflowState, submissionRevision, submissionHash, serverSubmittedAt, isLate]
+      properties:
+        attemptId:
+          $ref: '#/components/schemas/Uuid'
+        taskItemId:
+          $ref: '#/components/schemas/Uuid'
+        submissionSnapshotId:
+          $ref: '#/components/schemas/Uuid'
+        previousSubmissionSnapshotId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+        workflowState:
+          $ref: '#/components/schemas/WorkflowState'
+        submissionRevision:
+          type: integer
+          minimum: 1
+        submissionHash:
+          $ref: '#/components/schemas/ContentHash'
+        serverSubmittedAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        isLate:
+          type: boolean
+    TaskItemStateCounts:
+      type: object
+      additionalProperties: false
+      required: [available, dueSoon, overdue, awaitingFeedback]
+      properties:
+        available:
+          type: integer
+          minimum: 0
+        dueSoon:
+          type: integer
+          minimum: 0
+        overdue:
+          type: integer
+          minimum: 0
+        awaitingFeedback:
+          type: integer
+          minimum: 0
+    StudentDashboard:
+      type: object
+      additionalProperties: false
+      required: [generatedAt, counts, nextTaskItems, activePaths]
+      properties:
+        generatedAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        counts:
+          $ref: '#/components/schemas/TaskItemStateCounts'
+        nextTaskItems:
+          type: array
+          maxItems: 10
+          items:
+            $ref: '#/components/schemas/StudentTaskItem'
+        activePaths:
+          type: array
+          items:
+            $ref: '#/components/schemas/LearningPathEnrollment'
+    LearningTrack:
+      type: string
+      enum: [general, toefl]
+    EnrollmentStatus:
+      type: string
+      enum: [active, paused, completed, cancelled]
+    LearningPathEnrollment:
+      type: object
+      additionalProperties: false
+      required: [id, pathVersionId, title, track, status, progressPercent, enrolledAt, targetCompletionDate]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        pathVersionId:
+          $ref: '#/components/schemas/Uuid'
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        track:
+          $ref: '#/components/schemas/LearningTrack'
+        status:
+          $ref: '#/components/schemas/EnrollmentStatus'
+        progressPercent:
+          type: number
+          minimum: 0
+          maximum: 100
+        enrolledAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        targetCompletionDate:
+          type: [string, 'null']
+          format: date
+    CreateLearningPathEnrollmentRequest:
+      type: object
+      additionalProperties: false
+      required: [pathVersionId, targetCompletionDate]
+      properties:
+        pathVersionId:
+          $ref: '#/components/schemas/Uuid'
+        targetCompletionDate:
+          type: [string, 'null']
+          format: date
+    UpdateLearningPathEnrollmentRequest:
+      type: object
+      additionalProperties: false
+      required: [status, reason]
+      properties:
+        status:
+          $ref: '#/components/schemas/EnrollmentStatus'
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+    LearningPathEnrollmentPage:
+      type: object
+      additionalProperties: false
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/LearningPathEnrollment'
+        page:
+          $ref: '#/components/schemas/PageInfo'
+    LearningPathMilestone:
+      type: object
+      additionalProperties: false
+      required: [key, title, position, state, completedTaskCount, totalTaskCount]
+      properties:
+        key:
+          type: string
+          minLength: 1
+          maxLength: 100
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        position:
+          type: integer
+          minimum: 1
+        state:
+          type: string
+          enum: [locked, active, completed]
+        completedTaskCount:
+          type: integer
+          minimum: 0
+        totalTaskCount:
+          type: integer
+          minimum: 0
+    LearningPathEnrollmentDetail:
+      type: object
+      additionalProperties: false
+      required: [enrollment, milestones]
+      properties:
+        enrollment:
+          $ref: '#/components/schemas/LearningPathEnrollment'
+        milestones:
+          type: array
+          items:
+            $ref: '#/components/schemas/LearningPathMilestone'
+    ProgressByKind:
+      type: object
+      additionalProperties: false
+      required: [kind, assigned, completed, averageScorePercent]
+      properties:
+        kind:
+          $ref: '#/components/schemas/TaskKind'
+        assigned:
+          type: integer
+          minimum: 0
+        completed:
+          type: integer
+          minimum: 0
+        averageScorePercent:
+          type: [number, 'null']
+          minimum: 0
+          maximum: 100
+    StudentProgress:
+      type: object
+      additionalProperties: false
+      required: [from, to, assignedCount, completedCount, onTimeCount, lateCount, byKind, generatedAt]
+      properties:
+        from:
+          type: string
+          format: date
+        to:
+          type: string
+          format: date
+        assignedCount:
+          type: integer
+          minimum: 0
+        completedCount:
+          type: integer
+          minimum: 0
+        onTimeCount:
+          type: integer
+          minimum: 0
+        lateCount:
+          type: integer
+          minimum: 0
+        byKind:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProgressByKind'
+        generatedAt:
+          $ref: '#/components/schemas/UtcDateTime'
+    GradeSource:
+      type: string
+      enum: [auto_scored, teacher_confirmed, admin_override]
+      description: Final-grade precedence is admin_override, then teacher_confirmed, then auto_scored.
+    RubricScore:
+      type: object
+      additionalProperties: false
+      required: [criterionKey, score, maxScore, comment]
+      properties:
+        criterionKey:
+          type: string
+          minLength: 1
+          maxLength: 100
+        score:
+          type: number
+          minimum: 0
+        maxScore:
+          type: number
+          exclusiveMinimum: 0
+        comment:
+          type: [string, 'null']
+          maxLength: 2000
+    GradeSnapshot:
+      type: object
+      additionalProperties: false
+      required: [id, attemptId, submissionSnapshotId, submissionRevision, source, score, maxScore, feedback, rubricScores, createdByMembershipId, createdAt, snapshotHash]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        attemptId:
+          $ref: '#/components/schemas/Uuid'
+        submissionSnapshotId:
+          $ref: '#/components/schemas/Uuid'
+        submissionRevision:
+          type: integer
+          minimum: 1
+        source:
+          $ref: '#/components/schemas/GradeSource'
+        score:
+          type: number
+          minimum: 0
+        maxScore:
+          type: number
+          exclusiveMinimum: 0
+        feedback:
+          type: [string, 'null']
+          maxLength: 10000
+        rubricScores:
+          type: array
+          items:
+            $ref: '#/components/schemas/RubricScore'
+        createdByMembershipId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+          description: null for automatic scoring.
+        createdAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        snapshotHash:
+          $ref: '#/components/schemas/ContentHash'
+    FeedbackItem:
+      type: object
+      additionalProperties: false
+      required: [id, taskItemId, attemptId, taskTitle, grade, returnedAt, readAt]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        taskItemId:
+          $ref: '#/components/schemas/Uuid'
+        attemptId:
+          $ref: '#/components/schemas/Uuid'
+        taskTitle:
+          type: string
+        grade:
+          $ref: '#/components/schemas/GradeSnapshot'
+        returnedAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        readAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+    FeedbackPage:
+      type: object
+      additionalProperties: false
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/FeedbackItem'
+        page:
+          $ref: '#/components/schemas/PageInfo'
+    TeacherDashboard:
+      type: object
+      additionalProperties: false
+      required: [generatedAt, classCount, studentCount, awaitingGradeCount, returnedThisWeekCount, recentSubmissions]
+      properties:
+        generatedAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        classCount:
+          type: integer
+          minimum: 0
+        studentCount:
+          type: integer
+          minimum: 0
+        awaitingGradeCount:
+          type: integer
+          minimum: 0
+        returnedThisWeekCount:
+          type: integer
+          minimum: 0
+        recentSubmissions:
+          type: array
+          maxItems: 20
+          items:
+            $ref: '#/components/schemas/SubmissionSummary'
+    SubmissionSummary:
+      type: object
+      additionalProperties: false
+      required: [attemptId, taskItemId, studentMembershipId, studentDisplayName, taskTitle, kind, submittedAt, isLate]
+      properties:
+        attemptId:
+          $ref: '#/components/schemas/Uuid'
+        taskItemId:
+          $ref: '#/components/schemas/Uuid'
+        studentMembershipId:
+          $ref: '#/components/schemas/Uuid'
+        studentDisplayName:
+          type: string
+        taskTitle:
+          type: string
+        kind:
+          $ref: '#/components/schemas/TaskKind'
+        submittedAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        isLate:
+          type: boolean
+    TeacherStudentSummary:
+      type: object
+      additionalProperties: false
+      required: [membershipId, displayName, studentNumber, classIds, activePathCount, overdueTaskCount]
+      properties:
+        membershipId:
+          $ref: '#/components/schemas/Uuid'
+        displayName:
+          type: string
+        studentNumber:
+          type: [string, 'null']
+        classIds:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/Uuid'
+        activePathCount:
+          type: integer
+          minimum: 0
+        overdueTaskCount:
+          type: integer
+          minimum: 0
+    TeacherStudentPage:
+      type: object
+      additionalProperties: false
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TeacherStudentSummary'
+        page:
+          $ref: '#/components/schemas/PageInfo'
+    TeacherStudentDetail:
+      type: object
+      additionalProperties: false
+      required: [student, examGoals, progress, recentTaskItems]
+      properties:
+        student:
+          $ref: '#/components/schemas/TeacherStudentSummary'
+        examGoals:
+          type: array
+          items:
+            $ref: '#/components/schemas/StudentExamGoal'
+        progress:
+          $ref: '#/components/schemas/StudentProgress'
+        recentTaskItems:
+          type: array
+          maxItems: 20
+          items:
+            $ref: '#/components/schemas/StudentTaskItem'
+    ClassStatus:
+      type: string
+      enum: [draft, active, archived]
+    Class:
+      type: object
+      additionalProperties: false
+      required: [id, tenantId, name, code, status, teacherCount, studentCount, createdAt, updatedAt]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        tenantId:
+          $ref: '#/components/schemas/Uuid'
+        name:
+          type: string
+          minLength: 1
+          maxLength: 120
+        code:
+          type: string
+          minLength: 2
+          maxLength: 32
+        status:
+          $ref: '#/components/schemas/ClassStatus'
+        teacherCount:
+          type: integer
+          minimum: 1
+        studentCount:
+          type: integer
+          minimum: 0
+        createdAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        updatedAt:
+          $ref: '#/components/schemas/UtcDateTime'
+    ClassPage:
+      type: object
+      additionalProperties: false
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Class'
+        page:
+          $ref: '#/components/schemas/PageInfo'
+    ClassMemberSummary:
+      type: object
+      additionalProperties: false
+      required: [membershipId, displayName]
+      properties:
+        membershipId:
+          $ref: '#/components/schemas/Uuid'
+        displayName:
+          type: string
+    ClassDetail:
+      type: object
+      additionalProperties: false
+      required: [class, teachers, students]
+      properties:
+        class:
+          $ref: '#/components/schemas/Class'
+        teachers:
+          type: array
+          minItems: 1
+          items:
+            $ref: '#/components/schemas/ClassMemberSummary'
+        students:
+          type: array
+          items:
+            $ref: '#/components/schemas/ClassMemberSummary'
+    CreateClassRequest:
+      type: object
+      additionalProperties: false
+      required: [name, code]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 120
+        code:
+          type: string
+          minLength: 2
+          maxLength: 32
+          pattern: '^[A-Za-z0-9_-]+$'
+        teacherMembershipIds:
+          type: array
+          uniqueItems: true
+          maxItems: 20
+          items:
+            $ref: '#/components/schemas/Uuid'
+    UpdateClassRequest:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 120
+        status:
+          $ref: '#/components/schemas/ClassStatus'
+    AssignmentStatus:
+      type: string
+      enum: [draft, published, cancelled]
+    AssignmentScheduleMode:
+      type: string
+      enum: [absolute, path_relative]
+      description: absolute uses assignment timestamps; path_relative resolves offsets from each enrolled path node.
+    LatePolicy:
+      type: string
+      enum: [deny, allow, allow_with_penalty]
+    AssignmentTargets:
+      type: object
+      additionalProperties: false
+      description: Exactly one collection must be non-empty, mirroring the three target tables with real foreign keys.
+      required: [studentMembershipIds, classIds, pathNodeIds]
+      properties:
+        studentMembershipIds:
+          type: array
+          uniqueItems: true
+          maxItems: 1000
+          items:
+            $ref: '#/components/schemas/Uuid'
+        classIds:
+          type: array
+          uniqueItems: true
+          maxItems: 100
+          items:
+            $ref: '#/components/schemas/Uuid'
+        pathNodeIds:
+          type: array
+          uniqueItems: true
+          maxItems: 1000
+          items:
+            $ref: '#/components/schemas/Uuid'
+      oneOf:
+        - properties:
+            studentMembershipIds:
+              minItems: 1
+        - properties:
+            classIds:
+              minItems: 1
+        - properties:
+            pathNodeIds:
+              minItems: 1
+    TaskAssignment:
+      type: object
+      additionalProperties: false
+      required:
+        - id
+        - tenantId
+        - taskVersionId
+        - sourceType
+        - occurrenceKey
+        - slotKey
+        - explicitPriority
+        - scheduleMode
+        - availableAt
+        - dueAt
+        - closeAt
+        - maxAttempts
+        - latePolicy
+        - status
+        - targets
+        - createdByMembershipId
+        - createdAt
+        - updatedAt
+        - publishedAt
+        - cancelledAt
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        tenantId:
+          $ref: '#/components/schemas/Uuid'
+        taskVersionId:
+          $ref: '#/components/schemas/Uuid'
+        sourceType:
+          $ref: '#/components/schemas/TaskSourceType'
+        occurrenceKey:
+          type: string
+          minLength: 1
+          maxLength: 180
+          description: Determines task-instance identity together with student and taskVersionId; independent assignments need distinct values.
+        slotKey:
+          type: string
+          minLength: 1
+          maxLength: 180
+        explicitPriority:
+          type: integer
+          minimum: 0
+          maximum: 99
+        scheduleMode:
+          $ref: '#/components/schemas/AssignmentScheduleMode'
+        availableAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+        dueAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+        closeAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+        maxAttempts:
+          type: integer
+          minimum: 1
+          maximum: 20
+        latePolicy:
+          $ref: '#/components/schemas/LatePolicy'
+        status:
+          $ref: '#/components/schemas/AssignmentStatus'
+        targets:
+          $ref: '#/components/schemas/AssignmentTargets'
+        createdByMembershipId:
+          $ref: '#/components/schemas/Uuid'
+        createdAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        updatedAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        publishedAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+        cancelledAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+    TaskAssignmentPage:
+      type: object
+      additionalProperties: false
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskAssignment'
+        page:
+          $ref: '#/components/schemas/PageInfo'
+    TaskAssignmentDetail:
+      type: object
+      additionalProperties: false
+      required: [assignment, materialization]
+      properties:
+        assignment:
+          $ref: '#/components/schemas/TaskAssignment'
+        materialization:
+          type: object
+          additionalProperties: false
+          required: [pending, active, hidden, superseded, failed]
+          properties:
+            pending:
+              type: integer
+              minimum: 0
+            active:
+              type: integer
+              minimum: 0
+            hidden:
+              type: integer
+              minimum: 0
+            superseded:
+              type: integer
+              minimum: 0
+            failed:
+              type: integer
+              minimum: 0
+    CreateTaskAssignmentRequest:
+      type: object
+      additionalProperties: false
+      required: [taskVersionId, sourceType, occurrenceKey, slotKey, explicitPriority, scheduleMode, availableAt, dueAt, closeAt, maxAttempts, latePolicy, targets]
+      properties:
+        taskVersionId:
+          $ref: '#/components/schemas/Uuid'
+        sourceType:
+          $ref: '#/components/schemas/TaskSourceType'
+          description: Must match exactly one populated target collection; admin_forced is restricted to owner/admin/super_admin.
+        occurrenceKey:
+          type: string
+          minLength: 1
+          maxLength: 180
+          description: path_relative values must include the literal `{enrollment_id}` placeholder.
+        slotKey:
+          type: string
+          minLength: 1
+          maxLength: 180
+        explicitPriority:
+          type: integer
+          minimum: 0
+          maximum: 99
+          default: 0
+        scheduleMode:
+          $ref: '#/components/schemas/AssignmentScheduleMode'
+        availableAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+        dueAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+        closeAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+        maxAttempts:
+          type: integer
+          minimum: 1
+          maximum: 20
+          default: 1
+        latePolicy:
+          $ref: '#/components/schemas/LatePolicy'
+        targets:
+          $ref: '#/components/schemas/AssignmentTargets'
+    UpdateTaskAssignmentRequest:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      description: Only draft assignments can be edited.
+      properties:
+        explicitPriority:
+          type: integer
+          minimum: 0
+          maximum: 99
+        availableAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+        dueAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+        closeAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+        maxAttempts:
+          type: integer
+          minimum: 1
+          maximum: 20
+        latePolicy:
+          $ref: '#/components/schemas/LatePolicy'
+        targets:
+          $ref: '#/components/schemas/AssignmentTargets'
+    CancelTaskAssignmentRequest:
+      type: object
+      additionalProperties: false
+      required: [reason]
+      properties:
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+    AcceptedCommand:
+      type: object
+      additionalProperties: false
+      required: [commandId, status, acceptedAt]
+      properties:
+        commandId:
+          $ref: '#/components/schemas/Uuid'
+        status:
+          type: string
+          enum: [accepted]
+        acceptedAt:
+          $ref: '#/components/schemas/UtcDateTime'
+    OverrideAction:
+      type: string
+      enum: [hide, restore, replace, reschedule, require_redo]
+    CreateTaskOverrideRequest:
+      oneOf:
+        - $ref: '#/components/schemas/HideTaskOverrideRequest'
+        - $ref: '#/components/schemas/RestoreTaskOverrideRequest'
+        - $ref: '#/components/schemas/ReplaceTaskOverrideRequest'
+        - $ref: '#/components/schemas/RescheduleTaskOverrideRequest'
+        - $ref: '#/components/schemas/RequireRedoTaskOverrideRequest'
+      discriminator:
+        propertyName: action
+        mapping:
+          hide: '#/components/schemas/HideTaskOverrideRequest'
+          restore: '#/components/schemas/RestoreTaskOverrideRequest'
+          replace: '#/components/schemas/ReplaceTaskOverrideRequest'
+          reschedule: '#/components/schemas/RescheduleTaskOverrideRequest'
+          require_redo: '#/components/schemas/RequireRedoTaskOverrideRequest'
+    HideTaskOverrideRequest:
+      type: object
+      additionalProperties: false
+      required: [action, reason]
+      properties:
+        action:
+          type: string
+          const: hide
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+    RestoreTaskOverrideRequest:
+      type: object
+      additionalProperties: false
+      required: [action, reversesOverrideId, reason]
+      properties:
+        action:
+          type: string
+          const: restore
+        reversesOverrideId:
+          $ref: '#/components/schemas/Uuid'
+          description: Unreversed hide or replace override to reverse.
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+    ReplaceTaskOverrideRequest:
+      type: object
+      additionalProperties: false
+      required: [action, replacementTaskVersionId, reason]
+      properties:
+        action:
+          type: string
+          const: replace
+        replacementTaskVersionId:
+          $ref: '#/components/schemas/Uuid'
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+    RescheduleTaskOverrideRequest:
+      type: object
+      additionalProperties: false
+      required: [action, reason]
+      properties:
+        action:
+          type: string
+          const: reschedule
+        availableAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        dueAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        closeAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+      anyOf:
+        - properties:
+            availableAt:
+              $ref: '#/components/schemas/UtcDateTime'
+          required: [availableAt]
+        - properties:
+            dueAt:
+              $ref: '#/components/schemas/UtcDateTime'
+          required: [dueAt]
+        - properties:
+            closeAt:
+              $ref: '#/components/schemas/UtcDateTime'
+          required: [closeAt]
+    RequireRedoTaskOverrideRequest:
+      type: object
+      description: Record that another attempt is required; the student still starts the retry explicitly.
+      additionalProperties: false
+      required: [action, reason]
+      properties:
+        action:
+          type: string
+          const: require_redo
+        reason:
+          type: string
+          minLength: 1
+          maxLength: 500
+    TeacherAttemptReview:
+      type: object
+      additionalProperties: false
+      required: [attempt, student, task, submission, questions, grade, feedback]
+      properties:
+        attempt:
+          type: object
+          additionalProperties: false
+          required: [id, attemptNumber, state, startedAt, submittedAt]
+          properties:
+            id:
+              $ref: '#/components/schemas/Uuid'
+            attemptNumber:
+              type: integer
+              minimum: 1
+            state:
+              $ref: '#/components/schemas/AttemptState'
+            startedAt:
+              $ref: '#/components/schemas/UtcDateTime'
+            submittedAt:
+              oneOf:
+                - $ref: '#/components/schemas/UtcDateTime'
+                - type: 'null'
+        student:
+          type: object
+          additionalProperties: false
+          required: [membershipId, displayName]
+          properties:
+            membershipId:
+              $ref: '#/components/schemas/Uuid'
+            displayName:
+              type: string
+              minLength: 1
+              maxLength: 100
+        task:
+          type: object
+          additionalProperties: false
+          required: [taskItemId, taskVersionId, title, kind]
+          properties:
+            taskItemId:
+              $ref: '#/components/schemas/Uuid'
+            taskVersionId:
+              $ref: '#/components/schemas/Uuid'
+            title:
+              type: string
+              minLength: 1
+              maxLength: 240
+            kind:
+              $ref: '#/components/schemas/TaskKind'
+        submission:
+          type: object
+          additionalProperties: false
+          required: [id, revision, submittedAt, isLate, responses]
+          properties:
+            id:
+              $ref: '#/components/schemas/Uuid'
+            revision:
+              type: integer
+              minimum: 1
+            submittedAt:
+              $ref: '#/components/schemas/UtcDateTime'
+            isLate:
+              type: boolean
+            responses:
+              type: object
+              additionalProperties: true
+              description: Frozen response map keyed by questionVersionId.
+        questions:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required: [questionVersionId, kind, prompt, options, position, maxScore]
+            properties:
+              questionVersionId:
+                $ref: '#/components/schemas/Uuid'
+              kind:
+                $ref: '#/components/schemas/QuestionKind'
+              prompt:
+                type: object
+                additionalProperties: true
+              options:
+                oneOf:
+                  - type: array
+                    items:
+                      type: object
+                      additionalProperties: true
+                  - type: 'null'
+              position:
+                type: integer
+                minimum: 0
+              maxScore:
+                type: number
+                exclusiveMinimum: 0
+        grade:
+          oneOf:
+            - type: object
+              additionalProperties: false
+              required: [id, source, score, maxScore, componentScores, rubricResult, createdByMembershipId, createdAt]
+              properties:
+                id:
+                  $ref: '#/components/schemas/Uuid'
+                source:
+                  $ref: '#/components/schemas/GradeSource'
+                score:
+                  type: number
+                  minimum: 0
+                maxScore:
+                  type: number
+                  exclusiveMinimum: 0
+                componentScores: {}
+                rubricResult: {}
+                createdByMembershipId:
+                  oneOf:
+                    - $ref: '#/components/schemas/Uuid'
+                    - type: 'null'
+                createdAt:
+                  $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+        feedback:
+          type: array
+          items:
+            type: object
+            additionalProperties: false
+            required: [id, type, visibility, body, authoredByMembershipId, createdAt]
+            properties:
+              id:
+                $ref: '#/components/schemas/Uuid'
+              type:
+                type: string
+                enum: [system, rubric, teacher]
+              visibility:
+                type: string
+                enum: [student, internal]
+              body:
+                type: object
+                additionalProperties: true
+              authoredByMembershipId:
+                oneOf:
+                  - $ref: '#/components/schemas/Uuid'
+                  - type: 'null'
+              createdAt:
+                $ref: '#/components/schemas/UtcDateTime'
+    TaskOverride:
+      type: object
+      additionalProperties: false
+      required: [id, taskItemId, action, replacementTaskVersionId, availableAt, dueAt, closeAt, reversesOverrideId, reason, createdByMembershipId, createdAt, resultingResolutionState, resultingResolutionReason]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        taskItemId:
+          $ref: '#/components/schemas/Uuid'
+        action:
+          $ref: '#/components/schemas/OverrideAction'
+        replacementTaskVersionId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+        availableAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+        dueAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+        closeAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+        reversesOverrideId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+        reason:
+          type: string
+        createdByMembershipId:
+          $ref: '#/components/schemas/Uuid'
+        createdAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        resultingResolutionState:
+          $ref: '#/components/schemas/ResolutionState'
+        resultingResolutionReason:
+          $ref: '#/components/schemas/ResolutionReason'
+    GradeAttemptRequest:
+      type: object
+      additionalProperties: false
+      required: [submissionSnapshotId, score, maxScore, feedback, rubricScores]
+      properties:
+        submissionSnapshotId:
+          $ref: '#/components/schemas/Uuid'
+          description: Must be the attempt's latest immutable submission snapshot; otherwise return 409.
+        score:
+          type: number
+          minimum: 0
+        maxScore:
+          type: number
+          exclusiveMinimum: 0
+        feedback:
+          type: [string, 'null']
+          maxLength: 10000
+        rubricScores:
+          type: array
+          maxItems: 50
+          items:
+            $ref: '#/components/schemas/RubricScore'
+    ReturnAttemptRequest:
+      type: object
+      additionalProperties: false
+      required: [submissionSnapshotId, message]
+      properties:
+        submissionSnapshotId:
+          $ref: '#/components/schemas/Uuid'
+          description: Must be the latest graded submission snapshot; otherwise return 409.
+        message:
+          type: string
+          minLength: 1
+          maxLength: 5000
+    Membership:
+      type: object
+      additionalProperties: false
+      required: [id, tenantId, userId, email, displayName, status, roles, joinedAt, suspendedAt, leftAt]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        tenantId:
+          $ref: '#/components/schemas/Uuid'
+        userId:
+          $ref: '#/components/schemas/Uuid'
+        email:
+          type: string
+          format: email
+        displayName:
+          type: string
+          minLength: 1
+          maxLength: 100
+        status:
+          $ref: '#/components/schemas/MembershipStatus'
+        roles:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/TenantRole'
+        joinedAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+        suspendedAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+        leftAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+    MembershipPage:
+      type: object
+      additionalProperties: false
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Membership'
+        page:
+          $ref: '#/components/schemas/PageInfo'
+    CreateMembershipRequest:
+      type: object
+      additionalProperties: false
+      required: [roles]
+      properties:
+        userId:
+          $ref: '#/components/schemas/Uuid'
+        email:
+          type: string
+          format: email
+          description: Creates an invitation when no global user exists.
+        roles:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/TenantRole'
+        displayName:
+          type: [string, 'null']
+          maxLength: 100
+      oneOf:
+        - required: [userId]
+        - required: [email]
+    UpdateMembershipRequest:
+      type: object
+      additionalProperties: false
+      minProperties: 1
+      properties:
+        status:
+          $ref: '#/components/schemas/MembershipStatus'
+        roles:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/TenantRole'
+    CatalogOwnership:
+      type: string
+      enum: [platform, tenant]
+      description: Official objects in the separate platform schema are read-only; editing requires a tenant-owned clone.
+    EntityStatus:
+      type: string
+      enum: [active, archived]
+    PublicationState:
+      type: string
+      enum: [draft, published]
+    ContentKind:
+      type: string
+      enum: [lesson, passage, question_set, writing_prompt]
+    CatalogSlug:
+      type: string
+      minLength: 2
+      maxLength: 120
+      pattern: '^[a-z0-9]+(?:[._-][a-z0-9]+)*$'
+      description: Stable tenant-local semantic identifier; immutable after entity creation.
+    Content:
+      type: object
+      additionalProperties: false
+      required: [id, tenantId, ownership, kind, slug, displayTitle, status, latestPublishedVersionId, createdAt, updatedAt]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        tenantId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+          description: null only for read-only official projections from the separate platform schema.
+        ownership:
+          $ref: '#/components/schemas/CatalogOwnership'
+        kind:
+          $ref: '#/components/schemas/ContentKind'
+        slug:
+          $ref: '#/components/schemas/CatalogSlug'
+        displayTitle:
+          type: [string, 'null']
+          maxLength: 240
+          description: Title projected from the latest draft or published version; not stored on the stable entity.
+        status:
+          $ref: '#/components/schemas/EntityStatus'
+        latestPublishedVersionId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+        createdAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        updatedAt:
+          $ref: '#/components/schemas/UtcDateTime'
+    ContentPage:
+      type: object
+      additionalProperties: false
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Content'
+        page:
+          $ref: '#/components/schemas/PageInfo'
+    ContentVersionItem:
+      type: object
+      additionalProperties: false
+      required: [questionVersionId, position, points, sectionKey, settings]
+      properties:
+        questionVersionId:
+          $ref: '#/components/schemas/Uuid'
+        position:
+          type: integer
+          minimum: 0
+        points:
+          type: number
+          exclusiveMinimum: 0
+          description: Defaults to the published question version maxScore when omitted on creation.
+        sectionKey:
+          type: [string, 'null']
+          minLength: 1
+          maxLength: 80
+        settings:
+          type: object
+          additionalProperties: true
+    ContentVersion:
+      type: object
+      additionalProperties: false
+      required: [id, contentId, versionNumber, publicationState, title, locale, body, metadata, attachmentFileIds, items, contentHash, createdAt, publishedAt]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        contentId:
+          $ref: '#/components/schemas/Uuid'
+        versionNumber:
+          type: integer
+          minimum: 1
+        publicationState:
+          $ref: '#/components/schemas/PublicationState'
+        title:
+          type: string
+          minLength: 1
+          maxLength: 240
+        locale:
+          type: string
+          minLength: 2
+          maxLength: 16
+          default: en
+        body:
+          type: object
+          description: Structured JSON document validated by content kind.
+          additionalProperties: true
+        metadata:
+          type: object
+          description: CEFR, skill, and controlled tag metadata.
+          additionalProperties: true
+        attachmentFileIds:
+          type: array
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/Uuid'
+        items:
+          type: array
+          maxItems: 500
+          items:
+            $ref: '#/components/schemas/ContentVersionItem'
+        contentHash:
+          oneOf:
+            - $ref: '#/components/schemas/ContentHash'
+            - type: 'null'
+        createdAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        publishedAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+    ContentDetail:
+      type: object
+      additionalProperties: false
+      required: [content, versions]
+      properties:
+        content:
+          $ref: '#/components/schemas/Content'
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContentVersion'
+    CreateContentRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        kind:
+          $ref: '#/components/schemas/ContentKind'
+        slug:
+          $ref: '#/components/schemas/CatalogSlug'
+        cloneFromPlatformVersionId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+      oneOf:
+        - required: [kind, slug]
+        - properties:
+            cloneFromPlatformVersionId:
+              $ref: '#/components/schemas/Uuid'
+            slug:
+              $ref: '#/components/schemas/CatalogSlug'
+          required: [cloneFromPlatformVersionId, slug]
+    CreateContentVersionRequest:
+      type: object
+      additionalProperties: false
+      required: [title, locale, body, metadata, attachmentFileIds]
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 240
+        locale:
+          type: string
+          minLength: 2
+          maxLength: 16
+          default: en
+        body:
+          type: object
+          additionalProperties: true
+        metadata:
+          type: object
+          additionalProperties: true
+        attachmentFileIds:
+          type: array
+          uniqueItems: true
+          maxItems: 100
+          items:
+            $ref: '#/components/schemas/Uuid'
+        items:
+          type: array
+          maxItems: 500
+          default: []
+          items:
+            type: object
+            additionalProperties: false
+            required: [questionVersionId, position]
+            properties:
+              questionVersionId:
+                $ref: '#/components/schemas/Uuid'
+              position:
+                type: integer
+                minimum: 0
+              points:
+                type: number
+                exclusiveMinimum: 0
+              sectionKey:
+                type: [string, 'null']
+                minLength: 1
+                maxLength: 80
+              settings:
+                type: object
+                default: {}
+                additionalProperties: true
+    QuestionKind:
+      type: string
+      enum: [single_choice, multiple_choice, true_false, short_text, essay]
+    Question:
+      type: object
+      additionalProperties: false
+      required: [id, tenantId, ownership, kind, slug, displayTitle, status, latestPublishedVersionId, createdAt, updatedAt]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        tenantId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+        ownership:
+          $ref: '#/components/schemas/CatalogOwnership'
+        kind:
+          $ref: '#/components/schemas/QuestionKind'
+        slug:
+          $ref: '#/components/schemas/CatalogSlug'
+        displayTitle:
+          type: [string, 'null']
+          maxLength: 240
+          description: Administrative title projected from version metadata.
+        status:
+          $ref: '#/components/schemas/EntityStatus'
+        latestPublishedVersionId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+        createdAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        updatedAt:
+          $ref: '#/components/schemas/UtcDateTime'
+    QuestionPage:
+      type: object
+      additionalProperties: false
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+        page:
+          $ref: '#/components/schemas/PageInfo'
+    ScoringRule:
+      type: object
+      description: Immutable private scoring configuration; omitted from student responses.
+      additionalProperties: true
+    QuestionVersionAdmin:
+      type: object
+      additionalProperties: false
+      required: [id, questionId, versionNumber, publicationState, prompt, options, answerKey, scoringRule, maxScore, contentHash, createdAt, publishedAt]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        questionId:
+          $ref: '#/components/schemas/Uuid'
+        versionNumber:
+          type: integer
+          minimum: 1
+        publicationState:
+          $ref: '#/components/schemas/PublicationState'
+        prompt:
+          $ref: '#/components/schemas/StructuredDocument'
+        options:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionOption'
+        answerKey:
+          $ref: '#/components/schemas/AnswerValue'
+        scoringRule:
+          $ref: '#/components/schemas/ScoringRule'
+        maxScore:
+          type: number
+          exclusiveMinimum: 0
+        contentHash:
+          oneOf:
+            - $ref: '#/components/schemas/ContentHash'
+            - type: 'null'
+        createdAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        publishedAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+    QuestionDetail:
+      type: object
+      additionalProperties: false
+      required: [question, versions]
+      properties:
+        question:
+          $ref: '#/components/schemas/Question'
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuestionVersionAdmin'
+    CreateQuestionRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        kind:
+          $ref: '#/components/schemas/QuestionKind'
+        slug:
+          $ref: '#/components/schemas/CatalogSlug'
+        cloneFromPlatformVersionId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+      oneOf:
+        - required: [kind, slug]
+        - properties:
+            cloneFromPlatformVersionId:
+              $ref: '#/components/schemas/Uuid'
+            slug:
+              $ref: '#/components/schemas/CatalogSlug'
+          required: [cloneFromPlatformVersionId, slug]
+    CreateQuestionVersionRequest:
+      type: object
+      additionalProperties: false
+      required: [prompt, options, answerKey, scoringRule, maxScore]
+      properties:
+        prompt:
+          $ref: '#/components/schemas/StructuredDocument'
+        options:
+          type: array
+          maxItems: 20
+          items:
+            $ref: '#/components/schemas/QuestionOption'
+        answerKey:
+          $ref: '#/components/schemas/AnswerValue'
+        scoringRule:
+          $ref: '#/components/schemas/ScoringRule'
+        maxScore:
+          type: number
+          exclusiveMinimum: 0
+    TaskDefinition:
+      type: object
+      additionalProperties: false
+      required: [id, tenantId, ownership, currentKind, slug, displayTitle, status, latestPublishedVersionId, createdAt, updatedAt]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        tenantId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+        ownership:
+          $ref: '#/components/schemas/CatalogOwnership'
+        currentKind:
+          oneOf:
+            - $ref: '#/components/schemas/TaskKind'
+            - type: 'null'
+          description: Task kind projected from the latest draft or published version.
+        slug:
+          $ref: '#/components/schemas/CatalogSlug'
+        displayTitle:
+          type: [string, 'null']
+          maxLength: 240
+          description: Title projected from the latest draft or published version.
+        status:
+          $ref: '#/components/schemas/EntityStatus'
+        latestPublishedVersionId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+        createdAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        updatedAt:
+          $ref: '#/components/schemas/UtcDateTime'
+    TaskDefinitionPage:
+      type: object
+      additionalProperties: false
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskDefinition'
+        page:
+          $ref: '#/components/schemas/PageInfo'
+    TaskVersionAdmin:
+      type: object
+      additionalProperties: false
+      required: [id, taskId, versionNumber, publicationState, title, instructions, kind, contentVersionId, completionRule, gradingPolicy, estimatedMinutes, contentHash, createdAt, publishedAt]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        taskId:
+          $ref: '#/components/schemas/Uuid'
+        versionNumber:
+          type: integer
+          minimum: 1
+        publicationState:
+          $ref: '#/components/schemas/PublicationState'
+        title:
+          type: string
+        instructions:
+          $ref: '#/components/schemas/StructuredDocument'
+        kind:
+          $ref: '#/components/schemas/TaskKind'
+        contentVersionId:
+          $ref: '#/components/schemas/Uuid'
+        completionRule:
+          type: object
+          additionalProperties: true
+        gradingPolicy:
+          type: object
+          additionalProperties: true
+        estimatedMinutes:
+          type: [integer, 'null']
+          minimum: 1
+        contentHash:
+          oneOf:
+            - $ref: '#/components/schemas/ContentHash'
+            - type: 'null'
+        createdAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        publishedAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+    CreateTaskDefinitionRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        slug:
+          $ref: '#/components/schemas/CatalogSlug'
+        cloneFromPlatformVersionId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+      oneOf:
+        - required: [slug]
+        - properties:
+            cloneFromPlatformVersionId:
+              $ref: '#/components/schemas/Uuid'
+            slug:
+              $ref: '#/components/schemas/CatalogSlug'
+          required: [cloneFromPlatformVersionId, slug]
+    CreateTaskVersionRequest:
+      type: object
+      additionalProperties: false
+      required: [title, instructions, kind, contentVersionId, completionRule, gradingPolicy, estimatedMinutes]
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 240
+        instructions:
+          $ref: '#/components/schemas/StructuredDocument'
+        kind:
+          $ref: '#/components/schemas/TaskKind'
+        contentVersionId:
+          $ref: '#/components/schemas/Uuid'
+        completionRule:
+          type: object
+          additionalProperties: true
+        gradingPolicy:
+          type: object
+          additionalProperties: true
+        estimatedMinutes:
+          type: [integer, 'null']
+          minimum: 1
+    LearningPath:
+      type: object
+      additionalProperties: false
+      required: [id, tenantId, ownership, track, slug, displayTitle, status, latestPublishedVersionId, createdAt, updatedAt]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        tenantId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+        ownership:
+          $ref: '#/components/schemas/CatalogOwnership'
+        track:
+          $ref: '#/components/schemas/LearningTrack'
+        slug:
+          $ref: '#/components/schemas/CatalogSlug'
+        displayTitle:
+          type: [string, 'null']
+          maxLength: 240
+          description: Title projected from the latest draft or published version.
+        status:
+          $ref: '#/components/schemas/EntityStatus'
+        latestPublishedVersionId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+        createdAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        updatedAt:
+          $ref: '#/components/schemas/UtcDateTime'
+    LearningPathPage:
+      type: object
+      additionalProperties: false
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/LearningPath'
+        page:
+          $ref: '#/components/schemas/PageInfo'
+    PathNodeInput:
+      type: object
+      additionalProperties: false
+      required: [nodeKey, taskVersionId, position, slotKeyTemplate, availableOffsetDays, dueOffsetDays, closeOffsetDays, isRequired, unlockRule]
+      properties:
+        nodeKey:
+          type: string
+          minLength: 1
+          maxLength: 100
+        taskVersionId:
+          $ref: '#/components/schemas/Uuid'
+        position:
+          type: integer
+          minimum: 0
+        slotKeyTemplate:
+          type: string
+          minLength: 1
+          maxLength: 160
+        availableOffsetDays:
+          type: integer
+          minimum: 0
+        dueOffsetDays:
+          type: [integer, 'null']
+          minimum: 0
+        closeOffsetDays:
+          type: [integer, 'null']
+          minimum: 0
+        isRequired:
+          type: boolean
+          default: true
+        unlockRule:
+          type: object
+          additionalProperties: true
+    PathNode:
+      type: object
+      additionalProperties: false
+      required: [id, nodeKey, taskVersionId, position, slotKeyTemplate, availableOffsetDays, dueOffsetDays, closeOffsetDays, isRequired, unlockRule]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        nodeKey:
+          type: string
+        taskVersionId:
+          $ref: '#/components/schemas/Uuid'
+        position:
+          type: integer
+          minimum: 0
+        slotKeyTemplate:
+          type: string
+        availableOffsetDays:
+          type: integer
+          minimum: 0
+        dueOffsetDays:
+          type: [integer, 'null']
+          minimum: 0
+        closeOffsetDays:
+          type: [integer, 'null']
+          minimum: 0
+        isRequired:
+          type: boolean
+        unlockRule:
+          type: object
+          additionalProperties: true
+    PrerequisiteCondition:
+      type: string
+      enum: [completed, min_score]
+    PathPrerequisiteInput:
+      type: object
+      additionalProperties: false
+      required: [nodeKey, prerequisiteNodeKey, condition, threshold]
+      properties:
+        nodeKey:
+          type: string
+          minLength: 1
+          maxLength: 100
+        prerequisiteNodeKey:
+          type: string
+          minLength: 1
+          maxLength: 100
+        condition:
+          $ref: '#/components/schemas/PrerequisiteCondition'
+        threshold:
+          type: [number, 'null']
+          minimum: 0
+    PathPrerequisite:
+      type: object
+      additionalProperties: false
+      required: [id, pathNodeId, prerequisiteNodeId, condition, threshold]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        pathNodeId:
+          $ref: '#/components/schemas/Uuid'
+        prerequisiteNodeId:
+          $ref: '#/components/schemas/Uuid'
+        condition:
+          $ref: '#/components/schemas/PrerequisiteCondition'
+        threshold:
+          type: [number, 'null']
+          minimum: 0
+    LearningPathVersion:
+      type: object
+      additionalProperties: false
+      required: [id, pathId, versionNumber, publicationState, title, description, track, completionRule, nodes, prerequisites, contentHash, createdAt, publishedAt]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        pathId:
+          $ref: '#/components/schemas/Uuid'
+        versionNumber:
+          type: integer
+          minimum: 1
+        publicationState:
+          $ref: '#/components/schemas/PublicationState'
+        title:
+          type: string
+          minLength: 1
+          maxLength: 240
+        description:
+          type: [string, 'null']
+          maxLength: 10000
+        track:
+          $ref: '#/components/schemas/LearningTrack'
+        completionRule:
+          type: object
+          additionalProperties: true
+        nodes:
+          type: array
+          minItems: 1
+          maxItems: 200
+          items:
+            $ref: '#/components/schemas/PathNode'
+        prerequisites:
+          type: array
+          maxItems: 1000
+          items:
+            $ref: '#/components/schemas/PathPrerequisite'
+        contentHash:
+          oneOf:
+            - $ref: '#/components/schemas/ContentHash'
+            - type: 'null'
+        createdAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        publishedAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+    LearningPathDetail:
+      type: object
+      additionalProperties: false
+      required: [path, versions]
+      properties:
+        path:
+          $ref: '#/components/schemas/LearningPath'
+        versions:
+          type: array
+          items:
+            $ref: '#/components/schemas/LearningPathVersion'
+    CreateLearningPathRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        track:
+          $ref: '#/components/schemas/LearningTrack'
+        slug:
+          $ref: '#/components/schemas/CatalogSlug'
+        cloneFromPlatformVersionId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+      oneOf:
+        - required: [track, slug]
+        - properties:
+            cloneFromPlatformVersionId:
+              $ref: '#/components/schemas/Uuid'
+            slug:
+              $ref: '#/components/schemas/CatalogSlug'
+          required: [cloneFromPlatformVersionId, slug]
+    CreateLearningPathVersionRequest:
+      type: object
+      additionalProperties: false
+      required: [title, description, track, completionRule, nodes, prerequisites]
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 240
+        description:
+          type: [string, 'null']
+          maxLength: 10000
+        track:
+          $ref: '#/components/schemas/LearningTrack'
+        completionRule:
+          type: object
+          additionalProperties: true
+        nodes:
+          type: array
+          minItems: 1
+          maxItems: 200
+          items:
+            $ref: '#/components/schemas/PathNodeInput'
+        prerequisites:
+          type: array
+          maxItems: 1000
+          items:
+            $ref: '#/components/schemas/PathPrerequisiteInput'
+    AuditActorType:
+      type: string
+      enum: [user, worker, system]
+    AuditEvent:
+      type: object
+      additionalProperties: false
+      required: [id, tenantId, actorType, actorUserId, actorMembershipId, action, resourceType, resourceId, occurredAt, requestId, metadata]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        tenantId:
+          $ref: '#/components/schemas/Uuid'
+        actorType:
+          $ref: '#/components/schemas/AuditActorType'
+        actorUserId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+        actorMembershipId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+        action:
+          type: string
+          minLength: 1
+          maxLength: 100
+        resourceType:
+          type: string
+          minLength: 1
+          maxLength: 100
+        resourceId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+        occurredAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        requestId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+        metadata:
+          type: object
+          description: Redacted structured metadata; secrets, answer keys, and raw passwords are forbidden.
+          additionalProperties: true
+    AuditEventPage:
+      type: object
+      additionalProperties: false
+      required: [data, page]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditEvent'
+        page:
+          $ref: '#/components/schemas/PageInfo'
+    FilePurpose:
+      type: string
+      enum: [content_attachment, submission_attachment, profile_image, bulk_import]
+    FileStatus:
+      type: string
+      enum: [pending, ready, quarantined, deleted]
+    CreatePresignedUploadRequest:
+      type: object
+      additionalProperties: false
+      required: [purpose, fileName, contentType, sizeBytes, sha256]
+      properties:
+        purpose:
+          $ref: '#/components/schemas/FilePurpose'
+        fileName:
+          type: string
+          minLength: 1
+          maxLength: 255
+        contentType:
+          type: string
+          enum: [application/pdf, image/jpeg, image/png, audio/mpeg, audio/mp4, audio/aac, audio/ogg, text/csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet]
+        sizeBytes:
+          type: integer
+          minimum: 1
+          maximum: 52428800
+        sha256:
+          $ref: '#/components/schemas/ContentHash'
+    ToeflListeningAsset:
+      type: object
+      additionalProperties: false
+      required: [id, collection, sequence, title, durationSeconds, sizeBytes]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        collection:
+          type: string
+          example: minute-earth
+        sequence:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+          maxLength: 300
+        durationSeconds:
+          type: [integer, 'null']
+          minimum: 0
+        sizeBytes:
+          type: integer
+          minimum: 0
+    PresignedUpload:
+      type: object
+      additionalProperties: false
+      required: [fileId, method, uploadUrl, requiredHeaders, expiresAt]
+      properties:
+        fileId:
+          $ref: '#/components/schemas/Uuid'
+        method:
+          type: string
+          const: PUT
+        uploadUrl:
+          type: string
+          format: uri
+          description: Short-lived S3-compatible URL; never log or persist it in the client.
+        requiredHeaders:
+          type: object
+          additionalProperties:
+            type: string
+        expiresAt:
+          $ref: '#/components/schemas/UtcDateTime'
+    CompleteUploadRequest:
+      type: object
+      additionalProperties: false
+      required: [sizeBytes, sha256, storageEtag]
+      properties:
+        sizeBytes:
+          type: integer
+          minimum: 1
+          maximum: 52428800
+        sha256:
+          $ref: '#/components/schemas/ContentHash'
+        storageEtag:
+          type: string
+          minLength: 1
+          maxLength: 200
+    FileObject:
+      type: object
+      additionalProperties: false
+      required: [id, tenantId, purpose, fileName, contentType, sizeBytes, sha256, status, createdAt, readyAt]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        tenantId:
+          $ref: '#/components/schemas/Uuid'
+        purpose:
+          $ref: '#/components/schemas/FilePurpose'
+        fileName:
+          type: string
+        contentType:
+          type: string
+        sizeBytes:
+          type: integer
+          minimum: 1
+        sha256:
+          $ref: '#/components/schemas/ContentHash'
+        status:
+          $ref: '#/components/schemas/FileStatus'
+        createdAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        readyAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
