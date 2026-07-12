@@ -6,30 +6,40 @@ import {
   BarChart3,
   Bell,
   BookOpen,
+  Building2,
   ChevronDown,
   ChevronRight,
+  ClipboardCheck,
+  ClipboardList,
   Clock3,
   Crown,
+  FilePlus2,
   Flame,
+  Gauge,
+  GraduationCap,
   Headphones,
   House,
   Languages,
+  LibraryBig,
+  ListTodo,
   LogOut,
   Menu,
   MessageCircle,
   PenLine,
   Route,
+  School,
   Target,
   UserRound,
+  UsersRound,
   X,
   type LucideIcon,
 } from 'lucide-react';
+import type { TenantRole } from '@english/shared';
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { authApi, isDemoMode } from '@/lib/api';
 import { persistTenantSelection } from '@/lib/session';
 import {
   studentDashboardMock,
-  type StudentNavItem,
   type StudentPlanItem,
   type StudentSkill,
   type StudentSkillProgress,
@@ -44,15 +54,73 @@ const skillIcons: Record<StudentSkill, LucideIcon> = {
   writing: PenLine,
 };
 
-const navIcons: Record<StudentNavItem['icon'], LucideIcon> = {
-  overview: House,
-  path: Route,
-  reading: BookOpen,
-  listening: Headphones,
-  speaking: MessageCircle,
-  writing: PenLine,
-  vocabulary: Languages,
-};
+interface WorkspaceNavItem {
+  label: string;
+  href: string;
+  icon: LucideIcon;
+  roles?: TenantRole[];
+}
+
+interface WorkspaceNavGroup {
+  label: string;
+  roles: TenantRole[];
+  items: WorkspaceNavItem[];
+}
+
+const workspaceNavGroups: WorkspaceNavGroup[] = [
+  {
+    label: '学生工作台',
+    roles: ['student'],
+    items: [
+      { label: '学习总览', href: '/student', icon: House },
+      { label: '我的任务', href: '/student/tasks', icon: ListTodo },
+      { label: '学习路径', href: '/student/paths', icon: Route },
+      { label: '成绩反馈', href: '/student/feedback', icon: MessageCircle },
+      { label: '学习进度', href: '/student/progress', icon: BarChart3 },
+    ],
+  },
+  {
+    label: '教师工作台',
+    roles: ['teacher'],
+    items: [
+      { label: '教学总览', href: '/teacher', icon: Gauge },
+      { label: '班级', href: '/teacher/classes', icon: School },
+      { label: '学生', href: '/teacher/students', icon: GraduationCap },
+      { label: '布置任务', href: '/teacher/assignments/new', icon: FilePlus2 },
+      { label: '待批改', href: '/teacher/grading', icon: ClipboardCheck },
+    ],
+  },
+  {
+    label: '学习板块',
+    roles: ['owner', 'admin', 'teacher', 'student', 'content_editor', 'analyst'],
+    items: [
+      { label: '托福总览', href: '/student/learning/toefl', icon: ClipboardList },
+      { label: '阅读', href: '/student/learning/toefl#reading', icon: BookOpen },
+      { label: '听力', href: '/student/learning/toefl/listening', icon: Headphones },
+      { label: '口语', href: '/student/learning/toefl#speaking', icon: MessageCircle },
+      { label: '写作', href: '/student/learning/toefl#writing', icon: PenLine },
+      {
+        label: '词汇',
+        href: '/student/learning/toefl/listening#vocabulary',
+        icon: Languages,
+      },
+    ],
+  },
+  {
+    label: '机构管理',
+    roles: ['owner', 'admin', 'content_editor'],
+    items: [
+      { label: '机构总览', href: '/admin', icon: Building2 },
+      {
+        label: '成员与角色',
+        href: '/admin/members',
+        icon: UsersRound,
+        roles: ['owner', 'admin'],
+      },
+      { label: '内容与版本', href: '/admin/content', icon: LibraryBig },
+    ],
+  },
+];
 
 function Brand() {
   return (
@@ -68,7 +136,35 @@ function Brand() {
 function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
   const pathname = usePathname();
   const [activeHash, setActiveHash] = useState('');
-  const { quote, learner, navigation } = studentDashboardMock;
+  const { currentTenant } = useWorkspace();
+  const { quote, learner } = studentDashboardMock;
+  const visibleGroups = useMemo(
+    () =>
+      workspaceNavGroups
+        .filter((group) => group.roles.some((role) => currentTenant.roles.includes(role)))
+        .map((group) => ({
+          ...group,
+          items: group.items
+            .filter(
+              (item) =>
+                !item.roles || item.roles.some((role) => currentTenant.roles.includes(role)),
+            )
+            .map((item) => {
+              if (
+                currentTenant.roles.includes('student') ||
+                !item.href.startsWith('/student/learning')
+              ) {
+                return item;
+              }
+              return {
+                ...item,
+                href: item.href.replace('/student/learning/toefl', '/learning/toefl'),
+              };
+            }),
+        }))
+        .filter((group) => group.items.length > 0),
+    [currentTenant.roles],
+  );
 
   useEffect(() => {
     const syncHash = () => setActiveHash(window.location.hash);
@@ -105,31 +201,41 @@ function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => voi
           <Brand />
         </div>
 
-        <nav className={styles.navigation}>
-          {navigation.map((item) => {
-            const NavIcon = navIcons[item.icon];
-            const [itemPath, itemHash = ''] = item.href.split('#');
-            const expectedHash = itemHash ? `#${itemHash}` : '';
-            const active = expectedHash
-              ? pathname === itemPath &&
-                (activeHash === expectedHash || (!activeHash && itemHash === 'reading'))
-              : itemPath === '/student'
-                ? pathname === itemPath
-                : pathname === itemPath ||
-                  (itemPath === '/student/paths' && pathname.startsWith(`${itemPath}/`));
-            return (
-              <Link
-                aria-current={active ? 'page' : undefined}
-                className={`${styles.navItem} ${active ? styles.navItemActive : ''}`}
-                href={item.href}
-                key={`${item.label}-${item.href}`}
-                onClick={onClose}
-              >
-                <NavIcon aria-hidden="true" size={20} strokeWidth={1.55} />
-                <span>{item.label}</span>
-              </Link>
-            );
-          })}
+        <nav aria-label="主导航" className={styles.navigation}>
+          {visibleGroups.map((group) => (
+            <section className={styles.navGroup} key={group.label}>
+              <h2 className={styles.navGroupLabel}>{group.label}</h2>
+              {group.items.map((item) => {
+                const NavIcon = item.icon;
+                const [itemPath, itemHash = ''] = item.href.split('#');
+                const expectedHash = itemHash ? `#${itemHash}` : '';
+                const rootRoute = [
+                  '/student',
+                  '/teacher',
+                  '/admin',
+                  '/student/learning/toefl',
+                  '/learning/toefl',
+                ].includes(itemPath!);
+                const active = expectedHash
+                  ? pathname === itemPath && activeHash === expectedHash
+                  : rootRoute
+                    ? pathname === itemPath
+                    : pathname === itemPath || pathname.startsWith(`${itemPath}/`);
+                return (
+                  <Link
+                    aria-current={active ? 'page' : undefined}
+                    className={`${styles.navItem} ${active ? styles.navItemActive : ''}`}
+                    href={item.href}
+                    key={`${item.label}-${item.href}`}
+                    onClick={onClose}
+                  >
+                    <NavIcon aria-hidden="true" size={18} strokeWidth={1.55} />
+                    <span>{item.label}</span>
+                  </Link>
+                );
+              })}
+            </section>
+          ))}
         </nav>
 
         <figure className={styles.quote}>
@@ -151,7 +257,7 @@ function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => voi
 
 function DashboardHeader({ onMenu }: { onMenu: () => void }) {
   const router = useRouter();
-  const { currentTenant, user } = useWorkspace();
+  const { currentTenant, switchTenant, tenants, user } = useWorkspace();
   const [profileOpen, setProfileOpen] = useState(false);
   const [noticeOpen, setNoticeOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
@@ -202,6 +308,23 @@ function DashboardHeader({ onMenu }: { onMenu: () => void }) {
       <div className={styles.mobileWordmark}>Aurelis</div>
 
       <div className={styles.headerActions}>
+        <label className={styles.tenantSwitcher}>
+          <Building2 aria-hidden="true" size={16} strokeWidth={1.55} />
+          <span className={styles.srOnly}>切换机构</span>
+          <select
+            aria-label="切换机构"
+            onChange={(event) => switchTenant(event.target.value)}
+            value={currentTenant.id}
+          >
+            {tenants.map((tenant) => (
+              <option key={tenant.id} value={tenant.id}>
+                {tenant.name}
+              </option>
+            ))}
+          </select>
+          <ChevronDown aria-hidden="true" size={14} />
+        </label>
+        {isDemoMode() ? <span className={styles.demoBadge}>演示环境</span> : null}
         <div className={styles.noticeWrap}>
           <button
             aria-expanded={noticeOpen}

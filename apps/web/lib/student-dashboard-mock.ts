@@ -1,11 +1,5 @@
 export type StudentSkill = 'reading' | 'listening' | 'speaking' | 'writing';
 
-export interface StudentNavItem {
-  label: string;
-  href: string;
-  icon: StudentSkill | 'overview' | 'path' | 'vocabulary';
-}
-
 export interface StudentSkillProgress {
   id: StudentSkill;
   label: string;
@@ -38,23 +32,6 @@ export const studentDashboardMock = {
     memberSince: 'May 2024',
     membership: 'Premium Member',
   },
-  navigation: [
-    { label: 'Overview', href: '/student', icon: 'overview' },
-    { label: 'My Path', href: '/student/paths', icon: 'path' },
-    { label: 'Reading', href: '/student/learning/toefl#reading', icon: 'reading' },
-    {
-      label: 'Listening',
-      href: '/student/learning/toefl/listening',
-      icon: 'listening',
-    },
-    { label: 'Speaking', href: '/student/learning/toefl#speaking', icon: 'speaking' },
-    { label: 'Writing', href: '/student/learning/toefl#writing', icon: 'writing' },
-    {
-      label: 'Vocabulary',
-      href: '/student/learning/toefl/listening#vocabulary',
-      icon: 'vocabulary',
-    },
-  ] satisfies StudentNavItem[],
   continueLearning: {
     eyebrow: 'Continue learning',
     title: 'The Architecture\nof Memory',
