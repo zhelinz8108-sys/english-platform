@@ -54,6 +54,9 @@ export class FilesService {
     const common = {
       region: config.values.S3_REGION,
       forcePathStyle: config.values.S3_FORCE_PATH_STYLE,
+      // COS is S3-compatible but does not support every optional AWS trailer checksum.
+      requestChecksumCalculation: 'WHEN_REQUIRED' as const,
+      responseChecksumValidation: 'WHEN_REQUIRED' as const,
       credentials: {
         accessKeyId: config.values.S3_ACCESS_KEY,
         secretAccessKey: config.values.S3_SECRET_KEY,

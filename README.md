@@ -114,6 +114,7 @@ pnpm db:reset
 - [权限与租户测试矩阵](outputs/english-platform-v1-1/权限与租户测试矩阵.xlsx)
 - [架构决策记录](outputs/english-platform-v1-1/ADR.md)
 - [运行与恢复手册](docs/operations.md)
+- [腾讯云生产部署手册](docs/tencent-cloud-deployment.md)
 
 OpenAPI 是接口唯一真相源。修改契约后运行 `pnpm contract:generate`，并提交生成的 `packages/api-contract/src/schema.d.ts`。
 

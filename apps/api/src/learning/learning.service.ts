@@ -29,6 +29,8 @@ export class LearningService {
       region: config.values.S3_REGION,
       endpoint: config.s3PublicEndpoint,
       forcePathStyle: config.values.S3_FORCE_PATH_STYLE,
+      requestChecksumCalculation: 'WHEN_REQUIRED',
+      responseChecksumValidation: 'WHEN_REQUIRED',
       credentials: {
         accessKeyId: config.values.S3_ACCESS_KEY,
         secretAccessKey: config.values.S3_SECRET_KEY,

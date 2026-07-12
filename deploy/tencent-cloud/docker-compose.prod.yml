@@ -1,0 +1,131 @@
+name: english-platform-production
+
+services:
+  migrate:
+    image: ${API_IMAGE:-english-platform-api}:${IMAGE_TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: apps/api/Dockerfile
+    command: ['node', 'packages/database/dist/cli/migrate.js']
+    env_file: .env.production
+    environment:
+      NODE_ENV: production
+    networks: [application]
+    restart: 'no'
+
+  bootstrap:
+    image: ${API_IMAGE:-english-platform-api}:${IMAGE_TAG:-latest}
+    command: ['node', 'packages/database/dist/cli/bootstrap-production.js']
+    env_file: .env.production
+    environment:
+      NODE_ENV: production
+    profiles: ['bootstrap']
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    networks: [application]
+    restart: 'no'
+
+  api:
+    image: ${API_IMAGE:-english-platform-api}:${IMAGE_TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: apps/api/Dockerfile
+    env_file: .env.production
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    networks: [application]
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:4000/health/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    logging: &logging
+      driver: json-file
+      options:
+        max-size: 20m
+        max-file: '5'
+
+  worker:
+    image: ${WORKER_IMAGE:-english-platform-worker}:${IMAGE_TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: apps/worker/Dockerfile
+    env_file: .env.production
+    environment:
+      NODE_ENV: production
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    networks: [application]
+    restart: unless-stopped
+    logging: *logging
+
+  web:
+    image: ${WEB_IMAGE:-english-platform-web}:${IMAGE_TAG:-latest}
+    build:
+      context: ../..
+      dockerfile: apps/web/Dockerfile
+      args:
+        API_ORIGIN: http://api:4000
+        NEXT_PUBLIC_API_ORIGIN: ''
+        NEXT_PUBLIC_DEMO_MODE: 'false'
+    environment:
+      NODE_ENV: production
+      API_ORIGIN: http://api:4000
+    depends_on:
+      api:
+        condition: service_healthy
+    networks: [application]
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:3000/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    logging: *logging
+
+  caddy:
+    image: caddy:2.10.2-alpine
+    env_file: .env.production
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      web:
+        condition: service_healthy
+    networks: [application]
+    restart: unless-stopped
+    logging: *logging
+
+networks:
+  application:
+    driver: bridge
+
+volumes:
+  caddy-data:
+  caddy-config:

@@ -21,6 +21,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test:security": "tsx ../../tests/security/database-security.ts",
     "migrate": "tsx src/cli/migrate.ts",
+    "bootstrap:production": "tsx src/cli/bootstrap-production.ts",
     "seed": "tsx src/cli/seed.ts",
     "reset": "tsx src/cli/reset.ts"
   },

@@ -21,6 +21,7 @@
     "test:security": "node scripts/run-with-env.mjs --filter @english/database test:security",
     "test:coverage": "pnpm -r --if-present test:coverage",
     "db:migrate": "node scripts/run-with-env.mjs --filter @english/database migrate",
+    "db:bootstrap-production": "node scripts/run-with-env.mjs --filter @english/database bootstrap:production",
     "db:seed": "node scripts/run-with-env.mjs --filter @english/database seed",
     "db:reset": "node scripts/run-with-env.mjs --filter @english/database reset",
     "infra:up": "docker compose up -d postgres redis minio minio-init",
