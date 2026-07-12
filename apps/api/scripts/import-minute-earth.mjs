@@ -25,6 +25,7 @@ async function audioFiles(root) {
 
 const source = argument('source', process.env.MINUTE_EARTH_SOURCE);
 if (!source) throw new Error('Pass --source=<Minute Earth directory>.');
+const replace = argument('replace', 'false') === 'true';
 
 const tenantId = argument('tenant', '0194a000-0000-7000-8000-000000000001');
 const collection = 'minute-earth';
@@ -79,21 +80,26 @@ try {
         throw new Error(`Audio filename must start with a positive sequence number: ${filePath}`);
       }
       const existing = await sql`
-        select id from toefl_listening_assets
-        where tenant_id = ${tenantId}::uuid
-          and collection_slug = ${collection}
-          and sequence_no = ${parsedSequence}
+        select asset.id, asset.file_object_id, file.storage_key
+        from toefl_listening_assets asset
+        join file_objects file
+          on file.tenant_id = asset.tenant_id and file.id = asset.file_object_id
+        where asset.tenant_id = ${tenantId}::uuid
+          and asset.collection_slug = ${collection}
+          and asset.sequence_no = ${parsedSequence}
       `.execute(database.db);
-      if (existing.rows[0]) {
+      if (existing.rows[0] && !replace) {
         skipped += 1;
         continue;
       }
 
       const bytes = await readFile(filePath);
       const sha256 = createHash('sha256').update(bytes).digest('hex');
-      const fileId = uuidv7();
-      const assetId = uuidv7();
-      const objectKey = `tenants/${tenantId}/toefl/listening/${collection}/${String(parsedSequence).padStart(3, '0')}.mp3`;
+      const fileId = existing.rows[0]?.file_object_id ?? uuidv7();
+      const assetId = existing.rows[0]?.id ?? uuidv7();
+      const objectKey =
+        existing.rows[0]?.storage_key ??
+        `tenants/${tenantId}/toefl/listening/${collection}/${String(parsedSequence).padStart(3, '0')}.mp3`;
       const title = fileName.replace(/^\d+\s*[.、_-]?\s*/, '').trim() || fileName;
 
       await s3.send(
@@ -108,24 +114,37 @@ try {
       );
 
       await database.db.transaction().execute(async (transaction) => {
-        await sql`
-          insert into file_objects (
-            id, tenant_id, storage_key, category, media_type, size_bytes, sha256,
-            status, created_by_membership_id, created_at, updated_at
-          ) values (
-            ${fileId}::uuid, ${tenantId}::uuid, ${objectKey}, 'content_attachment',
-            'audio/mpeg', ${bytes.length}, ${sha256}, 'ready',
-            ${ownerMembershipId}::uuid, now(), now()
-          )
-        `.execute(transaction);
-        await sql`
-          insert into toefl_listening_assets (
-            id, tenant_id, file_object_id, collection_slug, sequence_no, title, created_at
-          ) values (
-            ${assetId}::uuid, ${tenantId}::uuid, ${fileId}::uuid,
-            ${collection}, ${parsedSequence}, ${title}, now()
-          )
-        `.execute(transaction);
+        if (existing.rows[0]) {
+          await sql`
+            update file_objects
+            set size_bytes = ${bytes.length}, sha256 = ${sha256}, status = 'ready', updated_at = now()
+            where tenant_id = ${tenantId}::uuid and id = ${fileId}::uuid
+          `.execute(transaction);
+          await sql`
+            update toefl_listening_assets
+            set title = ${title}
+            where tenant_id = ${tenantId}::uuid and id = ${assetId}::uuid
+          `.execute(transaction);
+        } else {
+          await sql`
+            insert into file_objects (
+              id, tenant_id, storage_key, category, media_type, size_bytes, sha256,
+              status, created_by_membership_id, created_at, updated_at
+            ) values (
+              ${fileId}::uuid, ${tenantId}::uuid, ${objectKey}, 'content_attachment',
+              'audio/mpeg', ${bytes.length}, ${sha256}, 'ready',
+              ${ownerMembershipId}::uuid, now(), now()
+            )
+          `.execute(transaction);
+          await sql`
+            insert into toefl_listening_assets (
+              id, tenant_id, file_object_id, collection_slug, sequence_no, title, created_at
+            ) values (
+              ${assetId}::uuid, ${tenantId}::uuid, ${fileId}::uuid,
+              ${collection}, ${parsedSequence}, ${title}, now()
+            )
+          `.execute(transaction);
+        }
       });
       imported += 1;
       if (imported % 25 === 0) console.log(`Imported ${imported}/${files.length} audio files...`);

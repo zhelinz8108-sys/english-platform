@@ -12,5 +12,7 @@ coverage/
 *.tsbuildinfo
 .DS_Store
 Thumbs.db
+__pycache__/
+*.py[cod]
 uploads/
 tmp/
