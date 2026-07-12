@@ -8,8 +8,10 @@ coverage/
 .env.local
 .env.*.local
 **/.env.production
+**/.env.lighthouse
 !.env.example
 !**/.env.production.example
+!**/.env.lighthouse.example
 *.log
 *.tsbuildinfo
 .DS_Store

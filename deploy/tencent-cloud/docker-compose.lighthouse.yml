@@ -1,0 +1,207 @@
+name: english-platform-lighthouse
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    env_file: .env.lighthouse
+    environment:
+      POSTGRES_DB: english_platform
+      POSTGRES_USER: english_owner
+      POSTGRES_PASSWORD: ${DB_OWNER_PASSWORD}
+    command:
+      - postgres
+      - -c
+      - shared_buffers=64MB
+      - -c
+      - max_connections=50
+      - -c
+      - work_mem=2MB
+      - -c
+      - maintenance_work_mem=32MB
+    volumes:
+      - lighthouse-postgres-data:/var/lib/postgresql/data
+    networks: [application]
+    restart: unless-stopped
+    mem_limit: 256m
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U english_owner -d english_platform']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    logging: &logging
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: '3'
+
+  database-roles:
+    image: postgres:17-alpine
+    env_file: .env.lighthouse
+    environment:
+      PGPASSWORD: ${DB_OWNER_PASSWORD}
+    command:
+      - sh
+      - -ec
+      - >-
+        psql -h postgres -U english_owner -d english_platform
+        --set=APP_DB_PASSWORD="$$APP_DB_PASSWORD"
+        --set=WORKER_DB_PASSWORD="$$WORKER_DB_PASSWORD"
+        --file=/bootstrap/create-roles.sql
+    volumes:
+      - ./lighthouse-create-roles.sql:/bootstrap/create-roles.sql:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [application]
+    restart: 'no'
+    mem_limit: 64m
+
+  redis:
+    image: redis:7.4-alpine
+    command:
+      [
+        'redis-server',
+        '--appendonly',
+        'yes',
+        '--maxmemory',
+        '64mb',
+        '--maxmemory-policy',
+        'noeviction',
+      ]
+    volumes:
+      - lighthouse-redis-data:/data
+    networks: [application]
+    restart: unless-stopped
+    mem_limit: 96m
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    logging: *logging
+
+  migrate:
+    image: ${API_IMAGE:-english-platform-api}:${IMAGE_TAG:-lighthouse}
+    build:
+      context: ../..
+      dockerfile: apps/api/Dockerfile
+    command: ['node', 'packages/database/dist/cli/migrate.js']
+    env_file: .env.lighthouse
+    environment:
+      NODE_ENV: production
+    depends_on:
+      database-roles:
+        condition: service_completed_successfully
+    networks: [application]
+    restart: 'no'
+    mem_limit: 256m
+
+  bootstrap:
+    image: ${API_IMAGE:-english-platform-api}:${IMAGE_TAG:-lighthouse}
+    command: ['node', 'packages/database/dist/cli/bootstrap-production.js']
+    env_file: .env.lighthouse
+    environment:
+      NODE_ENV: production
+    profiles: ['bootstrap']
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    networks: [application]
+    restart: 'no'
+    mem_limit: 256m
+
+  api:
+    image: ${API_IMAGE:-english-platform-api}:${IMAGE_TAG:-lighthouse}
+    build:
+      context: ../..
+      dockerfile: apps/api/Dockerfile
+    env_file: .env.lighthouse
+    environment:
+      NODE_ENV: production
+      NODE_OPTIONS: --max-old-space-size=224
+      PORT: 4000
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    networks: [application]
+    restart: unless-stopped
+    mem_limit: 320m
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:4000/health/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    logging: *logging
+
+  worker:
+    image: ${WORKER_IMAGE:-english-platform-worker}:${IMAGE_TAG:-lighthouse}
+    build:
+      context: ../..
+      dockerfile: apps/worker/Dockerfile
+    env_file: .env.lighthouse
+    environment:
+      NODE_ENV: production
+      NODE_OPTIONS: --max-old-space-size=128
+      WORKER_CONCURRENCY: 2
+      OUTBOX_BATCH_SIZE: 20
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+      redis:
+        condition: service_healthy
+    networks: [application]
+    restart: unless-stopped
+    mem_limit: 192m
+    logging: *logging
+
+  web:
+    image: ${WEB_IMAGE:-english-platform-web}:${IMAGE_TAG:-lighthouse}
+    build:
+      context: ../..
+      dockerfile: apps/web/Dockerfile
+      args:
+        API_ORIGIN: http://api:4000
+        NEXT_PUBLIC_API_ORIGIN: ''
+        NEXT_PUBLIC_DEMO_MODE: 'false'
+    environment:
+      NODE_ENV: production
+      NODE_OPTIONS: --max-old-space-size=192
+      API_ORIGIN: http://api:4000
+    ports:
+      - '127.0.0.1:${PLATFORM_WEB_PORT:-3100}:3000'
+    depends_on:
+      api:
+        condition: service_healthy
+    networks: [application]
+    restart: unless-stopped
+    mem_limit: 256m
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:3000/healthz').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    logging: *logging
+
+networks:
+  application:
+    driver: bridge
+
+volumes:
+  lighthouse-postgres-data:
+  lighthouse-redis-data:
