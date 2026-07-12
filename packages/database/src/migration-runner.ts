@@ -41,6 +41,17 @@ function checksum(sqlText: string): string {
   return createHash('sha256').update(sqlText).digest('hex');
 }
 
+function checksumMatches(sqlText: string, expectedChecksum: string): boolean {
+  if (checksum(sqlText) === expectedChecksum) return true;
+  const withoutTrailingNewlines = sqlText.replace(/(?:\r?\n)+$/u, '');
+  return [
+    `${withoutTrailingNewlines}\n`,
+    `${withoutTrailingNewlines}\n\n`,
+    `${withoutTrailingNewlines}\r\n`,
+    `${withoutTrailingNewlines}\r\n\r\n`,
+  ].some((variant) => checksum(variant) === expectedChecksum);
+}
+
 async function ensureMigrationTable(client: PoolClient): Promise<void> {
   await client.query('CREATE SCHEMA IF NOT EXISTS platform');
   await client.query(`
@@ -73,7 +84,7 @@ export async function runMigrations(options: RunMigrationsOptions): Promise<Migr
       const existingChecksum = applied.get(fileName);
 
       if (existingChecksum) {
-        if (existingChecksum !== fileChecksum) {
+        if (!checksumMatches(sqlText, existingChecksum)) {
           throw new Error(`Migration checksum mismatch: ${fileName}`);
         }
         result.skipped.push(fileName);

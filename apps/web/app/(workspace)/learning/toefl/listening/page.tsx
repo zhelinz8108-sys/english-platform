@@ -20,6 +20,25 @@ interface ListeningTrack {
   title: string;
   durationSeconds: number | null;
   sizeBytes: number;
+  hasStudyContent: boolean;
+  transcriptWordCount: number | null;
+  vocabularyCount: number;
+}
+
+interface VocabularyEntry {
+  word: string;
+  ipa: string;
+  definition: string;
+}
+
+interface StudyContent {
+  id: string;
+  sequence: number;
+  title: string;
+  durationSeconds: number | null;
+  transcriptWordCount: number;
+  transcript: string;
+  vocabulary: VocabularyEntry[];
 }
 
 interface ListeningResponse {
@@ -31,6 +50,12 @@ function formatSize(bytes: number): string {
   return `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
+function formatDuration(seconds: number | null): string {
+  if (seconds === null) return '时长待补充';
+  const minutes = Math.floor(seconds / 60);
+  return `${minutes}:${String(seconds % 60).padStart(2, '0')}`;
+}
+
 export default function ToeflListeningPage() {
   const { currentTenant } = useWorkspace();
   const [tracks, setTracks] = useState<ListeningTrack[]>([]);
@@ -38,9 +63,10 @@ export default function ToeflListeningPage() {
   const [error, setError] = useState<ApiProblemError | null>(null);
   const [query, setQuery] = useState('');
   const [visibleCount, setVisibleCount] = useState(50);
-  const [selected, setSelected] = useState<ListeningTrack | null>(null);
-  const [playbackUrl, setPlaybackUrl] = useState<string | null>(null);
-  const [loadingAudioId, setLoadingAudioId] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [loadingDetailId, setLoadingDetailId] = useState<string | null>(null);
+  const [studyById, setStudyById] = useState<Record<string, StudyContent>>({});
+  const [playbackById, setPlaybackById] = useState<Record<string, string>>({});
 
   async function load() {
     setLoading(true);
@@ -50,13 +76,16 @@ export default function ToeflListeningPage() {
         tenantPath(currentTenant.id, '/learning/toefl/listening?pageSize=300'),
       );
       setTracks(response.data);
+      setExpandedId(null);
+      setStudyById({});
+      setPlaybackById({});
     } catch (caught) {
       setError(
         caught instanceof ApiProblemError
           ? caught
           : new ApiProblemError({
               type: 'about:blank',
-              title: '听力音频加载失败',
+              title: '听力资料加载失败',
               status: 500,
               detail: '请稍后重试。',
             }),
@@ -80,32 +109,45 @@ export default function ToeflListeningPage() {
     );
   }, [query, tracks]);
 
-  async function play(track: ListeningTrack) {
-    setLoadingAudioId(track.id);
+  async function toggleStudy(track: ListeningTrack) {
+    if (expandedId === track.id) {
+      setExpandedId(null);
+      return;
+    }
+    setExpandedId(track.id);
+    if (studyById[track.id] && playbackById[track.id]) return;
+
+    setLoadingDetailId(track.id);
     setError(null);
     try {
-      const response = await apiRequest<{ url: string; expiresAt: string }>(
-        tenantPath(currentTenant.id, `/learning/toefl/listening/${track.id}/playback`),
-      );
-      setSelected(track);
-      setPlaybackUrl(response.url);
+      const [study, playback] = await Promise.all([
+        apiRequest<StudyContent>(
+          tenantPath(currentTenant.id, `/learning/toefl/listening/${track.id}/study-content`),
+        ),
+        apiRequest<{ url: string; expiresAt: string }>(
+          tenantPath(currentTenant.id, `/learning/toefl/listening/${track.id}/playback`),
+        ),
+      ]);
+      setStudyById((current) => ({ ...current, [track.id]: study }));
+      setPlaybackById((current) => ({ ...current, [track.id]: playback.url }));
     } catch (caught) {
+      setExpandedId(null);
       setError(
         caught instanceof ApiProblemError
           ? caught
           : new ApiProblemError({
               type: 'about:blank',
-              title: '无法播放音频',
+              title: '学习资料加载失败',
               status: 500,
-              detail: '播放地址生成失败，请重试。',
+              detail: '原文、词汇或音频地址加载失败，请重试。',
             }),
       );
     } finally {
-      setLoadingAudioId(null);
+      setLoadingDetailId(null);
     }
   }
 
-  if (loading) return <LoadingState label="正在加载 Minute Earth 听力音频" />;
+  if (loading) return <LoadingState label="正在加载 Minute Earth 听力资料" />;
   if (error && tracks.length === 0) return <ErrorState error={error} onRetry={() => void load()} />;
 
   return (
@@ -116,44 +158,29 @@ export default function ToeflListeningPage() {
             返回托福
           </ButtonLink>
         }
-        description={`Minute Earth 听力素材库，共 ${tracks.length} 条音频。`}
+        description={`按编号学习 Minute Earth，共 ${tracks.length} 组音频、原文与 TOEFL/SAT 词汇。`}
         eyebrow="托福 · 听力"
-        title="听力训练"
+        title="听力精学"
       />
 
       {error ? <ErrorState error={error} onRetry={() => void load()} /> : null}
-
-      <Card className="listening-player-card">
-        <span className="listening-player-icon">
-          <Icon name="headphones" size={25} />
-        </span>
-        <div>
-          <p className="eyebrow">当前播放</p>
-          <h2>{selected ? `${selected.sequence}. ${selected.title}` : '选择一条音频开始训练'}</h2>
-          <p>{selected ? 'Minute Earth · 托福听力素材' : '音频采用私有对象存储和临时播放地址。'}</p>
-        </div>
-        {playbackUrl ? (
-          <audio autoPlay controls key={playbackUrl} preload="metadata" src={playbackUrl}>
-            当前浏览器不支持音频播放。
-          </audio>
-        ) : null}
-      </Card>
 
       <Card padding={false}>
         <div className="list-toolbar">
           <div>
             <strong>Minute Earth</strong>
-            <small className="listening-count">{filtered.length} 条音频</small>
+            <small className="listening-count">{filtered.length} 组学习资料</small>
           </div>
           <label className="search-box">
-            <span className="sr-only">搜索听力音频</span>
+            <span className="sr-only">搜索听力资料</span>
             <Icon name="search" size={17} />
             <input
               onChange={(event) => {
                 setQuery(event.target.value);
                 setVisibleCount(50);
+                setExpandedId(null);
               }}
-              placeholder="按标题或序号搜索"
+              placeholder="按标题或编号搜索"
               type="search"
               value={query}
             />
@@ -161,38 +188,121 @@ export default function ToeflListeningPage() {
         </div>
 
         {filtered.length === 0 ? (
-          <EmptyState description="换一个关键词再试试。" icon="headphones" title="没有匹配的音频" />
+          <EmptyState
+            description="换一个关键词或编号再试试。"
+            icon="headphones"
+            title="没有匹配的听力资料"
+          />
         ) : (
           <div className="listening-track-list">
-            {filtered.slice(0, visibleCount).map((track) => (
-              <div
-                className={
-                  selected?.id === track.id ? 'listening-track is-active' : 'listening-track'
-                }
-                key={track.id}
-              >
-                <span className="listening-sequence">
-                  {String(track.sequence).padStart(3, '0')}
-                </span>
-                <div>
-                  <strong>{track.title}</strong>
-                  <small>Minute Earth · {formatSize(track.sizeBytes)}</small>
-                </div>
-                <button
-                  className="button button-secondary"
-                  disabled={loadingAudioId !== null}
-                  onClick={() => void play(track)}
-                  type="button"
+            {filtered.slice(0, visibleCount).map((track) => {
+              const expanded = expandedId === track.id;
+              const study = studyById[track.id];
+              const playbackUrl = playbackById[track.id];
+              return (
+                <article
+                  className={expanded ? 'listening-track is-active' : 'listening-track'}
+                  key={track.id}
                 >
-                  <Icon name={selected?.id === track.id ? 'headphones' : 'arrow'} size={15} />
-                  {loadingAudioId === track.id
-                    ? '载入中'
-                    : selected?.id === track.id
-                      ? '正在播放'
-                      : '播放'}
-                </button>
-              </div>
-            ))}
+                  <div className="listening-track-summary">
+                    <span className="listening-sequence">
+                      {String(track.sequence).padStart(3, '0')}
+                    </span>
+                    <div className="listening-track-title">
+                      <strong>{track.title}</strong>
+                      <small>
+                        {formatDuration(track.durationSeconds)} · {formatSize(track.sizeBytes)} ·{' '}
+                        {track.transcriptWordCount ?? 0} 词原文 · {track.vocabularyCount} 个重点词
+                      </small>
+                    </div>
+                    <button
+                      aria-expanded={expanded}
+                      className="button button-secondary"
+                      disabled={!track.hasStudyContent || loadingDetailId !== null}
+                      onClick={() => void toggleStudy(track)}
+                      type="button"
+                    >
+                      <Icon name={expanded ? 'chevron' : 'book'} size={15} />
+                      {loadingDetailId === track.id
+                        ? '载入中'
+                        : expanded
+                          ? '收起资料'
+                          : track.hasStudyContent
+                            ? '展开学习'
+                            : '资料准备中'}
+                    </button>
+                  </div>
+
+                  {expanded ? (
+                    <div className="listening-study-panel">
+                      {study && playbackUrl ? (
+                        <>
+                          <section
+                            className="listening-audio-section"
+                            aria-labelledby={`audio-${track.id}`}
+                          >
+                            <div>
+                              <p className="eyebrow">听力音频</p>
+                              <h2 id={`audio-${track.id}`}>
+                                {String(track.sequence).padStart(3, '0')}. {track.title}
+                              </h2>
+                            </div>
+                            <audio controls preload="metadata" src={playbackUrl}>
+                              当前浏览器不支持音频播放。
+                            </audio>
+                          </section>
+
+                          <section className="listening-study-section">
+                            <div className="listening-section-heading">
+                              <div>
+                                <p className="eyebrow">TOEFL / SAT Vocabulary</p>
+                                <h3>重点词汇</h3>
+                              </div>
+                              <span>{study.vocabulary.length} 词</span>
+                            </div>
+                            {study.vocabulary.length ? (
+                              <div className="listening-vocabulary-grid">
+                                {study.vocabulary.map((entry, index) => (
+                                  <div
+                                    className="listening-vocabulary-entry"
+                                    key={`${entry.word}-${index}`}
+                                  >
+                                    <div>
+                                      <strong>{entry.word}</strong>
+                                      {entry.ipa ? <span>{entry.ipa}</span> : null}
+                                    </div>
+                                    <p>{entry.definition}</p>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <p className="listening-empty-note">本集没有新增重点词汇。</p>
+                            )}
+                          </section>
+
+                          <section className="listening-study-section">
+                            <div className="listening-section-heading">
+                              <div>
+                                <p className="eyebrow">Transcript</p>
+                                <h3>英文原文</h3>
+                              </div>
+                              <span>{study.transcriptWordCount} 词</span>
+                            </div>
+                            <div className="listening-transcript">
+                              {study.transcript.split(/\n\n+/u).map((paragraph, index) => (
+                                <p key={index}>{paragraph}</p>
+                              ))}
+                            </div>
+                          </section>
+                        </>
+                      ) : (
+                        <LoadingState label="正在加载音频、词汇和原文" />
+                      )}
+                    </div>
+                  ) : null}
+                </article>
+              );
+            })}
           </div>
         )}
 

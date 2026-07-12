@@ -2838,6 +2838,167 @@ strong {
   padding: 17px;
 }
 
+.listening-track {
+  display: block;
+  padding: 0;
+}
+
+.listening-track-summary {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+}
+
+.listening-track-title strong,
+.listening-track-title small {
+  display: block;
+}
+
+.listening-track-title strong {
+  color: var(--ink-800);
+  font-size: 12px;
+}
+
+.listening-track-title small {
+  margin-top: 4px;
+  color: var(--ink-500);
+  font-size: 9px;
+}
+
+.listening-track-summary .button {
+  min-width: 108px;
+}
+
+.listening-track.is-active .listening-track-summary .button svg {
+  transform: rotate(180deg);
+}
+
+.listening-study-panel {
+  border-top: 1px solid color-mix(in srgb, var(--brand-500) 18%, transparent);
+  padding: 18px;
+  background: #fff;
+}
+
+.listening-audio-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.65fr);
+  align-items: center;
+  gap: 20px;
+  border: 1px solid var(--brand-100);
+  border-radius: 16px;
+  padding: 18px;
+  background: linear-gradient(135deg, #f1fbfc, #fff);
+}
+
+.listening-track .listening-audio-section h2 {
+  margin: 3px 0 0;
+  color: var(--ink-900);
+  font-size: 16px;
+}
+
+.listening-audio-section audio {
+  width: 100%;
+  height: 40px;
+}
+
+.listening-study-section {
+  margin-top: 18px;
+  border: 1px solid var(--ink-100);
+  border-radius: 16px;
+  padding: 18px;
+}
+
+.listening-section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.listening-track .listening-section-heading h3 {
+  margin: 3px 0 0;
+  color: var(--ink-900);
+  font-size: 15px;
+}
+
+.listening-section-heading > span {
+  border-radius: 999px;
+  padding: 5px 10px;
+  background: var(--brand-50);
+  color: var(--brand-700);
+  font-size: 9px;
+  font-weight: 750;
+}
+
+.listening-vocabulary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid var(--ink-100);
+  border-radius: 12px;
+}
+
+.listening-vocabulary-entry {
+  display: grid;
+  grid-template-columns: minmax(120px, 0.4fr) minmax(0, 1fr);
+  gap: 12px;
+  min-width: 0;
+  padding: 12px;
+  border-bottom: 1px solid var(--ink-100);
+}
+
+.listening-vocabulary-entry:nth-child(odd) {
+  border-right: 1px solid var(--ink-100);
+}
+
+.listening-track .listening-vocabulary-entry > div strong,
+.listening-track .listening-vocabulary-entry > div span {
+  display: block;
+}
+
+.listening-track .listening-vocabulary-entry > div strong {
+  color: var(--ink-900);
+  font-size: 11px;
+}
+
+.listening-vocabulary-entry > div span {
+  margin-top: 3px;
+  color: var(--brand-700);
+  font-size: 9px;
+}
+
+.listening-vocabulary-entry p {
+  margin: 0;
+  color: var(--ink-600);
+  font-size: 10px;
+  line-height: 1.65;
+  white-space: pre-line;
+}
+
+.listening-transcript {
+  max-width: 900px;
+}
+
+.listening-transcript p {
+  margin: 0 0 13px;
+  color: var(--ink-700);
+  font-size: 12px;
+  line-height: 1.85;
+}
+
+.listening-transcript p:last-child {
+  margin-bottom: 0;
+}
+
+.listening-empty-note {
+  margin: 0;
+  color: var(--ink-500);
+  font-size: 11px;
+}
+
 @media (max-width: 1050px) {
   .toefl-module-grid,
   .toefl-workflow {
@@ -2868,13 +3029,22 @@ strong {
     grid-column: 1 / -1;
   }
 
-  .listening-track {
+  .listening-track-summary {
     grid-template-columns: 42px minmax(0, 1fr);
   }
 
-  .listening-track .button {
+  .listening-track-summary .button {
     grid-column: 2;
     justify-self: start;
+  }
+
+  .listening-audio-section,
+  .listening-vocabulary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .listening-vocabulary-entry:nth-child(odd) {
+    border-right: 0;
   }
 }
 

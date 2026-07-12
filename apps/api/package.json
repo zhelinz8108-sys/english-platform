@@ -12,6 +12,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
     "import:minute-earth": "node scripts/import-minute-earth.mjs",
+    "import:minute-earth-study-content": "node scripts/import-minute-earth-study-content.mjs",
     "test:coverage": "vitest run --coverage"
   },
   "dependencies": {

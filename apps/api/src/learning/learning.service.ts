@@ -47,12 +47,20 @@ export class LearningService {
         title: string;
         duration_seconds: number | null;
         size_bytes: string;
+        has_study_content: boolean;
+        transcript_word_count: number | null;
+        vocabulary_count: number;
       }>`
         select asset.id, asset.collection_slug, asset.sequence_no, asset.title,
-               asset.duration_seconds, file.size_bytes
+               asset.duration_seconds, file.size_bytes,
+               (study.id is not null) as has_study_content,
+               study.transcript_word_count,
+               coalesce(jsonb_array_length(study.vocabulary), 0)::integer as vocabulary_count
         from toefl_listening_assets asset
         join file_objects file
           on file.tenant_id = asset.tenant_id and file.id = asset.file_object_id
+        left join toefl_listening_study_contents study
+          on study.tenant_id = asset.tenant_id and study.listening_asset_id = asset.id
         where asset.tenant_id = ${context.tenantId}::uuid
           and file.status = 'ready'
           and (${search}::text is null or asset.title ilike ${search})
@@ -68,8 +76,45 @@ export class LearningService {
           title: row.title,
           durationSeconds: row.duration_seconds,
           sizeBytes: Number(row.size_bytes),
+          hasStudyContent: row.has_study_content,
+          transcriptWordCount: row.transcript_word_count,
+          vocabularyCount: row.vocabulary_count,
         })),
         page: { nextCursor: null, hasMore: false, limit: input.pageSize },
+      };
+    });
+  }
+
+  getListeningStudyContent(request: ApiRequest, assetId: string) {
+    const context = requestContext(request);
+    return this.database.withTenant(context, async (transaction) => {
+      const result = await sql<{
+        id: string;
+        sequence_no: number;
+        title: string;
+        duration_seconds: number | null;
+        transcript: string;
+        transcript_word_count: number;
+        vocabulary: unknown;
+      }>`
+        select asset.id, asset.sequence_no, asset.title, asset.duration_seconds,
+               study.transcript, study.transcript_word_count, study.vocabulary
+        from toefl_listening_assets asset
+        join toefl_listening_study_contents study
+          on study.tenant_id = asset.tenant_id and study.listening_asset_id = asset.id
+        where asset.tenant_id = ${context.tenantId}::uuid
+          and asset.id = ${assetId}::uuid
+      `.execute(transaction);
+      const row = result.rows[0];
+      if (!row) throw ProblemException.notFound();
+      return {
+        id: row.id,
+        sequence: row.sequence_no,
+        title: row.title,
+        durationSeconds: row.duration_seconds,
+        transcriptWordCount: row.transcript_word_count,
+        transcript: row.transcript,
+        vocabulary: Array.isArray(row.vocabulary) ? row.vocabulary : [],
       };
     });
   }

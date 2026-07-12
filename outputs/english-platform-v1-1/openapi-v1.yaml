@@ -2156,6 +2156,31 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/learning/toefl/listening/{assetId}/study-content:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - name: assetId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Uuid'
+    get:
+      tags: [TOEFL Learning]
+      summary: Get a listening transcript and TOEFL/SAT vocabulary
+      operationId: getToeflListeningStudyContent
+      responses:
+        '200':
+          description: Study content associated with the listening asset
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToeflListeningStudyContent'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /api/v1/tenants/{tenantId}/learning/toefl/listening/{assetId}/playback:
     parameters:
       - $ref: '#/components/parameters/TenantId'
@@ -5051,7 +5076,7 @@ components:
     ToeflListeningAsset:
       type: object
       additionalProperties: false
-      required: [id, collection, sequence, title, durationSeconds, sizeBytes]
+      required: [id, collection, sequence, title, durationSeconds, sizeBytes, hasStudyContent, transcriptWordCount, vocabularyCount]
       properties:
         id:
           $ref: '#/components/schemas/Uuid'
@@ -5070,6 +5095,53 @@ components:
         sizeBytes:
           type: integer
           minimum: 0
+        hasStudyContent:
+          type: boolean
+        transcriptWordCount:
+          type: [integer, 'null']
+          minimum: 1
+        vocabularyCount:
+          type: integer
+          minimum: 0
+    ToeflVocabularyEntry:
+      type: object
+      additionalProperties: false
+      required: [word, ipa, definition]
+      properties:
+        word:
+          type: string
+          minLength: 1
+        ipa:
+          type: string
+        definition:
+          type: string
+          minLength: 1
+    ToeflListeningStudyContent:
+      type: object
+      additionalProperties: false
+      required: [id, sequence, title, durationSeconds, transcriptWordCount, transcript, vocabulary]
+      properties:
+        id:
+          $ref: '#/components/schemas/Uuid'
+        sequence:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+          maxLength: 300
+        durationSeconds:
+          type: [integer, 'null']
+          minimum: 0
+        transcriptWordCount:
+          type: integer
+          minimum: 1
+        transcript:
+          type: string
+          minLength: 1
+        vocabulary:
+          type: array
+          items:
+            $ref: '#/components/schemas/ToeflVocabularyEntry'
     PresignedUpload:
       type: object
       additionalProperties: false

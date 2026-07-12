@@ -1166,6 +1166,68 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/tenants/{tenantId}/learning/toefl/listening": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+            };
+            cookie?: never;
+        };
+        /** List tenant TOEFL listening audio assets */
+        get: operations["listToeflListeningAssets"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tenants/{tenantId}/learning/toefl/listening/{assetId}/study-content": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                assetId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        /** Get a listening transcript and TOEFL/SAT vocabulary */
+        get: operations["getToeflListeningStudyContent"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tenants/{tenantId}/learning/toefl/listening/{assetId}/playback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                assetId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        /** Create a short-lived private playback URL */
+        get: operations["createToeflListeningPlayback"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -2253,9 +2315,35 @@ export interface components {
             purpose: components["schemas"]["FilePurpose"];
             fileName: string;
             /** @enum {string} */
-            contentType: "application/pdf" | "image/jpeg" | "image/png" | "text/csv" | "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            contentType: "application/pdf" | "image/jpeg" | "image/png" | "audio/mpeg" | "audio/mp4" | "audio/aac" | "audio/ogg" | "text/csv" | "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             sizeBytes: number;
             sha256: components["schemas"]["ContentHash"];
+        };
+        ToeflListeningAsset: {
+            id: components["schemas"]["Uuid"];
+            /** @example minute-earth */
+            collection: string;
+            sequence: number;
+            title: string;
+            durationSeconds: number | null;
+            sizeBytes: number;
+            hasStudyContent: boolean;
+            transcriptWordCount: number | null;
+            vocabularyCount: number;
+        };
+        ToeflVocabularyEntry: {
+            word: string;
+            ipa: string;
+            definition: string;
+        };
+        ToeflListeningStudyContent: {
+            id: components["schemas"]["Uuid"];
+            sequence: number;
+            title: string;
+            durationSeconds: number | null;
+            transcriptWordCount: number;
+            transcript: string;
+            vocabulary: components["schemas"]["ToeflVocabularyEntry"][];
         };
         PresignedUpload: {
             fileId: components["schemas"]["Uuid"];
@@ -4801,6 +4889,96 @@ export interface operations {
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
             409: components["responses"]["Conflict"];
+        };
+    };
+    listToeflListeningAssets: {
+        parameters: {
+            query?: {
+                query?: string;
+                pageSize?: number;
+            };
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Listening assets ordered by collection and sequence */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["ToeflListeningAsset"][];
+                        page: components["schemas"]["PageInfo"];
+                    };
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getToeflListeningStudyContent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                assetId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Study content associated with the listening asset */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ToeflListeningStudyContent"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createToeflListeningPlayback: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                assetId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Authorized private object playback URL */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: uri */
+                        url: string;
+                        expiresAt: components["schemas"]["UtcDateTime"];
+                    };
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
         };
     };
 }

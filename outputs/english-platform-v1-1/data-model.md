@@ -751,6 +751,32 @@ UNIQUE (`tenant_id`, `task_attempt_id`, `submission_revision`)，并对 `(tenant
 
 对象存储访问必须先做租户和资源关系授权再签发短时 URL；数据库 RLS 不能替代对象存储前缀隔离。
 
+#### TOEFL Listening Asset — `toefl_listening_assets`
+
+| 字段 | 类型 | 可空 | 约束 | 说明 |
+|---|---|---:|---|---|
+| `id`, `tenant_id` | uuid | 否 | PK；租户复合唯一 | 听力素材 |
+| `file_object_id` | uuid | 否 | 复合 FK → `file_objects` | 私有音频对象 |
+| `collection_slug` | varchar(120) | 否 | 与序号组成租户唯一键 | 如 `minute-earth` |
+| `sequence_no` | integer | 否 | > 0 | 展示与 PDF 关联编号 |
+| `title` | varchar(300) | 否 |  | 英文标题 |
+| `duration_seconds` | integer | 是 | >= 0 | PDF/音频时长 |
+
+#### TOEFL Listening Study Content — `toefl_listening_study_contents`
+
+| 字段 | 类型 | 可空 | 约束 | 说明 |
+|---|---|---:|---|---|
+| `id`, `tenant_id` | uuid | 否 | PK；租户复合唯一 | 听力精学内容 |
+| `listening_asset_id` | uuid | 否 | 复合 FK；租户内唯一 | 与音频一对一绑定 |
+| `transcript` | text | 否 | 非空 | 完整英文原文 |
+| `transcript_word_count` | integer | 否 | > 0 | PDF 标注词数 |
+| `vocabulary` | jsonb | 否 | array；Schema `toefl-vocabulary/v1` | `word / ipa / definition` |
+| `source_file_name` | varchar(500) | 否 |  | 来源文档 |
+| `source_sha256` | char(64) | 否 | 小写 SHA-256 | 来源追溯与重导校验 |
+| `created_at`, `updated_at` | timestamptz | 否 |  |  |
+
+列表接口只返回原文词数、词汇数量和内容可用标记；完整原文与词汇通过单素材详情接口按需加载，避免一次传输全部 270 集。两表均强制 RLS，API 只能在已验证的租户事务中读取。
+
 #### ProgressProjection — `progress_projections`
 
 | 字段 | 类型 | 可空 | 约束 | 说明 |

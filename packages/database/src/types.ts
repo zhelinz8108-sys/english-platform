@@ -494,6 +494,23 @@ export interface FileObjectsTable extends TenantOwned, MutableTimestamps {
   created_by_membership_id: Uuid;
 }
 
+export interface ToeflListeningAssetsTable extends TenantOwned, ImmutableTimestamp {
+  file_object_id: Uuid;
+  collection_slug: string;
+  sequence_no: number;
+  title: string;
+  duration_seconds: number | null;
+}
+
+export interface ToeflListeningStudyContentsTable extends TenantOwned, MutableTimestamps {
+  listening_asset_id: Uuid;
+  transcript: string;
+  transcript_word_count: number;
+  vocabulary: JsonColumn;
+  source_file_name: string;
+  source_sha256: string;
+}
+
 export interface ResourceFileLinkTable extends TenantOwned, ImmutableTimestamp {
   file_object_id: Uuid;
   usage: string;
@@ -649,6 +666,8 @@ export interface Database {
   effective_score_decisions: ScoreDecisionsTable;
   feedback: FeedbackTable;
   file_objects: FileObjectsTable;
+  toefl_listening_assets: ToeflListeningAssetsTable;
+  toefl_listening_study_contents: ToeflListeningStudyContentsTable;
   content_version_files: ContentVersionFilesTable;
   question_version_files: QuestionVersionFilesTable;
   feedback_files: FeedbackFilesTable;

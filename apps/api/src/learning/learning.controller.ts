@@ -20,6 +20,11 @@ export class LearningController {
     return this.learning.listListening(request, parseBody(listeningQuery, query));
   }
 
+  @Get('listening/:assetId/study-content')
+  studyContent(@Req() request: ApiRequest, @Param('assetId') assetId: string) {
+    return this.learning.getListeningStudyContent(request, assetId);
+  }
+
   @Get('listening/:assetId/playback')
   playback(@Req() request: ApiRequest, @Param('assetId') assetId: string) {
     return this.learning.createPlaybackUrl(request, assetId);
