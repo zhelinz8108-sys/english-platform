@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ButtonLink, Card, PageHeader, StatusBadge } from '@/components/ui';
 import { Icon, type IconName } from '@/components/icon';
 import { useWorkspace } from '@/components/workspace-provider';
@@ -55,7 +56,11 @@ const modules: ModuleCard[] = [
 ];
 
 export default function ToeflLearningPage() {
+  const pathname = usePathname();
   const { currentTenant } = useWorkspace();
+  const studentToeflBase = pathname.startsWith('/student/')
+    ? '/student/learning/toefl'
+    : '/learning/toefl';
   const isStudent = currentTenant.roles.includes('student');
   const isTeacher = currentTenant.roles.includes('teacher');
   const canManageContent = currentTenant.roles.some((role) =>
@@ -124,7 +129,11 @@ export default function ToeflLearningPage() {
           {modules.map((module) => (
             <Link
               className="toefl-module-link"
-              href={module.href}
+              href={
+                module.id === 'listening'
+                  ? `${studentToeflBase}/listening`
+                  : `${studentToeflBase}#${module.id}`
+              }
               id={module.id}
               key={module.title}
             >

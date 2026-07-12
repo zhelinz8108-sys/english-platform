@@ -8,6 +8,37 @@
   --aurelis-gold-soft: #e7d6aa;
   --aurelis-green: #579263;
   --aurelis-sidebar: 216px;
+  --ink-950: #25231f;
+  --ink-900: #33302b;
+  --ink-800: #4a4741;
+  --ink-700: #5f5b54;
+  --ink-600: #777169;
+  --ink-500: #918a80;
+  --ink-300: #c9c2b7;
+  --ink-200: #ddd7cd;
+  --ink-150: #e9e4dc;
+  --ink-100: #f1eee8;
+  --ink-50: #f8f6f1;
+  --brand-700: #8d691c;
+  --brand-600: #a97f27;
+  --brand-500: #b98d32;
+  --brand-300: #d8bd7c;
+  --brand-100: #eee3c6;
+  --brand-50: #faf6ea;
+  --blue-600: #6c7f89;
+  --blue-100: #edf1f1;
+  --green-600: #579263;
+  --green-100: #e6eee5;
+  --amber-700: #8d691c;
+  --amber-100: #f5ebcf;
+  --coral-500: #b98d32;
+  --surface: #fdfcf9;
+  --canvas: #f8f6f1;
+  --shadow-sm: 0 3px 5px rgba(60, 52, 42, 0.03), 0 10px 28px rgba(60, 52, 42, 0.06);
+  --shadow-md: 0 20px 48px rgba(53, 47, 39, 0.14);
+  --radius-sm: 7px;
+  --radius-md: 9px;
+  --radius-lg: 13px;
   min-height: 100vh;
   background:
     radial-gradient(circle at 63% 0%, rgba(255, 255, 255, 0.96), transparent 34rem),
@@ -25,6 +56,93 @@
 
 .dashboard * {
   box-sizing: border-box;
+}
+
+.dashboard :global(.page-header h1),
+.dashboard :global(.card-header h2),
+.dashboard :global(.toefl-section h2),
+.dashboard :global(.toefl-module-card h3),
+.dashboard :global(.toefl-workflow-step h3),
+.dashboard :global(.listening-track strong) {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 400;
+}
+
+.dashboard :global(.page-header) {
+  border-bottom: 1px solid var(--aurelis-line);
+  padding-bottom: 22px;
+}
+
+.dashboard :global(.page-header h1) {
+  color: var(--aurelis-ink);
+  font-size: clamp(30px, 3vw, 42px);
+  letter-spacing: -0.035em;
+}
+
+.dashboard :global(.eyebrow) {
+  color: var(--aurelis-gold-dark);
+}
+
+.dashboard :global(.card) {
+  border-color: var(--aurelis-line);
+  background: rgba(253, 252, 249, 0.9);
+  box-shadow: var(--shadow-sm);
+}
+
+.dashboard :global(.button) {
+  border-radius: 5px;
+}
+
+.dashboard :global(.button-primary) {
+  background: linear-gradient(135deg, #bd943c, #a97d24);
+  box-shadow: 0 7px 16px rgba(155, 114, 32, 0.18);
+}
+
+.dashboard :global(.button-secondary) {
+  border-color: var(--aurelis-line);
+  background: rgba(253, 252, 249, 0.9);
+}
+
+.dashboard :global(.toefl-hero) {
+  border: 1px solid var(--aurelis-line);
+  border-radius: 11px;
+  background:
+    radial-gradient(circle at 88% 12%, rgba(182, 139, 47, 0.16), transparent 30%),
+    linear-gradient(135deg, #fdfcf9, #f5f0e6);
+  box-shadow: var(--shadow-sm);
+  color: var(--aurelis-ink);
+}
+
+.dashboard :global(.toefl-mark) {
+  border-color: rgba(182, 139, 47, 0.35);
+  background: rgba(182, 139, 47, 0.08);
+  color: var(--aurelis-gold-dark);
+}
+
+.dashboard :global(.toefl-hero .eyebrow-light) {
+  color: var(--aurelis-gold-dark);
+}
+
+.dashboard :global(.toefl-hero-copy > p:not(.eyebrow)),
+.dashboard :global(.toefl-score-card > span),
+.dashboard :global(.toefl-score-card small) {
+  color: var(--aurelis-muted);
+}
+
+.dashboard :global(.toefl-score-card) {
+  border-color: rgba(182, 139, 47, 0.25);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.dashboard :global(.toefl-score-line) {
+  background: var(--aurelis-line);
+}
+
+.dashboard :global(.toefl-module-link:hover .toefl-module-card),
+.dashboard :global(.listening-track:hover),
+.dashboard :global(.listening-track.is-active) {
+  border-color: rgba(182, 139, 47, 0.55);
+  box-shadow: 0 12px 30px rgba(60, 52, 42, 0.08);
 }
 
 .dashboard a,
@@ -434,6 +552,10 @@
   width: min(100%, 1288px);
   margin: 0 auto;
   padding: 0 clamp(28px, 3.1vw, 48px) 46px;
+}
+
+.routeMain {
+  padding-top: 22px;
 }
 
 .welcome {

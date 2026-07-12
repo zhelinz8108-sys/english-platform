@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import {
   ButtonLink,
   Card,
@@ -11,7 +12,8 @@ import {
 } from '@/components/ui';
 import { Icon } from '@/components/icon';
 import { useWorkspace } from '@/components/workspace-provider';
-import { ApiProblemError, apiRequest, tenantPath } from '@/lib/api';
+import { ApiProblemError, apiRequest, isDemoMode, tenantPath } from '@/lib/api';
+import { minuteEarthDemoEpisodes } from '@/lib/minute-earth-demo';
 
 interface ListeningTrack {
   id: string;
@@ -69,7 +71,11 @@ function preferredAmericanVoice(voices: SpeechSynthesisVoice[]): SpeechSynthesis
 }
 
 export default function ToeflListeningPage() {
+  const pathname = usePathname();
   const { currentTenant } = useWorkspace();
+  const toeflHome = pathname.startsWith('/student/')
+    ? '/student/learning/toefl'
+    : '/learning/toefl';
   const [tracks, setTracks] = useState<ListeningTrack[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<ApiProblemError | null>(null);
@@ -86,6 +92,26 @@ export default function ToeflListeningPage() {
     setLoading(true);
     setError(null);
     try {
+      if (isDemoMode()) {
+        setTracks(
+          minuteEarthDemoEpisodes.map((episode) => ({
+            id: episode.id,
+            collection: episode.collection,
+            sequence: episode.sequence,
+            title: episode.title,
+            durationSeconds: episode.durationSeconds,
+            sizeBytes: episode.sizeBytes,
+            hasStudyContent: true,
+            transcriptWordCount: episode.transcript.split(/\s+/u).length,
+            vocabularyCount: episode.vocabulary.length,
+          })),
+        );
+        setExpandedId(null);
+        setStudyById({});
+        setPlaybackById({});
+        return;
+      }
+
       const response = await apiRequest<ListeningResponse>(
         tenantPath(currentTenant.id, '/learning/toefl/listening?pageSize=300'),
       );
@@ -146,6 +172,24 @@ export default function ToeflListeningPage() {
     setLoadingDetailId(track.id);
     setError(null);
     try {
+      if (isDemoMode()) {
+        const episode = minuteEarthDemoEpisodes.find((item) => item.id === track.id);
+        if (!episode) throw new Error('Demo listening episode not found.');
+        setStudyById((current) => ({
+          ...current,
+          [track.id]: {
+            id: episode.id,
+            sequence: episode.sequence,
+            title: episode.title,
+            durationSeconds: episode.durationSeconds,
+            transcriptWordCount: episode.transcript.split(/\s+/u).length,
+            transcript: episode.transcript,
+            vocabulary: episode.vocabulary.map((entry) => ({ ...entry })),
+          },
+        }));
+        return;
+      }
+
       const [study, playback] = await Promise.all([
         apiRequest<StudyContent>(
           tenantPath(currentTenant.id, `/learning/toefl/listening/${track.id}/study-content`),
@@ -201,7 +245,7 @@ export default function ToeflListeningPage() {
     <>
       <PageHeader
         actions={
-          <ButtonLink href="/learning/toefl" variant="secondary">
+          <ButtonLink href={toeflHome} variant="secondary">
             返回托福
           </ButtonLink>
         }
@@ -282,7 +326,7 @@ export default function ToeflListeningPage() {
 
                   {expanded ? (
                     <div className="listening-study-panel">
-                      {study && playbackUrl ? (
+                      {study ? (
                         <>
                           <section
                             className="listening-audio-section"
@@ -294,9 +338,15 @@ export default function ToeflListeningPage() {
                                 {String(track.sequence).padStart(3, '0')}. {track.title}
                               </h2>
                             </div>
-                            <audio controls preload="metadata" src={playbackUrl}>
-                              当前浏览器不支持音频播放。
-                            </audio>
+                            {playbackUrl ? (
+                              <audio controls preload="metadata" src={playbackUrl}>
+                                当前浏览器不支持音频播放。
+                              </audio>
+                            ) : (
+                              <p className="listening-empty-note">
+                                演示模式已加载原文和词汇；音频将在连接对象存储后播放。
+                              </p>
+                            )}
                           </section>
 
                           <section className="listening-study-section">

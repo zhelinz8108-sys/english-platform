@@ -8,6 +8,7 @@ import { authApi, isDemoMode } from '@/lib/api';
 import { getInitials, roleLabels } from '@/lib/format';
 import { persistTenantSelection } from '@/lib/session';
 import { Icon, type IconName } from './icon';
+import { StudentShell } from './student-dashboard/student-dashboard';
 import { useWorkspace } from './workspace-provider';
 
 interface NavItem {
@@ -110,8 +111,8 @@ export function AppShell({ children }: { children: ReactNode }) {
     }
   }
 
-  if (pathname === '/student') {
-    return <>{children}</>;
+  if (pathname === '/student' || pathname.startsWith('/student/')) {
+    return <StudentShell>{children}</StudentShell>;
   }
 
   return (

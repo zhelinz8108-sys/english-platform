@@ -10,6 +10,9 @@ describe('student dashboard mock data', () => {
       'writing',
     ]);
     expect(new Set(studentDashboardMock.skills.map((skill) => skill.href)).size).toBeGreaterThan(1);
+    expect(studentDashboardMock.skills.every((skill) => skill.href.startsWith('/student/'))).toBe(
+      true,
+    );
   });
 
   it('provides a seven-day chart for every selectable period', () => {

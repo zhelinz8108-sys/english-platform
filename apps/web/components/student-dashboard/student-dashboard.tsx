@@ -24,7 +24,7 @@ import {
   X,
   type LucideIcon,
 } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { authApi, isDemoMode } from '@/lib/api';
 import { persistTenantSelection } from '@/lib/session';
 import {
@@ -67,7 +67,15 @@ function Brand() {
 
 function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
   const pathname = usePathname();
+  const [activeHash, setActiveHash] = useState('');
   const { quote, learner, navigation } = studentDashboardMock;
+
+  useEffect(() => {
+    const syncHash = () => setActiveHash(window.location.hash);
+    syncHash();
+    window.addEventListener('hashchange', syncHash);
+    return () => window.removeEventListener('hashchange', syncHash);
+  }, [pathname]);
 
   return (
     <>
@@ -100,8 +108,15 @@ function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => voi
         <nav className={styles.navigation}>
           {navigation.map((item) => {
             const NavIcon = navIcons[item.icon];
-            const active =
-              item.href === '/student' ? pathname === item.href : pathname.startsWith(item.href);
+            const [itemPath, itemHash = ''] = item.href.split('#');
+            const expectedHash = itemHash ? `#${itemHash}` : '';
+            const active = expectedHash
+              ? pathname === itemPath &&
+                (activeHash === expectedHash || (!activeHash && itemHash === 'reading'))
+              : itemPath === '/student'
+                ? pathname === itemPath
+                : pathname === itemPath ||
+                  (itemPath === '/student/paths' && pathname.startsWith(`${itemPath}/`));
             return (
               <Link
                 aria-current={active ? 'page' : undefined}
@@ -476,9 +491,9 @@ function MotivationCard() {
   );
 }
 
-export function StudentDashboard() {
+export function StudentShell({ children }: { children: ReactNode }) {
+  const pathname = usePathname();
   const [navigationOpen, setNavigationOpen] = useState(false);
-  const { learner, skills } = studentDashboardMock;
 
   useEffect(() => {
     document.body.style.overflow = navigationOpen ? 'hidden' : '';
@@ -492,32 +507,45 @@ export function StudentDashboard() {
       <DashboardSidebar open={navigationOpen} onClose={() => setNavigationOpen(false)} />
       <div className={styles.page}>
         <DashboardHeader onMenu={() => setNavigationOpen(true)} />
-        <main className={styles.main} id="main-content">
-          <section className={styles.welcome}>
-            <h1>Good evening, {learner.firstName}</h1>
-            <p>Your personalized path to academic English</p>
-          </section>
-
-          <div className={styles.dashboardGrid}>
-            <div className={styles.primaryColumn}>
-              <ContinueLearningCard />
-              <section aria-label="Language skills" className={styles.skillsGrid}>
-                {skills.map((skill) => (
-                  <SkillCard key={skill.id} skill={skill} />
-                ))}
-              </section>
-              <TodayPlan />
-            </div>
-            <div className={styles.secondaryColumn}>
-              <div className={styles.insightPanel}>
-                <WeeklyProgressPanel />
-                <TargetPanel />
-              </div>
-              <MotivationCard />
-            </div>
-          </div>
+        <main
+          className={`${styles.main} ${pathname === '/student' ? '' : styles.routeMain}`}
+          id="main-content"
+        >
+          {children}
         </main>
       </div>
     </div>
+  );
+}
+
+export function StudentDashboard() {
+  const { learner, skills } = studentDashboardMock;
+
+  return (
+    <>
+      <section className={styles.welcome}>
+        <h1>Good evening, {learner.firstName}</h1>
+        <p>Your personalized path to academic English</p>
+      </section>
+
+      <div className={styles.dashboardGrid}>
+        <div className={styles.primaryColumn}>
+          <ContinueLearningCard />
+          <section aria-label="Language skills" className={styles.skillsGrid}>
+            {skills.map((skill) => (
+              <SkillCard key={skill.id} skill={skill} />
+            ))}
+          </section>
+          <TodayPlan />
+        </div>
+        <div className={styles.secondaryColumn}>
+          <div className={styles.insightPanel}>
+            <WeeklyProgressPanel />
+            <TargetPanel />
+          </div>
+          <MotivationCard />
+        </div>
+      </div>
+    </>
   );
 }
