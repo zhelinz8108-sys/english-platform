@@ -56,6 +56,18 @@ function formatDuration(seconds: number | null): string {
   return `${minutes}:${String(seconds % 60).padStart(2, '0')}`;
 }
 
+function preferredAmericanVoice(voices: SpeechSynthesisVoice[]): SpeechSynthesisVoice | null {
+  const americanVoices = voices.filter((voice) => voice.lang.toLowerCase() === 'en-us');
+  return (
+    americanVoices.find((voice) =>
+      /natural|aria|jenny|guy|samantha|google us english|zira|david/iu.test(voice.name),
+    ) ??
+    americanVoices[0] ??
+    voices.find((voice) => voice.lang.toLowerCase().startsWith('en')) ??
+    null
+  );
+}
+
 export default function ToeflListeningPage() {
   const { currentTenant } = useWorkspace();
   const [tracks, setTracks] = useState<ListeningTrack[]>([]);
@@ -67,6 +79,8 @@ export default function ToeflListeningPage() {
   const [loadingDetailId, setLoadingDetailId] = useState<string | null>(null);
   const [studyById, setStudyById] = useState<Record<string, StudyContent>>({});
   const [playbackById, setPlaybackById] = useState<Record<string, string>>({});
+  const [speakingWord, setSpeakingWord] = useState<string | null>(null);
+  const [speechAvailable, setSpeechAvailable] = useState(false);
 
   async function load() {
     setLoading(true);
@@ -98,6 +112,18 @@ export default function ToeflListeningPage() {
   useEffect(() => {
     void load();
   }, [currentTenant.id]);
+
+  useEffect(() => {
+    const available =
+      typeof window !== 'undefined' &&
+      typeof window.speechSynthesis !== 'undefined' &&
+      typeof window.speechSynthesis.speak === 'function' &&
+      typeof window.SpeechSynthesisUtterance !== 'undefined';
+    setSpeechAvailable(available);
+    return () => {
+      if (available) window.speechSynthesis.cancel();
+    };
+  }, []);
 
   const filtered = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase('en');
@@ -145,6 +171,27 @@ export default function ToeflListeningPage() {
     } finally {
       setLoadingDetailId(null);
     }
+  }
+
+  function speakWord(word: string) {
+    if (
+      !speechAvailable ||
+      typeof window.speechSynthesis === 'undefined' ||
+      typeof window.SpeechSynthesisUtterance === 'undefined'
+    )
+      return;
+    window.speechSynthesis.cancel();
+    const utterance = new SpeechSynthesisUtterance(word);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.82;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+    utterance.voice = preferredAmericanVoice(window.speechSynthesis.getVoices());
+    utterance.onstart = () => setSpeakingWord(word);
+    utterance.onend = () => setSpeakingWord(null);
+    utterance.onerror = () => setSpeakingWord(null);
+    setSpeakingWord(word);
+    window.speechSynthesis.speak(utterance);
   }
 
   if (loading) return <LoadingState label="正在加载 Minute Earth 听力资料" />;
@@ -267,8 +314,28 @@ export default function ToeflListeningPage() {
                                     className="listening-vocabulary-entry"
                                     key={`${entry.word}-${index}`}
                                   >
-                                    <div>
-                                      <strong>{entry.word}</strong>
+                                    <div className="listening-vocabulary-word">
+                                      <div>
+                                        <strong>{entry.word}</strong>
+                                        <button
+                                          aria-label={`播放 ${entry.word} 的美式发音`}
+                                          className={
+                                            speakingWord === entry.word
+                                              ? 'vocabulary-audio-button is-speaking'
+                                              : 'vocabulary-audio-button'
+                                          }
+                                          disabled={!speechAvailable}
+                                          onClick={() => speakWord(entry.word)}
+                                          title={
+                                            speechAvailable
+                                              ? `播放 ${entry.word} 的美式发音`
+                                              : '当前浏览器不支持单词发音'
+                                          }
+                                          type="button"
+                                        >
+                                          <Icon name="volume" size={14} />
+                                        </button>
+                                      </div>
                                       {entry.ipa ? <span>{entry.ipa}</span> : null}
                                     </div>
                                     <p>{entry.definition}</p>

@@ -30,7 +30,8 @@ export type IconName =
   | 'calendar'
   | 'target'
   | 'headphones'
-  | 'microphone';
+  | 'microphone'
+  | 'volume';
 
 const paths: Record<IconName, string[]> = {
   home: ['M3 11.5 12 4l9 7.5', 'M5.5 10.5V20h13v-9.5', 'M9 20v-6h6v6'],
@@ -114,6 +115,7 @@ const paths: Record<IconName, string[]> = {
     'M12 19v3',
     'M8 22h8',
   ],
+  volume: ['M11 5 6 9H3v6h3l5 4Z', 'M15.5 8.5a5 5 0 0 1 0 7', 'M18.5 5.5a9 9 0 0 1 0 13'],
 };
 
 export function Icon({
