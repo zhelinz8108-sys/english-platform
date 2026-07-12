@@ -110,6 +110,10 @@ export function AppShell({ children }: { children: ReactNode }) {
     }
   }
 
+  if (pathname === '/student') {
+    return <>{children}</>;
+  }
+
   return (
     <div className="app-frame">
       <button
