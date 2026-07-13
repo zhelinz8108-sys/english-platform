@@ -2788,6 +2788,64 @@ strong {
   color: var(--ink-500);
 }
 
+.listening-collection-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.listening-collection-tab {
+  display: flex;
+  min-height: 70px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border: 1px solid var(--ink-200);
+  border-radius: var(--radius-md);
+  background: rgba(255, 253, 248, 0.76);
+  color: var(--ink-700);
+  padding: 14px 17px;
+  text-align: left;
+  transition:
+    border-color 150ms ease,
+    background 150ms ease,
+    box-shadow 150ms ease,
+    transform 150ms ease;
+}
+
+.listening-collection-tab:hover {
+  border-color: var(--brand-300);
+  transform: translateY(-1px);
+}
+
+.listening-collection-tab.is-active {
+  border-color: var(--brand-500);
+  background: linear-gradient(135deg, var(--brand-50), var(--surface));
+  box-shadow: var(--shadow-sm);
+  color: var(--brand-700);
+}
+
+.listening-collection-tab span {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 15px;
+}
+
+.listening-collection-tab small {
+  border-radius: 999px;
+  background: var(--brand-100);
+  font-size: 9px;
+  padding: 4px 8px;
+  white-space: nowrap;
+}
+
+.listening-collection-description {
+  max-width: 600px;
+  margin: 4px 0 0;
+  color: var(--ink-500);
+  font-size: 9px;
+}
+
 .listening-track-list {
   border-top: 1px solid var(--ink-100);
 }
@@ -2916,6 +2974,12 @@ strong {
 .listening-audio-section audio {
   width: 100%;
   height: 40px;
+}
+
+.listening-document-link {
+  grid-column: 2;
+  justify-self: end;
+  min-height: 33px;
 }
 
 .listening-study-section {
@@ -3127,6 +3191,15 @@ strong {
   .listening-audio-section,
   .listening-vocabulary-grid {
     grid-template-columns: 1fr;
+  }
+
+  .listening-collection-tabs {
+    grid-template-columns: 1fr;
+  }
+
+  .listening-document-link {
+    grid-column: auto;
+    justify-self: start;
   }
 
   .listening-vocabulary-entry:nth-child(odd) {
