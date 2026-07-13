@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 interface LibraryItem {
   id: string;
   collection: string;
+  title: string;
   audioPath: string | null;
   documentPath: string | null;
   transcriptWordCount: number;
@@ -33,9 +34,13 @@ describe('local listening library', () => {
     expect(bbc.every((item) => item.audioPath && !/\(1\)\.[^.]+$/u.test(item.audioPath))).toBe(
       true,
     );
-    expect(bbc.filter((item) => item.documentPath && item.transcriptWordCount > 0).length).toBe(
-      753,
-    );
+    expect(
+      bbc.filter((item) => item.documentPath && item.transcriptWordCount > 0).length,
+    ).toBe(858);
+
+    const peruvianHero = bbc.find((item) => item.title === "A Peruvian 'hero'");
+    expect(peruvianHero?.documentPath).toBeTruthy();
+    expect(peruvianHero?.transcriptWordCount).toBeGreaterThan(1000);
   });
 
   it('keeps collection counts and item identifiers consistent', () => {

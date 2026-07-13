@@ -9,6 +9,7 @@ import logging
 import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import UTC, datetime
+from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
@@ -65,6 +66,7 @@ def clean_pdf_text(text: str) -> str:
     return re.sub(r"\n{3,}", "\n\n", "\n".join(cleaned)).strip()
 
 
+@lru_cache(maxsize=None)
 def extract_pdf(path: Path) -> tuple[str, int]:
     try:
         reader = PdfReader(path)
@@ -86,10 +88,22 @@ def normalized_date_token(value: str) -> str | None:
     return ("20" if year < 50 else "19") + token
 
 
+def date_token_for_path(path: Path) -> str | None:
+    """Prefer the episode folder date over legacy dates embedded in media names."""
+    return normalized_date_token(path.parent.name) or normalized_date_token(path.stem)
+
+
 def humanize_title(value: str) -> str:
     value = DUPLICATE_SUFFIX.sub("", value)
+    value = re.sub(r"【[^】]*】|\[[^\]]*\]", "", value)
     value = re.sub(r"^(?:6minute[_-]?)?\d{6,8}[_ -]*", "", value, flags=re.IGNORECASE)
     value = re.sub(r"(?:中英对照|对白|transcript|worksheet)$", "", value, flags=re.IGNORECASE)
+    value = re.sub(
+        r"(?:for[_ -]?web|download|audio|au[_ -]?bb|mp3)$",
+        "",
+        value,
+        flags=re.IGNORECASE,
+    )
     value = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", value)
     value = re.sub(r"[_-]+", " ", value)
     value = re.sub(r"\s+", " ", value).strip()
@@ -99,6 +113,45 @@ def humanize_title(value: str) -> str:
 def slug(value: str) -> str:
     normalized = re.sub(r"[^a-z0-9]+", "-", value.lower()).strip("-")
     return normalized[:72] or "episode"
+
+
+TITLE_STOP_WORDS = {
+    "a",
+    "an",
+    "and",
+    "are",
+    "bbc",
+    "english",
+    "for",
+    "is",
+    "minute",
+    "of",
+    "the",
+    "to",
+}
+
+
+def title_terms(value: str) -> set[str]:
+    cleaned = humanize_title(value).casefold()
+    return {
+        word
+        for word in re.findall(r"[a-z0-9]+", cleaned)
+        if word not in TITLE_STOP_WORDS and not word.isdigit()
+    }
+
+
+def title_match_score(audio: Path, pdf: Path, *, inspect_content: bool) -> float:
+    audio_source = audio.parent.name if normalized_date_token(audio.parent.name) else canonical_stem(audio)
+    expected = title_terms(audio_source)
+    if not expected:
+        return 0
+    filename_terms = title_terms(canonical_stem(pdf))
+    score = len(expected & filename_terms) / len(expected)
+    if score >= 0.6 or not inspect_content:
+        return score
+    transcript, _ = extract_pdf(pdf)
+    first_page_terms = set(re.findall(r"[a-z0-9]+", transcript[:2500].casefold()))
+    return max(score, len(expected & first_page_terms) / len(expected))
 
 
 def build_minute_earth(root: Path, study_path: Path) -> list[dict[str, Any]]:
@@ -141,30 +194,69 @@ def build_minute_earth(root: Path, study_path: Path) -> list[dict[str, Any]]:
 
 
 def choose_bbc_pdf(audio: Path, pdfs: list[Path]) -> Path | None:
-    audio_date = normalized_date_token(audio.stem + " " + audio.parent.name)
+    audio_date = date_token_for_path(audio)
     audio_stem = canonical_stem(audio).casefold()
-    candidates: list[Path] = []
+    candidate_classes: dict[Path, int] = {}
+    split_scope = (
+        audio.parent.parent
+        if re.search(r"audio|mp3|音频", audio.parent.name, flags=re.IGNORECASE)
+        else None
+    )
     for pdf in pdfs:
-        pdf_stem = canonical_stem(pdf).casefold()
-        pdf_date = normalized_date_token(pdf.stem + " " + pdf.parent.name)
-        if pdf.parent == audio.parent and pdf_stem == audio_stem:
-            candidates.append(pdf)
+        pdf_date = date_token_for_path(pdf)
+        # Older BBC packages keep differently named audio and transcript files
+        # together in one episode directory. Newer packages split audio and
+        # documents into sibling directories, so their release date is the
+        # reliable join key.
+        if pdf.parent == audio.parent:
+            candidate_classes[pdf] = 0
         elif audio_date and pdf_date == audio_date:
-            candidates.append(pdf)
+            candidate_classes[pdf] = 1
+        elif split_scope is not None and pdf.parent.parent == split_scope:
+            candidate_classes[pdf] = 2
+    if not candidate_classes:
+        return None
+
+    filename_scores = {
+        path: title_match_score(audio, path, inspect_content=False) for path in candidate_classes
+    }
+    best_filename_score = max(filename_scores.values(), default=0)
+    match_scores = {
+        path: (
+            filename_scores[path]
+            if candidate_classes[path] < 2 or best_filename_score >= 0.6
+            else title_match_score(audio, path, inspect_content=True)
+        )
+        for path in candidate_classes
+    }
+    candidates = [
+        path
+        for path, candidate_class in candidate_classes.items()
+        if candidate_class < 2 or match_scores[path] >= 0.6
+    ]
     if not candidates:
         return None
 
-    def rank(path: Path) -> tuple[int, bool, int, str]:
+    def rank(path: Path) -> tuple[int, float, int, bool, int, str]:
         name = canonical_stem(path).casefold()
         if name == audio_stem:
             priority = 0
         elif "对白" in path.stem or "transcript" in name:
             priority = 1
-        elif "中英对照" in path.stem:
+        elif "中英对照" in path.stem or "中英文对照" in path.stem:
             priority = 2
+        elif "worksheet" in name:
+            priority = 4
         else:
             priority = 3
-        return priority, bool(DUPLICATE_SUFFIX.search(path.stem)), len(path.name), path.name
+        return (
+            candidate_classes[path],
+            -match_scores[path],
+            priority,
+            bool(DUPLICATE_SUFFIX.search(path.stem)),
+            len(path.name),
+            path.name,
+        )
 
     return sorted(candidates, key=rank)[0]
 
@@ -180,7 +272,7 @@ def build_bbc(root: Path, workers: int) -> list[dict[str, Any]]:
         audio_groups.setdefault(key, []).append(path)
 
     audios = [preferred_copy(group) for group in audio_groups.values()]
-    audios.sort(key=lambda path: (normalized_date_token(path.stem + " " + path.parent.name) or "99999999", path.as_posix()))
+    audios.sort(key=lambda path: (date_token_for_path(path) or "99999999", path.as_posix()))
     pairings = [(audio, choose_bbc_pdf(audio, pdfs)) for audio in audios]
 
     extracted: dict[Path, tuple[str, int]] = {}
@@ -193,7 +285,7 @@ def build_bbc(root: Path, workers: int) -> list[dict[str, Any]]:
     items: list[dict[str, Any]] = []
     used_ids: set[str] = set()
     for sequence, (audio, pdf) in enumerate(pairings, start=1):
-        date_token = normalized_date_token(audio.stem + " " + audio.parent.name)
+        date_token = date_token_for_path(audio)
         raw_title = audio.parent.name if normalized_date_token(audio.parent.name) else canonical_stem(audio)
         title = humanize_title(raw_title)
         base_id = f"bbc-{date_token or sequence:0>8}-{slug(title)}"
