@@ -72,7 +72,7 @@ const fallbackCollections: ListeningCollection[] = [
   {
     id: 'bbc-6-minute-english',
     label: 'BBC 6 Minute English',
-    description: 'BBC 六分钟英语，含音频和原版对话稿。',
+    description: 'BBC 六分钟英语，含音频、原版对话稿和重点词汇。',
     count: 0,
   },
 ];
@@ -420,7 +420,11 @@ export default function ToeflListeningPage() {
                             <section className="listening-study-section">
                               <div className="listening-section-heading">
                                 <div>
-                                  <p className="eyebrow">TOEFL / SAT Vocabulary</p>
+                                  <p className="eyebrow">
+                                    {collectionId === 'bbc-6-minute-english'
+                                      ? 'BBC Vocabulary'
+                                      : 'TOEFL / SAT Vocabulary'}
+                                  </p>
                                   <h3>重点词汇</h3>
                                 </div>
                                 <span>{study.vocabulary.length} 词</span>

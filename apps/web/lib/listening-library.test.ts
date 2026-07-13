@@ -41,6 +41,10 @@ describe('local listening library', () => {
     const peruvianHero = bbc.find((item) => item.title === "A Peruvian 'hero'");
     expect(peruvianHero?.documentPath).toBeTruthy();
     expect(peruvianHero?.transcriptWordCount).toBeGreaterThan(1000);
+
+    expect(bbc.filter((item) => item.vocabulary.length > 0)).toHaveLength(859);
+    expect(bbc.find((item) => item.title === 'Cost of living')?.vocabulary).toHaveLength(10);
+    expect(bbc.find((item) => item.title === 'Our Love Of Pets')?.vocabulary).toHaveLength(6);
   });
 
   it('keeps collection counts and item identifiers consistent', () => {
