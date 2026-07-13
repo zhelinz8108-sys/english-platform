@@ -290,6 +290,48 @@
   color: var(--aurelis-gold-dark);
 }
 
+.navParent {
+  width: 100%;
+  border-top: 0;
+  border-bottom: 0;
+  background: transparent;
+  text-align: left;
+}
+
+.navParent > svg:last-child {
+  margin-left: auto;
+  transition: transform 170ms ease;
+}
+
+.navParentChevronOpen {
+  transform: rotate(180deg);
+}
+
+.navParentActive {
+  color: var(--aurelis-gold-dark);
+}
+
+.nestedNav {
+  display: grid;
+  padding-bottom: 3px;
+}
+
+.nestedNav[hidden] {
+  display: none;
+}
+
+.navItemNested {
+  min-height: 37px;
+  border-inline-width: 2px;
+  font-size: 11px;
+  padding-block: 7px;
+  padding-left: 48px;
+}
+
+.navItemNested:hover {
+  padding-left: 52px;
+}
+
 .navItemActive::before {
   position: absolute;
   inset: 0;

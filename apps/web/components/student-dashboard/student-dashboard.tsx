@@ -94,16 +94,16 @@ const workspaceNavGroups: WorkspaceNavGroup[] = [
     label: '学习板块',
     roles: ['owner', 'admin', 'teacher', 'student', 'content_editor', 'analyst'],
     items: [
-      { label: '托福总览', href: '/student/learning/toefl', icon: ClipboardList },
-      { label: '阅读', href: '/student/learning/toefl#reading', icon: BookOpen },
-      { label: '听力', href: '/student/learning/toefl/listening', icon: Headphones },
-      { label: '口语', href: '/student/learning/toefl#speaking', icon: MessageCircle },
-      { label: '写作', href: '/student/learning/toefl#writing', icon: PenLine },
       {
         label: '词汇',
         href: '/student/learning/toefl/listening#vocabulary',
         icon: Languages,
       },
+      { label: '阅读', href: '/student/learning/toefl#reading', icon: BookOpen },
+      { label: '听力', href: '/student/learning/toefl/listening', icon: Headphones },
+      { label: '口语', href: '/student/learning/toefl#speaking', icon: MessageCircle },
+      { label: '写作', href: '/student/learning/toefl#writing', icon: PenLine },
+      { label: '托福', href: '/student/learning/toefl', icon: ClipboardList },
     ],
   },
   {
@@ -136,6 +136,7 @@ function Brand() {
 function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
   const pathname = usePathname();
   const [activeHash, setActiveHash] = useState('');
+  const [learningOpen, setLearningOpen] = useState(pathname.includes('/learning/toefl'));
   const { currentTenant } = useWorkspace();
   const { quote, learner } = studentDashboardMock;
   const visibleGroups = useMemo(
@@ -173,6 +174,44 @@ function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => voi
     return () => window.removeEventListener('hashchange', syncHash);
   }, [pathname]);
 
+  useEffect(() => {
+    if (pathname.includes('/learning/toefl')) setLearningOpen(true);
+  }, [pathname]);
+
+  function isNavItemActive(item: WorkspaceNavItem): boolean {
+    const [itemPath, itemHash = ''] = item.href.split('#');
+    const expectedHash = itemHash ? `#${itemHash}` : '';
+    const rootRoute = [
+      '/student',
+      '/teacher',
+      '/admin',
+      '/student/learning/toefl',
+      '/learning/toefl',
+    ].includes(itemPath!);
+    return expectedHash
+      ? pathname === itemPath && activeHash === expectedHash
+      : rootRoute
+        ? pathname === itemPath
+        : pathname === itemPath || pathname.startsWith(`${itemPath}/`);
+  }
+
+  function renderNavItem(item: WorkspaceNavItem, nested = false) {
+    const NavIcon = item.icon;
+    const active = isNavItemActive(item);
+    return (
+      <Link
+        aria-current={active ? 'page' : undefined}
+        className={`${styles.navItem} ${nested ? styles.navItemNested : ''} ${active ? styles.navItemActive : ''}`}
+        href={item.href}
+        key={`${item.label}-${item.href}`}
+        onClick={onClose}
+      >
+        <NavIcon aria-hidden="true" size={18} strokeWidth={1.55} />
+        <span>{item.label}</span>
+      </Link>
+    );
+  }
+
   return (
     <>
       <button
@@ -182,7 +221,7 @@ function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => voi
         type="button"
       />
       <aside
-        aria-label="Student navigation"
+        aria-label="Workspace navigation"
         className={`${styles.sidebar} ${open ? styles.sidebarOpen : ''}`}
         id="student-navigation"
       >
@@ -205,35 +244,34 @@ function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => voi
           {visibleGroups.map((group) => (
             <section className={styles.navGroup} key={group.label}>
               <h2 className={styles.navGroupLabel}>{group.label}</h2>
-              {group.items.map((item) => {
-                const NavIcon = item.icon;
-                const [itemPath, itemHash = ''] = item.href.split('#');
-                const expectedHash = itemHash ? `#${itemHash}` : '';
-                const rootRoute = [
-                  '/student',
-                  '/teacher',
-                  '/admin',
-                  '/student/learning/toefl',
-                  '/learning/toefl',
-                ].includes(itemPath!);
-                const active = expectedHash
-                  ? pathname === itemPath && activeHash === expectedHash
-                  : rootRoute
-                    ? pathname === itemPath
-                    : pathname === itemPath || pathname.startsWith(`${itemPath}/`);
-                return (
-                  <Link
-                    aria-current={active ? 'page' : undefined}
-                    className={`${styles.navItem} ${active ? styles.navItemActive : ''}`}
-                    href={item.href}
-                    key={`${item.label}-${item.href}`}
-                    onClick={onClose}
+              {group.label === '学习板块' ? (
+                <>
+                  <button
+                    aria-controls="english-learning-modules"
+                    aria-expanded={learningOpen}
+                    className={`${styles.navItem} ${styles.navParent} ${pathname.includes('/learning/toefl') ? styles.navParentActive : ''}`}
+                    onClick={() => setLearningOpen((value) => !value)}
+                    type="button"
                   >
-                    <NavIcon aria-hidden="true" size={18} strokeWidth={1.55} />
-                    <span>{item.label}</span>
-                  </Link>
-                );
-              })}
+                    <Languages aria-hidden="true" size={18} strokeWidth={1.55} />
+                    <span>英语</span>
+                    <ChevronDown
+                      aria-hidden="true"
+                      className={learningOpen ? styles.navParentChevronOpen : ''}
+                      size={15}
+                    />
+                  </button>
+                  <div
+                    className={styles.nestedNav}
+                    hidden={!learningOpen}
+                    id="english-learning-modules"
+                  >
+                    {group.items.map((item) => renderNavItem(item, true))}
+                  </div>
+                </>
+              ) : (
+                group.items.map((item) => renderNavItem(item))
+              )}
             </section>
           ))}
         </nav>
