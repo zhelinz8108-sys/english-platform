@@ -411,7 +411,7 @@ export default function ToeflListeningPage() {
                                 rel="noreferrer"
                                 target="_blank"
                               >
-                                <Icon name="book" size={15} /> 查看原版 PDF
+                                <Icon name="book" size={15} /> 查看原版资料
                               </a>
                             ) : null}
                           </section>
@@ -479,7 +479,7 @@ export default function ToeflListeningPage() {
                             ) : (
                               <p className="listening-empty-note">
                                 这组旧资料暂未提取出文本
-                                {study.documentUrl ? '，请查看原版 PDF。' : '。'}
+                                {study.documentUrl ? '，请查看原版资料。' : '。'}
                               </p>
                             )}
                           </section>

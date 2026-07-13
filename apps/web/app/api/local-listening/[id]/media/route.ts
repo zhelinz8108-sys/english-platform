@@ -36,12 +36,15 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
   const type = new URL(request.url).searchParams.get('type') === 'document' ? 'document' : 'audio';
   const media = await resolveLocalListeningMedia(item, type);
   if (!media) return new Response('Media not found', { status: 404 });
+  const originalFilename = path.basename(media.path);
+  const fallbackFilename = originalFilename.replaceAll(/[^\x20-\x7e]/gu, '_').replaceAll('"', '');
+  const encodedFilename = encodeURIComponent(originalFilename);
 
   const headers = new Headers({
     'Accept-Ranges': 'bytes',
     'Cache-Control': 'private, max-age=3600',
     'Content-Type': media.contentType,
-    'Content-Disposition': `${type === 'document' ? 'inline' : 'inline'}; filename="${path.basename(media.path).replaceAll('"', '')}"`,
+    'Content-Disposition': `inline; filename="${fallbackFilename}"; filename*=UTF-8''${encodedFilename}`,
   });
   const range = type === 'audio' ? parseRange(request.headers.get('range'), media.size) : null;
   if (range) {

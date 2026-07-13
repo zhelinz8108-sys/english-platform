@@ -34,9 +34,9 @@ describe('local listening library', () => {
     expect(bbc.every((item) => item.audioPath && !/\(1\)\.[^.]+$/u.test(item.audioPath))).toBe(
       true,
     );
-    expect(
-      bbc.filter((item) => item.documentPath && item.transcriptWordCount > 0).length,
-    ).toBe(858);
+    expect(bbc.filter((item) => item.documentPath && item.transcriptWordCount > 0).length).toBe(
+      859,
+    );
 
     const peruvianHero = bbc.find((item) => item.title === "A Peruvian 'hero'");
     expect(peruvianHero?.documentPath).toBeTruthy();

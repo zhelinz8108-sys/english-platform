@@ -94,7 +94,9 @@ export async function resolveLocalListeningMedia(
     const extension = path.extname(candidate).toLowerCase();
     const contentType =
       type === 'document'
-        ? 'application/pdf'
+        ? extension === '.docx'
+          ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+          : 'application/pdf'
         : extension === '.wav'
           ? 'audio/wav'
           : extension === '.m4a'
