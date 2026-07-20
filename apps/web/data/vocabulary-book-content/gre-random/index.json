@@ -1,0 +1,238 @@
+{
+  "schemaVersion": 1,
+  "bookId": "gre-random",
+  "wordEntryCount": 5853,
+  "duplicateEntryCount": 1287,
+  "units": [
+    {
+      "id": "word-list-01",
+      "wordEntryCount": 136,
+      "duplicateEntryCount": 20
+    },
+    {
+      "id": "word-list-02",
+      "wordEntryCount": 121,
+      "duplicateEntryCount": 35
+    },
+    {
+      "id": "word-list-03",
+      "wordEntryCount": 113,
+      "duplicateEntryCount": 42
+    },
+    {
+      "id": "word-list-04",
+      "wordEntryCount": 128,
+      "duplicateEntryCount": 28
+    },
+    {
+      "id": "word-list-05",
+      "wordEntryCount": 130,
+      "duplicateEntryCount": 29
+    },
+    {
+      "id": "word-list-06",
+      "wordEntryCount": 126,
+      "duplicateEntryCount": 30
+    },
+    {
+      "id": "word-list-07",
+      "wordEntryCount": 115,
+      "duplicateEntryCount": 40
+    },
+    {
+      "id": "word-list-08",
+      "wordEntryCount": 127,
+      "duplicateEntryCount": 33
+    },
+    {
+      "id": "word-list-09",
+      "wordEntryCount": 132,
+      "duplicateEntryCount": 29
+    },
+    {
+      "id": "word-list-10",
+      "wordEntryCount": 136,
+      "duplicateEntryCount": 24
+    },
+    {
+      "id": "word-list-11",
+      "wordEntryCount": 130,
+      "duplicateEntryCount": 29
+    },
+    {
+      "id": "word-list-12",
+      "wordEntryCount": 118,
+      "duplicateEntryCount": 43
+    },
+    {
+      "id": "word-list-13",
+      "wordEntryCount": 97,
+      "duplicateEntryCount": 62
+    },
+    {
+      "id": "word-list-14",
+      "wordEntryCount": 108,
+      "duplicateEntryCount": 51
+    },
+    {
+      "id": "word-list-15",
+      "wordEntryCount": 122,
+      "duplicateEntryCount": 35
+    },
+    {
+      "id": "word-list-16",
+      "wordEntryCount": 125,
+      "duplicateEntryCount": 33
+    },
+    {
+      "id": "word-list-17",
+      "wordEntryCount": 118,
+      "duplicateEntryCount": 40
+    },
+    {
+      "id": "word-list-18",
+      "wordEntryCount": 123,
+      "duplicateEntryCount": 32
+    },
+    {
+      "id": "word-list-19",
+      "wordEntryCount": 120,
+      "duplicateEntryCount": 40
+    },
+    {
+      "id": "word-list-20",
+      "wordEntryCount": 115,
+      "duplicateEntryCount": 45
+    },
+    {
+      "id": "word-list-21",
+      "wordEntryCount": 133,
+      "duplicateEntryCount": 18
+    },
+    {
+      "id": "word-list-22",
+      "wordEntryCount": 125,
+      "duplicateEntryCount": 28
+    },
+    {
+      "id": "word-list-23",
+      "wordEntryCount": 126,
+      "duplicateEntryCount": 27
+    },
+    {
+      "id": "word-list-24",
+      "wordEntryCount": 127,
+      "duplicateEntryCount": 25
+    },
+    {
+      "id": "word-list-25",
+      "wordEntryCount": 129,
+      "duplicateEntryCount": 20
+    },
+    {
+      "id": "word-list-26",
+      "wordEntryCount": 142,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "word-list-27",
+      "wordEntryCount": 136,
+      "duplicateEntryCount": 16
+    },
+    {
+      "id": "word-list-28",
+      "wordEntryCount": 137,
+      "duplicateEntryCount": 16
+    },
+    {
+      "id": "word-list-29",
+      "wordEntryCount": 132,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "word-list-30",
+      "wordEntryCount": 125,
+      "duplicateEntryCount": 28
+    },
+    {
+      "id": "word-list-31",
+      "wordEntryCount": 131,
+      "duplicateEntryCount": 22
+    },
+    {
+      "id": "word-list-32",
+      "wordEntryCount": 131,
+      "duplicateEntryCount": 26
+    },
+    {
+      "id": "word-list-33",
+      "wordEntryCount": 132,
+      "duplicateEntryCount": 20
+    },
+    {
+      "id": "word-list-34",
+      "wordEntryCount": 134,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "word-list-35",
+      "wordEntryCount": 132,
+      "duplicateEntryCount": 24
+    },
+    {
+      "id": "word-list-36",
+      "wordEntryCount": 134,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "word-list-37",
+      "wordEntryCount": 131,
+      "duplicateEntryCount": 22
+    },
+    {
+      "id": "word-list-38",
+      "wordEntryCount": 129,
+      "duplicateEntryCount": 22
+    },
+    {
+      "id": "word-list-39",
+      "wordEntryCount": 127,
+      "duplicateEntryCount": 28
+    },
+    {
+      "id": "word-list-40",
+      "wordEntryCount": 138,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "word-list-41",
+      "wordEntryCount": 128,
+      "duplicateEntryCount": 26
+    },
+    {
+      "id": "word-list-42",
+      "wordEntryCount": 133,
+      "duplicateEntryCount": 19
+    },
+    {
+      "id": "word-list-43",
+      "wordEntryCount": 135,
+      "duplicateEntryCount": 19
+    },
+    {
+      "id": "word-list-44",
+      "wordEntryCount": 130,
+      "duplicateEntryCount": 22
+    },
+    {
+      "id": "word-list-45",
+      "wordEntryCount": 129,
+      "duplicateEntryCount": 24
+    },
+    {
+      "id": "word-list-46",
+      "wordEntryCount": 127,
+      "duplicateEntryCount": 27
+    }
+  ]
+}

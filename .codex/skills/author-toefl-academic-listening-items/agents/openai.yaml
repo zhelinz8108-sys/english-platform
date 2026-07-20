@@ -1,0 +1,4 @@
+interface:
+  display_name: "TOEFL Academic Listening Item Authoring"
+  short_description: "Author, review, and validate TOEFL Academic Listening items"
+  default_prompt: "Use $author-toefl-academic-listening-items to author and validate four TOEFL Academic Listening items from a transcript."

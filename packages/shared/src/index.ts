@@ -130,3 +130,5 @@ export function compareTaskSources(
 }
 
 export * from './task-resolution.js';
+export * from './vocabulary-assessment.js';
+export * from './grammar.js';

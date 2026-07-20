@@ -24,6 +24,10 @@ import { TeacherController } from './teacher/teacher.controller.js';
 import { TeacherService } from './teacher/teacher.service.js';
 import { TeacherOperationsController } from './teacher/operations.controller.js';
 import { TeacherOperationsService } from './teacher/operations.service.js';
+import { VocabularyAssessmentController } from './vocabulary/vocabulary-assessment.controller.js';
+import { VocabularyAssessmentService } from './vocabulary/vocabulary-assessment.service.js';
+import { GrammarPracticeController } from './grammar/grammar-practice.controller.js';
+import { GrammarPracticeService } from './grammar/grammar-practice.service.js';
 
 @Module({
   controllers: [
@@ -36,6 +40,8 @@ import { TeacherOperationsService } from './teacher/operations.service.js';
     AdminController,
     FilesController,
     LearningController,
+    VocabularyAssessmentController,
+    GrammarPracticeController,
   ],
   providers: [
     AppConfig,
@@ -50,6 +56,8 @@ import { TeacherOperationsService } from './teacher/operations.service.js';
     AdminService,
     FilesService,
     LearningService,
+    VocabularyAssessmentService,
+    GrammarPracticeService,
     { provide: APP_GUARD, useClass: AccessGuard },
     { provide: APP_GUARD, useClass: CsrfGuard },
     { provide: APP_GUARD, useClass: TenantGuard },

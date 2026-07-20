@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   BarChart3,
   Bell,
+  BookMarked,
   BookOpen,
   Building2,
   ChevronDown,
@@ -13,6 +14,7 @@ import {
   ClipboardList,
   Clock3,
   Crown,
+  FileText,
   FilePlus2,
   Flame,
   Gauge,
@@ -67,6 +69,15 @@ interface WorkspaceNavGroup {
   items: WorkspaceNavItem[];
 }
 
+type ToeflNavSectionId = 'reading' | 'listening' | 'writing' | 'speaking';
+
+interface ToeflNavSection {
+  id: ToeflNavSectionId;
+  label: string;
+  icon: LucideIcon;
+  items: WorkspaceNavItem[];
+}
+
 const workspaceNavGroups: WorkspaceNavGroup[] = [
   {
     label: '学生工作台',
@@ -96,10 +107,11 @@ const workspaceNavGroups: WorkspaceNavGroup[] = [
     items: [
       {
         label: '词汇',
-        href: '/student/learning/toefl/listening#vocabulary',
+        href: '/student/learning/english/vocabulary',
         icon: Languages,
       },
-      { label: '阅读', href: '/student/learning/toefl#reading', icon: BookOpen },
+      { label: '语法', href: '/student/learning/english/grammar', icon: BookMarked },
+      { label: '阅读', href: '/student/learning/toefl/reading', icon: BookOpen },
       { label: '听力', href: '/student/learning/toefl/listening', icon: Headphones },
       { label: '口语', href: '/student/learning/toefl#speaking', icon: MessageCircle },
       { label: '写作', href: '/student/learning/toefl#writing', icon: PenLine },
@@ -122,6 +134,97 @@ const workspaceNavGroups: WorkspaceNavGroup[] = [
   },
 ];
 
+const toeflNavSections: ToeflNavSection[] = [
+  {
+    id: 'reading',
+    label: '阅读',
+    icon: BookOpen,
+    items: [
+      {
+        label: 'Complete the Words',
+        href: '/student/learning/toefl/reading#complete-words',
+        icon: FileText,
+      },
+      {
+        label: 'Read in Daily Life',
+        href: '/student/learning/toefl/reading#daily-life',
+        icon: FileText,
+      },
+      {
+        label: 'Read an Academic Passage',
+        href: '/student/learning/toefl/reading',
+        icon: FileText,
+      },
+    ],
+  },
+  {
+    id: 'listening',
+    label: '听力',
+    icon: Headphones,
+    items: [
+      {
+        label: 'Listen and Choose',
+        href: '/student/learning/toefl/listening',
+        icon: FileText,
+      },
+      {
+        label: 'Listen to a Conversation',
+        href: '/student/learning/toefl/listening#conversation',
+        icon: FileText,
+      },
+      {
+        label: 'Listen to an Announcement',
+        href: '/student/learning/toefl/listening#announcement',
+        icon: FileText,
+      },
+      {
+        label: 'Listen to an Academic Talk',
+        href: '/student/learning/toefl/listening#academic-talk',
+        icon: FileText,
+      },
+    ],
+  },
+  {
+    id: 'writing',
+    label: '写作',
+    icon: PenLine,
+    items: [
+      {
+        label: 'Build a Sentence',
+        href: '/student/learning/toefl#build-a-sentence',
+        icon: FileText,
+      },
+      {
+        label: 'Write an Email',
+        href: '/student/learning/toefl#write-an-email',
+        icon: FileText,
+      },
+      {
+        label: 'Write for an Academic Discussion',
+        href: '/student/learning/toefl#writing',
+        icon: FileText,
+      },
+    ],
+  },
+  {
+    id: 'speaking',
+    label: '口语',
+    icon: MessageCircle,
+    items: [
+      {
+        label: 'Listen and Repeat',
+        href: '/student/learning/toefl#listen-and-repeat',
+        icon: FileText,
+      },
+      {
+        label: 'Take an Interview',
+        href: '/student/learning/toefl#speaking',
+        icon: FileText,
+      },
+    ],
+  },
+];
+
 function Brand() {
   return (
     <Link aria-label="Aurelis learning overview" className={styles.brand} href="/student">
@@ -136,7 +239,14 @@ function Brand() {
 function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
   const pathname = usePathname();
   const [activeHash, setActiveHash] = useState('');
-  const [learningOpen, setLearningOpen] = useState(pathname.includes('/learning/toefl'));
+  const [learningOpen, setLearningOpen] = useState(pathname.includes('/learning/'));
+  const [toeflOpen, setToeflOpen] = useState(pathname.includes('/learning/toefl'));
+  const [toeflSectionsOpen, setToeflSectionsOpen] = useState<Record<ToeflNavSectionId, boolean>>({
+    reading: true,
+    listening: true,
+    writing: true,
+    speaking: true,
+  });
   const { currentTenant } = useWorkspace();
   const { quote, learner } = studentDashboardMock;
   const visibleGroups = useMemo(
@@ -159,7 +269,7 @@ function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => voi
               }
               return {
                 ...item,
-                href: item.href.replace('/student/learning/toefl', '/learning/toefl'),
+                href: item.href.replace('/student/learning', '/learning'),
               };
             }),
         }))
@@ -175,8 +285,15 @@ function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => voi
   }, [pathname]);
 
   useEffect(() => {
-    if (pathname.includes('/learning/toefl')) setLearningOpen(true);
+    if (pathname.includes('/learning/')) setLearningOpen(true);
+    if (pathname.includes('/learning/toefl')) setToeflOpen(true);
   }, [pathname]);
+
+  function resolveLearningHref(href: string): string {
+    return currentTenant.roles.includes('student')
+      ? href
+      : href.replace('/student/learning', '/learning');
+  }
 
   function isNavItemActive(item: WorkspaceNavItem): boolean {
     const [itemPath, itemHash = ''] = item.href.split('#');
@@ -195,13 +312,13 @@ function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => voi
         : pathname === itemPath || pathname.startsWith(`${itemPath}/`);
   }
 
-  function renderNavItem(item: WorkspaceNavItem, nested = false) {
+  function renderNavItem(item: WorkspaceNavItem, nested = false, extraClassName = '') {
     const NavIcon = item.icon;
     const active = isNavItemActive(item);
     return (
       <Link
         aria-current={active ? 'page' : undefined}
-        className={`${styles.navItem} ${nested ? styles.navItemNested : ''} ${active ? styles.navItemActive : ''}`}
+        className={`${styles.navItem} ${nested ? styles.navItemNested : ''} ${extraClassName} ${active ? styles.navItemActive : ''}`}
         href={item.href}
         key={`${item.label}-${item.href}`}
         onClick={onClose}
@@ -249,7 +366,7 @@ function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => voi
                   <button
                     aria-controls="english-learning-modules"
                     aria-expanded={learningOpen}
-                    className={`${styles.navItem} ${styles.navParent} ${pathname.includes('/learning/toefl') ? styles.navParentActive : ''}`}
+                    className={`${styles.navItem} ${styles.navParent} ${pathname.includes('/learning/') ? styles.navParentActive : ''}`}
                     onClick={() => setLearningOpen((value) => !value)}
                     type="button"
                   >
@@ -266,7 +383,79 @@ function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => voi
                     hidden={!learningOpen}
                     id="english-learning-modules"
                   >
-                    {group.items.map((item) => renderNavItem(item, true))}
+                    {group.items
+                      .filter((item) => item.label !== '托福')
+                      .map((item) => renderNavItem(item, true))}
+                    {group.items.some((item) => item.label === '托福') ? (
+                      <div className={styles.toeflNavRoot}>
+                        <button
+                          aria-controls="toefl-learning-modules"
+                          aria-expanded={toeflOpen}
+                          className={`${styles.navItem} ${styles.navItemNested} ${styles.navParent} ${styles.toeflNavParent} ${pathname.includes('/learning/toefl') ? styles.navParentActive : ''}`}
+                          onClick={() => setToeflOpen((value) => !value)}
+                          type="button"
+                        >
+                          <ClipboardList aria-hidden="true" size={18} strokeWidth={1.55} />
+                          <span>托福</span>
+                          <ChevronDown
+                            aria-hidden="true"
+                            className={toeflOpen ? styles.navParentChevronOpen : ''}
+                            size={14}
+                          />
+                        </button>
+                        <div
+                          className={styles.toeflNavSections}
+                          hidden={!toeflOpen}
+                          id="toefl-learning-modules"
+                        >
+                          {toeflNavSections.map((section) => {
+                            const SectionIcon = section.icon;
+                            const sectionOpen = toeflSectionsOpen[section.id];
+                            const sectionActive = pathname.includes(
+                              `/learning/toefl/${section.id}`,
+                            );
+                            const sectionPanelId = `toefl-${section.id}-items`;
+                            return (
+                              <section className={styles.toeflNavSection} key={section.id}>
+                                <button
+                                  aria-controls={sectionPanelId}
+                                  aria-expanded={sectionOpen}
+                                  className={`${styles.navItem} ${styles.navParent} ${styles.toeflSectionButton} ${sectionActive ? styles.navParentActive : ''}`}
+                                  onClick={() =>
+                                    setToeflSectionsOpen((current) => ({
+                                      ...current,
+                                      [section.id]: !current[section.id],
+                                    }))
+                                  }
+                                  type="button"
+                                >
+                                  <SectionIcon aria-hidden="true" size={16} strokeWidth={1.55} />
+                                  <span>{section.label}</span>
+                                  <ChevronDown
+                                    aria-hidden="true"
+                                    className={sectionOpen ? styles.navParentChevronOpen : ''}
+                                    size={13}
+                                  />
+                                </button>
+                                <div
+                                  className={styles.toeflTaskNav}
+                                  hidden={!sectionOpen}
+                                  id={sectionPanelId}
+                                >
+                                  {section.items.map((item) =>
+                                    renderNavItem(
+                                      { ...item, href: resolveLearningHref(item.href) },
+                                      true,
+                                      styles.toeflTaskItem,
+                                    ),
+                                  )}
+                                </div>
+                              </section>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ) : null}
                   </div>
                 </>
               ) : (
@@ -276,7 +465,7 @@ function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => voi
           ))}
         </nav>
 
-        <figure className={styles.quote}>
+        <figure className={`${styles.quote} ${learningOpen ? styles.quoteHidden : ''}`}>
           <blockquote>“{quote.text}”</blockquote>
           <figcaption>— {quote.author}</figcaption>
         </figure>

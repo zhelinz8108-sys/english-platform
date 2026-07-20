@@ -1,0 +1,508 @@
+{
+  "schemaVersion": 1,
+  "bookId": "toefl-sentences",
+  "wordEntryCount": 3846,
+  "duplicateEntryCount": 717,
+  "units": [
+    {
+      "id": "sentence-001",
+      "wordEntryCount": 31,
+      "duplicateEntryCount": 0
+    },
+    {
+      "id": "sentence-002",
+      "wordEntryCount": 46,
+      "duplicateEntryCount": 0
+    },
+    {
+      "id": "sentence-003",
+      "wordEntryCount": 69,
+      "duplicateEntryCount": 0
+    },
+    {
+      "id": "sentence-004",
+      "wordEntryCount": 37,
+      "duplicateEntryCount": 0
+    },
+    {
+      "id": "sentence-005",
+      "wordEntryCount": 35,
+      "duplicateEntryCount": 0
+    },
+    {
+      "id": "sentence-006",
+      "wordEntryCount": 39,
+      "duplicateEntryCount": 0
+    },
+    {
+      "id": "sentence-007",
+      "wordEntryCount": 38,
+      "duplicateEntryCount": 0
+    },
+    {
+      "id": "sentence-008",
+      "wordEntryCount": 81,
+      "duplicateEntryCount": 2
+    },
+    {
+      "id": "sentence-009",
+      "wordEntryCount": 60,
+      "duplicateEntryCount": 1
+    },
+    {
+      "id": "sentence-010",
+      "wordEntryCount": 40,
+      "duplicateEntryCount": 1
+    },
+    {
+      "id": "sentence-011",
+      "wordEntryCount": 42,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "sentence-012",
+      "wordEntryCount": 45,
+      "duplicateEntryCount": 0
+    },
+    {
+      "id": "sentence-013",
+      "wordEntryCount": 50,
+      "duplicateEntryCount": 1
+    },
+    {
+      "id": "sentence-014",
+      "wordEntryCount": 55,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "sentence-015",
+      "wordEntryCount": 34,
+      "duplicateEntryCount": 1
+    },
+    {
+      "id": "sentence-016",
+      "wordEntryCount": 59,
+      "duplicateEntryCount": 1
+    },
+    {
+      "id": "sentence-017",
+      "wordEntryCount": 31,
+      "duplicateEntryCount": 1
+    },
+    {
+      "id": "sentence-018",
+      "wordEntryCount": 49,
+      "duplicateEntryCount": 2
+    },
+    {
+      "id": "sentence-019",
+      "wordEntryCount": 69,
+      "duplicateEntryCount": 2
+    },
+    {
+      "id": "sentence-020",
+      "wordEntryCount": 55,
+      "duplicateEntryCount": 1
+    },
+    {
+      "id": "sentence-021",
+      "wordEntryCount": 54,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "sentence-022",
+      "wordEntryCount": 48,
+      "duplicateEntryCount": 7
+    },
+    {
+      "id": "sentence-023",
+      "wordEntryCount": 37,
+      "duplicateEntryCount": 2
+    },
+    {
+      "id": "sentence-024",
+      "wordEntryCount": 51,
+      "duplicateEntryCount": 1
+    },
+    {
+      "id": "sentence-025",
+      "wordEntryCount": 44,
+      "duplicateEntryCount": 1
+    },
+    {
+      "id": "sentence-026",
+      "wordEntryCount": 37,
+      "duplicateEntryCount": 6
+    },
+    {
+      "id": "sentence-027",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 1
+    },
+    {
+      "id": "sentence-028",
+      "wordEntryCount": 51,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "sentence-029",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 2
+    },
+    {
+      "id": "sentence-030",
+      "wordEntryCount": 52,
+      "duplicateEntryCount": 1
+    },
+    {
+      "id": "sentence-031",
+      "wordEntryCount": 66,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "sentence-032",
+      "wordEntryCount": 33,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "sentence-033",
+      "wordEntryCount": 21,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "sentence-034",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "sentence-035",
+      "wordEntryCount": 30,
+      "duplicateEntryCount": 7
+    },
+    {
+      "id": "sentence-036",
+      "wordEntryCount": 51,
+      "duplicateEntryCount": 1
+    },
+    {
+      "id": "sentence-037",
+      "wordEntryCount": 32,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "sentence-038",
+      "wordEntryCount": 45,
+      "duplicateEntryCount": 6
+    },
+    {
+      "id": "sentence-039",
+      "wordEntryCount": 33,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "sentence-040",
+      "wordEntryCount": 40,
+      "duplicateEntryCount": 7
+    },
+    {
+      "id": "sentence-041",
+      "wordEntryCount": 46,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "sentence-042",
+      "wordEntryCount": 27,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "sentence-043",
+      "wordEntryCount": 35,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "sentence-044",
+      "wordEntryCount": 42,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "sentence-045",
+      "wordEntryCount": 59,
+      "duplicateEntryCount": 3
+    },
+    {
+      "id": "sentence-046",
+      "wordEntryCount": 45,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "sentence-047",
+      "wordEntryCount": 33,
+      "duplicateEntryCount": 6
+    },
+    {
+      "id": "sentence-048",
+      "wordEntryCount": 32,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "sentence-049",
+      "wordEntryCount": 41,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "sentence-050",
+      "wordEntryCount": 26,
+      "duplicateEntryCount": 2
+    },
+    {
+      "id": "sentence-051",
+      "wordEntryCount": 30,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "sentence-052",
+      "wordEntryCount": 27,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "sentence-053",
+      "wordEntryCount": 39,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "sentence-054",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "sentence-055",
+      "wordEntryCount": 46,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "sentence-056",
+      "wordEntryCount": 31,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "sentence-057",
+      "wordEntryCount": 26,
+      "duplicateEntryCount": 25
+    },
+    {
+      "id": "sentence-058",
+      "wordEntryCount": 28,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "sentence-059",
+      "wordEntryCount": 30,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "sentence-060",
+      "wordEntryCount": 17,
+      "duplicateEntryCount": 20
+    },
+    {
+      "id": "sentence-061",
+      "wordEntryCount": 32,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "sentence-062",
+      "wordEntryCount": 38,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "sentence-063",
+      "wordEntryCount": 27,
+      "duplicateEntryCount": 6
+    },
+    {
+      "id": "sentence-064",
+      "wordEntryCount": 40,
+      "duplicateEntryCount": 1
+    },
+    {
+      "id": "sentence-065",
+      "wordEntryCount": 16,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "sentence-066",
+      "wordEntryCount": 55,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "sentence-067",
+      "wordEntryCount": 27,
+      "duplicateEntryCount": 3
+    },
+    {
+      "id": "sentence-068",
+      "wordEntryCount": 55,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "sentence-069",
+      "wordEntryCount": 12,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "sentence-070",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "sentence-071",
+      "wordEntryCount": 27,
+      "duplicateEntryCount": 26
+    },
+    {
+      "id": "sentence-072",
+      "wordEntryCount": 53,
+      "duplicateEntryCount": 2
+    },
+    {
+      "id": "sentence-073",
+      "wordEntryCount": 32,
+      "duplicateEntryCount": 17
+    },
+    {
+      "id": "sentence-074",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "sentence-075",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "sentence-076",
+      "wordEntryCount": 36,
+      "duplicateEntryCount": 3
+    },
+    {
+      "id": "sentence-077",
+      "wordEntryCount": 35,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "sentence-078",
+      "wordEntryCount": 33,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "sentence-079",
+      "wordEntryCount": 45,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "sentence-080",
+      "wordEntryCount": 37,
+      "duplicateEntryCount": 7
+    },
+    {
+      "id": "sentence-081",
+      "wordEntryCount": 60,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "sentence-082",
+      "wordEntryCount": 13,
+      "duplicateEntryCount": 17
+    },
+    {
+      "id": "sentence-083",
+      "wordEntryCount": 39,
+      "duplicateEntryCount": 6
+    },
+    {
+      "id": "sentence-084",
+      "wordEntryCount": 55,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "sentence-085",
+      "wordEntryCount": 69,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "sentence-086",
+      "wordEntryCount": 42,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "sentence-087",
+      "wordEntryCount": 27,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "sentence-088",
+      "wordEntryCount": 49,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "sentence-089",
+      "wordEntryCount": 28,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "sentence-090",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "sentence-091",
+      "wordEntryCount": 30,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "sentence-092",
+      "wordEntryCount": 42,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "sentence-093",
+      "wordEntryCount": 41,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "sentence-094",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "sentence-095",
+      "wordEntryCount": 38,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "sentence-096",
+      "wordEntryCount": 50,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "sentence-097",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "sentence-098",
+      "wordEntryCount": 29,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "sentence-099",
+      "wordEntryCount": 30,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "sentence-100",
+      "wordEntryCount": 18,
+      "duplicateEntryCount": 32
+    }
+  ]
+}

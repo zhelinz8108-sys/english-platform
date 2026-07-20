@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "skillVersion": "1.0.0",
+  "mode": "author",
+  "generatedAt": "2026-07-14T17:23:47.850416+00:00",
+  "skippedUnchanged": 0,
+  "skippedMissingTranscript": 0,
+  "instructions": "Generate exactly four questions per item using the selected Skill and source profile. Return an author bank; do not change sourceId or sourceHash.",
+  "items": [
+    {
+      "sourceId": "minute-earth-001",
+      "collection": "minute-earth",
+      "profile": "minute-earth-academic-talk",
+      "sourceHash": "c6ddaee2f591f50c7609ee68c5f8657d6c403ca8f8075bf51c3b593d26ea2d00",
+      "title": "MinuteEarth - The Story of Our Planet",
+      "sequence": 1,
+      "year": null,
+      "durationSeconds": 157,
+      "transcriptWordCount": 520,
+      "label": "TOEFL Academic Listening Practice",
+      "exactSimulation": true,
+      "transcript": "As far as we know, around 4,500 million years ago this rock that we live on coalesced from the dust and debris left over from the formation of our sun. Without airplanes, pizza delivery, or the Internet, things moved more slowly across the early earth than they do today. For example, from isolated puddles of water, the oceans formed over the course of 400 to 800 million years. That's how long it would take for your hair to grow around the earth - twice. In that same time, bacterial life did spread across the watery globe. Higher plants and animals, on the other hand, took much longer to develop and disperse.\n\nBut we're going to skip those 3 billion years (during which your hair would have grown to the moon) and talk about us, Homo sapiens. We were much faster than our own hair, which would have grown a meager 27km in the 180,000 years we took to cross Africa and reach all the unfrozen continents. In many of these places we were able to develop useful practices like agriculture, but because we were scattered across the globe, the best ideas and tastiest regional foods could only gain ground through trade or human migration. Wheat, for example, was domesticated around 8500BC to make porridge. Actually, some speculate it might have been for beer, but either way wheat made it from the Fertile Crescent to both the Atlantic and the Pacific by roughly 2500BC.\n\n6000km in 6000 years might seem like a blistering pace, but just wait for the Middle Ages! The bubonic plague and the printing press each spread across Europe in less than a hundred years, bringing death and literacy to the populace before their hair could have even grown 15 meters. In the 20th century, mania for both the Beatles and the Hula hoop raced around the world in a year or two. Now even a year is a long time. With millions of people jetsetting across the globe every day, diseases such as SARS can vacation almost anywhere within a few short weeks. And the 0s and 1s that make up this video take, on average, less than a tenth of a second to get to you - that's about half a nanometer, or two atoms, of hair growth.\n\nIn short - the pace of travel on earth has really sped up! But how do we know this stuff? How do we know what happened on earth before the records of written history? Why do we think the earth is 4,500,000,000 years old? And what on earth is going to happen in the next 45 years? Welcome to the story of what we know about the earth and how we know that we know it. This is MinuteEarth. How do we know what happened on Earth before the records of written history? Why do we think the Earth is 4500,000,000 years old? And what on Earth is going to happen in the next 45 years?\n\nWelcome to the story of what we know about the Earth and how we know that we know it. This is MinuteEarth."
+    },
+    {
+      "sourceId": "minute-earth-002",
+      "collection": "minute-earth",
+      "profile": "minute-earth-academic-talk",
+      "sourceHash": "9c5000cbf9f18dfa8f93cae3d811e2bc70529024579d019b7fd01748c70db961",
+      "title": "Why Are Leaves Green_ Part 1",
+      "sequence": 2,
+      "year": null,
+      "durationSeconds": 153,
+      "transcriptWordCount": 496,
+      "label": "TOEFL Academic Listening Practice",
+      "exactSimulation": true,
+      "transcript": "You've probably learned that leaves are green because they're full of a green molecule called chlorophyll - it's the reason for the greenness of plants, from moss-green moss to grass-green grass to ever-green evergreens. And the reason chlorophyll is so incredibly popular--showing up in nearly every plant on Earth--is that it's good at soaking up sunlight. The more light a plant gets, the more energy it has to make sugar and grow tulips and kumquats and do all the other things plants do. But wait a second: doesn't the fact that chlorophyll is green mean that it's actually bad at absorbing green light? I mean, sunlight is composed of the whole rainbow of colors, each a separate wavelength, and the colors we see when we look at a leaf are the wavelengths that leaf isn't absorbing -- that is, the ones that bounce off the leaf and reach our eyes.\n\nChlorophyll is great at absorbing reds and blues, but if it were really awesome, wouldn't it absorb all colors of light, green included, giving us a world full of black moss and black grass and everblack trees? So why aren't leaves black? And since they apparently don't have to be black, what's stopping them from being red or blue instead? Is green just Nature's favorite color, or is there something special about those wavelengths of light? The short answer is that we don't know for sure. Some scientists speculate it's serendipity that plants today are green. Long ago, Earth's oceans were filled with purple single-celled organisms called archaea.\n\nBeing purple, they absorbed green light and let red and blue pass through. The theory is that this \"minus-green\" light was the only source of solar energy in the deep water below, so bacteria living there got really good at absorbing everything else but green. And the molecule that did the light-absorbing? Chlorophyll! Maybe. In the long run, what we do know is that Chlorophyll, as wasteful as its failure to absorb green light may be, turned out to have other biochemical advantages over the purple competition. And perhaps as a result of this ancient biological rivalry, the plant world today is green, and not purple or red or blue.\n\nOf course, you might still wonder why plants didn't develop black leaves once they emerged from the depths. I mean, they changed a lot of other things going from bacteria to mighty redwood! Well, maybe it's simply that nature isn't about perfection, and life doesn't need \"flawless\" black to get by - just \"good enough\" green. Or maybe plants were even more clever and turned the weakness of chlorophyll into a strength? But we'll have to leave that story for later... Well, maybe it's simply that nature isn't about perfection, and life doesn't need flawless black to get by. Just good enough green. Or maybe plants were even more clever and turned the weakness of chlorophyll into a strength.\n\nBut we'll have to leave that story for later."
+    },
+    {
+      "sourceId": "minute-earth-003",
+      "collection": "minute-earth",
+      "profile": "minute-earth-academic-talk",
+      "sourceHash": "1850bbfb866313c2fab980c40c3011bc33872253c9d7a5453ab44b9fc87dc338",
+      "title": "Why Are Leaves Green_ Part 2",
+      "sequence": 3,
+      "year": null,
+      "durationSeconds": 147,
+      "transcriptWordCount": 480,
+      "label": "TOEFL Academic Listening Practice",
+      "exactSimulation": true,
+      "transcript": "At some point in the distant past, the ancestors of today's plants settled on a funny green molecule to help them make food using the sun's energy. We don't know exactly where this molecule came from, or why it was green - I mean, black would clearly be better at absorbing ALL colors of light. However, the fact that almost all plants on earth are still using chlorophyll's recipe must mean there's more to it than meets the eye. Plants need light-absorbing molecules like chlorophyll to do just two things: 1) capture the sun's energy and 2) transfer that energy to other components of the leaf so they have fuel to make sugar.\n\nIt turns out that having light-absorbing molecules that are bad at absorbing certain wavelengths of light isn't actually that big of a deal, because molecules like chlorophyll aren't just on the surface of a leaf, but instead are spread in layers throughout. That gives the leaf ample opportunity to absorb every photon of light passing through. For example, even though molecules of chlorophyll are abysmal at absorbing green light, this layered arrangement allows a leaf to capture up to 80% of the green light that hits it. In fact, if a leaf were to absorb all that green light right at the surface, it could be at risk of taking in too much energy too quickly and suffering the botanical equivalent of sunburn.\n\nAnother handy thing about capturing the energy in a spread-out fashion is that, once absorbed, the energy is already spread-out - no need to transport it throughout the leaf. And that's good because now, the real work is about to begin: using the sun's energy to cook up sugar from water and carbon dioxide. And this is where chlorophyll really shines. Other cellular kitchens, like those in purple bacteria, can make sugar too, but not quite as well as the green ones. That's because the green sugar-making machinery is both smaller (and thus less energy-intensive to build) and at the same time has a more powerful system for using light energy - it can combine the energy captured from two photons of light together to fuel a supersized sugar-synthesis.\n\nSo, among the light-harvesting systems that did evolve, the green recipe was superior to the purple one. And we can see the outcome of that competition every day all around us - I mean, green photosynthesis accounts for more than 99.9% of the natural productivity on Earth. But did the physics and chemistry of \"green\" make that outcome inevitable, or did it just turn out that way? Is there a planet somewhere out there in our galaxy dominated by purple plants? We don't know, but what we do know is that here on Earth, chlorophyll's strengths far outweigh its distaste for greens, and for our planet, at least, maybe that's not such a bad thing."
+    },
+    {
+      "sourceId": "minute-earth-004",
+      "collection": "minute-earth",
+      "profile": "minute-earth-academic-talk",
+      "sourceHash": "1a95302193d4fd0e0cb8c1677c058fc3c41d3a7ac848a8c312ad8b4bdc6e7d5b",
+      "title": "How Tall Can Mountains Be_",
+      "sequence": 4,
+      "year": null,
+      "durationSeconds": 114,
+      "transcriptWordCount": 357,
+      "label": "TOEFL Academic Listening Practice",
+      "exactSimulation": true,
+      "transcript": "Olympus Mons, the tallest mountain in our Solar System, towers 21,000 meters above the surface of Mars -- nearly two and a half times the height of Mount Everest. On Earth, you would need a spacesuit to survive at that altitude - but could there even be a mountain that tall here on our home planet? Based on the strength of Earth's gravity and the density and strength of rock, in principle you could make a single conical mountain that stretched between New York and Chicago and soared over 45km! That's twice the size of Olympus Mons and definitely dwarfs Everest. However, there are a couple of reasons why we can't actually have that humongous of a mountain on Earth: For one, Earth's crust is made up of continental plates that essentially float in the semi-solid rock of the mantle below.\n\nIf you add more weight above the surface, they sink lower into the earth's hot interior, and when they sink far enough, they soften and basically melt. For our conical mountain, that gives a new height limit of just 15km. As well, the powerful collision of two tectonic plates, which creates mountains in the first place, also fractures and cracks the rock, weakening its structure and exposing it to erosion. Over millions of years, freeze-thaw cycles pry at these cracks, while winds claw at the slopes and streams and glaciers carve deep valleys into the mountainside, all weakening the mountain's support. This can end badly.\n\nFor example, 3,764m tall Aoraki/Mount Cook in New Zealand had its top fall off one night in 1991, trimming it down to a 3,754m mountain. Given all the factors that conspire to limit the height of mountains - sinking into the earth's mantle, fractures, and erosion - I wouldn't bet on our tallest mountains getting too much taller than they already are. Then again, Mount Everest is still growing, 50 years from now, it could be 30 cm taller than it is today... or it could be a good deal shorter. We'll just have to wait around to find out. And, who knows? Maybe we'll be on Mars by then, anyway."
+    },
+    {
+      "sourceId": "minute-earth-005",
+      "collection": "minute-earth",
+      "profile": "minute-earth-academic-talk",
+      "sourceHash": "68ef1641b7af79583cc7738d3d301ac0f1fabf5ca92ba16c079d68e3f01dba03",
+      "title": "Why Does Earth Have Deserts_",
+      "sequence": 5,
+      "year": null,
+      "durationSeconds": 139,
+      "transcriptWordCount": 423,
+      "label": "TOEFL Academic Listening Practice",
+      "exactSimulation": true,
+      "transcript": "Look at the earth - isn't it beautiful? Blue oceans, white polar ice-caps, and verdant green land. Some brown as well, where there aren't as many plants. But why are those parts of our earth barren, and others green? I mean, deserts cover much of Africa and Australia, but not Europe! Europeans, it turns out, discovered the answer, but in the most unlikely of places - the oceans! When sailing from Europe, trade winds pushed ships enthusiastically southwest to the equator, where suddenly, the winds would die. These were the doldrums. And for sailors, they were a pain. They were also annoying to scientists like Galileo, Kepler, and Halley, who all had theories about why the wind blew to the southwest: Did the wind somehow follow the sun from morning til night?\n\nOr maybe it had trouble keeping up with the ground spinning beneath it? In 1735, a London lawyer and amateur meteorologist named George Hadley came up with an even brighter idea that ultimately helped explain not just ocean winds, but also why our planet has rainforests in a belt near the equator and deserts just north and south of that. Hadley figured that, since the sun warms the Earth most at the equator, air to the north and south must be cooler--and therefore more dense. Just as cold air rushes in through an open door in winter, cool air north and south of the equator must flow toward the warm air in the middle, bringing sailors with it.\n\nThere, in the doldrums, the air didn't actually stop moving, it just headed upwards, heat rising to make way for the denser air flowing in from both sides. And here's where the earth's greens and browns come in: As warm, humid air at the equator rises, it cools, and--since cool air can't hold as much moisture as warm air--it rains. A lot. Enough to make rain-forests. After reaching an altitude of about 17 kilometers, the rising (and drying) air hits the stratosphere, which acts kind of like a ceiling, causing the warm air to spread out and separate -- some goes north, some south. As the air leaves the equator, it rains away more moisture, becoming denser and slightly cooler, until finally dry, it sinks, creating the arid bands where many of the world's famous deserts lie.\n\nThis giant atmospheric conveyor belt, officially called a Hadley cell, brings us both tropical rainforests and deserts. So the locations of the greens and browns of the earth come courtesy of a lot of hot air."
+    }
+  ]
+}

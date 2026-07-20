@@ -1,0 +1,767 @@
+{
+  "schemaVersion": 1,
+  "skillVersion": "1.0.0",
+  "generatedAt": "2026-07-15T01:30:00+08:00",
+  "sets": [
+    {
+      "sourceId": "minute-earth-001",
+      "collection": "minute-earth",
+      "profile": "minute-earth-academic-talk",
+      "sourceHash": "c6ddaee2f591f50c7609ee68c5f8657d6c403ca8f8075bf51c3b593d26ea2d00",
+      "label": "TOEFL Academic Listening Practice",
+      "exactSimulation": true,
+      "status": "draft",
+      "audioDifficulty": {
+        "level": "medium",
+        "basis": "provisional-content-analysis"
+      },
+      "questions": [
+        {
+          "id": "minute-earth-001-q01",
+          "position": 1,
+          "type": "main_idea",
+          "difficulty": "medium",
+          "public": {
+            "prompt": "What is the main purpose of the talk?",
+            "options": [
+              {"id": "a", "text": "To trace how movement and diffusion on Earth have accelerated over time"},
+              {"id": "b", "text": "To explain how biological evolution eventually produced modern humans"},
+              {"id": "c", "text": "To compare written records with methods of geological dating"},
+              {"id": "d", "text": "To show that technological change has slowed cultural exchange"}
+            ]
+          },
+          "private": {
+            "answer": "a",
+            "evidence": [
+              {
+                "start": 152,
+                "end": 271,
+                "quote": "Without airplanes, pizza delivery, or the Internet, things moved more slowly across the early earth than they do today."
+              },
+              {
+                "start": 2107,
+                "end": 2165,
+                "quote": "In short - the pace of travel on earth has really sped up!"
+              }
+            ],
+            "explanationZh": "全文沿时间顺序比较海洋形成、人类迁徙、作物传播、瘟疫与印刷术传播以及现代航空和数字信息传输，核心是说明地球上移动与传播的速度不断加快，因此选 A。",
+            "optionRationalesZh": {
+              "a": "正确。它概括了从早期地球到现代社会的整条速度变化主线。",
+              "b": "错误。人类出现只用于时间线上的过渡，文章没有解释生物进化机制。",
+              "c": "错误。结尾提出如何认识史前地球，但没有展开比较具体的地质测年方法。",
+              "d": "错误。原文强调技术使旅行和信息传播加速，而不是减慢文化交流。"
+            }
+          }
+        },
+        {
+          "id": "minute-earth-001-q02",
+          "position": 2,
+          "type": "rhetorical_purpose",
+          "difficulty": "medium",
+          "public": {
+            "prompt": "Why does the narrator describe the spread of domesticated wheat?",
+            "options": [
+              {"id": "a", "text": "To prove that early agriculture first developed near the Pacific"},
+              {"id": "b", "text": "To illustrate how useful practices spread gradually through trade or migration"},
+              {"id": "c", "text": "To argue that beer was the principal cause of wheat domestication"},
+              {"id": "d", "text": "To compare the dispersal of crops with the movement of continents"}
+            ]
+          },
+          "private": {
+            "answer": "b",
+            "evidence": [
+              {
+                "start": 910,
+                "end": 1140,
+                "quote": "In many of these places we were able to develop useful practices like agriculture, but because we were scattered across the globe, the best ideas and tastiest regional foods could only gain ground through trade or human migration."
+              },
+              {
+                "start": 1141,
+                "end": 1209,
+                "quote": "Wheat, for example, was domesticated around 8500BC to make porridge."
+              }
+            ],
+            "explanationZh": "小麦是前一句一般性观点的具体例证：分散在各地的人群需要通过贸易或迁徙传播农业实践和食物。叙述者并不是要确定小麦驯化的唯一动机，而是展示早期传播速度，因此选 B。",
+            "optionRationalesZh": {
+              "a": "错误。原文说小麦从新月沃地传播到大西洋和太平洋两侧，并未说农业最早出现在太平洋。",
+              "b": "正确。小麦把“有用实践通过贸易或迁徙扩散”的抽象观点具体化了。",
+              "c": "错误。啤酒只是一种推测，而且原文明确说无论粥还是啤酒都不影响传播例子的作用。",
+              "d": "错误。原文没有把作物传播和大陆漂移进行比较。"
+            }
+          }
+        },
+        {
+          "id": "minute-earth-001-q03",
+          "position": 3,
+          "type": "detail",
+          "difficulty": "low",
+          "public": {
+            "prompt": "Which two developments does the narrator say spread across Europe in less than a century?",
+            "options": [
+              {"id": "a", "text": "Agriculture and wheat cultivation"},
+              {"id": "b", "text": "Beatlemania and the Hula hoop"},
+              {"id": "c", "text": "The bubonic plague and the printing press"},
+              {"id": "d", "text": "SARS and digital video data"}
+            ]
+          },
+          "private": {
+            "answer": "c",
+            "evidence": [
+              {
+                "start": 1467,
+                "end": 1659,
+                "quote": "The bubonic plague and the printing press each spread across Europe in less than a hundred years, bringing death and literacy to the populace before their hair could have even grown 15 meters."
+              }
+            ],
+            "explanationZh": "原文直接说明黑死病和印刷术都在不到一百年的时间里传遍欧洲，因此选 C。",
+            "optionRationalesZh": {
+              "a": "错误。农业和小麦的扩散经历了数千年。",
+              "b": "错误。披头士热和呼啦圈在一两年内风靡世界，不是题干所问的“不到一个世纪传遍欧洲”的组合。",
+              "c": "正确。这两个发展与原文中的地点和时间完全对应。",
+              "d": "错误。SARS和数字信息用于说明现代传播更快，并非同一组欧洲历史事件。"
+            }
+          }
+        },
+        {
+          "id": "minute-earth-001-q04",
+          "position": 4,
+          "type": "rhetorical_purpose",
+          "difficulty": "medium",
+          "public": {
+            "prompt": "Why does the narrator ask several questions near the end of the talk?",
+            "options": [
+              {"id": "a", "text": "To challenge the reliability of every account of Earth's history"},
+              {"id": "b", "text": "To shift exclusively to predictions about future technology"},
+              {"id": "c", "text": "To summarize the specific travel rates already mentioned"},
+              {"id": "d", "text": "To introduce a broader focus on what we know about Earth and how we know it"}
+            ]
+          },
+          "private": {
+            "answer": "d",
+            "evidence": [
+              {
+                "start": 2166,
+                "end": 2386,
+                "quote": "But how do we know this stuff? How do we know what happened on earth before the records of written history? Why do we think the earth is 4,500,000,000 years old? And what on earth is going to happen in the next 45 years?"
+              }
+            ],
+            "explanationZh": "这些问题把前面的“传播速度史”引向更大的节目主题：我们对地球知道什么、这些知识如何获得，以及未来可能发生什么。它们承担的是引出后续内容的功能，因此选 D。",
+            "optionRationalesZh": {
+              "a": "错误。提问是为了引出求证方式，并没有否定所有历史叙述。",
+              "b": "错误。问题同时涉及史前历史、地球年龄和未来，并非只谈未来技术。",
+              "c": "错误。提问没有复述各阶段的具体速度。",
+              "d": "正确。它准确对应随后“what we know about the earth and how we know”的节目定位。"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "sourceId": "minute-earth-002",
+      "collection": "minute-earth",
+      "profile": "minute-earth-academic-talk",
+      "sourceHash": "9c5000cbf9f18dfa8f93cae3d811e2bc70529024579d019b7fd01748c70db961",
+      "label": "TOEFL Academic Listening Practice",
+      "exactSimulation": true,
+      "status": "draft",
+      "audioDifficulty": {
+        "level": "medium",
+        "basis": "provisional-content-analysis"
+      },
+      "questions": [
+        {
+          "id": "minute-earth-002-q01",
+          "position": 1,
+          "type": "main_idea",
+          "difficulty": "medium",
+          "public": {
+            "prompt": "What is the talk mainly about?",
+            "options": [
+              {"id": "a", "text": "Why chlorophyll absorbs green light more efficiently than other colors"},
+              {"id": "b", "text": "Why plants are green despite chlorophyll's weak absorption of green light"},
+              {"id": "c", "text": "How plants changed physically as they evolved from bacteria to redwoods"},
+              {"id": "d", "text": "Why black leaves would be unable to carry out photosynthesis"}
+            ]
+          },
+          "private": {
+            "answer": "b",
+            "evidence": [
+              {
+                "start": 493,
+                "end": 608,
+                "quote": "But wait a second: doesn't the fact that chlorophyll is green mean that it's actually bad at absorbing green light?"
+              },
+              {
+                "start": 1840,
+                "end": 2027,
+                "quote": "In the long run, what we do know is that Chlorophyll, as wasteful as its failure to absorb green light may be, turned out to have other biochemical advantages over the purple competition."
+              }
+            ],
+            "explanationZh": "文章从“绿色意味着不吸收绿光”的矛盾出发，讨论古代紫色生物造成的演化假说，并指出叶绿素可能凭借其他生化优势胜出，核心是在解释植物为什么仍然是绿色，因此选 B。",
+            "optionRationalesZh": {
+              "a": "错误。叶绿素恰恰不擅长吸收绿光。",
+              "b": "正确。该选项同时涵盖文章提出的问题和演化解释。",
+              "c": "错误。从细菌到红杉只是说明植物发生过许多变化，不是全文主线。",
+              "d": "错误。原文没有说黑叶不能光合作用，而是追问植物为什么没有发展出黑叶。"
+            }
+          }
+        },
+        {
+          "id": "minute-earth-002-q02",
+          "position": 2,
+          "type": "rhetorical_purpose",
+          "difficulty": "high",
+          "public": {
+            "prompt": "Why does the narrator discuss purple archaea and bacteria living in deeper water?",
+            "options": [
+              {"id": "a", "text": "To demonstrate that modern plants descended directly from purple archaea"},
+              {"id": "b", "text": "To show that red and blue light could not reach organisms in deep water"},
+              {"id": "c", "text": "To present a possible evolutionary setting that favored chlorophyll"},
+              {"id": "d", "text": "To prove that nature deliberately selected green as its preferred color"}
+            ]
+          },
+          "private": {
+            "answer": "c",
+            "evidence": [
+              {
+                "start": 1692,
+                "end": 1832,
+                "quote": "so bacteria living there got really good at absorbing everything else but green. And the molecule that did the light-absorbing? Chlorophyll!"
+              }
+            ],
+            "explanationZh": "紫色古菌吸收绿光、放过红蓝光的设定，为深水细菌形成不同吸光策略提供了可能的演化环境；叙述者借此解释叶绿素为何留下“不吸收绿光”的特征。因此选 C。",
+            "optionRationalesZh": {
+              "a": "错误。原文没有建立现代植物直接起源于紫色古菌的谱系关系。",
+              "b": "错误。紫色古菌让红光和蓝光通过，深水中的可用光正是缺少绿光而非缺少红蓝光。",
+              "c": "正确。这是一个明确标为推测的叶绿素演化情境。",
+              "d": "错误。原文反而提出绿色可能是偶然结果，并未赋予自然主观偏好。"
+            }
+          }
+        },
+        {
+          "id": "minute-earth-002-q03",
+          "position": 3,
+          "type": "detail",
+          "difficulty": "medium",
+          "public": {
+            "prompt": "Which claim does the narrator present as established rather than speculative?",
+            "options": [
+              {"id": "a", "text": "Purple archaea were the direct ancestors of all plants"},
+              {"id": "b", "text": "Black leaves could never survive in natural environments"},
+              {"id": "c", "text": "Green is nature's preferred color for living organisms"},
+              {"id": "d", "text": "Chlorophyll had biochemical advantages over its purple competitors"}
+            ]
+          },
+          "private": {
+            "answer": "d",
+            "evidence": [
+              {
+                "start": 1840,
+                "end": 2027,
+                "quote": "In the long run, what we do know is that Chlorophyll, as wasteful as its failure to absorb green light may be, turned out to have other biochemical advantages over the purple competition."
+              }
+            ],
+            "explanationZh": "叙述者用“what we do know”明确区分确定内容与前面的推测：虽然叶绿素不吸收绿光看似浪费，但它相对紫色竞争者具有其他生化优势。因此选 D。",
+            "optionRationalesZh": {
+              "a": "错误。直接祖先关系没有在原文中得到确认。",
+              "b": "错误。黑叶为什么没有出现仍是开放问题，原文未说它绝不可能存活。",
+              "c": "错误。“自然最喜欢绿色”是叙述者提出后否定其确定性的修辞问题。",
+              "d": "正确。原文明确把这一点标为已知结论。"
+            }
+          }
+        },
+        {
+          "id": "minute-earth-002-q04",
+          "position": 4,
+          "type": "prediction",
+          "difficulty": "medium",
+          "public": {
+            "prompt": "What topic is the narrator most likely to discuss next?",
+            "options": [
+              {"id": "a", "text": "How chlorophyll's weak green-light absorption may benefit plants"},
+              {"id": "b", "text": "How botanists measure the height of mature redwood trees"},
+              {"id": "c", "text": "Why purple organisms disappeared completely from the oceans"},
+              {"id": "d", "text": "How artificial black leaves could replace natural vegetation"}
+            ]
+          },
+          "private": {
+            "answer": "a",
+            "evidence": [
+              {
+                "start": 2479,
+                "end": 2620,
+                "quote": "Or maybe plants were even more clever and turned the weakness of chlorophyll into a strength? But we'll have to leave that story for later..."
+              }
+            ],
+            "explanationZh": "结尾明确留下悬念：植物也许把叶绿素的弱点转化成优势，并说这个故事以后再讲。因此下一部分最可能解释不吸收绿光怎样反而有利于植物，选 A。",
+            "optionRationalesZh": {
+              "a": "正确。它直接承接结尾未展开的“turn the weakness ... into a strength”。",
+              "b": "错误。红杉只作为植物变化很大的例子出现。",
+              "c": "错误。原文没有说紫色生物完全消失，也没有预告这一主题。",
+              "d": "错误。黑叶是假设性对照，结尾没有提出用人工黑叶替代植物。"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "sourceId": "minute-earth-003",
+      "collection": "minute-earth",
+      "profile": "minute-earth-academic-talk",
+      "sourceHash": "1850bbfb866313c2fab980c40c3011bc33872253c9d7a5453ab44b9fc87dc338",
+      "label": "TOEFL Academic Listening Practice",
+      "exactSimulation": true,
+      "status": "draft",
+      "audioDifficulty": {
+        "level": "high",
+        "basis": "provisional-content-analysis"
+      },
+      "questions": [
+        {
+          "id": "minute-earth-003-q01",
+          "position": 1,
+          "type": "main_idea",
+          "difficulty": "medium",
+          "public": {
+            "prompt": "What is the main point of the talk?",
+            "options": [
+              {"id": "a", "text": "Plants would produce more sugar if their leaves absorbed every wavelength at the surface"},
+              {"id": "b", "text": "The evolution of green photosynthesis was inevitable on every planet"},
+              {"id": "c", "text": "Chlorophyll's overall system benefits outweigh its weak absorption of green light"},
+              {"id": "d", "text": "Purple photosynthesis supplies nearly all of Earth's natural productivity"}
+            ]
+          },
+          "private": {
+            "answer": "c",
+            "evidence": [
+              {
+                "start": 295,
+                "end": 430,
+                "quote": "However, the fact that almost all plants on earth are still using chlorophyll's recipe must mean there's more to it than meets the eye."
+              },
+              {
+                "start": 2425,
+                "end": 2753,
+                "quote": "make that outcome inevitable, or did it just turn out that way? Is there a planet somewhere out there in our galaxy dominated by purple plants? We don't know, but what we do know is that here on Earth, chlorophyll's strengths far outweigh its distaste for greens, and for our planet, at least, maybe that's not such a bad thing."
+              }
+            ],
+            "explanationZh": "文章逐层说明叶绿素的吸光分布、避免表面能量过载、减少能量运输，以及绿色制糖系统的效率优势，最终得出叶绿素的整体优势远大于不擅长吸收绿光的缺点，因此选 C。",
+            "optionRationalesZh": {
+              "a": "错误。原文说表面一次吸收全部绿光可能造成能量过载和类似晒伤的问题。",
+              "b": "错误。结尾明确说尚不知道绿色结果是必然还是偶然。",
+              "c": "正确。它概括了全文对叶绿素“局部弱点、系统优势”的论证。",
+              "d": "错误。占地球自然生产力 99.9% 以上的是绿色光合作用。"
+            }
+          }
+        },
+        {
+          "id": "minute-earth-003-q02",
+          "position": 2,
+          "type": "detail",
+          "difficulty": "medium",
+          "public": {
+            "prompt": "Why is it useful for chlorophyll molecules to be distributed in layers throughout a leaf?",
+            "options": [
+              {"id": "a", "text": "They prevent any green light from entering the leaf"},
+              {"id": "b", "text": "They make each chlorophyll molecule equally efficient at all wavelengths"},
+              {"id": "c", "text": "They concentrate absorbed energy at the leaf's outer surface"},
+              {"id": "d", "text": "They capture much of the green light without absorbing too much energy at once"}
+            ]
+          },
+          "private": {
+            "answer": "d",
+            "evidence": [
+              {
+                "start": 977,
+                "end": 1346,
+                "quote": "For example, even though molecules of chlorophyll are abysmal at absorbing green light, this layered arrangement allows a leaf to capture up to 80% of the green light that hits it. In fact, if a leaf were to absorb all that green light right at the surface, it could be at risk of taking in too much energy too quickly and suffering the botanical equivalent of sunburn."
+              }
+            ],
+            "explanationZh": "分层排列给光子多次被吸收的机会，使叶片能捕获多达 80% 的绿光；同时避免能量全部在表面被迅速吸收而造成类似晒伤的损害。因此选 D。",
+            "optionRationalesZh": {
+              "a": "错误。分层会增加而不是阻止绿光被叶片整体吸收。",
+              "b": "错误。分层不改变单个叶绿素分子的波长吸收效率。",
+              "c": "错误。能量因此被分散，而不是集中在表面。",
+              "d": "正确。它同时涵盖提高整体捕获率和避免能量过载两个好处。"
+            }
+          }
+        },
+        {
+          "id": "minute-earth-003-q03",
+          "position": 3,
+          "type": "rhetorical_purpose",
+          "difficulty": "medium",
+          "public": {
+            "prompt": "Why does the narrator compare green sugar-making machinery with that of purple bacteria?",
+            "options": [
+              {"id": "a", "text": "To explain why the green system had a competitive advantage"},
+              {"id": "b", "text": "To show that purple bacteria cannot use light to make sugar"},
+              {"id": "c", "text": "To argue that larger cellular machinery always produces more energy"},
+              {"id": "d", "text": "To identify the original organism in which chlorophyll evolved"}
+            ]
+          },
+          "private": {
+            "answer": "a",
+            "evidence": [
+              {
+                "start": 1818,
+                "end": 2104,
+                "quote": "That's because the green sugar-making machinery is both smaller (and thus less energy-intensive to build) and at the same time has a more powerful system for using light energy - it can combine the energy captured from two photons of light together to fuel a supersized sugar-synthesis."
+              }
+            ],
+            "explanationZh": "与紫色细菌的对比突出绿色系统的两项竞争优势：装置更小、建造耗能更低，同时能合并两个光子的能量进行更强的糖合成。这个比较服务于解释绿色系统为何胜出，因此选 A。",
+            "optionRationalesZh": {
+              "a": "正确。比较直接支撑后文“green recipe was superior”的结论。",
+              "b": "错误。原文明确说紫色细菌也能制造糖，只是效率不如绿色系统。",
+              "c": "错误。绿色装置的优势之一正是更小，而非越大越好。",
+              "d": "错误。比较功能与效率，不能确定叶绿素最初在哪种生物中演化。"
+            }
+          }
+        },
+        {
+          "id": "minute-earth-003-q04",
+          "position": 4,
+          "type": "inference",
+          "difficulty": "high",
+          "public": {
+            "prompt": "What can be inferred from the narrator's question about a planet dominated by purple plants?",
+            "options": [
+              {"id": "a", "text": "Purple plants have already been detected on a planet in our galaxy"},
+              {"id": "b", "text": "Green photosynthesis may not be the only possible evolutionary outcome"},
+              {"id": "c", "text": "Chlorophyll would function better under the light of another star"},
+              {"id": "d", "text": "All planets with life eventually develop the same photosynthetic system"}
+            ]
+          },
+          "private": {
+            "answer": "b",
+            "evidence": [
+              {
+                "start": 2425,
+                "end": 2753,
+                "quote": "make that outcome inevitable, or did it just turn out that way? Is there a planet somewhere out there in our galaxy dominated by purple plants? We don't know, but what we do know is that here on Earth, chlorophyll's strengths far outweigh its distaste for greens, and for our planet, at least, maybe that's not such a bad thing."
+              }
+            ],
+            "explanationZh": "叙述者把“绿色是否必然”与“是否存在紫色植物占主导的星球”并列，并明确说不知道。这暗示地球上的绿色优势可能不是所有环境中唯一的演化结果，因此选 B。",
+            "optionRationalesZh": {
+              "a": "错误。原文把紫色星球作为未知的可能性，而不是已发现事实。",
+              "b": "正确。它是对“inevitable, or did it just turn out that way”的合理推断。",
+              "c": "错误。原文没有讨论其他恒星光谱下叶绿素功能更好。",
+              "d": "错误。该绝对说法与叙述者对其他可能结果的开放态度相反。"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "sourceId": "minute-earth-004",
+      "collection": "minute-earth",
+      "profile": "minute-earth-academic-talk",
+      "sourceHash": "1a95302193d4fd0e0cb8c1677c058fc3c41d3a7ac848a8c312ad8b4bdc6e7d5b",
+      "label": "TOEFL Academic Listening Practice",
+      "exactSimulation": true,
+      "status": "draft",
+      "audioDifficulty": {
+        "level": "medium",
+        "basis": "provisional-content-analysis"
+      },
+      "questions": [
+        {
+          "id": "minute-earth-004-q01",
+          "position": 1,
+          "type": "main_idea",
+          "difficulty": "medium",
+          "public": {
+            "prompt": "What is the main focus of the talk?",
+            "options": [
+              {"id": "a", "text": "Why Olympus Mons is currently shrinking faster than Mount Everest"},
+              {"id": "b", "text": "How engineers could construct a mountain between New York and Chicago"},
+              {"id": "c", "text": "Why all mountains stop growing once they reach 3,754 meters"},
+              {"id": "d", "text": "How geological processes place practical limits on mountain height on Earth"}
+            ]
+          },
+          "private": {
+            "answer": "d",
+            "evidence": [
+              {
+                "start": 300,
+                "end": 498,
+                "quote": "Based on the strength of Earth's gravity and the density and strength of rock, in principle you could make a single conical mountain that stretched between New York and Chicago and soared over 45km!"
+              },
+              {
+                "start": 1565,
+                "end": 1780,
+                "quote": "Given all the factors that conspire to limit the height of mountains - sinking into the earth's mantle, fractures, and erosion - I wouldn't bet on our tallest mountains getting too much taller than they already are."
+              }
+            ],
+            "explanationZh": "文章先给出岩石强度允许的理论高度，再逐一加入地壳下沉熔化、板块碰撞导致的裂缝和侵蚀等现实约束，说明地球山脉实际高度受到多种地质过程限制。因此选 D。",
+            "optionRationalesZh": {
+              "a": "错误。奥林匹斯山只是高度对照，原文没有说它正在快速变矮。",
+              "b": "错误。纽约到芝加哥的圆锥山是理论尺度比喻，不是工程方案。",
+              "c": "错误。3,754 米是库克山山顶坍塌后的高度，不是所有山脉的统一上限。",
+              "d": "正确。它完整概括理论高度与现实地质限制之间的核心论证。"
+            }
+          }
+        },
+        {
+          "id": "minute-earth-004-q02",
+          "position": 2,
+          "type": "detail",
+          "difficulty": "medium",
+          "public": {
+            "prompt": "Why does adding more mass to a mountain eventually limit its height?",
+            "options": [
+              {"id": "a", "text": "The crust sinks into hotter material, where it softens and melts"},
+              {"id": "b", "text": "The added mass causes Earth's gravity to become permanently stronger"},
+              {"id": "c", "text": "The mountain blocks the movement of every nearby tectonic plate"},
+              {"id": "d", "text": "The mantle rises above the summit and freezes the exposed rock"}
+            ]
+          },
+          "private": {
+            "answer": "a",
+            "evidence": [
+              {
+                "start": 797,
+                "end": 1018,
+                "quote": "If you add more weight above the surface, they sink lower into the earth's hot interior, and when they sink far enough, they soften and basically melt. For our conical mountain, that gives a new height limit of just 15km."
+              }
+            ],
+            "explanationZh": "大陆板块漂浮在半固态地幔上；山体增重会让板块沉入更热的内部，沉得足够深时岩石软化甚至熔化，从而把理论高度限制到约 15 千米。因此选 A。",
+            "optionRationalesZh": {
+              "a": "正确。它准确复述了“增重—下沉—软化熔化—限制高度”的因果链。",
+              "b": "错误。山体增重不会使地球整体重力永久增强。",
+              "c": "错误。原文没有说山体会阻止所有附近板块运动。",
+              "d": "错误。原文是地壳向热的内部下沉，而不是地幔越过山顶并冻结岩石。"
+            }
+          }
+        },
+        {
+          "id": "minute-earth-004-q03",
+          "position": 3,
+          "type": "rhetorical_purpose",
+          "difficulty": "medium",
+          "public": {
+            "prompt": "Why does the narrator mention the 1991 collapse of Aoraki/Mount Cook's summit?",
+            "options": [
+              {"id": "a", "text": "To show that New Zealand measures mountain height differently"},
+              {"id": "b", "text": "To illustrate how weakened mountain structures can suddenly lose height"},
+              {"id": "c", "text": "To demonstrate that all tectonic collisions immediately destroy mountains"},
+              {"id": "d", "text": "To compare the rate of erosion on Earth with the rate on Mars"}
+            ]
+          },
+          "private": {
+            "answer": "b",
+            "evidence": [
+              {
+                "start": 1019,
+                "end": 1206,
+                "quote": "As well, the powerful collision of two tectonic plates, which creates mountains in the first place, also fractures and cracks the rock, weakening its structure and exposing it to erosion."
+              },
+              {
+                "start": 1428,
+                "end": 1564,
+                "quote": "For example, 3,764m tall Aoraki/Mount Cook in New Zealand had its top fall off one night in 1991, trimming it down to a 3,754m mountain."
+              }
+            ],
+            "explanationZh": "前文说明板块碰撞会使岩石破裂，冻融、风、河流和冰川又会继续削弱支撑。库克山山顶一夜坍塌是这些削弱过程可能导致山体突然变矮的具体实例，因此选 B。",
+            "optionRationalesZh": {
+              "a": "错误。数字变化来自山顶坍塌，不是测量标准不同。",
+              "b": "正确。该事件把“结构弱化可能造成严重后果”具体化。",
+              "c": "错误。原文没有说所有板块碰撞都会立即毁掉山脉。",
+              "d": "错误。例子只发生在地球，没有提供火星侵蚀速率来比较。"
+            }
+          }
+        },
+        {
+          "id": "minute-earth-004-q04",
+          "position": 4,
+          "type": "inference",
+          "difficulty": "high",
+          "public": {
+            "prompt": "What does the narrator imply about Mount Everest's future height?",
+            "options": [
+              {"id": "a", "text": "It will certainly reach the theoretical 15-kilometer limit"},
+              {"id": "b", "text": "It has stopped being affected by tectonic activity"},
+              {"id": "c", "text": "Its future height depends on competing growth and destructive processes"},
+              {"id": "d", "text": "It will become shorter only if Earth's gravity increases"}
+            ]
+          },
+          "private": {
+            "answer": "c",
+            "evidence": [
+              {
+                "start": 1781,
+                "end": 1924,
+                "quote": "Then again, Mount Everest is still growing, 50 years from now, it could be 30 cm taller than it is today... or it could be a good deal shorter."
+              }
+            ],
+            "explanationZh": "珠峰仍受构造活动推动而增长，但裂缝、侵蚀和坍塌又可能使它变矮。叙述者同时给出“更高”与“更矮”的可能性，暗示结果取决于相互竞争的过程，因此选 C。",
+            "optionRationalesZh": {
+              "a": "错误。15 千米是加入地壳下沉后的示意上限，原文并未保证珠峰达到它。",
+              "b": "错误。珠峰仍在增长正说明构造过程仍然作用。",
+              "c": "正确。它解释了为什么叙述者无法确定珠峰未来会更高还是更矮。",
+              "d": "错误。使山体变矮的机制包括侵蚀和坍塌，不需要地球重力增加。"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "sourceId": "minute-earth-005",
+      "collection": "minute-earth",
+      "profile": "minute-earth-academic-talk",
+      "sourceHash": "68ef1641b7af79583cc7738d3d301ac0f1fabf5ca92ba16c079d68e3f01dba03",
+      "label": "TOEFL Academic Listening Practice",
+      "exactSimulation": true,
+      "status": "draft",
+      "audioDifficulty": {
+        "level": "medium",
+        "basis": "provisional-content-analysis"
+      },
+      "questions": [
+        {
+          "id": "minute-earth-005-q01",
+          "position": 1,
+          "type": "main_idea",
+          "difficulty": "medium",
+          "public": {
+            "prompt": "What is the talk mainly explaining?",
+            "options": [
+              {"id": "a", "text": "How a large-scale circulation pattern creates both equatorial rainforests and subtropical deserts"},
+              {"id": "b", "text": "Why European sailors deliberately avoided trade winds near the equator"},
+              {"id": "c", "text": "How polar ice caps control the location of all dry regions on Earth"},
+              {"id": "d", "text": "Why George Hadley's theory was rejected by later meteorologists"}
+            ]
+          },
+          "private": {
+            "answer": "a",
+            "evidence": [
+              {
+                "start": 154,
+                "end": 216,
+                "quote": "But why are those parts of our earth barren, and others green?"
+              },
+              {
+                "start": 2205,
+                "end": 2324,
+                "quote": "This giant atmospheric conveyor belt, officially called a Hadley cell, brings us both tropical rainforests and deserts."
+              }
+            ],
+            "explanationZh": "文章从地表绿色与荒漠的分布问题出发，用哈德莱环流解释赤道暖湿空气上升降雨形成雨林，以及失去水分后的空气在南北两侧下沉形成荒漠。因此选 A。",
+            "optionRationalesZh": {
+              "a": "正确。它同时概括哈德莱环流机制及雨林和沙漠两种结果。",
+              "b": "错误。信风推动船只前往赤道，水手困扰的是赤道无风带，并非主动避开信风。",
+              "c": "错误。极地冰盖只在开场景观描述中出现，不是荒漠分布的解释机制。",
+              "d": "错误。原文说哈德莱的想法最终帮助解释现象，没有说后来被否定。"
+            }
+          }
+        },
+        {
+          "id": "minute-earth-005-q02",
+          "position": 2,
+          "type": "rhetorical_purpose",
+          "difficulty": "medium",
+          "public": {
+            "prompt": "Why does the narrator describe sailors encountering the doldrums?",
+            "options": [
+              {"id": "a", "text": "To explain why European trade with the equator ended"},
+              {"id": "b", "text": "To introduce an observed wind pattern that required a scientific explanation"},
+              {"id": "c", "text": "To show that sailors had already discovered the Hadley cell's full mechanism"},
+              {"id": "d", "text": "To argue that ocean currents rather than air movement create deserts"}
+            ]
+          },
+          "private": {
+            "answer": "b",
+            "evidence": [
+              {
+                "start": 382,
+                "end": 537,
+                "quote": "When sailing from Europe, trade winds pushed ships enthusiastically southwest to the equator, where suddenly, the winds would die. These were the doldrums."
+              }
+            ],
+            "explanationZh": "水手体验到信风把船推向赤道、到赤道又突然无风，这个可观察到的谜题引出科学家对风向成因的解释，并为哈德莱模型铺垫。因此选 B。",
+            "optionRationalesZh": {
+              "a": "错误。无风带带来困难，但原文没有说欧洲与赤道的贸易因此终止。",
+              "b": "正确。它准确说明历史叙事在论证中的引入功能。",
+              "c": "错误。水手观察到现象，完整机制由哈德莱后来提出。",
+              "d": "错误。全文解释的是空气环流，不是用洋流替代空气运动。"
+            }
+          }
+        },
+        {
+          "id": "minute-earth-005-q03",
+          "position": 3,
+          "type": "detail",
+          "difficulty": "medium",
+          "public": {
+            "prompt": "According to the talk, what happens to warm, humid air as it rises at the equator?",
+            "options": [
+              {"id": "a", "text": "It warms further and stores increasing amounts of moisture"},
+              {"id": "b", "text": "It immediately crosses the stratosphere and escapes into space"},
+              {"id": "c", "text": "It cools and releases enough moisture to support rainforests"},
+              {"id": "d", "text": "It becomes dry before any precipitation can occur"}
+            ]
+          },
+          "private": {
+            "answer": "c",
+            "evidence": [
+              {
+                "start": 1633,
+                "end": 1790,
+                "quote": "As warm, humid air at the equator rises, it cools, and--since cool air can't hold as much moisture as warm air--it rains. A lot. Enough to make rain-forests."
+              }
+            ],
+            "explanationZh": "赤道暖湿空气上升后冷却；冷空气容纳水汽的能力较低，所以大量降雨并支持热带雨林。因此选 C。",
+            "optionRationalesZh": {
+              "a": "错误。空气在上升过程中冷却，而不是继续升温并储存更多水分。",
+              "b": "错误。空气到达平流层后受其阻挡并向南北展开，没有逃入太空。",
+              "c": "正确。它完整对应上升、冷却、降雨和雨林形成的因果链。",
+              "d": "错误。空气先大量降雨，随后在离开赤道时进一步失去水分。"
+            }
+          }
+        },
+        {
+          "id": "minute-earth-005-q04",
+          "position": 4,
+          "type": "organization",
+          "difficulty": "high",
+          "public": {
+            "prompt": "How does the narrator organize the explanation in the talk?",
+            "options": [
+              {"id": "a", "text": "By listing several deserts and then ranking them by annual rainfall"},
+              {"id": "b", "text": "By comparing competing modern computer models of global climate"},
+              {"id": "c", "text": "By describing polar, temperate, and tropical climates in alphabetical order"},
+              {"id": "d", "text": "By posing a geographic puzzle, tracing a historical wind question, and then applying a circulation mechanism"}
+            ]
+          },
+          "private": {
+            "answer": "d",
+            "evidence": [
+              {
+                "start": 154,
+                "end": 216,
+                "quote": "But why are those parts of our earth barren, and others green?"
+              },
+              {
+                "start": 1109,
+                "end": 1249,
+                "quote": "Hadley figured that, since the sun warms the Earth most at the equator, air to the north and south must be cooler--and therefore more dense."
+              },
+              {
+                "start": 2008,
+                "end": 2203,
+                "quote": "As the air leaves the equator, it rains away more moisture, becoming denser and slightly cooler, until finally dry, it sinks, creating the arid bands where many of the world's famous deserts lie."
+              }
+            ],
+            "explanationZh": "文章先提出地球为什么有的地方绿色、有的地方荒芜；随后回顾水手与科学家面对的风向谜题，并引入哈德莱的解释；最后沿空气上升、降雨、外流和下沉的环流过程解释雨林与沙漠分布。因此选 D。",
+            "optionRationalesZh": {
+              "a": "错误。文章没有列出或按降水量排名多个沙漠。",
+              "b": "错误。原文回顾的是历史理论并解释机制，不是比较现代计算机模型。",
+              "c": "错误。文章没有按字母顺序描述气候带。",
+              "d": "正确。它准确呈现“现象问题—历史观察—机制应用”的篇章结构。"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

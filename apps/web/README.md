@@ -24,3 +24,12 @@ X-CSRF-Token。关键命令使用 Idempotency-Key，错误按 RFC 7807 展示。
 - `ENABLE_LOCAL_LISTENING=true`：在非演示模式显式启用本地媒体接口。
 
 目录由 `scripts/build-local-listening-library.py` 生成。脚本只把目录、原文和词汇写入仓库，不复制大体积音频；生产环境仍应把媒体上传至 COS，并通过正式 API 返回签名地址。
+
+## 本地 CommonLit 阅读资料库
+
+`scripts/build-local-reading-library.py` 从 CommonLit 保存页和配套 PDF 中生成按 Grade 拆分的文字版文章、原文理解题和讨论题。
+
+- `COMMONLIT_READING_SOURCE_DIR`：原始 PDF 根目录，仅用于网站中的“查看原 PDF”引用。
+- `ENABLE_LOCAL_READING=true`：在非演示模式显式启用本地阅读接口。
+
+学生作答草稿和完成状态保存在浏览器本地；原资料未包含标准答案，因此不做伪造的自动评分。

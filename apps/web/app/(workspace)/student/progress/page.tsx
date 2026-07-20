@@ -95,8 +95,8 @@ export default function StudentProgressPage() {
               <svg aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 500 180">
                 <defs>
                   <linearGradient id="scoreArea" x1="0" x2="0" y1="0" y2="1">
-                    <stop offset="0%" stopColor="#0c92a0" stopOpacity="0.26" />
-                    <stop offset="100%" stopColor="#0c92a0" stopOpacity="0" />
+                    <stop offset="0%" stopColor="#3f8178" stopOpacity="0.26" />
+                    <stop offset="100%" stopColor="#3f8178" stopOpacity="0" />
                   </linearGradient>
                 </defs>
                 <path
@@ -106,7 +106,7 @@ export default function StudentProgressPage() {
                 <path
                   d="M20 132 L112 118 L204 124 L296 92 L388 78 L480 58"
                   fill="none"
-                  stroke="#0c92a0"
+                  stroke="#3f8178"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth="4"
@@ -118,7 +118,7 @@ export default function StudentProgressPage() {
                     fill="white"
                     key={score + '-' + index}
                     r="6"
-                    stroke="#0c92a0"
+                    stroke="#3f8178"
                     strokeWidth="3"
                   />
                 ))}

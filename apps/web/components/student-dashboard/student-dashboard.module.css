@@ -1,48 +1,49 @@
 .dashboard {
-  --aurelis-ink: #22211f;
-  --aurelis-muted: #65625e;
-  --aurelis-soft: #f5f2eb;
-  --aurelis-line: #ded9cf;
-  --aurelis-gold: #b68b2f;
-  --aurelis-gold-dark: #92701f;
-  --aurelis-gold-soft: #e7d6aa;
-  --aurelis-green: #579263;
+  --aurelis-ink: #222a2d;
+  --aurelis-muted: #5b6c66;
+  --aurelis-soft: #f3f5f1;
+  --aurelis-line: #d6ddd8;
+  --aurelis-teal: #246b64;
+  --aurelis-teal-dark: #1d5b55;
+  --aurelis-teal-soft: #e2f0ec;
+  --aurelis-gold: #c8821d;
+  --aurelis-gold-dark: #8f5d10;
+  --aurelis-gold-soft: #f1dfb2;
+  --aurelis-green: #4f7c60;
   --aurelis-sidebar: 216px;
-  --ink-950: #25231f;
-  --ink-900: #33302b;
-  --ink-800: #4a4741;
-  --ink-700: #5f5b54;
-  --ink-600: #777169;
-  --ink-500: #918a80;
-  --ink-300: #c9c2b7;
-  --ink-200: #ddd7cd;
-  --ink-150: #e9e4dc;
-  --ink-100: #f1eee8;
-  --ink-50: #f8f6f1;
-  --brand-700: #8d691c;
-  --brand-600: #a97f27;
-  --brand-500: #b98d32;
-  --brand-300: #d8bd7c;
-  --brand-100: #eee3c6;
-  --brand-50: #faf6ea;
-  --blue-600: #6c7f89;
-  --blue-100: #edf1f1;
-  --green-600: #579263;
-  --green-100: #e6eee5;
-  --amber-700: #8d691c;
-  --amber-100: #f5ebcf;
-  --coral-500: #b98d32;
-  --surface: #fdfcf9;
-  --canvas: #f8f6f1;
-  --shadow-sm: 0 3px 5px rgba(60, 52, 42, 0.03), 0 10px 28px rgba(60, 52, 42, 0.06);
-  --shadow-md: 0 20px 48px rgba(53, 47, 39, 0.14);
+  --ink-950: #222a2d;
+  --ink-900: #2d393c;
+  --ink-800: #3c4a4d;
+  --ink-700: #4a5a5d;
+  --ink-600: #546568;
+  --ink-500: #5f6f72;
+  --ink-300: #bac5c0;
+  --ink-200: #d3dad6;
+  --ink-150: #e1e6e2;
+  --ink-100: #e9ede9;
+  --ink-50: #f3f5ef;
+  --brand-700: #1d5b55;
+  --brand-600: #246b64;
+  --brand-500: #3f8178;
+  --brand-300: #8cb8af;
+  --brand-100: #e2f0ec;
+  --brand-50: #f2f8f6;
+  --blue-600: #4f7380;
+  --blue-100: #e7eef0;
+  --green-600: #4f7c60;
+  --green-100: #e7efe8;
+  --amber-700: #8f5d10;
+  --amber-100: #f6e7c0;
+  --coral-500: #c8821d;
+  --surface: #fffefb;
+  --canvas: #f7f4ec;
+  --shadow-sm: 0 3px 5px rgba(37, 56, 51, 0.03), 0 10px 28px rgba(37, 56, 51, 0.06);
+  --shadow-md: 0 20px 48px rgba(37, 56, 51, 0.13);
   --radius-sm: 7px;
   --radius-md: 9px;
   --radius-lg: 13px;
   min-height: 100vh;
-  background:
-    radial-gradient(circle at 63% 0%, rgba(255, 255, 255, 0.96), transparent 34rem),
-    linear-gradient(135deg, #faf9f6 0%, #f8f6f1 54%, #f5f2ec 100%);
+  background: var(--canvas);
   color: var(--aurelis-ink);
   font-family:
     Inter,
@@ -80,12 +81,12 @@
 }
 
 .dashboard :global(.eyebrow) {
-  color: var(--aurelis-gold-dark);
+  color: var(--aurelis-teal-dark);
 }
 
 .dashboard :global(.card) {
   border-color: var(--aurelis-line);
-  background: rgba(253, 252, 249, 0.9);
+  background: var(--surface);
   box-shadow: var(--shadow-sm);
 }
 
@@ -94,33 +95,33 @@
 }
 
 .dashboard :global(.button-primary) {
-  background: linear-gradient(135deg, #bd943c, #a97d24);
-  box-shadow: 0 7px 16px rgba(155, 114, 32, 0.18);
+  background: var(--aurelis-teal);
+  box-shadow: 0 7px 16px rgba(36, 107, 100, 0.2);
 }
 
 .dashboard :global(.button-secondary) {
   border-color: var(--aurelis-line);
-  background: rgba(253, 252, 249, 0.9);
+  background: var(--surface);
 }
 
 .dashboard :global(.toefl-hero) {
   border: 1px solid var(--aurelis-line);
   border-radius: 11px;
   background:
-    radial-gradient(circle at 88% 12%, rgba(182, 139, 47, 0.16), transparent 30%),
-    linear-gradient(135deg, #fdfcf9, #f5f0e6);
+    radial-gradient(circle at 88% 12%, rgba(36, 107, 100, 0.13), transparent 30%),
+    linear-gradient(135deg, var(--surface), var(--brand-50));
   box-shadow: var(--shadow-sm);
   color: var(--aurelis-ink);
 }
 
 .dashboard :global(.toefl-mark) {
-  border-color: rgba(182, 139, 47, 0.35);
-  background: rgba(182, 139, 47, 0.08);
-  color: var(--aurelis-gold-dark);
+  border-color: rgba(36, 107, 100, 0.32);
+  background: rgba(36, 107, 100, 0.08);
+  color: var(--aurelis-teal-dark);
 }
 
 .dashboard :global(.toefl-hero .eyebrow-light) {
-  color: var(--aurelis-gold-dark);
+  color: var(--aurelis-teal-dark);
 }
 
 .dashboard :global(.toefl-hero-copy > p:not(.eyebrow)),
@@ -130,7 +131,7 @@
 }
 
 .dashboard :global(.toefl-score-card) {
-  border-color: rgba(182, 139, 47, 0.25);
+  border-color: rgba(36, 107, 100, 0.22);
   background: rgba(255, 255, 255, 0.5);
 }
 
@@ -141,8 +142,8 @@
 .dashboard :global(.toefl-module-link:hover .toefl-module-card),
 .dashboard :global(.listening-track:hover),
 .dashboard :global(.listening-track.is-active) {
-  border-color: rgba(182, 139, 47, 0.55);
-  box-shadow: 0 12px 30px rgba(60, 52, 42, 0.08);
+  border-color: rgba(36, 107, 100, 0.48);
+  box-shadow: 0 12px 30px rgba(37, 56, 51, 0.08);
 }
 
 .dashboard a,
@@ -154,7 +155,7 @@
 .dashboard a:focus-visible,
 .dashboard button:focus-visible,
 .dashboard select:focus-visible {
-  outline: 2px solid var(--aurelis-gold);
+  outline: 2px solid var(--aurelis-teal);
   outline-offset: 3px;
 }
 
@@ -166,7 +167,7 @@
   width: var(--aurelis-sidebar);
   flex-direction: column;
   border-right: 1px solid var(--aurelis-line);
-  background: rgba(250, 249, 246, 0.97);
+  background: rgba(255, 254, 251, 0.97);
 }
 
 .desktopBrand {
@@ -243,7 +244,7 @@
   gap: 15px;
   overflow-y: auto;
   padding: 4px 0 20px;
-  scrollbar-color: rgba(182, 139, 47, 0.28) transparent;
+  scrollbar-color: rgba(36, 107, 100, 0.28) transparent;
   scrollbar-width: thin;
 }
 
@@ -280,14 +281,15 @@
 }
 
 .navItem:hover {
-  background: rgba(182, 139, 47, 0.065);
-  color: var(--aurelis-gold-dark);
+  background: rgba(36, 107, 100, 0.07);
+  color: var(--aurelis-teal-dark);
   padding-left: 32px;
 }
 
 .navItemActive {
-  border-color: var(--aurelis-gold);
-  color: var(--aurelis-gold-dark);
+  border-color: var(--aurelis-teal);
+  background: var(--aurelis-teal-soft);
+  color: var(--aurelis-teal-dark);
 }
 
 .navParent {
@@ -308,7 +310,7 @@
 }
 
 .navParentActive {
-  color: var(--aurelis-gold-dark);
+  color: var(--aurelis-teal-dark);
 }
 
 .nestedNav {
@@ -332,10 +334,69 @@
   padding-left: 52px;
 }
 
+.toeflNavRoot,
+.toeflNavSection,
+.toeflNavSections,
+.toeflTaskNav {
+  display: grid;
+  min-width: 0;
+}
+
+.toeflNavParent {
+  min-height: 37px;
+}
+
+.toeflNavSections {
+  padding: 2px 0 5px;
+}
+
+.toeflNavSections[hidden],
+.toeflTaskNav[hidden] {
+  display: none;
+}
+
+.toeflSectionButton {
+  min-height: 35px;
+  gap: 10px;
+  padding: 6px 28px 6px 58px;
+  font-size: 10.75px;
+}
+
+.toeflSectionButton:hover {
+  padding-left: 62px;
+}
+
+.toeflTaskItem {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 33px;
+  min-width: 0;
+  gap: 9px;
+  overflow: hidden;
+  padding: 5px 20px 5px 74px;
+  font-size: 10.25px;
+  line-height: 1.25;
+}
+
+.toeflTaskItem:hover {
+  padding-left: 78px;
+}
+
+.toeflTaskItem svg {
+  flex: 0 0 auto;
+}
+
+.toeflTaskItem span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .navItemActive::before {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgba(182, 139, 47, 0.055), transparent 76%);
+  background: linear-gradient(90deg, rgba(36, 107, 100, 0.08), transparent 76%);
   content: '';
   pointer-events: none;
 }
@@ -349,6 +410,10 @@
   margin: auto 36px 30px;
   color: #77736d;
   font-family: Georgia, 'Times New Roman', serif;
+}
+
+.quoteHidden {
+  display: none;
 }
 
 .quote::before {
@@ -439,8 +504,8 @@
 
 .tenantSwitcher:hover,
 .tenantSwitcher:focus-within {
-  border-color: rgba(182, 139, 47, 0.55);
-  background: #fdfcf9;
+  border-color: rgba(36, 107, 100, 0.48);
+  background: var(--surface);
 }
 
 .tenantSwitcher select {
@@ -496,8 +561,8 @@
 
 .headerIconButton:hover,
 .headerIconButton:active {
-  background: rgba(182, 139, 47, 0.11);
-  color: var(--aurelis-gold-dark);
+  background: rgba(36, 107, 100, 0.1);
+  color: var(--aurelis-teal-dark);
   transform: translateY(-1px);
 }
 
@@ -550,7 +615,7 @@
   width: 244px;
   border: 1px solid var(--aurelis-line);
   border-radius: 11px;
-  background: rgba(253, 252, 249, 0.98);
+  background: var(--surface);
   box-shadow: 0 18px 48px rgba(53, 47, 39, 0.16);
   padding: 9px;
 }
@@ -564,7 +629,7 @@
   height: 11px;
   border-top: 1px solid var(--aurelis-line);
   border-left: 1px solid var(--aurelis-line);
-  background: #fdfcf9;
+  background: var(--surface);
   content: '';
   transform: rotate(45deg);
 }
@@ -606,7 +671,7 @@
   flex: 0 0 auto;
   border-radius: 50%;
   background: var(--aurelis-soft);
-  color: var(--aurelis-gold-dark);
+  color: var(--aurelis-teal-dark);
   place-items: center;
 }
 
@@ -632,7 +697,7 @@
 .profileMenu > a:hover,
 .profileMenu > button:hover {
   background: var(--aurelis-soft);
-  color: var(--aurelis-gold-dark);
+  color: var(--aurelis-teal-dark);
 }
 
 .noticePopover {
@@ -717,7 +782,7 @@
 .motivationCard {
   border: 1px solid var(--aurelis-line);
   border-radius: 9px;
-  background: rgba(253, 252, 249, 0.86);
+  background: var(--surface);
 }
 
 .continueCard {
@@ -741,13 +806,13 @@
   right: -80px;
   width: 170px;
   height: 100%;
-  background: linear-gradient(48deg, #fdfcf9 0 49%, transparent 50%);
+  background: linear-gradient(48deg, var(--surface) 0 49%, transparent 50%);
   content: '';
 }
 
 .eyebrow {
   margin: 0 0 14px;
-  color: var(--aurelis-gold-dark);
+  color: var(--aurelis-teal-dark);
   font-size: 9px;
   font-weight: 650;
   letter-spacing: 0.18em;
@@ -817,10 +882,10 @@
   min-height: 43px;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--aurelis-gold);
+  border: 1px solid var(--aurelis-teal);
   border-radius: 4px;
-  background: linear-gradient(135deg, #bd943c, #aa7f27);
-  box-shadow: 0 7px 16px rgba(155, 114, 32, 0.16);
+  background: var(--aurelis-teal);
+  box-shadow: 0 7px 16px rgba(36, 107, 100, 0.18);
   color: white;
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 13px;
@@ -839,14 +904,14 @@
 
 .goldButton:hover,
 .planButton:hover {
-  background: linear-gradient(135deg, #cba34e, #9d741f);
-  box-shadow: 0 9px 21px rgba(155, 114, 32, 0.25);
+  background: linear-gradient(135deg, #3f8178, #19534e);
+  box-shadow: 0 9px 21px rgba(36, 107, 100, 0.25);
   transform: translateY(-1px);
 }
 
 .goldButton:active,
 .planButton:active {
-  box-shadow: 0 3px 9px rgba(155, 114, 32, 0.18);
+  box-shadow: 0 3px 9px rgba(36, 107, 100, 0.18);
   transform: translateY(1px);
 }
 
@@ -878,8 +943,8 @@
 }
 
 .skillCard:hover {
-  border-color: rgba(182, 139, 47, 0.58);
-  box-shadow: 0 10px 25px rgba(60, 52, 42, 0.08);
+  border-color: rgba(36, 107, 100, 0.5);
+  box-shadow: 0 10px 25px rgba(37, 56, 51, 0.08);
   transform: translateY(-3px);
 }
 
@@ -928,7 +993,7 @@
   position: absolute;
   inset: 3px;
   border-radius: inherit;
-  background: #fdfcf9;
+  background: var(--surface);
   content: '';
 }
 
@@ -972,7 +1037,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  color: var(--aurelis-gold-dark);
+  color: var(--aurelis-teal-dark);
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 10px;
   transition: gap 160ms ease;
@@ -1007,7 +1072,7 @@
 }
 
 .planRow:hover {
-  background: rgba(182, 139, 47, 0.045);
+  background: rgba(36, 107, 100, 0.05);
 }
 
 .planIcon {
@@ -1323,9 +1388,9 @@
 }
 
 .breakdownLink:hover {
-  border-color: var(--aurelis-gold);
-  background: rgba(182, 139, 47, 0.055);
-  color: var(--aurelis-gold-dark);
+  border-color: var(--aurelis-teal);
+  background: rgba(36, 107, 100, 0.06);
+  color: var(--aurelis-teal-dark);
 }
 
 .motivationCard {
@@ -1488,7 +1553,7 @@
 
   .mobileWordmark {
     margin-left: 10px;
-    color: var(--aurelis-gold-dark);
+    color: var(--aurelis-teal-dark);
     font-family: Georgia, 'Times New Roman', serif;
     font-size: 16px;
     letter-spacing: 0.25em;

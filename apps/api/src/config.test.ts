@@ -16,6 +16,7 @@ describe('S3 endpoint configuration', () => {
     const defaults = environmentSchema.parse(base);
     expect(defaults.DATABASE_POOL_MAX).toBe(20);
     expect(defaults.DATABASE_STATEMENT_TIMEOUT_MS).toBe(15_000);
+    expect(defaults.VOCABULARY_ASSESSMENT_SCORING_MODE).toBe('beta');
 
     const configured = environmentSchema.parse({
       ...base,
@@ -28,6 +29,20 @@ describe('S3 endpoint configuration', () => {
     expect(environmentSchema.safeParse({ ...base, DATABASE_POOL_MAX: '101' }).success).toBe(false);
     expect(
       environmentSchema.safeParse({ ...base, DATABASE_STATEMENT_TIMEOUT_MS: '0' }).success,
+    ).toBe(false);
+  });
+
+  it('only accepts the staged vocabulary-scoring feature modes', () => {
+    expect(
+      environmentSchema.parse({ ...base, VOCABULARY_ASSESSMENT_SCORING_MODE: 'shadow' })
+        .VOCABULARY_ASSESSMENT_SCORING_MODE,
+    ).toBe('shadow');
+    expect(
+      environmentSchema.parse({ ...base, VOCABULARY_ASSESSMENT_SCORING_MODE: 'calibrated' })
+        .VOCABULARY_ASSESSMENT_SCORING_MODE,
+    ).toBe('calibrated');
+    expect(
+      environmentSchema.safeParse({ ...base, VOCABULARY_ASSESSMENT_SCORING_MODE: 'cat' }).success,
     ).toBe(false);
   });
 

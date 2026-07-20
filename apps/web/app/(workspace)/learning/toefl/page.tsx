@@ -23,7 +23,7 @@ const modules: ModuleCard[] = [
     icon: 'book',
     label: '学术阅读',
     tone: 'brand',
-    href: '/learning/toefl#reading',
+    href: '/learning/toefl/reading',
     id: 'reading',
   },
   {
@@ -130,9 +130,11 @@ export default function ToeflLearningPage() {
             <Link
               className="toefl-module-link"
               href={
-                module.id === 'listening'
-                  ? `${studentToeflBase}/listening`
-                  : `${studentToeflBase}#${module.id}`
+                module.id === 'reading'
+                  ? `${studentToeflBase}/reading`
+                  : module.id === 'listening'
+                    ? `${studentToeflBase}/listening`
+                    : `${studentToeflBase}#${module.id}`
               }
               id={module.id}
               key={module.title}
@@ -145,7 +147,11 @@ export default function ToeflLearningPage() {
                 <h3>{module.title}</h3>
                 <p>{module.description}</p>
                 <span className="toefl-module-arrow">
-                  {module.id === 'listening' ? '进入音频库' : '查看板块'}
+                  {module.id === 'reading'
+                    ? '进入文章库'
+                    : module.id === 'listening'
+                      ? '进入音频库'
+                      : '查看板块'}
                   <Icon name="arrow" size={15} />
                 </span>
               </Card>

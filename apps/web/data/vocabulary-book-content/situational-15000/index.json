@@ -1,0 +1,2248 @@
+{
+  "schemaVersion": 1,
+  "bookId": "situational-15000",
+  "wordEntryCount": 10749,
+  "duplicateEntryCount": 6353,
+  "units": [
+    {
+      "id": "scene-001",
+      "wordEntryCount": 33,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "scene-002",
+      "wordEntryCount": 41,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "scene-003",
+      "wordEntryCount": 38,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "scene-004",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "scene-005",
+      "wordEntryCount": 36,
+      "duplicateEntryCount": 6
+    },
+    {
+      "id": "scene-006",
+      "wordEntryCount": 32,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-007",
+      "wordEntryCount": 35,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-008",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 16
+    },
+    {
+      "id": "scene-009",
+      "wordEntryCount": 41,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "scene-010",
+      "wordEntryCount": 35,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-011",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 27
+    },
+    {
+      "id": "scene-012",
+      "wordEntryCount": 30,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-013",
+      "wordEntryCount": 21,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-014",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 20
+    },
+    {
+      "id": "scene-015",
+      "wordEntryCount": 33,
+      "duplicateEntryCount": 6
+    },
+    {
+      "id": "scene-016",
+      "wordEntryCount": 14,
+      "duplicateEntryCount": 32
+    },
+    {
+      "id": "scene-017",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-018",
+      "wordEntryCount": 26,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-019",
+      "wordEntryCount": 27,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-020",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "scene-021",
+      "wordEntryCount": 42,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-022",
+      "wordEntryCount": 16,
+      "duplicateEntryCount": 22
+    },
+    {
+      "id": "scene-023",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-024",
+      "wordEntryCount": 32,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "scene-025",
+      "wordEntryCount": 28,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-026",
+      "wordEntryCount": 27,
+      "duplicateEntryCount": 3
+    },
+    {
+      "id": "scene-027",
+      "wordEntryCount": 28,
+      "duplicateEntryCount": 7
+    },
+    {
+      "id": "scene-028",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-029",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "scene-030",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 16
+    },
+    {
+      "id": "scene-031",
+      "wordEntryCount": 34,
+      "duplicateEntryCount": 3
+    },
+    {
+      "id": "scene-032",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 6
+    },
+    {
+      "id": "scene-033",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-034",
+      "wordEntryCount": 29,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "scene-035",
+      "wordEntryCount": 32,
+      "duplicateEntryCount": 6
+    },
+    {
+      "id": "scene-036",
+      "wordEntryCount": 18,
+      "duplicateEntryCount": 7
+    },
+    {
+      "id": "scene-037",
+      "wordEntryCount": 26,
+      "duplicateEntryCount": 7
+    },
+    {
+      "id": "scene-038",
+      "wordEntryCount": 18,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "scene-039",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-040",
+      "wordEntryCount": 33,
+      "duplicateEntryCount": 7
+    },
+    {
+      "id": "scene-041",
+      "wordEntryCount": 44,
+      "duplicateEntryCount": 1
+    },
+    {
+      "id": "scene-042",
+      "wordEntryCount": 38,
+      "duplicateEntryCount": 1
+    },
+    {
+      "id": "scene-043",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-044",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-045",
+      "wordEntryCount": 21,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-046",
+      "wordEntryCount": 18,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-047",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 18
+    },
+    {
+      "id": "scene-048",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 7
+    },
+    {
+      "id": "scene-049",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 7
+    },
+    {
+      "id": "scene-050",
+      "wordEntryCount": 44,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "scene-051",
+      "wordEntryCount": 49,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-052",
+      "wordEntryCount": 39,
+      "duplicateEntryCount": 3
+    },
+    {
+      "id": "scene-053",
+      "wordEntryCount": 38,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "scene-054",
+      "wordEntryCount": 35,
+      "duplicateEntryCount": 3
+    },
+    {
+      "id": "scene-055",
+      "wordEntryCount": 28,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-056",
+      "wordEntryCount": 46,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "scene-057",
+      "wordEntryCount": 32,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "scene-058",
+      "wordEntryCount": 17,
+      "duplicateEntryCount": 16
+    },
+    {
+      "id": "scene-059",
+      "wordEntryCount": 21,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-060",
+      "wordEntryCount": 9,
+      "duplicateEntryCount": 27
+    },
+    {
+      "id": "scene-061",
+      "wordEntryCount": 31,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "scene-062",
+      "wordEntryCount": 38,
+      "duplicateEntryCount": 0
+    },
+    {
+      "id": "scene-063",
+      "wordEntryCount": 33,
+      "duplicateEntryCount": 2
+    },
+    {
+      "id": "scene-064",
+      "wordEntryCount": 31,
+      "duplicateEntryCount": 3
+    },
+    {
+      "id": "scene-065",
+      "wordEntryCount": 34,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-066",
+      "wordEntryCount": 16,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "scene-067",
+      "wordEntryCount": 35,
+      "duplicateEntryCount": 1
+    },
+    {
+      "id": "scene-068",
+      "wordEntryCount": 36,
+      "duplicateEntryCount": 0
+    },
+    {
+      "id": "scene-069",
+      "wordEntryCount": 31,
+      "duplicateEntryCount": 2
+    },
+    {
+      "id": "scene-070",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 7
+    },
+    {
+      "id": "scene-071",
+      "wordEntryCount": 33,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-072",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-073",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-074",
+      "wordEntryCount": 36,
+      "duplicateEntryCount": 3
+    },
+    {
+      "id": "scene-075",
+      "wordEntryCount": 17,
+      "duplicateEntryCount": 16
+    },
+    {
+      "id": "scene-076",
+      "wordEntryCount": 51,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-077",
+      "wordEntryCount": 35,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "scene-078",
+      "wordEntryCount": 35,
+      "duplicateEntryCount": 6
+    },
+    {
+      "id": "scene-079",
+      "wordEntryCount": 28,
+      "duplicateEntryCount": 7
+    },
+    {
+      "id": "scene-080",
+      "wordEntryCount": 7,
+      "duplicateEntryCount": 25
+    },
+    {
+      "id": "scene-081",
+      "wordEntryCount": 13,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "scene-082",
+      "wordEntryCount": 26,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-083",
+      "wordEntryCount": 21,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-084",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "scene-085",
+      "wordEntryCount": 26,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-086",
+      "wordEntryCount": 26,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-087",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-088",
+      "wordEntryCount": 28,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-089",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 6
+    },
+    {
+      "id": "scene-090",
+      "wordEntryCount": 30,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-091",
+      "wordEntryCount": 31,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "scene-092",
+      "wordEntryCount": 36,
+      "duplicateEntryCount": 7
+    },
+    {
+      "id": "scene-093",
+      "wordEntryCount": 29,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-094",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-095",
+      "wordEntryCount": 34,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-096",
+      "wordEntryCount": 16,
+      "duplicateEntryCount": 20
+    },
+    {
+      "id": "scene-097",
+      "wordEntryCount": 35,
+      "duplicateEntryCount": 2
+    },
+    {
+      "id": "scene-098",
+      "wordEntryCount": 30,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-099",
+      "wordEntryCount": 31,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "scene-100",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-101",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-102",
+      "wordEntryCount": 44,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-103",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 6
+    },
+    {
+      "id": "scene-104",
+      "wordEntryCount": 27,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-105",
+      "wordEntryCount": 21,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "scene-106",
+      "wordEntryCount": 34,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-107",
+      "wordEntryCount": 32,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-108",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 23
+    },
+    {
+      "id": "scene-109",
+      "wordEntryCount": 39,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-110",
+      "wordEntryCount": 29,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "scene-111",
+      "wordEntryCount": 18,
+      "duplicateEntryCount": 19
+    },
+    {
+      "id": "scene-112",
+      "wordEntryCount": 18,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-113",
+      "wordEntryCount": 38,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "scene-114",
+      "wordEntryCount": 37,
+      "duplicateEntryCount": 1
+    },
+    {
+      "id": "scene-115",
+      "wordEntryCount": 39,
+      "duplicateEntryCount": 3
+    },
+    {
+      "id": "scene-116",
+      "wordEntryCount": 16,
+      "duplicateEntryCount": 31
+    },
+    {
+      "id": "scene-117",
+      "wordEntryCount": 9,
+      "duplicateEntryCount": 18
+    },
+    {
+      "id": "scene-118",
+      "wordEntryCount": 35,
+      "duplicateEntryCount": 22
+    },
+    {
+      "id": "scene-119",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-120",
+      "wordEntryCount": 28,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-121",
+      "wordEntryCount": 26,
+      "duplicateEntryCount": 17
+    },
+    {
+      "id": "scene-122",
+      "wordEntryCount": 34,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-123",
+      "wordEntryCount": 29,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-124",
+      "wordEntryCount": 35,
+      "duplicateEntryCount": 3
+    },
+    {
+      "id": "scene-125",
+      "wordEntryCount": 39,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-126",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 19
+    },
+    {
+      "id": "scene-127",
+      "wordEntryCount": 17,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-128",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 22
+    },
+    {
+      "id": "scene-129",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "scene-130",
+      "wordEntryCount": 15,
+      "duplicateEntryCount": 25
+    },
+    {
+      "id": "scene-131",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 32
+    },
+    {
+      "id": "scene-132",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 18
+    },
+    {
+      "id": "scene-133",
+      "wordEntryCount": 33,
+      "duplicateEntryCount": 22
+    },
+    {
+      "id": "scene-134",
+      "wordEntryCount": 14,
+      "duplicateEntryCount": 18
+    },
+    {
+      "id": "scene-135",
+      "wordEntryCount": 17,
+      "duplicateEntryCount": 26
+    },
+    {
+      "id": "scene-136",
+      "wordEntryCount": 13,
+      "duplicateEntryCount": 23
+    },
+    {
+      "id": "scene-137",
+      "wordEntryCount": 13,
+      "duplicateEntryCount": 22
+    },
+    {
+      "id": "scene-138",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 18
+    },
+    {
+      "id": "scene-139",
+      "wordEntryCount": 9,
+      "duplicateEntryCount": 24
+    },
+    {
+      "id": "scene-140",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "scene-141",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "scene-142",
+      "wordEntryCount": 18,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-143",
+      "wordEntryCount": 14,
+      "duplicateEntryCount": 18
+    },
+    {
+      "id": "scene-144",
+      "wordEntryCount": 18,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-145",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-146",
+      "wordEntryCount": 13,
+      "duplicateEntryCount": 23
+    },
+    {
+      "id": "scene-147",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 18
+    },
+    {
+      "id": "scene-148",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-149",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "scene-150",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 19
+    },
+    {
+      "id": "scene-151",
+      "wordEntryCount": 14,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-152",
+      "wordEntryCount": 21,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "scene-153",
+      "wordEntryCount": 18,
+      "duplicateEntryCount": 19
+    },
+    {
+      "id": "scene-154",
+      "wordEntryCount": 16,
+      "duplicateEntryCount": 24
+    },
+    {
+      "id": "scene-155",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 22
+    },
+    {
+      "id": "scene-156",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 17
+    },
+    {
+      "id": "scene-157",
+      "wordEntryCount": 17,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-158",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-159",
+      "wordEntryCount": 28,
+      "duplicateEntryCount": 7
+    },
+    {
+      "id": "scene-160",
+      "wordEntryCount": 35,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "scene-161",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-162",
+      "wordEntryCount": 11,
+      "duplicateEntryCount": 28
+    },
+    {
+      "id": "scene-163",
+      "wordEntryCount": 7,
+      "duplicateEntryCount": 22
+    },
+    {
+      "id": "scene-164",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-165",
+      "wordEntryCount": 21,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-166",
+      "wordEntryCount": 29,
+      "duplicateEntryCount": 3
+    },
+    {
+      "id": "scene-167",
+      "wordEntryCount": 26,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-168",
+      "wordEntryCount": 37,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-169",
+      "wordEntryCount": 31,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-170",
+      "wordEntryCount": 28,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "scene-171",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-172",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-173",
+      "wordEntryCount": 27,
+      "duplicateEntryCount": 7
+    },
+    {
+      "id": "scene-174",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-175",
+      "wordEntryCount": 32,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "scene-176",
+      "wordEntryCount": 17,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "scene-177",
+      "wordEntryCount": 28,
+      "duplicateEntryCount": 19
+    },
+    {
+      "id": "scene-178",
+      "wordEntryCount": 26,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-179",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-180",
+      "wordEntryCount": 21,
+      "duplicateEntryCount": 16
+    },
+    {
+      "id": "scene-181",
+      "wordEntryCount": 27,
+      "duplicateEntryCount": 6
+    },
+    {
+      "id": "scene-182",
+      "wordEntryCount": 29,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-183",
+      "wordEntryCount": 16,
+      "duplicateEntryCount": 23
+    },
+    {
+      "id": "scene-184",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 18
+    },
+    {
+      "id": "scene-185",
+      "wordEntryCount": 27,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-186",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-187",
+      "wordEntryCount": 14,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "scene-188",
+      "wordEntryCount": 16,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-189",
+      "wordEntryCount": 30,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "scene-190",
+      "wordEntryCount": 27,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-191",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-192",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 20
+    },
+    {
+      "id": "scene-193",
+      "wordEntryCount": 37,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-194",
+      "wordEntryCount": 28,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-195",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-196",
+      "wordEntryCount": 21,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-197",
+      "wordEntryCount": 39,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-198",
+      "wordEntryCount": 34,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-199",
+      "wordEntryCount": 18,
+      "duplicateEntryCount": 19
+    },
+    {
+      "id": "scene-200",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-201",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 16
+    },
+    {
+      "id": "scene-202",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "scene-203",
+      "wordEntryCount": 38,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-204",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-205",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "scene-206",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 16
+    },
+    {
+      "id": "scene-207",
+      "wordEntryCount": 28,
+      "duplicateEntryCount": 17
+    },
+    {
+      "id": "scene-208",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-209",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-210",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-211",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-212",
+      "wordEntryCount": 26,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-213",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-214",
+      "wordEntryCount": 21,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-215",
+      "wordEntryCount": 17,
+      "duplicateEntryCount": 19
+    },
+    {
+      "id": "scene-216",
+      "wordEntryCount": 32,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-217",
+      "wordEntryCount": 30,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-218",
+      "wordEntryCount": 30,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "scene-219",
+      "wordEntryCount": 16,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-220",
+      "wordEntryCount": 45,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-221",
+      "wordEntryCount": 34,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-222",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 7
+    },
+    {
+      "id": "scene-223",
+      "wordEntryCount": 30,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "scene-224",
+      "wordEntryCount": 37,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-225",
+      "wordEntryCount": 15,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-226",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "scene-227",
+      "wordEntryCount": 30,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-228",
+      "wordEntryCount": 31,
+      "duplicateEntryCount": 6
+    },
+    {
+      "id": "scene-229",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-230",
+      "wordEntryCount": 31,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-231",
+      "wordEntryCount": 32,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-232",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-233",
+      "wordEntryCount": 13,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-234",
+      "wordEntryCount": 28,
+      "duplicateEntryCount": 6
+    },
+    {
+      "id": "scene-235",
+      "wordEntryCount": 37,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-236",
+      "wordEntryCount": 13,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-237",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "scene-238",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-239",
+      "wordEntryCount": 28,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-240",
+      "wordEntryCount": 31,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "scene-241",
+      "wordEntryCount": 37,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-242",
+      "wordEntryCount": 34,
+      "duplicateEntryCount": 6
+    },
+    {
+      "id": "scene-243",
+      "wordEntryCount": 33,
+      "duplicateEntryCount": 3
+    },
+    {
+      "id": "scene-244",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "scene-245",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-246",
+      "wordEntryCount": 17,
+      "duplicateEntryCount": 28
+    },
+    {
+      "id": "scene-247",
+      "wordEntryCount": 32,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-248",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 23
+    },
+    {
+      "id": "scene-249",
+      "wordEntryCount": 18,
+      "duplicateEntryCount": 18
+    },
+    {
+      "id": "scene-250",
+      "wordEntryCount": 11,
+      "duplicateEntryCount": 25
+    },
+    {
+      "id": "scene-251",
+      "wordEntryCount": 29,
+      "duplicateEntryCount": 3
+    },
+    {
+      "id": "scene-252",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "scene-253",
+      "wordEntryCount": 8,
+      "duplicateEntryCount": 26
+    },
+    {
+      "id": "scene-254",
+      "wordEntryCount": 13,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "scene-255",
+      "wordEntryCount": 16,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "scene-256",
+      "wordEntryCount": 37,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "scene-257",
+      "wordEntryCount": 32,
+      "duplicateEntryCount": 23
+    },
+    {
+      "id": "scene-258",
+      "wordEntryCount": 30,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-259",
+      "wordEntryCount": 32,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-260",
+      "wordEntryCount": 18,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "scene-261",
+      "wordEntryCount": 15,
+      "duplicateEntryCount": 19
+    },
+    {
+      "id": "scene-262",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-263",
+      "wordEntryCount": 26,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-264",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-265",
+      "wordEntryCount": 32,
+      "duplicateEntryCount": 16
+    },
+    {
+      "id": "scene-266",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-267",
+      "wordEntryCount": 26,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-268",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-269",
+      "wordEntryCount": 14,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-270",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "scene-271",
+      "wordEntryCount": 18,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-272",
+      "wordEntryCount": 31,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-273",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 17
+    },
+    {
+      "id": "scene-274",
+      "wordEntryCount": 28,
+      "duplicateEntryCount": 7
+    },
+    {
+      "id": "scene-275",
+      "wordEntryCount": 30,
+      "duplicateEntryCount": 7
+    },
+    {
+      "id": "scene-276",
+      "wordEntryCount": 30,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "scene-277",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-278",
+      "wordEntryCount": 32,
+      "duplicateEntryCount": 7
+    },
+    {
+      "id": "scene-279",
+      "wordEntryCount": 33,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-280",
+      "wordEntryCount": 10,
+      "duplicateEntryCount": 17
+    },
+    {
+      "id": "scene-281",
+      "wordEntryCount": 33,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-282",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-283",
+      "wordEntryCount": 26,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-284",
+      "wordEntryCount": 21,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "scene-285",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-286",
+      "wordEntryCount": 37,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-287",
+      "wordEntryCount": 32,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-288",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-289",
+      "wordEntryCount": 26,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-290",
+      "wordEntryCount": 29,
+      "duplicateEntryCount": 23
+    },
+    {
+      "id": "scene-291",
+      "wordEntryCount": 17,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-292",
+      "wordEntryCount": 27,
+      "duplicateEntryCount": 6
+    },
+    {
+      "id": "scene-293",
+      "wordEntryCount": 43,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-294",
+      "wordEntryCount": 14,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-295",
+      "wordEntryCount": 21,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "scene-296",
+      "wordEntryCount": 21,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-297",
+      "wordEntryCount": 30,
+      "duplicateEntryCount": 6
+    },
+    {
+      "id": "scene-298",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 20
+    },
+    {
+      "id": "scene-299",
+      "wordEntryCount": 12,
+      "duplicateEntryCount": 18
+    },
+    {
+      "id": "scene-300",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 37
+    },
+    {
+      "id": "scene-301",
+      "wordEntryCount": 34,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-302",
+      "wordEntryCount": 41,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-303",
+      "wordEntryCount": 27,
+      "duplicateEntryCount": 26
+    },
+    {
+      "id": "scene-304",
+      "wordEntryCount": 16,
+      "duplicateEntryCount": 18
+    },
+    {
+      "id": "scene-305",
+      "wordEntryCount": 10,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "scene-306",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 22
+    },
+    {
+      "id": "scene-307",
+      "wordEntryCount": 27,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-308",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-309",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "scene-310",
+      "wordEntryCount": 9,
+      "duplicateEntryCount": 34
+    },
+    {
+      "id": "scene-311",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 26
+    },
+    {
+      "id": "scene-312",
+      "wordEntryCount": 4,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "scene-313",
+      "wordEntryCount": 29,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-314",
+      "wordEntryCount": 9,
+      "duplicateEntryCount": 23
+    },
+    {
+      "id": "scene-315",
+      "wordEntryCount": 7,
+      "duplicateEntryCount": 31
+    },
+    {
+      "id": "scene-316",
+      "wordEntryCount": 7,
+      "duplicateEntryCount": 36
+    },
+    {
+      "id": "scene-317",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 22
+    },
+    {
+      "id": "scene-318",
+      "wordEntryCount": 11,
+      "duplicateEntryCount": 26
+    },
+    {
+      "id": "scene-319",
+      "wordEntryCount": 12,
+      "duplicateEntryCount": 18
+    },
+    {
+      "id": "scene-320",
+      "wordEntryCount": 8,
+      "duplicateEntryCount": 26
+    },
+    {
+      "id": "scene-321",
+      "wordEntryCount": 9,
+      "duplicateEntryCount": 25
+    },
+    {
+      "id": "scene-322",
+      "wordEntryCount": 6,
+      "duplicateEntryCount": 27
+    },
+    {
+      "id": "scene-323",
+      "wordEntryCount": 33,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-324",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 19
+    },
+    {
+      "id": "scene-325",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 17
+    },
+    {
+      "id": "scene-326",
+      "wordEntryCount": 21,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "scene-327",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-328",
+      "wordEntryCount": 9,
+      "duplicateEntryCount": 22
+    },
+    {
+      "id": "scene-329",
+      "wordEntryCount": 21,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-330",
+      "wordEntryCount": 33,
+      "duplicateEntryCount": 16
+    },
+    {
+      "id": "scene-331",
+      "wordEntryCount": 32,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-332",
+      "wordEntryCount": 28,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-333",
+      "wordEntryCount": 17,
+      "duplicateEntryCount": 18
+    },
+    {
+      "id": "scene-334",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-335",
+      "wordEntryCount": 21,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-336",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-337",
+      "wordEntryCount": 27,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-338",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-339",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 6
+    },
+    {
+      "id": "scene-340",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 5
+    },
+    {
+      "id": "scene-341",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 18
+    },
+    {
+      "id": "scene-342",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-343",
+      "wordEntryCount": 47,
+      "duplicateEntryCount": 7
+    },
+    {
+      "id": "scene-344",
+      "wordEntryCount": 46,
+      "duplicateEntryCount": 17
+    },
+    {
+      "id": "scene-345",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 8
+    },
+    {
+      "id": "scene-346",
+      "wordEntryCount": 17,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "scene-347",
+      "wordEntryCount": 14,
+      "duplicateEntryCount": 20
+    },
+    {
+      "id": "scene-348",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-349",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-350",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "scene-351",
+      "wordEntryCount": 26,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "scene-352",
+      "wordEntryCount": 30,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "scene-353",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-354",
+      "wordEntryCount": 29,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-355",
+      "wordEntryCount": 14,
+      "duplicateEntryCount": 22
+    },
+    {
+      "id": "scene-356",
+      "wordEntryCount": 42,
+      "duplicateEntryCount": 0
+    },
+    {
+      "id": "scene-357",
+      "wordEntryCount": 40,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-358",
+      "wordEntryCount": 29,
+      "duplicateEntryCount": 6
+    },
+    {
+      "id": "scene-359",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 17
+    },
+    {
+      "id": "scene-360",
+      "wordEntryCount": 31,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-361",
+      "wordEntryCount": 30,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "scene-362",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 33
+    },
+    {
+      "id": "scene-363",
+      "wordEntryCount": 31,
+      "duplicateEntryCount": 16
+    },
+    {
+      "id": "scene-364",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 20
+    },
+    {
+      "id": "scene-365",
+      "wordEntryCount": 27,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-366",
+      "wordEntryCount": 26,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-367",
+      "wordEntryCount": 18,
+      "duplicateEntryCount": 22
+    },
+    {
+      "id": "scene-368",
+      "wordEntryCount": 27,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-369",
+      "wordEntryCount": 17,
+      "duplicateEntryCount": 19
+    },
+    {
+      "id": "scene-370",
+      "wordEntryCount": 8,
+      "duplicateEntryCount": 32
+    },
+    {
+      "id": "scene-371",
+      "wordEntryCount": 12,
+      "duplicateEntryCount": 20
+    },
+    {
+      "id": "scene-372",
+      "wordEntryCount": 6,
+      "duplicateEntryCount": 25
+    },
+    {
+      "id": "scene-373",
+      "wordEntryCount": 6,
+      "duplicateEntryCount": 19
+    },
+    {
+      "id": "scene-374",
+      "wordEntryCount": 10,
+      "duplicateEntryCount": 29
+    },
+    {
+      "id": "scene-375",
+      "wordEntryCount": 16,
+      "duplicateEntryCount": 17
+    },
+    {
+      "id": "scene-376",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 25
+    },
+    {
+      "id": "scene-377",
+      "wordEntryCount": 36,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-378",
+      "wordEntryCount": 30,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-379",
+      "wordEntryCount": 11,
+      "duplicateEntryCount": 48
+    },
+    {
+      "id": "scene-380",
+      "wordEntryCount": 13,
+      "duplicateEntryCount": 28
+    },
+    {
+      "id": "scene-381",
+      "wordEntryCount": 29,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-382",
+      "wordEntryCount": 8,
+      "duplicateEntryCount": 37
+    },
+    {
+      "id": "scene-383",
+      "wordEntryCount": 9,
+      "duplicateEntryCount": 26
+    },
+    {
+      "id": "scene-384",
+      "wordEntryCount": 10,
+      "duplicateEntryCount": 29
+    },
+    {
+      "id": "scene-385",
+      "wordEntryCount": 35,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-386",
+      "wordEntryCount": 2,
+      "duplicateEntryCount": 36
+    },
+    {
+      "id": "scene-387",
+      "wordEntryCount": 12,
+      "duplicateEntryCount": 23
+    },
+    {
+      "id": "scene-388",
+      "wordEntryCount": 14,
+      "duplicateEntryCount": 25
+    },
+    {
+      "id": "scene-389",
+      "wordEntryCount": 18,
+      "duplicateEntryCount": 20
+    },
+    {
+      "id": "scene-390",
+      "wordEntryCount": 17,
+      "duplicateEntryCount": 25
+    },
+    {
+      "id": "scene-391",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 31
+    },
+    {
+      "id": "scene-392",
+      "wordEntryCount": 21,
+      "duplicateEntryCount": 23
+    },
+    {
+      "id": "scene-393",
+      "wordEntryCount": 16,
+      "duplicateEntryCount": 18
+    },
+    {
+      "id": "scene-394",
+      "wordEntryCount": 35,
+      "duplicateEntryCount": 7
+    },
+    {
+      "id": "scene-395",
+      "wordEntryCount": 31,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-396",
+      "wordEntryCount": 34,
+      "duplicateEntryCount": 19
+    },
+    {
+      "id": "scene-397",
+      "wordEntryCount": 29,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-398",
+      "wordEntryCount": 17,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-399",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-400",
+      "wordEntryCount": 28,
+      "duplicateEntryCount": 18
+    },
+    {
+      "id": "scene-401",
+      "wordEntryCount": 18,
+      "duplicateEntryCount": 22
+    },
+    {
+      "id": "scene-402",
+      "wordEntryCount": 18,
+      "duplicateEntryCount": 15
+    },
+    {
+      "id": "scene-403",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 10
+    },
+    {
+      "id": "scene-404",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-405",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-406",
+      "wordEntryCount": 10,
+      "duplicateEntryCount": 36
+    },
+    {
+      "id": "scene-407",
+      "wordEntryCount": 33,
+      "duplicateEntryCount": 6
+    },
+    {
+      "id": "scene-408",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 22
+    },
+    {
+      "id": "scene-409",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 29
+    },
+    {
+      "id": "scene-410",
+      "wordEntryCount": 36,
+      "duplicateEntryCount": 19
+    },
+    {
+      "id": "scene-411",
+      "wordEntryCount": 6,
+      "duplicateEntryCount": 28
+    },
+    {
+      "id": "scene-412",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 30
+    },
+    {
+      "id": "scene-413",
+      "wordEntryCount": 21,
+      "duplicateEntryCount": 24
+    },
+    {
+      "id": "scene-414",
+      "wordEntryCount": 11,
+      "duplicateEntryCount": 26
+    },
+    {
+      "id": "scene-415",
+      "wordEntryCount": 17,
+      "duplicateEntryCount": 17
+    },
+    {
+      "id": "scene-416",
+      "wordEntryCount": 18,
+      "duplicateEntryCount": 18
+    },
+    {
+      "id": "scene-417",
+      "wordEntryCount": 21,
+      "duplicateEntryCount": 20
+    },
+    {
+      "id": "scene-418",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "scene-419",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 16
+    },
+    {
+      "id": "scene-420",
+      "wordEntryCount": 18,
+      "duplicateEntryCount": 16
+    },
+    {
+      "id": "scene-421",
+      "wordEntryCount": 13,
+      "duplicateEntryCount": 22
+    },
+    {
+      "id": "scene-422",
+      "wordEntryCount": 16,
+      "duplicateEntryCount": 16
+    },
+    {
+      "id": "scene-423",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 18
+    },
+    {
+      "id": "scene-424",
+      "wordEntryCount": 38,
+      "duplicateEntryCount": 17
+    },
+    {
+      "id": "scene-425",
+      "wordEntryCount": 15,
+      "duplicateEntryCount": 26
+    },
+    {
+      "id": "scene-426",
+      "wordEntryCount": 17,
+      "duplicateEntryCount": 30
+    },
+    {
+      "id": "scene-427",
+      "wordEntryCount": 13,
+      "duplicateEntryCount": 25
+    },
+    {
+      "id": "scene-428",
+      "wordEntryCount": 26,
+      "duplicateEntryCount": 16
+    },
+    {
+      "id": "scene-429",
+      "wordEntryCount": 25,
+      "duplicateEntryCount": 20
+    },
+    {
+      "id": "scene-430",
+      "wordEntryCount": 17,
+      "duplicateEntryCount": 11
+    },
+    {
+      "id": "scene-431",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 27
+    },
+    {
+      "id": "scene-432",
+      "wordEntryCount": 17,
+      "duplicateEntryCount": 22
+    },
+    {
+      "id": "scene-433",
+      "wordEntryCount": 16,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-434",
+      "wordEntryCount": 6,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "scene-435",
+      "wordEntryCount": 19,
+      "duplicateEntryCount": 9
+    },
+    {
+      "id": "scene-436",
+      "wordEntryCount": 26,
+      "duplicateEntryCount": 4
+    },
+    {
+      "id": "scene-437",
+      "wordEntryCount": 10,
+      "duplicateEntryCount": 24
+    },
+    {
+      "id": "scene-438",
+      "wordEntryCount": 16,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "scene-439",
+      "wordEntryCount": 18,
+      "duplicateEntryCount": 18
+    },
+    {
+      "id": "scene-440",
+      "wordEntryCount": 16,
+      "duplicateEntryCount": 17
+    },
+    {
+      "id": "scene-441",
+      "wordEntryCount": 23,
+      "duplicateEntryCount": 13
+    },
+    {
+      "id": "scene-442",
+      "wordEntryCount": 24,
+      "duplicateEntryCount": 14
+    },
+    {
+      "id": "scene-443",
+      "wordEntryCount": 22,
+      "duplicateEntryCount": 18
+    },
+    {
+      "id": "scene-444",
+      "wordEntryCount": 18,
+      "duplicateEntryCount": 19
+    },
+    {
+      "id": "scene-445",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 19
+    },
+    {
+      "id": "scene-446",
+      "wordEntryCount": 10,
+      "duplicateEntryCount": 21
+    },
+    {
+      "id": "scene-447",
+      "wordEntryCount": 31,
+      "duplicateEntryCount": 12
+    },
+    {
+      "id": "scene-448",
+      "wordEntryCount": 20,
+      "duplicateEntryCount": 17
+    }
+  ]
+}

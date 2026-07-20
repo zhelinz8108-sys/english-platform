@@ -1,0 +1,18 @@
+{
+  "generatedAt": "2026-07-13T19:16:27.805211+00:00",
+  "articleCount": 2448,
+  "gradeCount": 10,
+  "pageCount": 17152,
+  "questionCount": 13125,
+  "discussionQuestionCount": 7566,
+  "missingQuestionArticles": [
+    "commonlit-g07-182"
+  ],
+  "unusualMultipleChoiceOptionCounts": [
+    {
+      "articleId": "commonlit-g10-236",
+      "questionId": "text-4",
+      "optionCount": 3
+    }
+  ]
+}

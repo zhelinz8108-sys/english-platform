@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "mode": "review-result",
+  "reviews": [
+    {
+      "sourceId": "minute-earth-001",
+      "sourceHash": "c6ddaee2f591f50c7609ee68c5f8657d6c403ca8f8075bf51c3b593d26ea2d00",
+      "answers": [
+        {
+          "questionId": "minute-earth-001-q01",
+          "answer": "a",
+          "ambiguous": false,
+          "reasonZh": "全文按时间推进，对比海洋、生命、农业、疾病和信息传播速度，核心是地球上的移动与扩散不断加速。"
+        },
+        {
+          "questionId": "minute-earth-001-q02",
+          "answer": "b",
+          "ambiguous": false,
+          "reasonZh": "小麦从新月沃地逐步传播到大西洋和太平洋，是有用做法通过贸易或人口迁移缓慢扩散的实例。"
+        },
+        {
+          "questionId": "minute-earth-001-q03",
+          "answer": "c",
+          "ambiguous": false,
+          "reasonZh": "原文明说黑死病和印刷术各自在不到一百年内传遍欧洲。"
+        },
+        {
+          "questionId": "minute-earth-001-q04",
+          "answer": "d",
+          "ambiguous": false,
+          "reasonZh": "结尾连续提问后马上宣布将讲述我们对地球知道什么以及如何知道，作用是引出更广的主题。"
+        }
+      ]
+    },
+    {
+      "sourceId": "minute-earth-002",
+      "sourceHash": "9c5000cbf9f18dfa8f93cae3d811e2bc70529024579d019b7fd01748c70db961",
+      "answers": [
+        {
+          "questionId": "minute-earth-002-q01",
+          "answer": "b",
+          "ambiguous": false,
+          "reasonZh": "全文围绕叶片为何是绿色展开，重点解释叶绿素不擅长吸收绿光却仍被植物广泛采用的可能原因。"
+        },
+        {
+          "questionId": "minute-earth-002-q02",
+          "answer": "c",
+          "ambiguous": false,
+          "reasonZh": "紫色古菌吸收绿光后，深水中的细菌只能利用剩余光谱，这构成叶绿素可能获得优势的演化情境。"
+        },
+        {
+          "questionId": "minute-earth-002-q03",
+          "answer": "d",
+          "ambiguous": false,
+          "reasonZh": "叙述者用“what we do know”明确指出叶绿素相对紫色竞争者具有其他生化优势，其余说法均属猜测或被否定。"
+        },
+        {
+          "questionId": "minute-earth-002-q04",
+          "answer": "a",
+          "ambiguous": false,
+          "reasonZh": "结尾提出植物或许把叶绿素的弱点变成优势，并说明这个故事留待后续，因此下一部分最可能解释这种益处。"
+        }
+      ]
+    },
+    {
+      "sourceId": "minute-earth-003",
+      "sourceHash": "1850bbfb866313c2fab980c40c3011bc33872253c9d7a5453ab44b9fc87dc338",
+      "answers": [
+        {
+          "questionId": "minute-earth-003-q01",
+          "answer": "c",
+          "ambiguous": false,
+          "reasonZh": "全文说明分层吸光、避免能量过载及高效制糖等优势，结论是这些优势远胜叶绿素对绿光吸收弱的缺点。"
+        },
+        {
+          "questionId": "minute-earth-003-q02",
+          "answer": "d",
+          "ambiguous": false,
+          "reasonZh": "分层排列让叶片仍能捕获大部分绿光，同时避免在表面过快吸收全部能量而受到类似晒伤的损害。"
+        },
+        {
+          "questionId": "minute-earth-003-q03",
+          "answer": "a",
+          "ambiguous": false,
+          "reasonZh": "比较显示绿色制糖机器更小、建造耗能更少且能合并两个光子的能量，从而说明其竞争优势。"
+        },
+        {
+          "questionId": "minute-earth-003-q04",
+          "answer": "b",
+          "ambiguous": false,
+          "reasonZh": "叙述者设想由紫色植物主导的星球，并追问绿色结果是否必然，暗示绿色光合作用不是唯一可能的演化结局。"
+        }
+      ]
+    },
+    {
+      "sourceId": "minute-earth-004",
+      "sourceHash": "1a95302193d4fd0e0cb8c1677c058fc3c41d3a7ac848a8c312ad8b4bdc6e7d5b",
+      "answers": [
+        {
+          "questionId": "minute-earth-004-q01",
+          "answer": "d",
+          "ambiguous": false,
+          "reasonZh": "全文说明地壳下沉软化、岩石破裂和侵蚀等过程如何共同限制地球上山峰的实际高度。"
+        },
+        {
+          "questionId": "minute-earth-004-q02",
+          "answer": "a",
+          "ambiguous": false,
+          "reasonZh": "山体重量增加会让地壳沉入更热的地球内部，沉得足够深时岩石会软化并基本熔化。"
+        },
+        {
+          "questionId": "minute-earth-004-q03",
+          "answer": "b",
+          "ambiguous": false,
+          "reasonZh": "库克山山顶突然坍塌并降低十米，是裂缝与侵蚀削弱支撑后山体可能骤然变矮的具体例证。"
+        },
+        {
+          "questionId": "minute-earth-004-q04",
+          "answer": "c",
+          "ambiguous": false,
+          "reasonZh": "珠峰仍在生长，但未来既可能更高也可能明显变矮，说明其高度取决于构造抬升与破坏过程的竞争。"
+        }
+      ]
+    },
+    {
+      "sourceId": "minute-earth-005",
+      "sourceHash": "68ef1641b7af79583cc7738d3d301ac0f1fabf5ca92ba16c079d68e3f01dba03",
+      "answers": [
+        {
+          "questionId": "minute-earth-005-q01",
+          "answer": "a",
+          "ambiguous": false,
+          "reasonZh": "全文解释哈德莱环流如何在赤道造成多雨的热带雨林，并在南北两侧造成干燥的沙漠带。"
+        },
+        {
+          "questionId": "minute-earth-005-q02",
+          "answer": "b",
+          "ambiguous": false,
+          "reasonZh": "水手在赤道遇到风突然停歇的现象，引出了科学家需要解释的信风与无风带问题。"
+        },
+        {
+          "questionId": "minute-earth-005-q03",
+          "answer": "c",
+          "ambiguous": false,
+          "reasonZh": "原文指出暖湿空气上升后冷却，因冷空气容纳水汽较少而大量降雨，足以形成雨林。"
+        },
+        {
+          "questionId": "minute-earth-005-q04",
+          "answer": "d",
+          "ambiguous": false,
+          "reasonZh": "叙述先提出地表绿地与荒漠分布之谜，再回顾风向问题，最后用哈德莱环流机制解释两种地带。"
+        }
+      ]
+    }
+  ]
+}

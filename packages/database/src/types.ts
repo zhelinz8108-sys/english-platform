@@ -63,6 +63,12 @@ export type ProjectionType = 'overall' | 'skill' | 'path';
 export type OutboxStatus = 'pending' | 'processing' | 'published' | 'dead';
 export type IdempotencyStatus = 'in_progress' | 'succeeded' | 'failed';
 export type AuditActorType = 'user' | 'worker' | 'system';
+export type VocabularyAssessmentMode = 'quick' | 'standard' | 'calibration';
+export type VocabularyAssessmentItemStatus = 'draft' | 'review' | 'pilot' | 'active' | 'retired';
+export type VocabularyAssessmentSessionStatus =
+  'created' | 'active' | 'paused' | 'scoring' | 'completed' | 'abandoned' | 'invalid';
+export type VocabularyAssessmentStage = 'routing' | 'precision' | 'calibration';
+export type VocabularyAssessmentReliability = 'HIGH' | 'MEDIUM' | 'LOW' | 'INVALID';
 
 interface TenantOwned {
   id: Generated<Uuid>;
@@ -511,6 +517,184 @@ export interface ToeflListeningStudyContentsTable extends TenantOwned, MutableTi
   source_sha256: string;
 }
 
+export interface VocabularyAssessmentItemsTable extends TenantOwned, MutableTimestamps {
+  item_key: string;
+  band: number;
+  target_word: string;
+  sentence: string;
+  options: JsonColumn;
+  correct_option_index: number;
+  status: VocabularyAssessmentItemStatus;
+  content_version: string;
+  source_list_version: string;
+  review_notes: string | null;
+  reviewed_by_membership_id: Uuid | null;
+  reviewed_at: NullableTimestamp;
+  lexical_unit_key: string | null;
+  lemma: string | null;
+  word_family: string | null;
+  sense_key: string | null;
+  part_of_speech: string | null;
+  corpus_source: string | null;
+  corpus_rank: number | null;
+  language_version: string;
+  item_format: string;
+  ai_drafted: boolean;
+  masked_context_reviewed: boolean;
+  calibration_eligible: boolean;
+}
+
+export interface VocabularyAssessmentItemReviewsTable extends TenantOwned, ImmutableTimestamp {
+  item_id: Uuid;
+  reviewer_membership_id: Uuid;
+  decision: 'approve' | 'revise' | 'reject';
+  target_sense_valid: boolean;
+  single_best_answer: boolean;
+  distractors_balanced: boolean;
+  context_nondefining: boolean;
+  masked_context_leak: boolean;
+  language_natural: boolean;
+  notes: string | null;
+}
+
+export interface VocabularyAssessmentCalibrationsTable extends TenantOwned, ImmutableTimestamp {
+  version: string;
+  model: 'rasch' | '2pl' | '3pl';
+  status: 'draft' | 'shadow' | 'active' | 'retired';
+  sample_size: number;
+  external_validation_size: number;
+  fit_summary: JsonColumn;
+  acceptance_gates: JsonColumn;
+  source_checksum: string;
+  activated_at: NullableTimestamp;
+  retired_at: NullableTimestamp;
+  created_by_membership_id: Uuid;
+}
+
+export interface VocabularyAssessmentCalibrationExportsTable
+  extends TenantOwned, ImmutableTimestamp {
+  calibration_version: string;
+  content_version: string;
+  status: 'building' | 'ready' | 'failed' | 'retired';
+  subject_token_version: string;
+  row_count: number;
+  source_checksum: string | null;
+  storage_key: string | null;
+  created_by_membership_id: Uuid;
+  completed_at: NullableTimestamp;
+}
+
+export interface VocabularyAssessmentCalibrationExportRowsTable
+  extends TenantOwned, ImmutableTimestamp {
+  export_id: Uuid;
+  subject_token: string;
+  session_token: string;
+  item_id: Uuid;
+  response_category: 'correct' | 'wrong' | 'unknown';
+  response_time_ms: number;
+  item_position: number;
+  mode: VocabularyAssessmentMode;
+}
+
+export interface VocabularyAssessmentItemParametersTable extends TenantOwned, ImmutableTimestamp {
+  item_id: Uuid;
+  calibration_id: Uuid;
+  difficulty: string;
+  discrimination: string;
+  guessing: string;
+  standard_error: string;
+  infit: string | null;
+  outfit: string | null;
+  sample_size: number;
+  exposure_count: number;
+}
+
+export interface VocabularyAssessmentFormsTable extends TenantOwned, ImmutableTimestamp {
+  form_key: string;
+  version: number;
+  mode: VocabularyAssessmentMode;
+  purpose: 'screening' | 'parallel' | 'pilot' | 'anchor';
+  status: 'draft' | 'active' | 'retired';
+  language_version: string;
+  content_version: string;
+  item_count: number;
+  created_by_membership_id: Uuid;
+}
+
+export interface VocabularyAssessmentFormItemsTable extends TenantOwned, ImmutableTimestamp {
+  form_id: Uuid;
+  item_id: Uuid;
+  position: number;
+  is_anchor: boolean;
+}
+
+export interface VocabularyAssessmentSessionsTable extends TenantOwned, MutableTimestamps {
+  learner_membership_id: Uuid;
+  mode: VocabularyAssessmentMode;
+  target_track: LearningTrack;
+  status: VocabularyAssessmentSessionStatus;
+  stage: VocabularyAssessmentStage;
+  content_version: string;
+  algorithm_version: string;
+  calibration_version: string;
+  interpretation_version: string;
+  source_list_version: string;
+  routing_item_ids: JsonColumn;
+  answered_count: number;
+  rapid_response_count: number;
+  scoring_mode: 'beta' | 'shadow' | 'calibrated';
+  form_id: Uuid | null;
+  focus_loss_count: number;
+  started_at: NullableTimestamp;
+  paused_at: NullableTimestamp;
+  completed_at: NullableTimestamp;
+}
+
+export interface VocabularyAssessmentDeliveriesTable extends TenantOwned, ImmutableTimestamp {
+  session_id: Uuid;
+  item_id: Uuid;
+  stage: VocabularyAssessmentStage;
+  position: number;
+  option_order: JsonColumn;
+  delivered_at: DbTimestamp;
+  answered_at: NullableTimestamp;
+}
+
+export interface VocabularyAssessmentResponsesTable extends TenantOwned, ImmutableTimestamp {
+  session_id: Uuid;
+  delivery_id: Uuid;
+  selected_option_position: number | null;
+  was_unknown: boolean;
+  is_correct: boolean;
+  response_time_ms: number;
+  idempotency_key: string;
+}
+
+export interface VocabularyAssessmentResultsTable extends TenantOwned, ImmutableTimestamp {
+  session_id: Uuid;
+  learner_membership_id: Uuid;
+  estimate: number;
+  interval_lower: number;
+  interval_upper: number;
+  confidence: string;
+  reliability: VocabularyAssessmentReliability;
+  band_profile: JsonColumn;
+  metrics: JsonColumn;
+  content_version: string;
+  algorithm_version: string;
+  calibration_version: string;
+  interpretation_version: string;
+  source_list_version: string;
+  completed_at: DbTimestamp;
+  score_status: 'beta' | 'shadow' | 'calibrated';
+  scale: string;
+  theta: string | null;
+  standard_error: string | null;
+  display_precision: number;
+  ability_band: string;
+  quality_flags: JsonColumn;
+}
+
 export interface ResourceFileLinkTable extends TenantOwned, ImmutableTimestamp {
   file_object_id: Uuid;
   usage: string;
@@ -586,6 +770,24 @@ export interface AuditLogsTable extends TenantOwned, ImmutableTimestamp {
   correlation_id: Uuid;
   request_id: Uuid;
   ip_hash: string | null;
+}
+
+export interface GrammarPracticeSessionsTable extends TenantOwned {
+  learner_membership_id: Uuid;
+  topic_id: string;
+  level: 'beginner' | 'intermediate' | 'advanced';
+  status: 'active' | 'completed';
+  content_version: string;
+  question_ids: JsonColumn;
+  answers: JsonColumn;
+  revision: number;
+  question_count: number;
+  correct_count: number | null;
+  accuracy: number | null;
+  mastered: boolean;
+  started_at: DbTimestamp;
+  updated_at: UpdatedAt;
+  completed_at: NullableTimestamp;
 }
 
 export interface PlatformExamsTable {
@@ -668,6 +870,19 @@ export interface Database {
   file_objects: FileObjectsTable;
   toefl_listening_assets: ToeflListeningAssetsTable;
   toefl_listening_study_contents: ToeflListeningStudyContentsTable;
+  vocabulary_assessment_items: VocabularyAssessmentItemsTable;
+  vocabulary_assessment_item_reviews: VocabularyAssessmentItemReviewsTable;
+  vocabulary_assessment_calibrations: VocabularyAssessmentCalibrationsTable;
+  vocabulary_assessment_item_parameters: VocabularyAssessmentItemParametersTable;
+  vocabulary_assessment_calibration_exports: VocabularyAssessmentCalibrationExportsTable;
+  vocabulary_assessment_calibration_export_rows: VocabularyAssessmentCalibrationExportRowsTable;
+  vocabulary_assessment_forms: VocabularyAssessmentFormsTable;
+  vocabulary_assessment_form_items: VocabularyAssessmentFormItemsTable;
+  vocabulary_assessment_sessions: VocabularyAssessmentSessionsTable;
+  vocabulary_assessment_deliveries: VocabularyAssessmentDeliveriesTable;
+  vocabulary_assessment_responses: VocabularyAssessmentResponsesTable;
+  vocabulary_assessment_results: VocabularyAssessmentResultsTable;
+  grammar_practice_sessions: GrammarPracticeSessionsTable;
   content_version_files: ContentVersionFilesTable;
   question_version_files: QuestionVersionFilesTable;
   feedback_files: FeedbackFilesTable;

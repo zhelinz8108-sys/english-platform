@@ -1,0 +1,3749 @@
+{
+  "schemaVersion": 2,
+  "sourceDirectory": "source\\单词书",
+  "summary": {
+    "bookCount": 3,
+    "pageCount": 3361,
+    "learningUnitCount": 594,
+    "uniqueWordEntryCount": 20448,
+    "duplicateEntryCount": 8357
+  },
+  "books": [
+    {
+      "id": "toefl-sentences",
+      "sourceFile": "100个句子记完7000个托福单词.pdf.pdf",
+      "pageCount": 659,
+      "cover": "/vocabulary-books/covers/toefl-sentences.webp",
+      "extractionMethod": "text-layer",
+      "title": "100个句子记完7000个托福单词",
+      "shortTitle": "托福 100 句词汇",
+      "author": "俞敏洪",
+      "description": "以 100 个托福典型长句为主线，串联核心词、主题词汇和搭配。",
+      "scale": "100 个句子 · 约 7000 个相关词汇",
+      "category": "TOEFL",
+      "tone": "teal",
+      "features": [
+        "核心词表",
+        "主题归纳",
+        "长难句"
+      ],
+      "sections": [
+        {
+          "id": "sentences-001",
+          "title": "Sentence 01-10",
+          "page": 15,
+          "items": [
+            {
+              "id": "sentence-001",
+              "title": "Sentence 01",
+              "page": 15
+            },
+            {
+              "id": "sentence-002",
+              "title": "Sentence 02",
+              "page": 20
+            },
+            {
+              "id": "sentence-003",
+              "title": "Sentence 03",
+              "page": 26
+            },
+            {
+              "id": "sentence-004",
+              "title": "Sentence 04",
+              "page": 36
+            },
+            {
+              "id": "sentence-005",
+              "title": "Sentence 05",
+              "page": 42
+            },
+            {
+              "id": "sentence-006",
+              "title": "Sentence 06",
+              "page": 49
+            },
+            {
+              "id": "sentence-007",
+              "title": "Sentence 07",
+              "page": 55
+            },
+            {
+              "id": "sentence-008",
+              "title": "Sentence 08",
+              "page": 60
+            },
+            {
+              "id": "sentence-009",
+              "title": "Sentence 09",
+              "page": 70
+            },
+            {
+              "id": "sentence-010",
+              "title": "Sentence 10",
+              "page": 77
+            }
+          ]
+        },
+        {
+          "id": "sentences-011",
+          "title": "Sentence 11-20",
+          "page": 83,
+          "items": [
+            {
+              "id": "sentence-011",
+              "title": "Sentence 11",
+              "page": 83
+            },
+            {
+              "id": "sentence-012",
+              "title": "Sentence 12",
+              "page": 90
+            },
+            {
+              "id": "sentence-013",
+              "title": "Sentence 13",
+              "page": 96
+            },
+            {
+              "id": "sentence-014",
+              "title": "Sentence 14",
+              "page": 103
+            },
+            {
+              "id": "sentence-015",
+              "title": "Sentence 15",
+              "page": 111
+            },
+            {
+              "id": "sentence-016",
+              "title": "Sentence 16",
+              "page": 117
+            },
+            {
+              "id": "sentence-017",
+              "title": "Sentence 17",
+              "page": 125
+            },
+            {
+              "id": "sentence-018",
+              "title": "Sentence 18",
+              "page": 130
+            },
+            {
+              "id": "sentence-019",
+              "title": "Sentence 19",
+              "page": 136
+            },
+            {
+              "id": "sentence-020",
+              "title": "Sentence 20",
+              "page": 143
+            }
+          ]
+        },
+        {
+          "id": "sentences-021",
+          "title": "Sentence 21-30",
+          "page": 150,
+          "items": [
+            {
+              "id": "sentence-021",
+              "title": "Sentence 21",
+              "page": 150
+            },
+            {
+              "id": "sentence-022",
+              "title": "Sentence 22",
+              "page": 158
+            },
+            {
+              "id": "sentence-023",
+              "title": "Sentence 23",
+              "page": 164
+            },
+            {
+              "id": "sentence-024",
+              "title": "Sentence 24",
+              "page": 170
+            },
+            {
+              "id": "sentence-025",
+              "title": "Sentence 25",
+              "page": 176
+            },
+            {
+              "id": "sentence-026",
+              "title": "Sentence 26",
+              "page": 182
+            },
+            {
+              "id": "sentence-027",
+              "title": "Sentence 27",
+              "page": 188
+            },
+            {
+              "id": "sentence-028",
+              "title": "Sentence 28",
+              "page": 193
+            },
+            {
+              "id": "sentence-029",
+              "title": "Sentence 29",
+              "page": 200
+            },
+            {
+              "id": "sentence-030",
+              "title": "Sentence 30",
+              "page": 206
+            }
+          ]
+        },
+        {
+          "id": "sentences-031",
+          "title": "Sentence 31-40",
+          "page": 213,
+          "items": [
+            {
+              "id": "sentence-031",
+              "title": "Sentence 31",
+              "page": 213
+            },
+            {
+              "id": "sentence-032",
+              "title": "Sentence 32",
+              "page": 222
+            },
+            {
+              "id": "sentence-033",
+              "title": "Sentence 33",
+              "page": 228
+            },
+            {
+              "id": "sentence-034",
+              "title": "Sentence 34",
+              "page": 233
+            },
+            {
+              "id": "sentence-035",
+              "title": "Sentence 35",
+              "page": 238
+            },
+            {
+              "id": "sentence-036",
+              "title": "Sentence 36",
+              "page": 244
+            },
+            {
+              "id": "sentence-037",
+              "title": "Sentence 37",
+              "page": 249
+            },
+            {
+              "id": "sentence-038",
+              "title": "Sentence 38",
+              "page": 255
+            },
+            {
+              "id": "sentence-039",
+              "title": "Sentence 39",
+              "page": 264
+            },
+            {
+              "id": "sentence-040",
+              "title": "Sentence 40",
+              "page": 270
+            }
+          ]
+        },
+        {
+          "id": "sentences-041",
+          "title": "Sentence 41-50",
+          "page": 277,
+          "items": [
+            {
+              "id": "sentence-041",
+              "title": "Sentence 41",
+              "page": 277
+            },
+            {
+              "id": "sentence-042",
+              "title": "Sentence 42",
+              "page": 285
+            },
+            {
+              "id": "sentence-043",
+              "title": "Sentence 43",
+              "page": 290
+            },
+            {
+              "id": "sentence-044",
+              "title": "Sentence 44",
+              "page": 296
+            },
+            {
+              "id": "sentence-045",
+              "title": "Sentence 45",
+              "page": 303
+            },
+            {
+              "id": "sentence-046",
+              "title": "Sentence 46",
+              "page": 311
+            },
+            {
+              "id": "sentence-047",
+              "title": "Sentence 47",
+              "page": 317
+            },
+            {
+              "id": "sentence-048",
+              "title": "Sentence 48",
+              "page": 322
+            },
+            {
+              "id": "sentence-049",
+              "title": "Sentence 49",
+              "page": 329
+            },
+            {
+              "id": "sentence-050",
+              "title": "Sentence 50",
+              "page": 335
+            }
+          ]
+        },
+        {
+          "id": "sentences-051",
+          "title": "Sentence 51-60",
+          "page": 340,
+          "items": [
+            {
+              "id": "sentence-051",
+              "title": "Sentence 51",
+              "page": 340
+            },
+            {
+              "id": "sentence-052",
+              "title": "Sentence 52",
+              "page": 346
+            },
+            {
+              "id": "sentence-053",
+              "title": "Sentence 53",
+              "page": 351
+            },
+            {
+              "id": "sentence-054",
+              "title": "Sentence 54",
+              "page": 358
+            },
+            {
+              "id": "sentence-055",
+              "title": "Sentence 55",
+              "page": 363
+            },
+            {
+              "id": "sentence-056",
+              "title": "Sentence 56",
+              "page": 369
+            },
+            {
+              "id": "sentence-057",
+              "title": "Sentence 57",
+              "page": 374
+            },
+            {
+              "id": "sentence-058",
+              "title": "Sentence 58",
+              "page": 380
+            },
+            {
+              "id": "sentence-059",
+              "title": "Sentence 59",
+              "page": 386
+            },
+            {
+              "id": "sentence-060",
+              "title": "Sentence 60",
+              "page": 392
+            }
+          ]
+        },
+        {
+          "id": "sentences-061",
+          "title": "Sentence 61-70",
+          "page": 398,
+          "items": [
+            {
+              "id": "sentence-061",
+              "title": "Sentence 61",
+              "page": 398
+            },
+            {
+              "id": "sentence-062",
+              "title": "Sentence 62",
+              "page": 404
+            },
+            {
+              "id": "sentence-063",
+              "title": "Sentence 63",
+              "page": 411
+            },
+            {
+              "id": "sentence-064",
+              "title": "Sentence 64",
+              "page": 416
+            },
+            {
+              "id": "sentence-065",
+              "title": "Sentence 65",
+              "page": 422
+            },
+            {
+              "id": "sentence-066",
+              "title": "Sentence 66",
+              "page": 429
+            },
+            {
+              "id": "sentence-067",
+              "title": "Sentence 67",
+              "page": 437
+            },
+            {
+              "id": "sentence-068",
+              "title": "Sentence 68",
+              "page": 444
+            },
+            {
+              "id": "sentence-069",
+              "title": "Sentence 69",
+              "page": 452
+            },
+            {
+              "id": "sentence-070",
+              "title": "Sentence 70",
+              "page": 458
+            }
+          ]
+        },
+        {
+          "id": "sentences-071",
+          "title": "Sentence 71-80",
+          "page": 464,
+          "items": [
+            {
+              "id": "sentence-071",
+              "title": "Sentence 71",
+              "page": 464
+            },
+            {
+              "id": "sentence-072",
+              "title": "Sentence 72",
+              "page": 470
+            },
+            {
+              "id": "sentence-073",
+              "title": "Sentence 73",
+              "page": 476
+            },
+            {
+              "id": "sentence-074",
+              "title": "Sentence 74",
+              "page": 483
+            },
+            {
+              "id": "sentence-075",
+              "title": "Sentence 75",
+              "page": 489
+            },
+            {
+              "id": "sentence-076",
+              "title": "Sentence 76",
+              "page": 496
+            },
+            {
+              "id": "sentence-077",
+              "title": "Sentence 77",
+              "page": 502
+            },
+            {
+              "id": "sentence-078",
+              "title": "Sentence 78",
+              "page": 508
+            },
+            {
+              "id": "sentence-079",
+              "title": "Sentence 79",
+              "page": 513
+            },
+            {
+              "id": "sentence-080",
+              "title": "Sentence 80",
+              "page": 520
+            }
+          ]
+        },
+        {
+          "id": "sentences-081",
+          "title": "Sentence 81-90",
+          "page": 526,
+          "items": [
+            {
+              "id": "sentence-081",
+              "title": "Sentence 81",
+              "page": 526
+            },
+            {
+              "id": "sentence-082",
+              "title": "Sentence 82",
+              "page": 533
+            },
+            {
+              "id": "sentence-083",
+              "title": "Sentence 83",
+              "page": 538
+            },
+            {
+              "id": "sentence-084",
+              "title": "Sentence 84",
+              "page": 545
+            },
+            {
+              "id": "sentence-085",
+              "title": "Sentence 85",
+              "page": 553
+            },
+            {
+              "id": "sentence-086",
+              "title": "Sentence 86",
+              "page": 562
+            },
+            {
+              "id": "sentence-087",
+              "title": "Sentence 87",
+              "page": 569
+            },
+            {
+              "id": "sentence-088",
+              "title": "Sentence 88",
+              "page": 574
+            },
+            {
+              "id": "sentence-089",
+              "title": "Sentence 89",
+              "page": 581
+            },
+            {
+              "id": "sentence-090",
+              "title": "Sentence 90",
+              "page": 587
+            }
+          ]
+        },
+        {
+          "id": "sentences-091",
+          "title": "Sentence 91-100",
+          "page": 592,
+          "items": [
+            {
+              "id": "sentence-091",
+              "title": "Sentence 91",
+              "page": 592
+            },
+            {
+              "id": "sentence-092",
+              "title": "Sentence 92",
+              "page": 599
+            },
+            {
+              "id": "sentence-093",
+              "title": "Sentence 93",
+              "page": 606
+            },
+            {
+              "id": "sentence-094",
+              "title": "Sentence 94",
+              "page": 613
+            },
+            {
+              "id": "sentence-095",
+              "title": "Sentence 95",
+              "page": 620
+            },
+            {
+              "id": "sentence-096",
+              "title": "Sentence 96",
+              "page": 626
+            },
+            {
+              "id": "sentence-097",
+              "title": "Sentence 97",
+              "page": 634
+            },
+            {
+              "id": "sentence-098",
+              "title": "Sentence 98",
+              "page": 640
+            },
+            {
+              "id": "sentence-099",
+              "title": "Sentence 99",
+              "page": 647
+            },
+            {
+              "id": "sentence-100",
+              "title": "Sentence 100",
+              "page": 653
+            }
+          ]
+        }
+      ],
+      "contentReady": true,
+      "wordEntryCount": 3846,
+      "duplicateEntryCount": 717
+    },
+    {
+      "id": "gre-random",
+      "sourceFile": "GRE词汇精选 乱序版_15517988.pdf",
+      "pageCount": 492,
+      "cover": "/vocabulary-books/covers/gre-random.webp",
+      "extractionMethod": "ocr",
+      "title": "GRE词汇精选 乱序版",
+      "shortTitle": "GRE 词汇精选",
+      "author": "俞敏洪",
+      "description": "按 46 个 Word List 乱序编排 GRE 核心与拓展词汇，包含英文释义、词根和联想记忆。",
+      "scale": "46 个 Word List",
+      "category": "GRE",
+      "tone": "plum",
+      "features": [
+        "乱序编排",
+        "英文释义",
+        "词根词缀",
+        "同反义词"
+      ],
+      "sections": [
+        {
+          "id": "gre-core",
+          "title": "核心词汇",
+          "page": 18,
+          "items": [
+            {
+              "id": "word-list-01",
+              "title": "Word List 01",
+              "page": 18
+            },
+            {
+              "id": "word-list-02",
+              "title": "Word List 02",
+              "page": 30
+            },
+            {
+              "id": "word-list-03",
+              "title": "Word List 03",
+              "page": 42
+            },
+            {
+              "id": "word-list-04",
+              "title": "Word List 04",
+              "page": 54
+            },
+            {
+              "id": "word-list-05",
+              "title": "Word List 05",
+              "page": 66
+            },
+            {
+              "id": "word-list-06",
+              "title": "Word List 06",
+              "page": 78
+            },
+            {
+              "id": "word-list-07",
+              "title": "Word List 07",
+              "page": 89
+            },
+            {
+              "id": "word-list-08",
+              "title": "Word List 08",
+              "page": 101
+            },
+            {
+              "id": "word-list-09",
+              "title": "Word List 09",
+              "page": 113
+            },
+            {
+              "id": "word-list-10",
+              "title": "Word List 10",
+              "page": 126
+            },
+            {
+              "id": "word-list-11",
+              "title": "Word List 11",
+              "page": 137
+            },
+            {
+              "id": "word-list-12",
+              "title": "Word List 12",
+              "page": 148
+            },
+            {
+              "id": "word-list-13",
+              "title": "Word List 13",
+              "page": 158
+            },
+            {
+              "id": "word-list-14",
+              "title": "Word List 14",
+              "page": 171
+            },
+            {
+              "id": "word-list-15",
+              "title": "Word List 15",
+              "page": 183
+            },
+            {
+              "id": "word-list-16",
+              "title": "Word List 16",
+              "page": 194
+            },
+            {
+              "id": "word-list-17",
+              "title": "Word List 17",
+              "page": 206
+            },
+            {
+              "id": "word-list-18",
+              "title": "Word List 18",
+              "page": 217
+            },
+            {
+              "id": "word-list-19",
+              "title": "Word List 19",
+              "page": 228
+            },
+            {
+              "id": "word-list-20",
+              "title": "Word List 20",
+              "page": 239
+            }
+          ]
+        },
+        {
+          "id": "gre-extended",
+          "title": "拓展词汇",
+          "page": 251,
+          "items": [
+            {
+              "id": "word-list-21",
+              "title": "Word List 21",
+              "page": 251
+            },
+            {
+              "id": "word-list-22",
+              "title": "Word List 22",
+              "page": 261
+            },
+            {
+              "id": "word-list-23",
+              "title": "Word List 23",
+              "page": 271
+            },
+            {
+              "id": "word-list-24",
+              "title": "Word List 24",
+              "page": 281
+            },
+            {
+              "id": "word-list-25",
+              "title": "Word List 25",
+              "page": 290
+            },
+            {
+              "id": "word-list-26",
+              "title": "Word List 26",
+              "page": 299
+            },
+            {
+              "id": "word-list-27",
+              "title": "Word List 27",
+              "page": 308
+            },
+            {
+              "id": "word-list-28",
+              "title": "Word List 28",
+              "page": 317
+            },
+            {
+              "id": "word-list-29",
+              "title": "Word List 29",
+              "page": 326
+            },
+            {
+              "id": "word-list-30",
+              "title": "Word List 30",
+              "page": 335
+            },
+            {
+              "id": "word-list-31",
+              "title": "Word List 31",
+              "page": 344
+            },
+            {
+              "id": "word-list-32",
+              "title": "Word List 32",
+              "page": 354
+            },
+            {
+              "id": "word-list-33",
+              "title": "Word List 33",
+              "page": 364
+            },
+            {
+              "id": "word-list-34",
+              "title": "Word List 34",
+              "page": 374
+            },
+            {
+              "id": "word-list-35",
+              "title": "Word List 35",
+              "page": 384
+            },
+            {
+              "id": "word-list-36",
+              "title": "Word List 36",
+              "page": 393
+            },
+            {
+              "id": "word-list-37",
+              "title": "Word List 37",
+              "page": 402
+            },
+            {
+              "id": "word-list-38",
+              "title": "Word List 38",
+              "page": 411
+            },
+            {
+              "id": "word-list-39",
+              "title": "Word List 39",
+              "page": 420
+            },
+            {
+              "id": "word-list-40",
+              "title": "Word List 40",
+              "page": 429
+            },
+            {
+              "id": "word-list-41",
+              "title": "Word List 41",
+              "page": 438
+            },
+            {
+              "id": "word-list-42",
+              "title": "Word List 42",
+              "page": 447
+            },
+            {
+              "id": "word-list-43",
+              "title": "Word List 43",
+              "page": 456
+            },
+            {
+              "id": "word-list-44",
+              "title": "Word List 44",
+              "page": 465
+            },
+            {
+              "id": "word-list-45",
+              "title": "Word List 45",
+              "page": 473
+            },
+            {
+              "id": "word-list-46",
+              "title": "Word List 46",
+              "page": 482
+            }
+          ]
+        }
+      ],
+      "contentReady": true,
+      "wordEntryCount": 5853,
+      "duplicateEntryCount": 1287
+    },
+    {
+      "id": "situational-15000",
+      "sourceFile": "超实用15000词分类速记 (俞敏洪 [俞敏洪]).pdf",
+      "pageCount": 2210,
+      "cover": "/vocabulary-books/covers/situational-15000.webp",
+      "extractionMethod": "text-layer",
+      "title": "超实用15000词分类速记",
+      "shortTitle": "15000 分类词汇",
+      "author": "俞敏洪",
+      "description": "围绕生活、学习、职场、社会与学科场景分类，按认知顺序组织常用词、短语与对话。",
+      "scale": "20 章 · 448 个场景 · 15000+ 词汇",
+      "category": "场景分类",
+      "tone": "amber",
+      "features": [
+        "场景词汇",
+        "短语搭配",
+        "情景对话",
+        "20 大主题"
+      ],
+      "sections": [
+        {
+          "id": "chapter-01",
+          "title": "居家琐事会表达",
+          "label": "Chapter 1",
+          "page": 25,
+          "items": [
+            {
+              "id": "scene-001",
+              "title": "一天好开始",
+              "label": "01",
+              "page": 26
+            },
+            {
+              "id": "scene-002",
+              "title": "洗漱打扮",
+              "label": "02",
+              "page": 30
+            },
+            {
+              "id": "scene-003",
+              "title": "美味早餐",
+              "label": "03",
+              "page": 35
+            },
+            {
+              "id": "scene-004",
+              "title": "上下班高峰期",
+              "label": "04",
+              "page": 40
+            },
+            {
+              "id": "scene-005",
+              "title": "打扫卫生做家务",
+              "label": "05",
+              "page": 44
+            },
+            {
+              "id": "scene-006",
+              "title": "注意个人卫生",
+              "label": "06",
+              "page": 50
+            },
+            {
+              "id": "scene-007",
+              "title": "睡前一刻",
+              "label": "07",
+              "page": 55
+            },
+            {
+              "id": "scene-008",
+              "title": "街区环境",
+              "label": "08",
+              "page": 60
+            },
+            {
+              "id": "scene-009",
+              "title": "美好家居",
+              "label": "09",
+              "page": 65
+            },
+            {
+              "id": "scene-010",
+              "title": "家庭影院",
+              "label": "10",
+              "page": 70
+            },
+            {
+              "id": "scene-011",
+              "title": "谈论装修事宜",
+              "label": "11",
+              "page": 75
+            },
+            {
+              "id": "scene-012",
+              "title": "维修护理",
+              "label": "12",
+              "page": 81
+            },
+            {
+              "id": "scene-013",
+              "title": "生活用具",
+              "label": "13",
+              "page": 86
+            },
+            {
+              "id": "scene-014",
+              "title": "仪器及工具",
+              "label": "14",
+              "page": 90
+            },
+            {
+              "id": "scene-015",
+              "title": "找房租房",
+              "label": "15",
+              "page": 95
+            },
+            {
+              "id": "scene-016",
+              "title": "教育孩子",
+              "label": "16",
+              "page": 100
+            },
+            {
+              "id": "scene-017",
+              "title": "赡养老人",
+              "label": "17",
+              "page": 106
+            },
+            {
+              "id": "scene-018",
+              "title": "生气吵架",
+              "label": "18",
+              "page": 110
+            },
+            {
+              "id": "scene-019",
+              "title": "生活习惯",
+              "label": "19",
+              "page": 115
+            },
+            {
+              "id": "scene-020",
+              "title": "栽花除草",
+              "label": "20",
+              "page": 120
+            }
+          ]
+        },
+        {
+          "id": "chapter-02",
+          "title": "日常交际你最强",
+          "label": "Chapter 2",
+          "page": 125,
+          "items": [
+            {
+              "id": "scene-021",
+              "title": "家庭关系",
+              "label": "21",
+              "page": 126
+            },
+            {
+              "id": "scene-022",
+              "title": "左邻右舍",
+              "label": "22",
+              "page": 133
+            },
+            {
+              "id": "scene-023",
+              "title": "人际交往",
+              "label": "23",
+              "page": 139
+            },
+            {
+              "id": "scene-024",
+              "title": "社交网络",
+              "label": "24",
+              "page": 144
+            },
+            {
+              "id": "scene-025",
+              "title": "追求爱情",
+              "label": "25",
+              "page": 149
+            },
+            {
+              "id": "scene-026",
+              "title": "陷入热恋",
+              "label": "26",
+              "page": 154
+            },
+            {
+              "id": "scene-027",
+              "title": "情感破裂",
+              "label": "27",
+              "page": 158
+            },
+            {
+              "id": "scene-028",
+              "title": "会面与会谈",
+              "label": "28",
+              "page": 162
+            },
+            {
+              "id": "scene-029",
+              "title": "社交能力",
+              "label": "29",
+              "page": 167
+            },
+            {
+              "id": "scene-030",
+              "title": "误解与沟通",
+              "label": "30",
+              "page": 172
+            },
+            {
+              "id": "scene-031",
+              "title": "拨打电话",
+              "label": "31",
+              "page": 177
+            },
+            {
+              "id": "scene-032",
+              "title": "无法接通或线路故障",
+              "label": "32",
+              "page": 182
+            },
+            {
+              "id": "scene-033",
+              "title": "收发e-mail",
+              "label": "33",
+              "page": 187
+            },
+            {
+              "id": "scene-034",
+              "title": "拜访他人",
+              "label": "34",
+              "page": 192
+            },
+            {
+              "id": "scene-035",
+              "title": "待客寒暄",
+              "label": "35",
+              "page": 196
+            },
+            {
+              "id": "scene-036",
+              "title": "感人心扉",
+              "label": "36",
+              "page": 201
+            },
+            {
+              "id": "scene-037",
+              "title": "乐于助人",
+              "label": "37",
+              "page": 205
+            },
+            {
+              "id": "scene-038",
+              "title": "承诺担保",
+              "label": "38",
+              "page": 209
+            },
+            {
+              "id": "scene-039",
+              "title": "感激祝贺",
+              "label": "39",
+              "page": 214
+            },
+            {
+              "id": "scene-040",
+              "title": "参加庆功宴",
+              "label": "40",
+              "page": 218
+            },
+            {
+              "id": "scene-041",
+              "title": "参加婚礼",
+              "label": "41",
+              "page": 223
+            },
+            {
+              "id": "scene-042",
+              "title": "参加葬礼",
+              "label": "42",
+              "page": 228
+            },
+            {
+              "id": "scene-043",
+              "title": "做祷告",
+              "label": "43",
+              "page": 233
+            },
+            {
+              "id": "scene-044",
+              "title": "婉言拒绝",
+              "label": "44",
+              "page": 238
+            },
+            {
+              "id": "scene-045",
+              "title": "安慰鼓励",
+              "label": "45",
+              "page": 243
+            },
+            {
+              "id": "scene-046",
+              "title": "质疑否定",
+              "label": "46",
+              "page": 248
+            },
+            {
+              "id": "scene-047",
+              "title": "给予肯定评价",
+              "label": "47",
+              "page": 253
+            },
+            {
+              "id": "scene-048",
+              "title": "提出建议",
+              "label": "48",
+              "page": 258
+            },
+            {
+              "id": "scene-049",
+              "title": "劝告告诫",
+              "label": "49",
+              "page": 263
+            },
+            {
+              "id": "scene-050",
+              "title": "加强语气",
+              "label": "50",
+              "page": 268
+            },
+            {
+              "id": "scene-051",
+              "title": "逻辑思维",
+              "label": "51",
+              "page": 274
+            }
+          ]
+        },
+        {
+          "id": "chapter-03",
+          "title": "美食餐饮全收录",
+          "label": "Chapter 3",
+          "page": 282,
+          "items": [
+            {
+              "id": "scene-052",
+              "title": "方便快餐",
+              "label": "52",
+              "page": 283
+            },
+            {
+              "id": "scene-053",
+              "title": "健康蔬菜",
+              "label": "53",
+              "page": 288
+            },
+            {
+              "id": "scene-054",
+              "title": "常见肉类",
+              "label": "54",
+              "page": 293
+            },
+            {
+              "id": "scene-055",
+              "title": "常见鱼类",
+              "label": "55",
+              "page": 297
+            },
+            {
+              "id": "scene-056",
+              "title": "厨房家电及用具",
+              "label": "56",
+              "page": 301
+            },
+            {
+              "id": "scene-057",
+              "title": "调味品及基础食材",
+              "label": "57",
+              "page": 307
+            },
+            {
+              "id": "scene-058",
+              "title": "烹饪前准备",
+              "label": "58",
+              "page": 311
+            },
+            {
+              "id": "scene-059",
+              "title": "亲自下厨",
+              "label": "59",
+              "page": 316
+            },
+            {
+              "id": "scene-060",
+              "title": "美味水果",
+              "label": "60",
+              "page": 321
+            },
+            {
+              "id": "scene-061",
+              "title": "休闲干果",
+              "label": "61",
+              "page": 326
+            },
+            {
+              "id": "scene-062",
+              "title": "饮用水及饮料",
+              "label": "62",
+              "page": 330
+            },
+            {
+              "id": "scene-063",
+              "title": "酒水",
+              "label": "63",
+              "page": 333
+            },
+            {
+              "id": "scene-064",
+              "title": "可口零食",
+              "label": "64",
+              "page": 337
+            },
+            {
+              "id": "scene-065",
+              "title": "美味点心",
+              "label": "65",
+              "page": 342
+            },
+            {
+              "id": "scene-066",
+              "title": "品味美食",
+              "label": "66",
+              "page": 347
+            },
+            {
+              "id": "scene-067",
+              "title": "中式特色美食",
+              "label": "67",
+              "page": 351
+            },
+            {
+              "id": "scene-068",
+              "title": "世界特色美食",
+              "label": "68",
+              "page": 355
+            },
+            {
+              "id": "scene-069",
+              "title": "预订座位",
+              "label": "69",
+              "page": 359
+            },
+            {
+              "id": "scene-070",
+              "title": "西餐厅点餐",
+              "label": "70",
+              "page": 363
+            },
+            {
+              "id": "scene-071",
+              "title": "西餐厅服务",
+              "label": "71",
+              "page": 367
+            },
+            {
+              "id": "scene-072",
+              "title": "打包结账",
+              "label": "72",
+              "page": 372
+            },
+            {
+              "id": "scene-073",
+              "title": "饮食习惯",
+              "label": "73",
+              "page": 377
+            },
+            {
+              "id": "scene-074",
+              "title": "餐桌礼仪",
+              "label": "74",
+              "page": 381
+            },
+            {
+              "id": "scene-075",
+              "title": "食品安全",
+              "label": "75",
+              "page": 386
+            }
+          ]
+        },
+        {
+          "id": "chapter-04",
+          "title": "商店购物买买买",
+          "label": "Chapter 4",
+          "page": 390,
+          "items": [
+            {
+              "id": "scene-076",
+              "title": "在商场",
+              "label": "76",
+              "page": 391
+            },
+            {
+              "id": "scene-077",
+              "title": "买衣服",
+              "label": "77",
+              "page": 397
+            },
+            {
+              "id": "scene-078",
+              "title": "买鞋子",
+              "label": "78",
+              "page": 402
+            },
+            {
+              "id": "scene-079",
+              "title": "买围巾帽子",
+              "label": "79",
+              "page": 407
+            },
+            {
+              "id": "scene-080",
+              "title": "买首饰",
+              "label": "80",
+              "page": 411
+            },
+            {
+              "id": "scene-081",
+              "title": "消费心理",
+              "label": "81",
+              "page": 416
+            },
+            {
+              "id": "scene-082",
+              "title": "售货员推荐",
+              "label": "82",
+              "page": 421
+            },
+            {
+              "id": "scene-083",
+              "title": "搭配心得",
+              "label": "83",
+              "page": 426
+            },
+            {
+              "id": "scene-084",
+              "title": "试穿试戴",
+              "label": "84",
+              "page": 430
+            },
+            {
+              "id": "scene-085",
+              "title": "讨价还价",
+              "label": "85",
+              "page": 434
+            },
+            {
+              "id": "scene-086",
+              "title": "结账付款",
+              "label": "86",
+              "page": 439
+            },
+            {
+              "id": "scene-087",
+              "title": "商品退换",
+              "label": "87",
+              "page": 443
+            },
+            {
+              "id": "scene-088",
+              "title": "售后服务",
+              "label": "88",
+              "page": 448
+            },
+            {
+              "id": "scene-089",
+              "title": "网购达人",
+              "label": "89",
+              "page": 453
+            },
+            {
+              "id": "scene-090",
+              "title": "在超市",
+              "label": "90",
+              "page": 457
+            },
+            {
+              "id": "scene-091",
+              "title": "在化妆品店",
+              "label": "91",
+              "page": 462
+            },
+            {
+              "id": "scene-092",
+              "title": "在美容院",
+              "label": "92",
+              "page": 468
+            },
+            {
+              "id": "scene-093",
+              "title": "在洗衣店",
+              "label": "93",
+              "page": 472
+            },
+            {
+              "id": "scene-094",
+              "title": "在家具店",
+              "label": "94",
+              "page": 476
+            },
+            {
+              "id": "scene-095",
+              "title": "买电器",
+              "label": "95",
+              "page": 480
+            },
+            {
+              "id": "scene-096",
+              "title": "买软件配件",
+              "label": "96",
+              "page": 484
+            },
+            {
+              "id": "scene-097",
+              "title": "在眼镜店",
+              "label": "97",
+              "page": 489
+            },
+            {
+              "id": "scene-098",
+              "title": "在4S店",
+              "label": "98",
+              "page": 493
+            },
+            {
+              "id": "scene-099",
+              "title": "在夜市",
+              "label": "99",
+              "page": 498
+            }
+          ]
+        },
+        {
+          "id": "chapter-05",
+          "title": "健康养生最重要",
+          "label": "Chapter 5",
+          "page": 502,
+          "items": [
+            {
+              "id": "scene-100",
+              "title": "养生秘诀",
+              "label": "100",
+              "page": 503
+            },
+            {
+              "id": "scene-101",
+              "title": "营养均衡",
+              "label": "101",
+              "page": 508
+            },
+            {
+              "id": "scene-102",
+              "title": "美体健身",
+              "label": "102",
+              "page": 513
+            },
+            {
+              "id": "scene-103",
+              "title": "减肥",
+              "label": "103",
+              "page": 519
+            },
+            {
+              "id": "scene-104",
+              "title": "皮肤问题",
+              "label": "104",
+              "page": 523
+            },
+            {
+              "id": "scene-105",
+              "title": "皮肤保养",
+              "label": "105",
+              "page": 528
+            },
+            {
+              "id": "scene-106",
+              "title": "看牙科",
+              "label": "106",
+              "page": 532
+            },
+            {
+              "id": "scene-107",
+              "title": "牙齿护理",
+              "label": "107",
+              "page": 537
+            },
+            {
+              "id": "scene-108",
+              "title": "眼部健康",
+              "label": "108",
+              "page": 542
+            },
+            {
+              "id": "scene-109",
+              "title": "怀孕生子",
+              "label": "109",
+              "page": 547
+            },
+            {
+              "id": "scene-110",
+              "title": "心理健康",
+              "label": "110",
+              "page": 553
+            },
+            {
+              "id": "scene-111",
+              "title": "亚健康状态",
+              "label": "111",
+              "page": 557
+            },
+            {
+              "id": "scene-112",
+              "title": "药店买药",
+              "label": "112",
+              "page": 562
+            },
+            {
+              "id": "scene-113",
+              "title": "常见药物",
+              "label": "113",
+              "page": 567
+            },
+            {
+              "id": "scene-114",
+              "title": "定期体检",
+              "label": "114",
+              "page": 572
+            },
+            {
+              "id": "scene-115",
+              "title": "医院挂号",
+              "label": "115",
+              "page": 576
+            },
+            {
+              "id": "scene-116",
+              "title": "病情描述",
+              "label": "116",
+              "page": 580
+            },
+            {
+              "id": "scene-117",
+              "title": "诊断病情",
+              "label": "117",
+              "page": 586
+            },
+            {
+              "id": "scene-118",
+              "title": "常见疾病",
+              "label": "118",
+              "page": 590
+            },
+            {
+              "id": "scene-119",
+              "title": "外伤感染",
+              "label": "119",
+              "page": 596
+            },
+            {
+              "id": "scene-120",
+              "title": "肠胃不适",
+              "label": "120",
+              "page": 601
+            },
+            {
+              "id": "scene-121",
+              "title": "神经系统疾病",
+              "label": "121",
+              "page": 606
+            },
+            {
+              "id": "scene-122",
+              "title": "住院治疗",
+              "label": "122",
+              "page": 611
+            },
+            {
+              "id": "scene-123",
+              "title": "手术室",
+              "label": "123",
+              "page": 616
+            },
+            {
+              "id": "scene-124",
+              "title": "医疗工具",
+              "label": "124",
+              "page": 621
+            }
+          ]
+        },
+        {
+          "id": "chapter-06",
+          "title": "人体奥秘知多少",
+          "label": "Chapter 6",
+          "page": 626,
+          "items": [
+            {
+              "id": "scene-125",
+              "title": "身体部位",
+              "label": "125",
+              "page": 627
+            },
+            {
+              "id": "scene-126",
+              "title": "身体器官",
+              "label": "126",
+              "page": 633
+            },
+            {
+              "id": "scene-127",
+              "title": "身体缺陷",
+              "label": "127",
+              "page": 638
+            },
+            {
+              "id": "scene-128",
+              "title": "情感表现",
+              "label": "128",
+              "page": 643
+            },
+            {
+              "id": "scene-129",
+              "title": "个人观点",
+              "label": "129",
+              "page": 649
+            },
+            {
+              "id": "scene-130",
+              "title": "正面性格",
+              "label": "130",
+              "page": 654
+            },
+            {
+              "id": "scene-131",
+              "title": "负面性格",
+              "label": "131",
+              "page": 659
+            },
+            {
+              "id": "scene-132",
+              "title": "十二星座性格特点",
+              "label": "132",
+              "page": 666
+            },
+            {
+              "id": "scene-133",
+              "title": "外貌描述",
+              "label": "133",
+              "page": 672
+            },
+            {
+              "id": "scene-134",
+              "title": "道德品质",
+              "label": "134",
+              "page": 678
+            },
+            {
+              "id": "scene-135",
+              "title": "行为动作",
+              "label": "135",
+              "page": 682
+            },
+            {
+              "id": "scene-136",
+              "title": "身体微动作",
+              "label": "136",
+              "page": 688
+            },
+            {
+              "id": "scene-137",
+              "title": "嘴部小动作",
+              "label": "137",
+              "page": 693
+            }
+          ]
+        },
+        {
+          "id": "chapter-07",
+          "title": "喜怒哀乐听你说",
+          "label": "Chapter 7",
+          "page": 698,
+          "items": [
+            {
+              "id": "scene-138",
+              "title": "开心愉快",
+              "label": "138",
+              "page": 699
+            },
+            {
+              "id": "scene-139",
+              "title": "乐观积极",
+              "label": "139",
+              "page": 704
+            },
+            {
+              "id": "scene-140",
+              "title": "兴奋热情",
+              "label": "140",
+              "page": 709
+            },
+            {
+              "id": "scene-141",
+              "title": "欣赏赞扬",
+              "label": "141",
+              "page": 714
+            },
+            {
+              "id": "scene-142",
+              "title": "尊敬敬畏",
+              "label": "142",
+              "page": 719
+            },
+            {
+              "id": "scene-143",
+              "title": "同情安慰鼓励",
+              "label": "143",
+              "page": 724
+            },
+            {
+              "id": "scene-144",
+              "title": "羡慕嫉妒",
+              "label": "144",
+              "page": 728
+            },
+            {
+              "id": "scene-145",
+              "title": "愧疚遗憾",
+              "label": "145",
+              "page": 732
+            },
+            {
+              "id": "scene-146",
+              "title": "冷静慎重",
+              "label": "146",
+              "page": 737
+            },
+            {
+              "id": "scene-147",
+              "title": "悲伤难过",
+              "label": "147",
+              "page": 742
+            },
+            {
+              "id": "scene-148",
+              "title": "消极悲观",
+              "label": "148",
+              "page": 747
+            },
+            {
+              "id": "scene-149",
+              "title": "生气发怒",
+              "label": "149",
+              "page": 752
+            },
+            {
+              "id": "scene-150",
+              "title": "不满抱怨",
+              "label": "150",
+              "page": 757
+            },
+            {
+              "id": "scene-151",
+              "title": "害怕恐惧",
+              "label": "151",
+              "page": 762
+            },
+            {
+              "id": "scene-152",
+              "title": "失望沮丧",
+              "label": "152",
+              "page": 766
+            },
+            {
+              "id": "scene-153",
+              "title": "无聊寂寞",
+              "label": "153",
+              "page": 771
+            },
+            {
+              "id": "scene-154",
+              "title": "冷漠轻蔑",
+              "label": "154",
+              "page": 776
+            },
+            {
+              "id": "scene-155",
+              "title": "厌恶怨恨",
+              "label": "155",
+              "page": 781
+            },
+            {
+              "id": "scene-156",
+              "title": "焦虑烦躁",
+              "label": "156",
+              "page": 787
+            },
+            {
+              "id": "scene-157",
+              "title": "尴尬害羞",
+              "label": "157",
+              "page": 792
+            },
+            {
+              "id": "scene-158",
+              "title": "哑然吃惊",
+              "label": "158",
+              "page": 796
+            }
+          ]
+        },
+        {
+          "id": "chapter-08",
+          "title": "青春校园当难忘",
+          "label": "Chapter 8",
+          "page": 801,
+          "items": [
+            {
+              "id": "scene-159",
+              "title": "新生入学",
+              "label": "159",
+              "page": 802
+            },
+            {
+              "id": "scene-160",
+              "title": "参观校园",
+              "label": "160",
+              "page": 807
+            },
+            {
+              "id": "scene-161",
+              "title": "遵守校纪",
+              "label": "161",
+              "page": 811
+            },
+            {
+              "id": "scene-162",
+              "title": "选课选专业",
+              "label": "162",
+              "page": 816
+            },
+            {
+              "id": "scene-163",
+              "title": "同学相处",
+              "label": "163",
+              "page": 822
+            },
+            {
+              "id": "scene-164",
+              "title": "课堂互动",
+              "label": "164",
+              "page": 826
+            },
+            {
+              "id": "scene-165",
+              "title": "做作业",
+              "label": "165",
+              "page": 831
+            },
+            {
+              "id": "scene-166",
+              "title": "校内活动",
+              "label": "166",
+              "page": 835
+            },
+            {
+              "id": "scene-167",
+              "title": "素质教育",
+              "label": "167",
+              "page": 839
+            },
+            {
+              "id": "scene-168",
+              "title": "在书店",
+              "label": "168",
+              "page": 844
+            },
+            {
+              "id": "scene-169",
+              "title": "在图书馆",
+              "label": "169",
+              "page": 849
+            },
+            {
+              "id": "scene-170",
+              "title": "课外补习",
+              "label": "170",
+              "page": 854
+            },
+            {
+              "id": "scene-171",
+              "title": "在寝室",
+              "label": "171",
+              "page": 858
+            },
+            {
+              "id": "scene-172",
+              "title": "考前复习",
+              "label": "172",
+              "page": 863
+            },
+            {
+              "id": "scene-173",
+              "title": "在考场",
+              "label": "173",
+              "page": 867
+            },
+            {
+              "id": "scene-174",
+              "title": "赢得奖学金",
+              "label": "174",
+              "page": 872
+            },
+            {
+              "id": "scene-175",
+              "title": "继续深造",
+              "label": "175",
+              "page": 876
+            },
+            {
+              "id": "scene-176",
+              "title": "寄居在当地家庭",
+              "label": "176",
+              "page": 881
+            },
+            {
+              "id": "scene-177",
+              "title": "语言学习",
+              "label": "177",
+              "page": 885
+            },
+            {
+              "id": "scene-178",
+              "title": "社会实践",
+              "label": "178",
+              "page": 891
+            },
+            {
+              "id": "scene-179",
+              "title": "欢乐假期",
+              "label": "179",
+              "page": 896
+            },
+            {
+              "id": "scene-180",
+              "title": "论文答辩",
+              "label": "180",
+              "page": 900
+            },
+            {
+              "id": "scene-181",
+              "title": "圆满毕业",
+              "label": "181",
+              "page": 905
+            }
+          ]
+        },
+        {
+          "id": "chapter-09",
+          "title": "遇见职场“大红人”",
+          "label": "Chapter 9",
+          "page": 909,
+          "items": [
+            {
+              "id": "scene-182",
+              "title": "漫漫求职路",
+              "label": "182",
+              "page": 910
+            },
+            {
+              "id": "scene-183",
+              "title": "个人简历",
+              "label": "183",
+              "page": 915
+            },
+            {
+              "id": "scene-184",
+              "title": "推荐信",
+              "label": "184",
+              "page": 921
+            },
+            {
+              "id": "scene-185",
+              "title": "面试机会",
+              "label": "185",
+              "page": 926
+            },
+            {
+              "id": "scene-186",
+              "title": "能力展示",
+              "label": "186",
+              "page": 930
+            },
+            {
+              "id": "scene-187",
+              "title": "巧答问题",
+              "label": "187",
+              "page": 935
+            },
+            {
+              "id": "scene-188",
+              "title": "等待面试结果",
+              "label": "188",
+              "page": 939
+            },
+            {
+              "id": "scene-189",
+              "title": "薪资福利",
+              "label": "189",
+              "page": 943
+            },
+            {
+              "id": "scene-190",
+              "title": "新人目标",
+              "label": "190",
+              "page": 947
+            },
+            {
+              "id": "scene-191",
+              "title": "常见白领职业",
+              "label": "191",
+              "page": 952
+            },
+            {
+              "id": "scene-192",
+              "title": "常见蓝领职业",
+              "label": "192",
+              "page": 956
+            },
+            {
+              "id": "scene-193",
+              "title": "公司概况",
+              "label": "193",
+              "page": 961
+            },
+            {
+              "id": "scene-194",
+              "title": "企业发展",
+              "label": "194",
+              "page": 966
+            },
+            {
+              "id": "scene-195",
+              "title": "公司日常事务",
+              "label": "195",
+              "page": 970
+            },
+            {
+              "id": "scene-196",
+              "title": "分配工作任务",
+              "label": "196",
+              "page": 974
+            },
+            {
+              "id": "scene-197",
+              "title": "在办公室",
+              "label": "197",
+              "page": 979
+            },
+            {
+              "id": "scene-198",
+              "title": "公司部门职位",
+              "label": "198",
+              "page": 985
+            },
+            {
+              "id": "scene-199",
+              "title": "同事相处",
+              "label": "199",
+              "page": 990
+            },
+            {
+              "id": "scene-200",
+              "title": "培训",
+              "label": "200",
+              "page": 995
+            },
+            {
+              "id": "scene-201",
+              "title": "积极抗压",
+              "label": "201",
+              "page": 999
+            },
+            {
+              "id": "scene-202",
+              "title": "面对挑战",
+              "label": "202",
+              "page": 1004
+            },
+            {
+              "id": "scene-203",
+              "title": "市场调研",
+              "label": "203",
+              "page": 1008
+            },
+            {
+              "id": "scene-204",
+              "title": "工作表现",
+              "label": "204",
+              "page": 1013
+            },
+            {
+              "id": "scene-205",
+              "title": "建立业务关系",
+              "label": "205",
+              "page": 1018
+            },
+            {
+              "id": "scene-206",
+              "title": "参观企业",
+              "label": "206",
+              "page": 1023
+            },
+            {
+              "id": "scene-207",
+              "title": "商务谈判",
+              "label": "207",
+              "page": 1028
+            },
+            {
+              "id": "scene-208",
+              "title": "会议记录",
+              "label": "208",
+              "page": 1033
+            },
+            {
+              "id": "scene-209",
+              "title": "参加会展",
+              "label": "209",
+              "page": 1038
+            },
+            {
+              "id": "scene-210",
+              "title": "通知与备忘录",
+              "label": "210",
+              "page": 1043
+            },
+            {
+              "id": "scene-211",
+              "title": "离职解雇",
+              "label": "211",
+              "page": 1047
+            },
+            {
+              "id": "scene-212",
+              "title": "罢工游行",
+              "label": "212",
+              "page": 1052
+            },
+            {
+              "id": "scene-213",
+              "title": "跳槽",
+              "label": "213",
+              "page": 1056
+            }
+          ]
+        },
+        {
+          "id": "chapter-10",
+          "title": "做个快乐“背包客”",
+          "label": "Chapter 10",
+          "page": 1060,
+          "items": [
+            {
+              "id": "scene-214",
+              "title": "行前计划与准备",
+              "label": "214",
+              "page": 1061
+            },
+            {
+              "id": "scene-215",
+              "title": "选择交通工具",
+              "label": "215",
+              "page": 1065
+            },
+            {
+              "id": "scene-216",
+              "title": "坐地铁",
+              "label": "216",
+              "page": 1070
+            },
+            {
+              "id": "scene-217",
+              "title": "公交与打车",
+              "label": "217",
+              "page": 1075
+            },
+            {
+              "id": "scene-218",
+              "title": "搭乘火车",
+              "label": "218",
+              "page": 1080
+            },
+            {
+              "id": "scene-219",
+              "title": "去旅行社",
+              "label": "219",
+              "page": 1084
+            },
+            {
+              "id": "scene-220",
+              "title": "办护照与签证",
+              "label": "220",
+              "page": 1088
+            },
+            {
+              "id": "scene-221",
+              "title": "搭乘飞机",
+              "label": "221",
+              "page": 1094
+            },
+            {
+              "id": "scene-222",
+              "title": "行李托运",
+              "label": "222",
+              "page": 1099
+            },
+            {
+              "id": "scene-223",
+              "title": "过安检",
+              "label": "223",
+              "page": 1103
+            },
+            {
+              "id": "scene-224",
+              "title": "飞机起降",
+              "label": "224",
+              "page": 1108
+            },
+            {
+              "id": "scene-225",
+              "title": "航班发生变化",
+              "label": "225",
+              "page": 1114
+            },
+            {
+              "id": "scene-226",
+              "title": "入境与转机",
+              "label": "226",
+              "page": 1118
+            },
+            {
+              "id": "scene-227",
+              "title": "坐船赏海景",
+              "label": "227",
+              "page": 1122
+            },
+            {
+              "id": "scene-228",
+              "title": "问路与指路",
+              "label": "228",
+              "page": 1127
+            },
+            {
+              "id": "scene-229",
+              "title": "导游服务",
+              "label": "229",
+              "page": 1132
+            },
+            {
+              "id": "scene-230",
+              "title": "在免税店",
+              "label": "230",
+              "page": 1136
+            },
+            {
+              "id": "scene-231",
+              "title": "酒店及设施",
+              "label": "231",
+              "page": 1141
+            },
+            {
+              "id": "scene-232",
+              "title": "请求酒店服务",
+              "label": "232",
+              "page": 1146
+            },
+            {
+              "id": "scene-233",
+              "title": "退房",
+              "label": "233",
+              "page": 1150
+            },
+            {
+              "id": "scene-234",
+              "title": "租车观光",
+              "label": "234",
+              "page": 1154
+            },
+            {
+              "id": "scene-235",
+              "title": "汽车常识",
+              "label": "235",
+              "page": 1158
+            },
+            {
+              "id": "scene-236",
+              "title": "路况导航",
+              "label": "236",
+              "page": 1163
+            },
+            {
+              "id": "scene-237",
+              "title": "上高速",
+              "label": "237",
+              "page": 1167
+            },
+            {
+              "id": "scene-238",
+              "title": "交通事故",
+              "label": "238",
+              "page": 1171
+            },
+            {
+              "id": "scene-239",
+              "title": "紧急突发状况",
+              "label": "239",
+              "page": 1175
+            }
+          ]
+        },
+        {
+          "id": "chapter-11",
+          "title": "运动文艺爱好广",
+          "label": "Chapter 11",
+          "page": 1179,
+          "items": [
+            {
+              "id": "scene-240",
+              "title": "户外运动",
+              "label": "240",
+              "page": 1180
+            },
+            {
+              "id": "scene-241",
+              "title": "体育比赛",
+              "label": "241",
+              "page": 1185
+            },
+            {
+              "id": "scene-242",
+              "title": "球类运动",
+              "label": "242",
+              "page": 1191
+            },
+            {
+              "id": "scene-243",
+              "title": "滑冰滑雪",
+              "label": "243",
+              "page": 1197
+            },
+            {
+              "id": "scene-244",
+              "title": "有氧运动与无氧运动",
+              "label": "244",
+              "page": 1201
+            },
+            {
+              "id": "scene-245",
+              "title": "登山露营",
+              "label": "245",
+              "page": 1206
+            },
+            {
+              "id": "scene-246",
+              "title": "绘画雕塑",
+              "label": "246",
+              "page": 1211
+            },
+            {
+              "id": "scene-247",
+              "title": "演唱会",
+              "label": "247",
+              "page": 1217
+            },
+            {
+              "id": "scene-248",
+              "title": "流行乐与民谣",
+              "label": "248",
+              "page": 1222
+            },
+            {
+              "id": "scene-249",
+              "title": "古典乐与古典乐器",
+              "label": "249",
+              "page": 1228
+            },
+            {
+              "id": "scene-250",
+              "title": "西洋乐器",
+              "label": "250",
+              "page": 1232
+            },
+            {
+              "id": "scene-251",
+              "title": "学习舞蹈",
+              "label": "251",
+              "page": 1237
+            },
+            {
+              "id": "scene-252",
+              "title": "艺术展览",
+              "label": "252",
+              "page": 1241
+            },
+            {
+              "id": "scene-253",
+              "title": "文学体裁",
+              "label": "253",
+              "page": 1245
+            },
+            {
+              "id": "scene-254",
+              "title": "绚丽文学",
+              "label": "254",
+              "page": 1250
+            },
+            {
+              "id": "scene-255",
+              "title": "精彩戏剧",
+              "label": "255",
+              "page": 1254
+            },
+            {
+              "id": "scene-256",
+              "title": "摄影拍照",
+              "label": "256",
+              "page": 1259
+            },
+            {
+              "id": "scene-257",
+              "title": "电影制作",
+              "label": "257",
+              "page": 1265
+            },
+            {
+              "id": "scene-258",
+              "title": "电影时光",
+              "label": "258",
+              "page": 1271
+            }
+          ]
+        },
+        {
+          "id": "chapter-12",
+          "title": "休闲娱乐无极限",
+          "label": "Chapter 12",
+          "page": 1275,
+          "items": [
+            {
+              "id": "scene-259",
+              "title": "经典咖啡",
+              "label": "259",
+              "page": 1276
+            },
+            {
+              "id": "scene-260",
+              "title": "狂欢派对",
+              "label": "260",
+              "page": 1281
+            },
+            {
+              "id": "scene-261",
+              "title": "酒吧喝酒",
+              "label": "261",
+              "page": 1285
+            },
+            {
+              "id": "scene-262",
+              "title": "歌厅唱歌",
+              "label": "262",
+              "page": 1289
+            },
+            {
+              "id": "scene-263",
+              "title": "美发沙龙",
+              "label": "263",
+              "page": 1293
+            },
+            {
+              "id": "scene-264",
+              "title": "水疗中心",
+              "label": "264",
+              "page": 1297
+            },
+            {
+              "id": "scene-265",
+              "title": "博物馆",
+              "label": "265",
+              "page": 1301
+            },
+            {
+              "id": "scene-266",
+              "title": "动物园",
+              "label": "266",
+              "page": 1306
+            },
+            {
+              "id": "scene-267",
+              "title": "游乐园",
+              "label": "267",
+              "page": 1310
+            },
+            {
+              "id": "scene-268",
+              "title": "海边度假",
+              "label": "268",
+              "page": 1314
+            },
+            {
+              "id": "scene-269",
+              "title": "休闲垂钓",
+              "label": "269",
+              "page": 1318
+            },
+            {
+              "id": "scene-270",
+              "title": "大众传媒",
+              "label": "270",
+              "page": 1322
+            },
+            {
+              "id": "scene-271",
+              "title": "网络通信",
+              "label": "271",
+              "page": 1326
+            },
+            {
+              "id": "scene-272",
+              "title": "杂志报纸",
+              "label": "272",
+              "page": 1330
+            },
+            {
+              "id": "scene-273",
+              "title": "影视节目",
+              "label": "273",
+              "page": 1335
+            },
+            {
+              "id": "scene-274",
+              "title": "新闻直播",
+              "label": "274",
+              "page": 1339
+            },
+            {
+              "id": "scene-275",
+              "title": "新闻发布会",
+              "label": "275",
+              "page": 1343
+            },
+            {
+              "id": "scene-276",
+              "title": "广播电台",
+              "label": "276",
+              "page": 1347
+            },
+            {
+              "id": "scene-277",
+              "title": "魔术杂技",
+              "label": "277",
+              "page": 1351
+            },
+            {
+              "id": "scene-278",
+              "title": "网络游戏",
+              "label": "278",
+              "page": 1355
+            },
+            {
+              "id": "scene-279",
+              "title": "棋牌游戏",
+              "label": "279",
+              "page": 1360
+            },
+            {
+              "id": "scene-280",
+              "title": "流行风尚",
+              "label": "280",
+              "page": 1365
+            },
+            {
+              "id": "scene-281",
+              "title": "色彩缤纷",
+              "label": "281",
+              "page": 1369
+            },
+            {
+              "id": "scene-282",
+              "title": "时装表演",
+              "label": "282",
+              "page": 1374
+            },
+            {
+              "id": "scene-283",
+              "title": "颁奖典礼",
+              "label": "283",
+              "page": 1378
+            }
+          ]
+        },
+        {
+          "id": "chapter-13",
+          "title": "舆论焦点要关注",
+          "label": "Chapter 13",
+          "page": 1382,
+          "items": [
+            {
+              "id": "scene-284",
+              "title": "讨论住房",
+              "label": "284",
+              "page": 1382
+            },
+            {
+              "id": "scene-285",
+              "title": "全球变暖",
+              "label": "285",
+              "page": 1388
+            },
+            {
+              "id": "scene-286",
+              "title": "环境保护",
+              "label": "286",
+              "page": 1392
+            },
+            {
+              "id": "scene-287",
+              "title": "收入情况",
+              "label": "287",
+              "page": 1397
+            },
+            {
+              "id": "scene-288",
+              "title": "合理消费",
+              "label": "288",
+              "page": 1402
+            },
+            {
+              "id": "scene-289",
+              "title": "大学生就业",
+              "label": "289",
+              "page": 1407
+            },
+            {
+              "id": "scene-290",
+              "title": "减压一族",
+              "label": "290",
+              "page": 1411
+            },
+            {
+              "id": "scene-291",
+              "title": "闪婚裸婚",
+              "label": "291",
+              "page": 1417
+            },
+            {
+              "id": "scene-292",
+              "title": "基本权益",
+              "label": "292",
+              "page": 1421
+            },
+            {
+              "id": "scene-293",
+              "title": "信用卡",
+              "label": "293",
+              "page": 1425
+            },
+            {
+              "id": "scene-294",
+              "title": "慈善事业",
+              "label": "294",
+              "page": 1430
+            },
+            {
+              "id": "scene-295",
+              "title": "人口老龄化",
+              "label": "295",
+              "page": 1434
+            },
+            {
+              "id": "scene-296",
+              "title": "拖延症",
+              "label": "296",
+              "page": 1439
+            },
+            {
+              "id": "scene-297",
+              "title": "拼搏创业",
+              "label": "297",
+              "page": 1443
+            },
+            {
+              "id": "scene-298",
+              "title": "种族歧视",
+              "label": "298",
+              "page": 1447
+            },
+            {
+              "id": "scene-299",
+              "title": "男女平等",
+              "label": "299",
+              "page": 1452
+            }
+          ]
+        },
+        {
+          "id": "chapter-14",
+          "title": "人文历史需了解",
+          "label": "Chapter 14",
+          "page": 1456,
+          "items": [
+            {
+              "id": "scene-300",
+              "title": "国家民族",
+              "label": "300",
+              "page": 1457
+            },
+            {
+              "id": "scene-301",
+              "title": "中西节日",
+              "label": "301",
+              "page": 1464
+            },
+            {
+              "id": "scene-302",
+              "title": "人文景观",
+              "label": "302",
+              "page": 1469
+            },
+            {
+              "id": "scene-303",
+              "title": "自然景观",
+              "label": "303",
+              "page": 1474
+            },
+            {
+              "id": "scene-304",
+              "title": "语言交流",
+              "label": "304",
+              "page": 1479
+            },
+            {
+              "id": "scene-305",
+              "title": "多样文化",
+              "label": "305",
+              "page": 1484
+            },
+            {
+              "id": "scene-306",
+              "title": "图书出版",
+              "label": "306",
+              "page": 1489
+            },
+            {
+              "id": "scene-307",
+              "title": "神话故事",
+              "label": "307",
+              "page": 1495
+            },
+            {
+              "id": "scene-308",
+              "title": "魔法与传说",
+              "label": "308",
+              "page": 1500
+            },
+            {
+              "id": "scene-309",
+              "title": "传统风俗",
+              "label": "309",
+              "page": 1505
+            },
+            {
+              "id": "scene-310",
+              "title": "宗教信仰",
+              "label": "310",
+              "page": 1510
+            },
+            {
+              "id": "scene-311",
+              "title": "礼仪禁忌",
+              "label": "311",
+              "page": 1515
+            },
+            {
+              "id": "scene-312",
+              "title": "王朝演变",
+              "label": "312",
+              "page": 1521
+            },
+            {
+              "id": "scene-313",
+              "title": "历史相关",
+              "label": "313",
+              "page": 1525
+            },
+            {
+              "id": "scene-314",
+              "title": "社会变迁",
+              "label": "314",
+              "page": 1530
+            },
+            {
+              "id": "scene-315",
+              "title": "社会发展",
+              "label": "315",
+              "page": 1535
+            },
+            {
+              "id": "scene-316",
+              "title": "社会动荡",
+              "label": "316",
+              "page": 1540
+            },
+            {
+              "id": "scene-317",
+              "title": "种植业与畜牧业",
+              "label": "317",
+              "page": 1546
+            },
+            {
+              "id": "scene-318",
+              "title": "农业生产相关",
+              "label": "318",
+              "page": 1551
+            },
+            {
+              "id": "scene-319",
+              "title": "机械设备",
+              "label": "319",
+              "page": 1556
+            },
+            {
+              "id": "scene-320",
+              "title": "工艺工序",
+              "label": "320",
+              "page": 1561
+            },
+            {
+              "id": "scene-321",
+              "title": "工业生产加工",
+              "label": "321",
+              "page": 1566
+            },
+            {
+              "id": "scene-322",
+              "title": "建筑物相关",
+              "label": "322",
+              "page": 1571
+            },
+            {
+              "id": "scene-323",
+              "title": "园林园艺",
+              "label": "323",
+              "page": 1576
+            },
+            {
+              "id": "scene-324",
+              "title": "珍奇瑰宝",
+              "label": "324",
+              "page": 1581
+            }
+          ]
+        },
+        {
+          "id": "chapter-15",
+          "title": "商务经济全在行",
+          "label": "Chapter 15",
+          "page": 1586,
+          "items": [
+            {
+              "id": "scene-325",
+              "title": "制作商务简报",
+              "label": "325",
+              "page": 1587
+            },
+            {
+              "id": "scene-326",
+              "title": "收发商务信函",
+              "label": "326",
+              "page": 1592
+            },
+            {
+              "id": "scene-327",
+              "title": "准备商务会议",
+              "label": "327",
+              "page": 1597
+            },
+            {
+              "id": "scene-328",
+              "title": "商务接待",
+              "label": "328",
+              "page": 1601
+            },
+            {
+              "id": "scene-329",
+              "title": "发布新品",
+              "label": "329",
+              "page": 1605
+            },
+            {
+              "id": "scene-330",
+              "title": "营销与推广",
+              "label": "330",
+              "page": 1609
+            },
+            {
+              "id": "scene-331",
+              "title": "企业并购",
+              "label": "331",
+              "page": 1614
+            },
+            {
+              "id": "scene-332",
+              "title": "进出口贸易",
+              "label": "332",
+              "page": 1619
+            },
+            {
+              "id": "scene-333",
+              "title": "巧应竞争对手",
+              "label": "333",
+              "page": 1623
+            },
+            {
+              "id": "scene-334",
+              "title": "询价报价",
+              "label": "334",
+              "page": 1628
+            },
+            {
+              "id": "scene-335",
+              "title": "议价",
+              "label": "335",
+              "page": 1633
+            },
+            {
+              "id": "scene-336",
+              "title": "签合同",
+              "label": "336",
+              "page": 1637
+            },
+            {
+              "id": "scene-337",
+              "title": "下订单",
+              "label": "337",
+              "page": 1642
+            },
+            {
+              "id": "scene-338",
+              "title": "产品与货物",
+              "label": "338",
+              "page": 1646
+            },
+            {
+              "id": "scene-339",
+              "title": "货物保险",
+              "label": "339",
+              "page": 1650
+            },
+            {
+              "id": "scene-340",
+              "title": "货物打包",
+              "label": "340",
+              "page": 1654
+            },
+            {
+              "id": "scene-341",
+              "title": "装船运输",
+              "label": "341",
+              "page": 1658
+            },
+            {
+              "id": "scene-342",
+              "title": "结算方式",
+              "label": "342",
+              "page": 1663
+            },
+            {
+              "id": "scene-343",
+              "title": "税务事宜",
+              "label": "343",
+              "page": 1668
+            },
+            {
+              "id": "scene-344",
+              "title": "财务核算",
+              "label": "344",
+              "page": 1673
+            },
+            {
+              "id": "scene-345",
+              "title": "计算收益",
+              "label": "345",
+              "page": 1679
+            },
+            {
+              "id": "scene-346",
+              "title": "客户争端与索赔",
+              "label": "346",
+              "page": 1683
+            },
+            {
+              "id": "scene-347",
+              "title": "双方协商",
+              "label": "347",
+              "page": 1688
+            },
+            {
+              "id": "scene-348",
+              "title": "商检仲裁",
+              "label": "348",
+              "page": 1693
+            },
+            {
+              "id": "scene-349",
+              "title": "经济发展",
+              "label": "349",
+              "page": 1698
+            },
+            {
+              "id": "scene-350",
+              "title": "金融危机",
+              "label": "350",
+              "page": 1702
+            },
+            {
+              "id": "scene-351",
+              "title": "买基金还是债券",
+              "label": "351",
+              "page": 1707
+            },
+            {
+              "id": "scene-352",
+              "title": "理智炒股",
+              "label": "352",
+              "page": 1712
+            },
+            {
+              "id": "scene-353",
+              "title": "投资理财",
+              "label": "353",
+              "page": 1716
+            },
+            {
+              "id": "scene-354",
+              "title": "货币发行与流通",
+              "label": "354",
+              "page": 1720
+            },
+            {
+              "id": "scene-355",
+              "title": "借贷与租赁",
+              "label": "355",
+              "page": 1725
+            }
+          ]
+        },
+        {
+          "id": "chapter-16",
+          "title": "天文地理有规律",
+          "label": "Chapter 16",
+          "page": 1730,
+          "items": [
+            {
+              "id": "scene-356",
+              "title": "常用数字",
+              "label": "356",
+              "page": 1731
+            },
+            {
+              "id": "scene-357",
+              "title": "年代与时间",
+              "label": "357",
+              "page": 1737
+            },
+            {
+              "id": "scene-358",
+              "title": "日期月份",
+              "label": "358",
+              "page": 1743
+            },
+            {
+              "id": "scene-359",
+              "title": "单位与计算",
+              "label": "359",
+              "page": 1748
+            },
+            {
+              "id": "scene-360",
+              "title": "方向与方位",
+              "label": "360",
+              "page": 1753
+            },
+            {
+              "id": "scene-361",
+              "title": "节气",
+              "label": "361",
+              "page": 1759
+            },
+            {
+              "id": "scene-362",
+              "title": "风霜雨露看天气",
+              "label": "362",
+              "page": 1763
+            },
+            {
+              "id": "scene-363",
+              "title": "人口普查",
+              "label": "363",
+              "page": 1770
+            },
+            {
+              "id": "scene-364",
+              "title": "气候气压",
+              "label": "364",
+              "page": 1775
+            },
+            {
+              "id": "scene-365",
+              "title": "遭遇暴风雪",
+              "label": "365",
+              "page": 1780
+            },
+            {
+              "id": "scene-366",
+              "title": "台风泥石流",
+              "label": "366",
+              "page": 1785
+            },
+            {
+              "id": "scene-367",
+              "title": "地震海啸",
+              "label": "367",
+              "page": 1790
+            },
+            {
+              "id": "scene-368",
+              "title": "火山爆发",
+              "label": "368",
+              "page": 1795
+            },
+            {
+              "id": "scene-369",
+              "title": "其他灾害",
+              "label": "369",
+              "page": 1800
+            },
+            {
+              "id": "scene-370",
+              "title": "认识地形地貌",
+              "label": "370",
+              "page": 1805
+            },
+            {
+              "id": "scene-371",
+              "title": "江河湖海",
+              "label": "371",
+              "page": 1810
+            },
+            {
+              "id": "scene-372",
+              "title": "山区山地",
+              "label": "372",
+              "page": 1814
+            },
+            {
+              "id": "scene-373",
+              "title": "盆地与峡谷",
+              "label": "373",
+              "page": 1819
+            },
+            {
+              "id": "scene-374",
+              "title": "能源勘探",
+              "label": "374",
+              "page": 1823
+            },
+            {
+              "id": "scene-375",
+              "title": "神秘热带雨林",
+              "label": "375",
+              "page": 1828
+            },
+            {
+              "id": "scene-376",
+              "title": "天体星系",
+              "label": "376",
+              "page": 1832
+            }
+          ]
+        },
+        {
+          "id": "chapter-17",
+          "title": "探索生命爱自然",
+          "label": "Chapter 17",
+          "page": 1838,
+          "items": [
+            {
+              "id": "scene-377",
+              "title": "家有宠物",
+              "label": "377",
+              "page": 1839
+            },
+            {
+              "id": "scene-378",
+              "title": "水中鱼儿",
+              "label": "378",
+              "page": 1845
+            },
+            {
+              "id": "scene-379",
+              "title": "天上飞鸟",
+              "label": "379",
+              "page": 1850
+            },
+            {
+              "id": "scene-380",
+              "title": "常见大型哺乳动物",
+              "label": "380",
+              "page": 1857
+            },
+            {
+              "id": "scene-381",
+              "title": "常见中小型哺乳动物",
+              "label": "381",
+              "page": 1863
+            },
+            {
+              "id": "scene-382",
+              "title": "节肢动物",
+              "label": "382",
+              "page": 1868
+            },
+            {
+              "id": "scene-383",
+              "title": "爬行、两栖动物",
+              "label": "383",
+              "page": 1874
+            },
+            {
+              "id": "scene-384",
+              "title": "认识植被",
+              "label": "384",
+              "page": 1878
+            },
+            {
+              "id": "scene-385",
+              "title": "常见花卉",
+              "label": "385",
+              "page": 1884
+            },
+            {
+              "id": "scene-386",
+              "title": "植物生长",
+              "label": "386",
+              "page": 1890
+            },
+            {
+              "id": "scene-387",
+              "title": "部落地带",
+              "label": "387",
+              "page": 1896
+            },
+            {
+              "id": "scene-388",
+              "title": "优胜劣汰",
+              "label": "388",
+              "page": 1901
+            },
+            {
+              "id": "scene-389",
+              "title": "遗传变异",
+              "label": "389",
+              "page": 1906
+            },
+            {
+              "id": "scene-390",
+              "title": "细菌与真菌",
+              "label": "390",
+              "page": 1911
+            },
+            {
+              "id": "scene-391",
+              "title": "生态环境",
+              "label": "391",
+              "page": 1917
+            },
+            {
+              "id": "scene-392",
+              "title": "天文奇观",
+              "label": "392",
+              "page": 1923
+            },
+            {
+              "id": "scene-393",
+              "title": "神秘考古",
+              "label": "393",
+              "page": 1929
+            }
+          ]
+        },
+        {
+          "id": "chapter-18",
+          "title": "服务科技紧跟上",
+          "label": "Chapter 18",
+          "page": 1934,
+          "items": [
+            {
+              "id": "scene-394",
+              "title": "互联网时代",
+              "label": "394",
+              "page": 1935
+            },
+            {
+              "id": "scene-395",
+              "title": "玩转智能手机",
+              "label": "395",
+              "page": 1940
+            },
+            {
+              "id": "scene-396",
+              "title": "消防抢险",
+              "label": "396",
+              "page": 1945
+            },
+            {
+              "id": "scene-397",
+              "title": "邮政服务",
+              "label": "397",
+              "page": 1950
+            },
+            {
+              "id": "scene-398",
+              "title": "银行服务",
+              "label": "398",
+              "page": 1955
+            },
+            {
+              "id": "scene-399",
+              "title": "便捷网银",
+              "label": "399",
+              "page": 1959
+            },
+            {
+              "id": "scene-400",
+              "title": "保险服务",
+              "label": "400",
+              "page": 1963
+            },
+            {
+              "id": "scene-401",
+              "title": "医疗卫生服务",
+              "label": "401",
+              "page": 1968
+            },
+            {
+              "id": "scene-402",
+              "title": "当代科学技术",
+              "label": "402",
+              "page": 1972
+            },
+            {
+              "id": "scene-403",
+              "title": "科技前沿趋势",
+              "label": "403",
+              "page": 1976
+            },
+            {
+              "id": "scene-404",
+              "title": "航天事业",
+              "label": "404",
+              "page": 1980
+            },
+            {
+              "id": "scene-405",
+              "title": "自动化生产",
+              "label": "405",
+              "page": 1985
+            },
+            {
+              "id": "scene-406",
+              "title": "揭秘物理",
+              "label": "406",
+              "page": 1989
+            },
+            {
+              "id": "scene-407",
+              "title": "电子、电力相关",
+              "label": "407",
+              "page": 1995
+            },
+            {
+              "id": "scene-408",
+              "title": "有机、无机化学",
+              "label": "408",
+              "page": 1999
+            },
+            {
+              "id": "scene-409",
+              "title": "生物科技",
+              "label": "409",
+              "page": 2004
+            }
+          ]
+        },
+        {
+          "id": "chapter-19",
+          "title": "政治军事知多少",
+          "label": "Chapter 19",
+          "page": 2010,
+          "items": [
+            {
+              "id": "scene-410",
+              "title": "政府机构",
+              "label": "410",
+              "page": 2011
+            },
+            {
+              "id": "scene-411",
+              "title": "政府职能",
+              "label": "411",
+              "page": 2017
+            },
+            {
+              "id": "scene-412",
+              "title": "政体政纲",
+              "label": "412",
+              "page": 2022
+            },
+            {
+              "id": "scene-413",
+              "title": "民主政治",
+              "label": "413",
+              "page": 2028
+            },
+            {
+              "id": "scene-414",
+              "title": "独裁与霸权",
+              "label": "414",
+              "page": 2034
+            },
+            {
+              "id": "scene-415",
+              "title": "党派对峙",
+              "label": "415",
+              "page": 2039
+            },
+            {
+              "id": "scene-416",
+              "title": "党派纠纷",
+              "label": "416",
+              "page": 2044
+            },
+            {
+              "id": "scene-417",
+              "title": "投票竞选",
+              "label": "417",
+              "page": 2049
+            },
+            {
+              "id": "scene-418",
+              "title": "反贪反腐",
+              "label": "418",
+              "page": 2054
+            },
+            {
+              "id": "scene-419",
+              "title": "国际事务",
+              "label": "419",
+              "page": 2060
+            },
+            {
+              "id": "scene-420",
+              "title": "双边关系",
+              "label": "420",
+              "page": 2065
+            },
+            {
+              "id": "scene-421",
+              "title": "外交手腕",
+              "label": "421",
+              "page": 2070
+            },
+            {
+              "id": "scene-422",
+              "title": "主权维护",
+              "label": "422",
+              "page": 2075
+            },
+            {
+              "id": "scene-423",
+              "title": "领土完整",
+              "label": "423",
+              "page": 2080
+            },
+            {
+              "id": "scene-424",
+              "title": "武器装备",
+              "label": "424",
+              "page": 2085
+            },
+            {
+              "id": "scene-425",
+              "title": "士兵军队",
+              "label": "425",
+              "page": 2092
+            },
+            {
+              "id": "scene-426",
+              "title": "军事战争",
+              "label": "426",
+              "page": 2097
+            },
+            {
+              "id": "scene-427",
+              "title": "指挥作战",
+              "label": "427",
+              "page": 2103
+            },
+            {
+              "id": "scene-428",
+              "title": "恐怖袭击",
+              "label": "428",
+              "page": 2108
+            }
+          ]
+        },
+        {
+          "id": "chapter-20",
+          "title": "依法办事不出错",
+          "label": "Chapter 20",
+          "page": 2114,
+          "items": [
+            {
+              "id": "scene-429",
+              "title": "交通法规",
+              "label": "429",
+              "page": 2115
+            },
+            {
+              "id": "scene-430",
+              "title": "安全防范",
+              "label": "430",
+              "page": 2120
+            },
+            {
+              "id": "scene-431",
+              "title": "非法行为",
+              "label": "431",
+              "page": 2124
+            },
+            {
+              "id": "scene-432",
+              "title": "造假诈骗",
+              "label": "432",
+              "page": 2130
+            },
+            {
+              "id": "scene-433",
+              "title": "抢劫盗窃",
+              "label": "433",
+              "page": 2135
+            },
+            {
+              "id": "scene-434",
+              "title": "暴力案件",
+              "label": "434",
+              "page": 2139
+            },
+            {
+              "id": "scene-435",
+              "title": "绑架杀人",
+              "label": "435",
+              "page": 2143
+            },
+            {
+              "id": "scene-436",
+              "title": "命案现场",
+              "label": "436",
+              "page": 2147
+            },
+            {
+              "id": "scene-437",
+              "title": "犯罪入狱",
+              "label": "437",
+              "page": 2151
+            },
+            {
+              "id": "scene-438",
+              "title": "法律条文",
+              "label": "438",
+              "page": 2156
+            },
+            {
+              "id": "scene-439",
+              "title": "立法部门",
+              "label": "439",
+              "page": 2161
+            },
+            {
+              "id": "scene-440",
+              "title": "法律诉讼",
+              "label": "440",
+              "page": 2166
+            },
+            {
+              "id": "scene-441",
+              "title": "案件调查",
+              "label": "441",
+              "page": 2171
+            },
+            {
+              "id": "scene-442",
+              "title": "开庭审理",
+              "label": "442",
+              "page": 2176
+            },
+            {
+              "id": "scene-443",
+              "title": "出庭做证",
+              "label": "443",
+              "page": 2181
+            },
+            {
+              "id": "scene-444",
+              "title": "被告辩护",
+              "label": "444",
+              "page": 2186
+            },
+            {
+              "id": "scene-445",
+              "title": "依法裁决",
+              "label": "445",
+              "page": 2191
+            },
+            {
+              "id": "scene-446",
+              "title": "庭外纠纷调解",
+              "label": "446",
+              "page": 2196
+            },
+            {
+              "id": "scene-447",
+              "title": "向警方报案",
+              "label": "447",
+              "page": 2201
+            },
+            {
+              "id": "scene-448",
+              "title": "呼吁人权",
+              "label": "448",
+              "page": 2206
+            }
+          ]
+        }
+      ],
+      "contentReady": true,
+      "wordEntryCount": 10749,
+      "duplicateEntryCount": 6353
+    }
+  ]
+}

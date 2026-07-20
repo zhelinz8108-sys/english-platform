@@ -80,6 +80,8 @@ export async function runDatabaseSecurityChecks(
   const classB = randomUUID();
   const questionA = randomUUID();
   const questionVersionA = randomUUID();
+  const vocabularyItemA = randomUUID();
+  const vocabularyCalibrationA = randomUUID();
   const suffix = randomUUID().replaceAll('-', '').slice(0, 12);
 
   try {
@@ -134,6 +136,34 @@ export async function runDatabaseSecurityChecks(
          '{"type":"exact_option_set"}', 1
        )`,
       [questionVersionA, tenantA, questionA],
+    );
+    await client.query(
+      `insert into vocabulary_assessment_items(
+         id, tenant_id, item_key, band, target_word, sentence, options,
+         correct_option_index, status, content_version, source_list_version
+       ) values ($1, $2, $3, 1, 'abate', 'The storm began to abate.',
+         '["增强","减弱","测量","拒绝"]', 1, 'draft', 'security-v1', 'security-list-v1')`,
+      [vocabularyItemA, tenantA, `security-vocabulary-${suffix}`],
+    );
+    await client.query(
+      `insert into vocabulary_assessment_calibrations(
+         id, tenant_id, version, model, status, sample_size, external_validation_size,
+         fit_summary, acceptance_gates, source_checksum, created_by_membership_id
+       ) values ($1, $2, $3, 'rasch', 'draft', 500, 200, '{}', '{}', $4, $5)`,
+      [
+        vocabularyCalibrationA,
+        tenantA,
+        `security-calibration-${suffix}`,
+        '0'.repeat(64),
+        membershipA,
+      ],
+    );
+    await client.query(
+      `insert into vocabulary_assessment_item_parameters(
+         tenant_id, item_id, calibration_id, difficulty, discrimination,
+         guessing, standard_error, sample_size
+       ) values ($1, $2, $3, 0.25, 1, 0, 0.1, 500)`,
+      [tenantA, vocabularyItemA, vocabularyCalibrationA],
     );
 
     const roles = await client.query<{
@@ -311,6 +341,34 @@ export async function runDatabaseSecurityChecks(
     results.push({
       name: 'answer_key_column_denied',
       detail: 'english_app rejected with SQLSTATE 42501',
+    });
+
+    await expectSqlState(
+      client,
+      'vocabulary_parameter_immutable',
+      `update vocabulary_assessment_item_parameters
+       set difficulty = 0.5
+       where tenant_id = $1 and item_id = $2 and calibration_id = $3`,
+      [tenantA, vocabularyItemA, vocabularyCalibrationA],
+      '55000',
+    );
+    results.push({
+      name: 'vocabulary_parameters_version_frozen',
+      detail: 'difficulty mutation rejected with SQLSTATE 55000',
+    });
+
+    await expectSqlState(
+      client,
+      'vocabulary_activation_gate',
+      `update vocabulary_assessment_calibrations
+       set status = 'active', activated_at = now()
+       where tenant_id = $1 and id = $2`,
+      [tenantA, vocabularyCalibrationA],
+      '23514',
+    );
+    results.push({
+      name: 'vocabulary_calibration_activation_gated',
+      detail: 'insufficient bank/evidence rejected with SQLSTATE 23514',
     });
 
     await client.query('ROLLBACK');

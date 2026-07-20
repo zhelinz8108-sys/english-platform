@@ -1,0 +1,18 @@
+{
+  "file": "outputs\\toefl-academic-listening\\documents\\Aurelis_网站听力原文题目答案_已审定210集.docx",
+  "counts": {
+    "high": 0,
+    "medium": 1,
+    "low": 0
+  },
+  "findings": [
+    {
+      "severity": "medium",
+      "kind": "table_no_header_row",
+      "message": "Table first row is not marked as header (w:tblHeader missing)",
+      "context": {
+        "part": "word/document.xml"
+      }
+    }
+  ]
+}

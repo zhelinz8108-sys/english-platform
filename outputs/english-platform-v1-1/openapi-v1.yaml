@@ -69,6 +69,10 @@ tags:
     description: Immutable tenant audit events
   - name: Files
     description: Direct-to-object-storage upload lifecycle
+  - name: Vocabulary Assessment
+    description: Version-frozen Beta, shadow, and calibrated receptive word-family assessment
+  - name: Grammar Learning
+    description: Tenant-scoped grammar lessons, resumable practice, scoring, and mastery progress
 security:
   - accessCookie: []
 paths:
@@ -2213,6 +2217,339 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/learning/vocabulary/assessments:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    post:
+      tags: [Vocabulary Assessment]
+      summary: Start or recover the member's active vocabulary assessment
+      operationId: createVocabularyAssessment
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVocabularyAssessmentRequest'
+      responses:
+        '200':
+          description: Existing active assessment returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VocabularyAssessmentSession'
+        '201':
+          description: Assessment created; answer keys and item parameters are never returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VocabularyAssessmentSession'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/learning/vocabulary/assessments/{sessionId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - name: sessionId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Uuid'
+    get:
+      tags: [Vocabulary Assessment]
+      summary: Read a resumable assessment session
+      operationId: getVocabularyAssessment
+      responses:
+        '200':
+          description: Current session and at most one unanswered question
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VocabularyAssessmentSession'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/learning/vocabulary/assessments/{sessionId}/pause:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - name: sessionId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Uuid'
+    post:
+      tags: [Vocabulary Assessment]
+      summary: Pause an active vocabulary assessment
+      operationId: pauseVocabularyAssessment
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Paused session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VocabularyAssessmentSession'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/learning/vocabulary/assessments/{sessionId}/resume:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - name: sessionId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Uuid'
+    post:
+      tags: [Vocabulary Assessment]
+      summary: Resume a paused vocabulary assessment
+      operationId: resumeVocabularyAssessment
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Active session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VocabularyAssessmentSession'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/learning/vocabulary/assessments/{sessionId}/responses:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - name: sessionId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Uuid'
+    post:
+      tags: [Vocabulary Assessment]
+      summary: Submit one immutable vocabulary response
+      operationId: answerVocabularyAssessment
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VocabularyAssessmentResponseRequest'
+      responses:
+        '200':
+          description: Next question or completed session with feedback for the submitted delivery
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VocabularyAssessmentSession'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/learning/vocabulary/assessment-results/{resultId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - name: resultId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Uuid'
+    get:
+      tags: [Vocabulary Assessment]
+      summary: Read the current member's frozen vocabulary result
+      operationId: getVocabularyAssessmentResult
+      responses:
+        '200':
+          description: Beta range or calibrated word-family result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VocabularyAssessmentResult'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/learning/grammar/progress:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags: [Grammar Learning]
+      summary: Read the current member's grammar practice progress
+      operationId: getGrammarProgress
+      responses:
+        '200':
+          description: Progress for every grammar stage the member has started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrammarProgressEnvelope'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/learning/grammar/practice-sessions:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    post:
+      tags: [Grammar Learning]
+      summary: Start or recover the member's active grammar practice session
+      operationId: createGrammarPracticeSession
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GrammarPracticeCreateRequest'
+      responses:
+        '200':
+          description: Existing active session returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrammarPracticeSession'
+        '201':
+          description: Practice session created; answer keys and explanations are omitted until submission
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrammarPracticeSession'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/learning/grammar/practice-sessions/{sessionId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - name: sessionId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Uuid'
+    get:
+      tags: [Grammar Learning]
+      summary: Read a resumable grammar practice session
+      operationId: getGrammarPracticeSession
+      responses:
+        '200':
+          description: Current session with saved responses
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrammarPracticeSession'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/learning/grammar/practice-sessions/{sessionId}/responses:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - name: sessionId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Uuid'
+    post:
+      tags: [Grammar Learning]
+      summary: Save or replace one response in an active grammar practice session
+      operationId: answerGrammarPracticeSession
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GrammarPracticeAnswerRequest'
+      responses:
+        '200':
+          description: Updated resumable practice session
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrammarPracticeSession'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/learning/grammar/practice-sessions/{sessionId}/submit:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - name: sessionId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Uuid'
+    post:
+      tags: [Grammar Learning]
+      summary: Score and complete a grammar practice session
+      operationId: submitGrammarPracticeSession
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      responses:
+        '200':
+          description: Completed result with accuracy, historical best, and item explanations
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GrammarPracticeResult'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
 components:
   securitySchemes:
     accessCookie:
@@ -2491,6 +2828,347 @@ components:
           schema:
             $ref: '#/components/schemas/ProblemDetails'
   schemas:
+    GrammarLevel:
+      type: string
+      enum: [beginner, intermediate, advanced]
+    GrammarProgressStatus:
+      type: string
+      enum: [not_started, in_progress, practiced, mastered]
+    GrammarProgressEntry:
+      type: object
+      additionalProperties: false
+      required: [topicId, level, status, attemptCount, bestAccuracy, lastAccuracy, activeSessionId, updatedAt]
+      properties:
+        topicId: { type: string, minLength: 1, maxLength: 120 }
+        level: { $ref: '#/components/schemas/GrammarLevel' }
+        status: { $ref: '#/components/schemas/GrammarProgressStatus' }
+        attemptCount: { type: integer, minimum: 0 }
+        bestAccuracy: { type: [integer, 'null'], minimum: 0, maximum: 100 }
+        lastAccuracy: { type: [integer, 'null'], minimum: 0, maximum: 100 }
+        activeSessionId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+        updatedAt:
+          oneOf:
+            - $ref: '#/components/schemas/UtcDateTime'
+            - type: 'null'
+    GrammarProgressEnvelope:
+      type: object
+      additionalProperties: false
+      required: [entries, summary]
+      properties:
+        entries:
+          type: array
+          items: { $ref: '#/components/schemas/GrammarProgressEntry' }
+        summary:
+          type: object
+          additionalProperties: false
+          required: [startedStageCount, practicedStageCount, masteredStageCount, publishedStageCount]
+          properties:
+            startedStageCount: { type: integer, minimum: 0 }
+            practicedStageCount: { type: integer, minimum: 0 }
+            masteredStageCount: { type: integer, minimum: 0 }
+            publishedStageCount: { type: integer, minimum: 0 }
+    GrammarPracticeCreateRequest:
+      type: object
+      additionalProperties: false
+      required: [topicId, level]
+      properties:
+        topicId:
+          type: string
+          minLength: 1
+          maxLength: 120
+          pattern: '^[a-z0-9-]+$'
+        level: { $ref: '#/components/schemas/GrammarLevel' }
+    GrammarPracticeAnswerRequest:
+      type: object
+      additionalProperties: false
+      required: [questionId, value]
+      properties:
+        questionId: { type: string, minLength: 1, maxLength: 180 }
+        value: { type: string, maxLength: 500 }
+    GrammarQuestionOption:
+      type: object
+      additionalProperties: false
+      required: [id, label]
+      properties:
+        id: { type: string, minLength: 1, maxLength: 80 }
+        label: { type: string, minLength: 1, maxLength: 500 }
+    GrammarPublicQuestion:
+      type: object
+      additionalProperties: false
+      description: Deliberately excludes the correct answer and explanation until the session is submitted.
+      required: [id, kind, prompt, instruction]
+      properties:
+        id: { type: string, minLength: 1, maxLength: 180 }
+        kind:
+          type: string
+          enum: [single_choice, true_false, fill_blank, error_correction]
+        prompt: { type: string, minLength: 1 }
+        instruction: { type: string, minLength: 1 }
+        options:
+          type: array
+          items: { $ref: '#/components/schemas/GrammarQuestionOption' }
+    GrammarPracticeReviewItem:
+      type: object
+      additionalProperties: false
+      required: [questionId, kind, prompt, selectedAnswer, correctAnswer, correct, explanation]
+      properties:
+        questionId: { type: string }
+        kind:
+          type: string
+          enum: [single_choice, true_false, fill_blank, error_correction]
+        prompt: { type: string }
+        selectedAnswer: { type: string }
+        correctAnswer: { type: string }
+        correct: { type: boolean }
+        explanation: { type: string }
+    GrammarPracticeResult:
+      type: object
+      additionalProperties: false
+      required: [sessionId, topicId, level, correctCount, questionCount, accuracy, bestAccuracy, mastered, completedAt, review]
+      properties:
+        sessionId: { $ref: '#/components/schemas/Uuid' }
+        topicId: { type: string }
+        level: { $ref: '#/components/schemas/GrammarLevel' }
+        correctCount: { type: integer, minimum: 0 }
+        questionCount: { type: integer, const: 10 }
+        accuracy: { type: integer, minimum: 0, maximum: 100 }
+        bestAccuracy: { type: integer, minimum: 0, maximum: 100 }
+        mastered: { type: boolean }
+        completedAt: { $ref: '#/components/schemas/UtcDateTime' }
+        review:
+          type: array
+          minItems: 10
+          maxItems: 10
+          items: { $ref: '#/components/schemas/GrammarPracticeReviewItem' }
+    GrammarPracticeSession:
+      type: object
+      additionalProperties: false
+      required: [sessionId, topicId, level, status, revision, answeredCount, questionCount, answers, questions, startedAt, updatedAt, result]
+      properties:
+        sessionId: { $ref: '#/components/schemas/Uuid' }
+        topicId: { type: string }
+        level: { $ref: '#/components/schemas/GrammarLevel' }
+        status: { type: string, enum: [active, completed] }
+        revision: { type: integer, minimum: 1 }
+        answeredCount: { type: integer, minimum: 0, maximum: 10 }
+        questionCount: { type: integer, const: 10 }
+        answers:
+          type: object
+          additionalProperties: { type: string, maxLength: 500 }
+        questions:
+          type: array
+          minItems: 10
+          maxItems: 10
+          items: { $ref: '#/components/schemas/GrammarPublicQuestion' }
+        startedAt: { $ref: '#/components/schemas/UtcDateTime' }
+        updatedAt: { $ref: '#/components/schemas/UtcDateTime' }
+        result:
+          oneOf:
+            - $ref: '#/components/schemas/GrammarPracticeResult'
+            - type: 'null'
+    VocabularyAssessmentMode:
+      type: string
+      enum: [quick, standard, calibration]
+    CreateVocabularyAssessmentRequest:
+      type: object
+      additionalProperties: false
+      required: [mode]
+      properties:
+        mode:
+          $ref: '#/components/schemas/VocabularyAssessmentMode'
+        targetTrack:
+          type: string
+          enum: [general, toefl]
+          default: general
+    VocabularyAssessmentResponseRequest:
+      type: object
+      additionalProperties: false
+      required: [deliveryId, selectedOptionId, responseTimeMs]
+      properties:
+        deliveryId:
+          $ref: '#/components/schemas/Uuid'
+        selectedOptionId:
+          type: string
+          enum: [choice-1, choice-2, choice-3, choice-4, unknown]
+        responseTimeMs:
+          type: number
+          minimum: 0
+          maximum: 120000
+        focusLossCount:
+          type: integer
+          minimum: 0
+          maximum: 10000
+          default: 0
+    VocabularyAssessmentOption:
+      type: object
+      additionalProperties: false
+      required: [id, label]
+      properties:
+        id:
+          type: string
+          enum: [choice-1, choice-2, choice-3, choice-4]
+        label:
+          type: string
+    VocabularyAssessmentQuestion:
+      type: object
+      additionalProperties: false
+      description: Deliberately excludes the correct option, item parameters, and the rest of the bank.
+      required: [deliveryId, itemId, targetWord, sentence, options]
+      properties:
+        deliveryId:
+          $ref: '#/components/schemas/Uuid'
+        itemId:
+          $ref: '#/components/schemas/Uuid'
+        targetWord:
+          type: string
+        sentence:
+          type: string
+        options:
+          type: array
+          minItems: 4
+          maxItems: 4
+          items:
+            $ref: '#/components/schemas/VocabularyAssessmentOption'
+    VocabularyAssessmentFeedback:
+      type: object
+      additionalProperties: false
+      description: Returned only after the referenced delivery has been answered.
+      required: [deliveryId, selectedOptionId, correctOptionId, correct]
+      properties:
+        deliveryId:
+          $ref: '#/components/schemas/Uuid'
+        selectedOptionId:
+          type: string
+          enum: [choice-1, choice-2, choice-3, choice-4, unknown]
+        correctOptionId:
+          type: string
+          enum: [choice-1, choice-2, choice-3, choice-4]
+        correct:
+          type: boolean
+    VocabularyAssessmentSession:
+      type: object
+      additionalProperties: false
+      required: [sessionId, mode, status, stage, answeredCount, stageProgress, startedAt, updatedAt, question, feedback, resultId]
+      properties:
+        sessionId:
+          $ref: '#/components/schemas/Uuid'
+        mode:
+          $ref: '#/components/schemas/VocabularyAssessmentMode'
+        status:
+          type: string
+          enum: [active, paused, completed]
+        stage:
+          type: string
+          enum: [routing, precision, calibration]
+        answeredCount:
+          type: integer
+          minimum: 0
+        stageProgress:
+          type: integer
+          minimum: 0
+          maximum: 100
+        startedAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        updatedAt:
+          $ref: '#/components/schemas/UtcDateTime'
+        question:
+          oneOf:
+            - $ref: '#/components/schemas/VocabularyAssessmentQuestion'
+            - type: 'null'
+        feedback:
+          oneOf:
+            - $ref: '#/components/schemas/VocabularyAssessmentFeedback'
+            - type: 'null'
+        resultId:
+          oneOf:
+            - $ref: '#/components/schemas/Uuid'
+            - type: 'null'
+    VocabularyAbilityBand:
+      type: object
+      additionalProperties: false
+      required: [id, label, lower, upper, description]
+      properties:
+        id:
+          type: string
+          enum: [foundation, everyday, independent, academic-ready, advanced, extensive]
+        label:
+          type: string
+        lower:
+          type: integer
+        upper:
+          type: integer
+        description:
+          type: string
+    VocabularyBandResult:
+      type: object
+      additionalProperties: false
+      required: [band, label, knownRate, lowerRate, upperRate, attempted]
+      properties:
+        band: { type: integer, minimum: 1, maximum: 14 }
+        label: { type: string }
+        knownRate: { type: integer, minimum: 0, maximum: 100 }
+        lowerRate: { type: integer, minimum: 0, maximum: 100 }
+        upperRate: { type: integer, minimum: 0, maximum: 100 }
+        attempted: { type: integer, minimum: 0 }
+    VocabularyAssessmentResult:
+      type: object
+      additionalProperties: false
+      required: [id, sessionId, mode, completedAt, estimate, interval, abilityBand, scoreStatus, scale, theta, standardError, displayPrecision, qualityFlags, calibrationVersion, reliability, reliabilityLabel, interpretation, questionCount, unknownRate, toeflCoverage, dailyWordTarget, weakBands, bandProfile, versions]
+      properties:
+        id: { $ref: '#/components/schemas/Uuid' }
+        sessionId: { $ref: '#/components/schemas/Uuid' }
+        mode: { $ref: '#/components/schemas/VocabularyAssessmentMode' }
+        completedAt: { $ref: '#/components/schemas/UtcDateTime' }
+        estimate: { type: integer, minimum: 0, maximum: 14000 }
+        interval:
+          type: object
+          additionalProperties: false
+          required: [lower, upper, confidence]
+          properties:
+            lower: { type: integer, minimum: 0, maximum: 14000 }
+            upper: { type: integer, minimum: 0, maximum: 14000 }
+            confidence: { type: number, const: 0.95 }
+        abilityBand: { $ref: '#/components/schemas/VocabularyAbilityBand' }
+        scoreStatus: { type: string, enum: [beta, shadow, calibrated] }
+        scale: { type: string, const: word-family-1k-14k }
+        theta: { type: [number, 'null'] }
+        standardError: { type: [number, 'null'], minimum: 0 }
+        displayPrecision: { type: integer, enum: [100, 500, 1000] }
+        qualityFlags:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+            enum: [RAPID_RESPONSES, STRAIGHTLINING, NON_MONOTONIC_PROFILE, PERSON_FIT_MISFIT, FOCUS_LOSS, INSUFFICIENT_BAND_COVERAGE, WIDE_ESTIMATE_RANGE]
+        calibrationVersion: { type: string }
+        reliability: { type: string, enum: [HIGH, MEDIUM, LOW, INVALID] }
+        reliabilityLabel: { type: string }
+        interpretation: { type: string }
+        questionCount: { type: integer, minimum: 0 }
+        unknownRate: { type: integer, minimum: 0, maximum: 100 }
+        toeflCoverage: { type: integer, minimum: 0, maximum: 100 }
+        dailyWordTarget: { type: integer, minimum: 0 }
+        weakBands:
+          type: array
+          items: { type: string }
+        bandProfile:
+          type: array
+          minItems: 14
+          maxItems: 14
+          items: { $ref: '#/components/schemas/VocabularyBandResult' }
+        versions:
+          type: object
+          additionalProperties: false
+          required: [content, algorithm, calibration, interpretation, sourceList]
+          properties:
+            content: { type: string }
+            algorithm: { type: string }
+            calibration: { type: string }
+            interpretation: { type: string }
+            sourceList: { type: string }
     Uuid:
       type: string
       format: uuid

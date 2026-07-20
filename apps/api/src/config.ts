@@ -44,6 +44,7 @@ const environmentSchema = z
     S3_ACCESS_KEY: z.string().min(1),
     S3_SECRET_KEY: z.string().min(1),
     S3_FORCE_PATH_STYLE: booleanFromString,
+    VOCABULARY_ASSESSMENT_SCORING_MODE: z.enum(['beta', 'shadow', 'calibrated']).default('beta'),
   })
   .superRefine((environment, ctx) => {
     if (environment.NODE_ENV !== 'production') return;

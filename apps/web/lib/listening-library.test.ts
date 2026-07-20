@@ -5,10 +5,17 @@ interface LibraryItem {
   id: string;
   collection: string;
   title: string;
+  year: number | null;
   audioPath: string | null;
   documentPath: string | null;
   transcriptWordCount: number;
-  vocabulary: unknown[];
+  vocabulary: Array<{
+    word: string;
+    partOfSpeech: string;
+    definition: string;
+    context: string;
+    contextTranslation: string;
+  }>;
 }
 
 interface LibraryDocument {
@@ -25,7 +32,17 @@ describe('local listening library', () => {
     const minuteEarth = library.items.filter((item) => item.collection === 'minute-earth');
     expect(minuteEarth).toHaveLength(270);
     expect(minuteEarth.every((item) => item.audioPath && item.transcriptWordCount > 0)).toBe(true);
+    expect(
+      minuteEarth.every((item) => /^第(?:001集-200集|201集-376集)\//u.test(item.audioPath ?? '')),
+    ).toBe(true);
     expect(minuteEarth.filter((item) => item.vocabulary.length > 0).length).toBeGreaterThan(260);
+    const vocabulary = minuteEarth.flatMap((item) => item.vocabulary);
+    expect(
+      vocabulary.every(
+        (entry) =>
+          entry.partOfSpeech && entry.context && /[\u3400-\u9fff]/u.test(entry.contextTranslation),
+      ),
+    ).toBe(true);
   });
 
   it('deduplicates and pairs the BBC library', () => {
@@ -42,9 +59,36 @@ describe('local listening library', () => {
     expect(peruvianHero?.documentPath).toBeTruthy();
     expect(peruvianHero?.transcriptWordCount).toBeGreaterThan(1000);
 
-    expect(bbc.filter((item) => item.vocabulary.length > 0)).toHaveLength(859);
+    expect(bbc.filter((item) => item.vocabulary.length > 0).length).toBeGreaterThan(800);
     expect(bbc.find((item) => item.title === 'Cost of living')?.vocabulary).toHaveLength(10);
     expect(bbc.find((item) => item.title === 'Our Love Of Pets')?.vocabulary).toHaveLength(6);
+
+    const vocabulary = bbc.flatMap((item) => item.vocabulary);
+    const normalizedWords = vocabulary.map((entry) =>
+      entry.word.trim().toLocaleLowerCase('en').replace(/\s+/gu, ' '),
+    );
+    expect(vocabulary).toHaveLength(5660);
+    expect(new Set(normalizedWords).size).toBe(vocabulary.length);
+    expect(
+      vocabulary.every(
+        (entry) =>
+          entry.partOfSpeech &&
+          /[\u3400-\u9fff]/u.test(entry.definition) &&
+          !entry.definition.startsWith('原文语境：'),
+      ),
+    ).toBe(true);
+    expect(
+      vocabulary.every(
+        (entry) => entry.context && /[\u3400-\u9fff]/u.test(entry.contextTranslation),
+      ),
+    ).toBe(true);
+
+    const years = new Set(bbc.map((item) => item.year));
+    expect(years.has(null)).toBe(false);
+    expect(Math.min(...([...years] as number[]))).toBe(2008);
+    expect(Math.max(...([...years] as number[]))).toBe(2026);
+    expect(bbc.filter((item) => item.year === 2020)).toHaveLength(51);
+    expect(bbc.filter((item) => item.year === 2021)).toHaveLength(56);
   });
 
   it('keeps collection counts and item identifiers consistent', () => {

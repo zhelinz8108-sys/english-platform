@@ -32,6 +32,7 @@ export function GET(request: Request) {
         collection: item.collection,
         sequence: item.sequence,
         title: item.title,
+        year: item.year,
         publishedAt: item.publishedAt,
         durationSeconds: item.durationSeconds,
         sizeBytes: item.sizeBytes,

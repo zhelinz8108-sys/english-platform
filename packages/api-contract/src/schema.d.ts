@@ -1228,10 +1228,435 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/tenants/{tenantId}/learning/vocabulary/assessments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Start or recover the member's active vocabulary assessment */
+        post: operations["createVocabularyAssessment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tenants/{tenantId}/learning/vocabulary/assessments/{sessionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                sessionId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        /** Read a resumable assessment session */
+        get: operations["getVocabularyAssessment"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tenants/{tenantId}/learning/vocabulary/assessments/{sessionId}/pause": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                sessionId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Pause an active vocabulary assessment */
+        post: operations["pauseVocabularyAssessment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tenants/{tenantId}/learning/vocabulary/assessments/{sessionId}/resume": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                sessionId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Resume a paused vocabulary assessment */
+        post: operations["resumeVocabularyAssessment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tenants/{tenantId}/learning/vocabulary/assessments/{sessionId}/responses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                sessionId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Submit one immutable vocabulary response */
+        post: operations["answerVocabularyAssessment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tenants/{tenantId}/learning/vocabulary/assessment-results/{resultId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                resultId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        /** Read the current member's frozen vocabulary result */
+        get: operations["getVocabularyAssessmentResult"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tenants/{tenantId}/learning/grammar/progress": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+            };
+            cookie?: never;
+        };
+        /** Read the current member's grammar practice progress */
+        get: operations["getGrammarProgress"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tenants/{tenantId}/learning/grammar/practice-sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Start or recover the member's active grammar practice session */
+        post: operations["createGrammarPracticeSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tenants/{tenantId}/learning/grammar/practice-sessions/{sessionId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                sessionId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        /** Read a resumable grammar practice session */
+        get: operations["getGrammarPracticeSession"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tenants/{tenantId}/learning/grammar/practice-sessions/{sessionId}/responses": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                sessionId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Save or replace one response in an active grammar practice session */
+        post: operations["answerGrammarPracticeSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tenants/{tenantId}/learning/grammar/practice-sessions/{sessionId}/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                sessionId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Score and complete a grammar practice session */
+        post: operations["submitGrammarPracticeSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** @enum {string} */
+        GrammarLevel: "beginner" | "intermediate" | "advanced";
+        /** @enum {string} */
+        GrammarProgressStatus: "not_started" | "in_progress" | "practiced" | "mastered";
+        GrammarProgressEntry: {
+            topicId: string;
+            level: components["schemas"]["GrammarLevel"];
+            status: components["schemas"]["GrammarProgressStatus"];
+            attemptCount: number;
+            bestAccuracy: number | null;
+            lastAccuracy: number | null;
+            activeSessionId: components["schemas"]["Uuid"] | null;
+            updatedAt: components["schemas"]["UtcDateTime"] | null;
+        };
+        GrammarProgressEnvelope: {
+            entries: components["schemas"]["GrammarProgressEntry"][];
+            summary: {
+                startedStageCount: number;
+                practicedStageCount: number;
+                masteredStageCount: number;
+                publishedStageCount: number;
+            };
+        };
+        GrammarPracticeCreateRequest: {
+            topicId: string;
+            level: components["schemas"]["GrammarLevel"];
+        };
+        GrammarPracticeAnswerRequest: {
+            questionId: string;
+            value: string;
+        };
+        GrammarQuestionOption: {
+            id: string;
+            label: string;
+        };
+        /** @description Deliberately excludes the correct answer and explanation until the session is submitted. */
+        GrammarPublicQuestion: {
+            id: string;
+            /** @enum {string} */
+            kind: "single_choice" | "true_false" | "fill_blank" | "error_correction";
+            prompt: string;
+            instruction: string;
+            options?: components["schemas"]["GrammarQuestionOption"][];
+        };
+        GrammarPracticeReviewItem: {
+            questionId: string;
+            /** @enum {string} */
+            kind: "single_choice" | "true_false" | "fill_blank" | "error_correction";
+            prompt: string;
+            selectedAnswer: string;
+            correctAnswer: string;
+            correct: boolean;
+            explanation: string;
+        };
+        GrammarPracticeResult: {
+            sessionId: components["schemas"]["Uuid"];
+            topicId: string;
+            level: components["schemas"]["GrammarLevel"];
+            correctCount: number;
+            /** @constant */
+            questionCount: 10;
+            accuracy: number;
+            bestAccuracy: number;
+            mastered: boolean;
+            completedAt: components["schemas"]["UtcDateTime"];
+            review: components["schemas"]["GrammarPracticeReviewItem"][];
+        };
+        GrammarPracticeSession: {
+            sessionId: components["schemas"]["Uuid"];
+            topicId: string;
+            level: components["schemas"]["GrammarLevel"];
+            /** @enum {string} */
+            status: "active" | "completed";
+            revision: number;
+            answeredCount: number;
+            /** @constant */
+            questionCount: 10;
+            answers: {
+                [key: string]: string;
+            };
+            questions: components["schemas"]["GrammarPublicQuestion"][];
+            startedAt: components["schemas"]["UtcDateTime"];
+            updatedAt: components["schemas"]["UtcDateTime"];
+            result: components["schemas"]["GrammarPracticeResult"] | null;
+        };
+        /** @enum {string} */
+        VocabularyAssessmentMode: "quick" | "standard" | "calibration";
+        CreateVocabularyAssessmentRequest: {
+            mode: components["schemas"]["VocabularyAssessmentMode"];
+            /**
+             * @default general
+             * @enum {string}
+             */
+            targetTrack: "general" | "toefl";
+        };
+        VocabularyAssessmentResponseRequest: {
+            deliveryId: components["schemas"]["Uuid"];
+            /** @enum {string} */
+            selectedOptionId: "choice-1" | "choice-2" | "choice-3" | "choice-4" | "unknown";
+            responseTimeMs: number;
+            /** @default 0 */
+            focusLossCount: number;
+        };
+        VocabularyAssessmentOption: {
+            /** @enum {string} */
+            id: "choice-1" | "choice-2" | "choice-3" | "choice-4";
+            label: string;
+        };
+        /** @description Deliberately excludes the correct option, item parameters, and the rest of the bank. */
+        VocabularyAssessmentQuestion: {
+            deliveryId: components["schemas"]["Uuid"];
+            itemId: components["schemas"]["Uuid"];
+            targetWord: string;
+            sentence: string;
+            options: components["schemas"]["VocabularyAssessmentOption"][];
+        };
+        /** @description Returned only after the referenced delivery has been answered. */
+        VocabularyAssessmentFeedback: {
+            deliveryId: components["schemas"]["Uuid"];
+            /** @enum {string} */
+            selectedOptionId: "choice-1" | "choice-2" | "choice-3" | "choice-4" | "unknown";
+            /** @enum {string} */
+            correctOptionId: "choice-1" | "choice-2" | "choice-3" | "choice-4";
+            correct: boolean;
+        };
+        VocabularyAssessmentSession: {
+            sessionId: components["schemas"]["Uuid"];
+            mode: components["schemas"]["VocabularyAssessmentMode"];
+            /** @enum {string} */
+            status: "active" | "paused" | "completed";
+            /** @enum {string} */
+            stage: "routing" | "precision" | "calibration";
+            answeredCount: number;
+            stageProgress: number;
+            startedAt: components["schemas"]["UtcDateTime"];
+            updatedAt: components["schemas"]["UtcDateTime"];
+            question: components["schemas"]["VocabularyAssessmentQuestion"] | null;
+            feedback: components["schemas"]["VocabularyAssessmentFeedback"] | null;
+            resultId: components["schemas"]["Uuid"] | null;
+        };
+        VocabularyAbilityBand: {
+            /** @enum {string} */
+            id: "foundation" | "everyday" | "independent" | "academic-ready" | "advanced" | "extensive";
+            label: string;
+            lower: number;
+            upper: number;
+            description: string;
+        };
+        VocabularyBandResult: {
+            band: number;
+            label: string;
+            knownRate: number;
+            lowerRate: number;
+            upperRate: number;
+            attempted: number;
+        };
+        VocabularyAssessmentResult: {
+            id: components["schemas"]["Uuid"];
+            sessionId: components["schemas"]["Uuid"];
+            mode: components["schemas"]["VocabularyAssessmentMode"];
+            completedAt: components["schemas"]["UtcDateTime"];
+            estimate: number;
+            interval: {
+                lower: number;
+                upper: number;
+                /** @constant */
+                confidence: 0.95;
+            };
+            abilityBand: components["schemas"]["VocabularyAbilityBand"];
+            /** @enum {string} */
+            scoreStatus: "beta" | "shadow" | "calibrated";
+            /** @constant */
+            scale: "word-family-1k-14k";
+            theta: number | null;
+            standardError: number | null;
+            /** @enum {integer} */
+            displayPrecision: 100 | 500 | 1000;
+            qualityFlags: ("RAPID_RESPONSES" | "STRAIGHTLINING" | "NON_MONOTONIC_PROFILE" | "PERSON_FIT_MISFIT" | "FOCUS_LOSS" | "INSUFFICIENT_BAND_COVERAGE" | "WIDE_ESTIMATE_RANGE")[];
+            calibrationVersion: string;
+            /** @enum {string} */
+            reliability: "HIGH" | "MEDIUM" | "LOW" | "INVALID";
+            reliabilityLabel: string;
+            interpretation: string;
+            questionCount: number;
+            unknownRate: number;
+            toeflCoverage: number;
+            dailyWordTarget: number;
+            weakBands: string[];
+            bandProfile: components["schemas"]["VocabularyBandResult"][];
+            versions: {
+                content: string;
+                algorithm: string;
+                calibration: string;
+                interpretation: string;
+                sourceList: string;
+            };
+        };
         /**
          * Format: uuid
          * @description Server-generated UUIDv7; clients treat it as an opaque UUID on the wire.
@@ -4979,6 +5404,384 @@ export interface operations {
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
+        };
+    };
+    createVocabularyAssessment: {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description Client-generated key retained for at least 24 hours. Scope is user, tenant, method,
+                 *     and canonical route. Reusing a key with an identical body replays the original status,
+                 *     headers, and body; reusing it with a different body returns 409.
+                 */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateVocabularyAssessmentRequest"];
+            };
+        };
+        responses: {
+            /** @description Existing active assessment returned */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyAssessmentSession"];
+                };
+            };
+            /** @description Assessment created; answer keys and item parameters are never returned */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyAssessmentSession"];
+                };
+            };
+            400: components["responses"]["ValidationProblem"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    getVocabularyAssessment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                sessionId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current session and at most one unanswered question */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyAssessmentSession"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    pauseVocabularyAssessment: {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description Client-generated key retained for at least 24 hours. Scope is user, tenant, method,
+                 *     and canonical route. Reusing a key with an identical body replays the original status,
+                 *     headers, and body; reusing it with a different body returns 409.
+                 */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                sessionId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Paused session */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyAssessmentSession"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    resumeVocabularyAssessment: {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description Client-generated key retained for at least 24 hours. Scope is user, tenant, method,
+                 *     and canonical route. Reusing a key with an identical body replays the original status,
+                 *     headers, and body; reusing it with a different body returns 409.
+                 */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                sessionId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Active session */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyAssessmentSession"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    answerVocabularyAssessment: {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description Client-generated key retained for at least 24 hours. Scope is user, tenant, method,
+                 *     and canonical route. Reusing a key with an identical body replays the original status,
+                 *     headers, and body; reusing it with a different body returns 409.
+                 */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                sessionId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["VocabularyAssessmentResponseRequest"];
+            };
+        };
+        responses: {
+            /** @description Next question or completed session with feedback for the submitted delivery */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyAssessmentSession"];
+                };
+            };
+            400: components["responses"]["ValidationProblem"];
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    getVocabularyAssessmentResult: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                resultId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Beta range or calibrated word-family result */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VocabularyAssessmentResult"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getGrammarProgress: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Progress for every grammar stage the member has started */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarProgressEnvelope"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createGrammarPracticeSession: {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description Client-generated key retained for at least 24 hours. Scope is user, tenant, method,
+                 *     and canonical route. Reusing a key with an identical body replays the original status,
+                 *     headers, and body; reusing it with a different body returns 409.
+                 */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GrammarPracticeCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Existing active session returned */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarPracticeSession"];
+                };
+            };
+            /** @description Practice session created; answer keys and explanations are omitted until submission */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarPracticeSession"];
+                };
+            };
+            400: components["responses"]["ValidationProblem"];
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    getGrammarPracticeSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                sessionId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Current session with saved responses */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarPracticeSession"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    answerGrammarPracticeSession: {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description Client-generated key retained for at least 24 hours. Scope is user, tenant, method,
+                 *     and canonical route. Reusing a key with an identical body replays the original status,
+                 *     headers, and body; reusing it with a different body returns 409.
+                 */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                sessionId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GrammarPracticeAnswerRequest"];
+            };
+        };
+        responses: {
+            /** @description Updated resumable practice session */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarPracticeSession"];
+                };
+            };
+            400: components["responses"]["ValidationProblem"];
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    submitGrammarPracticeSession: {
+        parameters: {
+            query?: never;
+            header: {
+                /**
+                 * @description Client-generated key retained for at least 24 hours. Scope is user, tenant, method,
+                 *     and canonical route. Reusing a key with an identical body replays the original status,
+                 *     headers, and body; reusing it with a different body returns 409.
+                 */
+                "Idempotency-Key": components["parameters"]["IdempotencyKey"];
+            };
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                sessionId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Completed result with accuracy, historical best, and item explanations */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrammarPracticeResult"];
+                };
+            };
+            400: components["responses"]["ValidationProblem"];
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
         };
     };
 }

@@ -46,7 +46,7 @@ export const studentDashboardMock = {
       label: 'Reading',
       level: 'Advanced',
       progress: 72,
-      href: '/student/learning/toefl#reading',
+      href: '/student/learning/toefl/reading',
     },
     {
       id: 'listening',
