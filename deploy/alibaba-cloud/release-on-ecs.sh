@@ -54,8 +54,8 @@ compose=(docker compose --env-file "${ENV_FILE}" -f "${staging_dir}/deploy/aliba
 # Build and migrate before replacing the healthy application containers.
 "${compose[@]}" build api worker web
 "${compose[@]}" up -d postgres redis
-"${compose[@]}" run --rm database-roles
-"${compose[@]}" run --rm migrate
+"${compose[@]}" run --rm --interactive=false database-roles
+"${compose[@]}" run --rm --interactive=false migrate
 
 # The MP3 objects are already in OSS. Register their metadata and the reviewed
 # question bank before exposing the new listening page to users.
@@ -64,14 +64,14 @@ import_mounts=(
   -v "${staging_dir}/apps/web/data:/app/apps/web/data:ro"
 )
 for collection in minute-earth bbc-6-minute-english; do
-  "${compose[@]}" run --rm --no-deps "${import_mounts[@]}" --entrypoint node api \
+  "${compose[@]}" run --rm --no-deps --interactive=false "${import_mounts[@]}" --entrypoint node api \
     apps/api/scripts/import-listening-library.mjs \
     "--collection=${collection}" \
     --tenant=019f8d4f-c7ce-77b8-979a-206f28f8fda4 \
     --register-only=true \
     --concurrency=6
 done
-"${compose[@]}" run --rm --no-deps "${import_mounts[@]}" --entrypoint node api \
+"${compose[@]}" run --rm --no-deps --interactive=false "${import_mounts[@]}" --entrypoint node api \
   apps/api/scripts/import-listening-question-bank.mjs \
   --tenant=019f8d4f-c7ce-77b8-979a-206f28f8fda4
 
