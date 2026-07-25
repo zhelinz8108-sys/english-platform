@@ -122,7 +122,7 @@ const workspaceNavGroups: WorkspaceNavGroup[] = [
     label: '机构管理',
     roles: ['owner', 'admin', 'content_editor'],
     items: [
-      { label: '机构总览', href: '/admin', icon: Building2 },
+      { label: '总览', href: '/admin', icon: Building2 },
       {
         label: '成员与角色',
         href: '/admin/members',

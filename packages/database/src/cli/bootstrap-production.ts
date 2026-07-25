@@ -12,7 +12,7 @@ const tenantName = required('BOOTSTRAP_TENANT_NAME');
 const tenantSlug = required('BOOTSTRAP_TENANT_SLUG').toLowerCase();
 const ownerEmail = required('BOOTSTRAP_OWNER_EMAIL').toLowerCase();
 const ownerPassword = required('BOOTSTRAP_OWNER_PASSWORD');
-const ownerDisplayName = process.env.BOOTSTRAP_OWNER_DISPLAY_NAME?.trim() || '机构管理员';
+const ownerDisplayName = process.env.BOOTSTRAP_OWNER_DISPLAY_NAME?.trim() || '管理员';
 
 if (!/^[a-z0-9][a-z0-9-]{1,62}[a-z0-9]$/u.test(tenantSlug)) {
   throw new Error('BOOTSTRAP_TENANT_SLUG must be 3-64 lowercase letters, digits or hyphens');
