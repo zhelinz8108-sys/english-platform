@@ -11,10 +11,7 @@ import {
   StatusBadge,
 } from '@/components/ui';
 import { Icon } from '@/components/icon';
-import {
-  VocabularyCards,
-  type VocabularyCardEntry,
-} from '@/components/vocabulary-cards';
+import { VocabularyCards, type VocabularyCardEntry } from '@/components/vocabulary-cards';
 import { ApiProblemError, apiRequest } from '@/lib/api';
 
 interface GradeSummary {
@@ -358,14 +355,11 @@ export function ToeflReadingPage({ initialGrade = null }: { initialGrade?: numbe
     if (article.answerBankStatus === 'ready') {
       setGrading(true);
       try {
-        const response = await fetch(
-          `/api/local-reading/${encodeURIComponent(article.id)}/check`,
-          {
-            body: JSON.stringify({ answers }),
-            headers: { 'Content-Type': 'application/json' },
-            method: 'POST',
-          },
-        );
+        const response = await fetch(`/api/local-reading/${encodeURIComponent(article.id)}/check`, {
+          body: JSON.stringify({ answers }),
+          headers: { 'Content-Type': 'application/json' },
+          method: 'POST',
+        });
         if (!response.ok) throw new Error('答案暂时无法核对');
         const checked = (await response.json()) as ReadingCheckResult;
         setCheckResult(checked);
@@ -632,7 +626,6 @@ export function ToeflReadingPage({ initialGrade = null }: { initialGrade?: numbe
               </div>
             </div>
           ) : null}
-
         </div>
       ) : (
         <main className="reading-workspace" ref={readerRef}>
@@ -819,9 +812,8 @@ export function ToeflReadingPage({ initialGrade = null }: { initialGrade?: numbe
                             </strong>
                             <p>{resultByQuestion.get(question.id)?.explanation}</p>
                             <small>
-                              原文依据：第{' '}
-                              {resultByQuestion.get(question.id)?.evidence.join('、')} 段
-                              {' · '}置信度：
+                              原文依据：第 {resultByQuestion.get(question.id)?.evidence.join('、')}{' '}
+                              段{' · '}置信度：
                               {resultByQuestion.get(question.id)?.confidence === 'high'
                                 ? '高'
                                 : resultByQuestion.get(question.id)?.confidence === 'medium'

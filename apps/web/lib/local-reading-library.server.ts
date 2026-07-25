@@ -335,14 +335,14 @@ export function listLocalReadingItems(grade: number, query: string): LocalReadin
   const normalized = query.trim().toLocaleLowerCase('en');
   return libraryIndex.items
     .filter(
-    (item) =>
-      item.grade === grade &&
-      (!normalized ||
-        item.title.toLocaleLowerCase('en').includes(normalized) ||
-        item.author.toLocaleLowerCase('en').includes(normalized) ||
-        item.category.toLocaleLowerCase('en').includes(normalized) ||
-        String(item.sequence).includes(normalized) ||
-        String(item.lexile ?? '').includes(normalized)),
+      (item) =>
+        item.grade === grade &&
+        (!normalized ||
+          item.title.toLocaleLowerCase('en').includes(normalized) ||
+          item.author.toLocaleLowerCase('en').includes(normalized) ||
+          item.category.toLocaleLowerCase('en').includes(normalized) ||
+          String(item.sequence).includes(normalized) ||
+          String(item.lexile ?? '').includes(normalized)),
     )
     .map((item) => ({
       ...item,

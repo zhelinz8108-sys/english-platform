@@ -60,46 +60,48 @@ const entitySchemas = {
     })
     .refine((x) => Boolean(x.track || x.cloneFromPlatformVersionId)),
 };
-const contentVersion = z.object({
-  title: z.string().min(1).max(240),
-  locale: z.string().min(2).max(16),
-  body: z.record(z.string(), z.unknown()),
-  metadata: z.record(z.string(), z.unknown()),
-  attachmentFileIds: z.array(z.uuid()),
-  items: z
-    .array(
-      z.object({
-        questionVersionId: z.uuid(),
-        position: z.number().int().min(0),
-        points: z.number().positive().optional(),
-        sectionKey: z.string().min(1).max(80).nullable().optional(),
-        settings: z.record(z.string(), z.unknown()).default({}),
-      }),
-    )
-    .max(500)
-    .default([]),
-}).superRefine((value, context) => {
-  const positions = new Set<number>();
-  const questionVersions = new Set<string>();
-  for (const [index, item] of value.items.entries()) {
-    if (positions.has(item.position)) {
-      context.addIssue({
-        code: 'custom',
-        path: ['items', index, 'position'],
-        message: 'position must be unique within a content version',
-      });
+const contentVersion = z
+  .object({
+    title: z.string().min(1).max(240),
+    locale: z.string().min(2).max(16),
+    body: z.record(z.string(), z.unknown()),
+    metadata: z.record(z.string(), z.unknown()),
+    attachmentFileIds: z.array(z.uuid()),
+    items: z
+      .array(
+        z.object({
+          questionVersionId: z.uuid(),
+          position: z.number().int().min(0),
+          points: z.number().positive().optional(),
+          sectionKey: z.string().min(1).max(80).nullable().optional(),
+          settings: z.record(z.string(), z.unknown()).default({}),
+        }),
+      )
+      .max(500)
+      .default([]),
+  })
+  .superRefine((value, context) => {
+    const positions = new Set<number>();
+    const questionVersions = new Set<string>();
+    for (const [index, item] of value.items.entries()) {
+      if (positions.has(item.position)) {
+        context.addIssue({
+          code: 'custom',
+          path: ['items', index, 'position'],
+          message: 'position must be unique within a content version',
+        });
+      }
+      if (questionVersions.has(item.questionVersionId)) {
+        context.addIssue({
+          code: 'custom',
+          path: ['items', index, 'questionVersionId'],
+          message: 'questionVersionId must be unique within a content version',
+        });
+      }
+      positions.add(item.position);
+      questionVersions.add(item.questionVersionId);
     }
-    if (questionVersions.has(item.questionVersionId)) {
-      context.addIssue({
-        code: 'custom',
-        path: ['items', index, 'questionVersionId'],
-        message: 'questionVersionId must be unique within a content version',
-      });
-    }
-    positions.add(item.position);
-    questionVersions.add(item.questionVersionId);
-  }
-});
+  });
 const questionVersion = z.object({
   prompt: z.record(z.string(), z.unknown()),
   options: z.array(z.record(z.string(), z.unknown())),

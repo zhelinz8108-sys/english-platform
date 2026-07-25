@@ -172,10 +172,7 @@ export async function reconcileNewPathEnrollment(
   return reconcilePublishedPathAssignments(client, row.learning_path_version_id);
 }
 
-export async function reconcileClassRoster(
-  client: PoolClient,
-  classId: string,
-): Promise<number> {
+export async function reconcileClassRoster(client: PoolClient, classId: string): Promise<number> {
   const assignments = await client.query<{ id: string }>(
     `SELECT DISTINCT assignment.id
      FROM task_assignments assignment

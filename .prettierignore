@@ -5,4 +5,6 @@ coverage
 outputs
 pnpm-lock.yaml
 apps/web/next-env.d.ts
+apps/web/data/**/*.json
 packages/api-contract/src/schema.d.ts
+.codex/skills

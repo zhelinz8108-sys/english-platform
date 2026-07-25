@@ -1,10 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import {
-  createIdempotencyKey,
-  normalizeProblem,
-  resolveApiRequestUrl,
-  tenantPath,
-} from './api';
+import { createIdempotencyKey, normalizeProblem, resolveApiRequestUrl, tenantPath } from './api';
 
 describe('API client contract helpers', () => {
   it('normalizes RFC 7807 payloads without losing request identity', () => {

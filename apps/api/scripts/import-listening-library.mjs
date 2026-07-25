@@ -164,13 +164,7 @@ try {
         const currentSha256 = current?.Metadata?.sha256;
         const currentFileId = current?.Metadata?.['file-id'];
 
-        if (
-          !replace &&
-          current &&
-          currentSize === sizeBytes &&
-          currentSha256 &&
-          currentFileId
-        ) {
+        if (!replace && current && currentSize === sizeBytes && currentSha256 && currentFileId) {
           reused += 1;
         } else {
           const bytes = await readFile(audioFile);

@@ -180,9 +180,7 @@ export function VocabularyCards({
                   disabled={!speechAvailable}
                   onClick={() => speakWord(entry.word)}
                   title={
-                    speechAvailable
-                      ? `播放 ${entry.word} 的美式发音`
-                      : '当前浏览器不支持单词发音'
+                    speechAvailable ? `播放 ${entry.word} 的美式发音` : '当前浏览器不支持单词发音'
                   }
                   type="button"
                 >

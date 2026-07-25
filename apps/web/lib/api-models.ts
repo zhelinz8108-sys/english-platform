@@ -326,10 +326,7 @@ export interface ApiLearningPathVersion extends ApiCatalogVersionBase {
 }
 
 export type ApiCatalogVersion =
-  | ApiContentVersion
-  | ApiQuestionVersionAdmin
-  | ApiTaskVersionAdmin
-  | ApiLearningPathVersion;
+  ApiContentVersion | ApiQuestionVersionAdmin | ApiTaskVersionAdmin | ApiLearningPathVersion;
 
 export interface ApiContentDetail {
   content: ApiCatalogEntity;

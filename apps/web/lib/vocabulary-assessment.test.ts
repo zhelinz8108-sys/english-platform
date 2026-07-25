@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { estimateVocabulary, smoothDecreasing, type BandObservation } from './vocabulary-assessment';
+import {
+  estimateVocabulary,
+  smoothDecreasing,
+  type BandObservation,
+} from './vocabulary-assessment';
 
 function observations(threshold: number): BandObservation[] {
   return Array.from({ length: 14 }, (_, index) => {

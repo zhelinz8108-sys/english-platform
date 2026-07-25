@@ -1,23 +1,21 @@
-import fs from "node:fs";
-import path from "node:path";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import fs from 'node:fs';
+import path from 'node:path';
+import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 
 const workspace = process.cwd();
-const csvFile = fs
-  .readdirSync(workspace)
-  .find((name) => name.endsWith("1784775716008.csv"));
+const csvFile = fs.readdirSync(workspace).find((name) => name.endsWith('1784775716008.csv'));
 if (!csvFile) {
-  throw new Error("未找到 AccessKey CSV 文件");
+  throw new Error('未找到 AccessKey CSV 文件');
 }
 
 const csvPath = path.join(workspace, csvFile);
-const archivePath = path.join(workspace, "tmp", "listening-import-update.tar.gz");
-const bucket = "aurelis-english-assets-386928";
-const key = "deployment/listening-import-update.tar.gz";
+const archivePath = path.join(workspace, 'tmp', 'listening-import-update.tar.gz');
+const bucket = 'aurelis-english-assets-386928';
+const key = 'deployment/listening-import-update.tar.gz';
 
 function parseCsvLine(line) {
   const values = [];
-  let current = "";
+  let current = '';
   let quoted = false;
   for (let index = 0; index < line.length; index += 1) {
     const char = line[index];
@@ -28,9 +26,9 @@ function parseCsvLine(line) {
       } else {
         quoted = !quoted;
       }
-    } else if (char === "," && !quoted) {
+    } else if (char === ',' && !quoted) {
       values.push(current);
-      current = "";
+      current = '';
     } else {
       current += char;
     }
@@ -40,8 +38,8 @@ function parseCsvLine(line) {
 }
 
 const rows = fs
-  .readFileSync(csvPath, "utf8")
-  .replace(/^\uFEFF/, "")
+  .readFileSync(csvPath, 'utf8')
+  .replace(/^\uFEFF/, '')
   .split(/\r?\n/)
   .filter(Boolean);
 const headers = parseCsvLine(rows[0]);
@@ -51,15 +49,15 @@ const record = Object.fromEntries(
 );
 
 if (!record.AccessKeyId || !record.AccessKeySecret) {
-  throw new Error("CSV 中未找到 AccessKeyId 或 AccessKeySecret");
+  throw new Error('CSV 中未找到 AccessKeyId 或 AccessKeySecret');
 }
 
 const client = new S3Client({
-  endpoint: "https://oss-cn-hangzhou.aliyuncs.com",
-  region: "cn-hangzhou",
+  endpoint: 'https://oss-cn-hangzhou.aliyuncs.com',
+  region: 'cn-hangzhou',
   forcePathStyle: false,
-  requestChecksumCalculation: "WHEN_REQUIRED",
-  responseChecksumValidation: "WHEN_REQUIRED",
+  requestChecksumCalculation: 'WHEN_REQUIRED',
+  responseChecksumValidation: 'WHEN_REQUIRED',
   credentials: {
     accessKeyId: record.AccessKeyId,
     secretAccessKey: record.AccessKeySecret,
@@ -73,7 +71,7 @@ const result = await client.send(
     Key: key,
     Body: fs.readFileSync(archivePath),
     ContentLength: stat.size,
-    ContentType: "application/gzip",
+    ContentType: 'application/gzip',
   }),
 );
 

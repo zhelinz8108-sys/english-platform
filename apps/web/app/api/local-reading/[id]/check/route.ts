@@ -33,10 +33,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
   );
   const result = await checkLocalReadingAnswers(id, answers);
   if (!result) {
-    return Response.json(
-      { title: 'Answer bank is not ready', status: 409 },
-      { status: 409 },
-    );
+    return Response.json({ title: 'Answer bank is not ready', status: 409 }, { status: 409 });
   }
   return Response.json(result, { headers: { 'Cache-Control': 'no-store' } });
 }

@@ -655,9 +655,7 @@ export class StudentService {
             questionVersionId,
             value,
           })),
-          grade: gradeRow
-            ? this.gradeJson(attemptId, gradeRow, gradeRow.feedback_body)
-            : null,
+          grade: gradeRow ? this.gradeJson(attemptId, gradeRow, gradeRow.feedback_body) : null,
         },
         etag: headerEtag(draft.etag),
       };
@@ -1028,17 +1026,21 @@ export class StudentService {
           taskItemId: row.task_item_id,
           attemptId: row.attempt_id,
           taskTitle: row.title,
-          grade: this.gradeJson(row.attempt_id, {
-            id: row.score_id!,
-            submission_snapshot_id: row.submission_id,
-            submission_revision: row.submission_revision,
-            decision_type: row.decision_type!,
-            score: row.score!,
-            max_score: row.max_score!,
-            rubric_result: this.feedbackRubricScores(row.body),
-            decided_by_membership_id: null,
-            created_at: row.returned_at,
-          }, row.body),
+          grade: this.gradeJson(
+            row.attempt_id,
+            {
+              id: row.score_id!,
+              submission_snapshot_id: row.submission_id,
+              submission_revision: row.submission_revision,
+              decision_type: row.decision_type!,
+              score: row.score!,
+              max_score: row.max_score!,
+              rubric_result: this.feedbackRubricScores(row.body),
+              decided_by_membership_id: null,
+              created_at: row.returned_at,
+            },
+            row.body,
+          ),
           returnedAt: row.returned_at.toISOString(),
           readAt: null,
         })),

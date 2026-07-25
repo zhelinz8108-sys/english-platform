@@ -318,7 +318,9 @@
   border: 1px solid var(--ink-150);
   border-radius: 13px;
   background: white;
-  transition: border-color 160ms ease, box-shadow 160ms ease;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease;
 }
 
 .partOpen {

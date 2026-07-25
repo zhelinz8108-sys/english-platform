@@ -532,12 +532,16 @@ export class TeacherOperationsService {
       let changed = false;
       if (kind === 'student') {
         if (add) {
-          const result = await sql<{ id: string }>`insert into class_students(id,tenant_id,class_id,student_profile_id,joined_at,created_at) values(${uuidv7()}::uuid,${actor.tenantId}::uuid,${classId}::uuid,${p.rows[0].id}::uuid,${now},${now}) on conflict do nothing returning id`.execute(
+          const result = await sql<{
+            id: string;
+          }>`insert into class_students(id,tenant_id,class_id,student_profile_id,joined_at,created_at) values(${uuidv7()}::uuid,${actor.tenantId}::uuid,${classId}::uuid,${p.rows[0].id}::uuid,${now},${now}) on conflict do nothing returning id`.execute(
             trx,
           );
           changed = result.rows.length > 0;
         } else {
-          const result = await sql<{ id: string }>`update class_students set left_at=${now} where class_id=${classId}::uuid and student_profile_id=${p.rows[0].id}::uuid and left_at is null returning id`.execute(
+          const result = await sql<{
+            id: string;
+          }>`update class_students set left_at=${now} where class_id=${classId}::uuid and student_profile_id=${p.rows[0].id}::uuid and left_at is null returning id`.execute(
             trx,
           );
           changed = result.rows.length > 0;
@@ -1000,11 +1004,7 @@ export class TeacherOperationsService {
     if (!r.rows[0]) throw ProblemException.notFound();
     return r.rows[0].id;
   }
-  private async requireClassAccess(
-    trx: TenantTransaction,
-    request: ApiRequest,
-    classId: string,
-  ) {
+  private async requireClassAccess(trx: TenantTransaction, request: ApiRequest, classId: string) {
     const tenant = requireTenant(request);
     const unrestricted = tenant.roles.some((role) => role === 'owner' || role === 'admin');
     const result = await sql<{ id: string }>`select class.id from classes class
@@ -1025,7 +1025,9 @@ export class TeacherOperationsService {
     const unrestricted = tenant.roles.some((role) => role === 'owner' || role === 'admin');
     const result = await sql<{ id: string }>`select id from task_assignments
       where id=${assignmentId}::uuid
-        and (${unrestricted} or created_by_membership_id=${tenant.membershipId}::uuid)`.execute(trx);
+        and (${unrestricted} or created_by_membership_id=${tenant.membershipId}::uuid)`.execute(
+      trx,
+    );
     if (!result.rows[0]) throw ProblemException.notFound();
   }
   private async requireStudentAccess(
