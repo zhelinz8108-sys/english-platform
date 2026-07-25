@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   ArrowLeft,
+  ArrowUp,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -348,6 +349,7 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
   const [speakingId, setSpeakingId] = useState<string | null>(null);
   const [catalogOpen, setCatalogOpen] = useState(true);
   const [catalogIsCompact, setCatalogIsCompact] = useState(false);
+  const [showBackToTop, setShowBackToTop] = useState(false);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const activeSpeechIdRef = useRef<string | null>(null);
   const speechStartTimerRef = useRef<number | null>(null);
@@ -454,6 +456,13 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
   }, []);
 
   useEffect(() => {
+    const updateBackToTopVisibility = () => setShowBackToTop(window.scrollY > 520);
+    updateBackToTopVisibility();
+    window.addEventListener('scroll', updateBackToTopVisibility, { passive: true });
+    return () => window.removeEventListener('scroll', updateBackToTopVisibility);
+  }, []);
+
+  useEffect(() => {
     if (!catalogOpen || !catalogIsCompact) return;
     const previousOverflow = document.body.style.overflow;
     const focusFrame = window.requestAnimationFrame(() => catalogSearchRef.current?.focus());
@@ -556,6 +565,11 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
   function move(offset: number) {
     const next = allItems[currentIndex + offset];
     if (next) openItem(next);
+  }
+
+  function scrollToPageTop() {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ behavior: reducedMotion ? 'auto' : 'smooth', top: 0 });
   }
 
   const visiblePages = useMemo(
@@ -812,6 +826,18 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
           </div>
         ) : null}
       </section>
+      {showBackToTop ? (
+        <button
+          aria-label="回到页面顶部"
+          className={styles.backToTop}
+          onClick={scrollToPageTop}
+          title="回到页面顶部"
+          type="button"
+        >
+          <ArrowUp aria-hidden="true" size={17} />
+          <span>回到顶部</span>
+        </button>
+      ) : null}
     </div>
   );
 }
