@@ -124,7 +124,8 @@ try {
           `.execute(transaction);
           await sql`
             update toefl_listening_assets
-            set title = ${title}
+            set source_id = ${`minute-earth-${String(parsedSequence).padStart(3, '0')}`},
+                title = ${title}
             where tenant_id = ${tenantId}::uuid and id = ${assetId}::uuid
           `.execute(transaction);
         } else {
@@ -140,9 +141,11 @@ try {
           `.execute(transaction);
           await sql`
             insert into toefl_listening_assets (
-              id, tenant_id, file_object_id, collection_slug, sequence_no, title, created_at
+              id, tenant_id, file_object_id, source_id, collection_slug, sequence_no,
+              title, created_at
             ) values (
               ${assetId}::uuid, ${tenantId}::uuid, ${fileId}::uuid,
+              ${`minute-earth-${String(parsedSequence).padStart(3, '0')}`},
               ${collection}, ${parsedSequence}, ${title}, now()
             )
           `.execute(transaction);

@@ -29,9 +29,11 @@ interface RawTopic {
   title: string;
   english: string;
   overview: string;
+  patterns: string[];
   levels: RawLevel[];
   examples: Array<{ english: string; chinese: string }>;
   mistakes: Array<{ wrong: string; right: string; explanation: string }>;
+  related: string[];
   sources: RawSource[];
 }
 
@@ -54,6 +56,28 @@ const pilotTopicSet = new Set(pilotGrammarTopicIds);
 
 function sourceRef(level: GrammarLevelId, value: RawSource): GrammarSourceRef {
   return { bookId: level, levelLabel: value.level, rangeLabel: value.rangeLabel };
+}
+
+const curatedRuleTitles: Record<string, string[]> = {
+  'verb-forms': [
+    '规则动词：-ed 与 -ing',
+    '以辅音字母 + y 结尾',
+    '何时需要双写末字母',
+    '过去式不等于过去分词',
+    '把不规则动词成组记',
+    'do / does / did 后用原形',
+    '英式与美式变体',
+    'hung 还是 hanged？',
+    '分词作形容词时的变化',
+  ],
+};
+
+function inferRuleTitle(body: string): string {
+  const firstClause = body.split(/[；。]/u)[0]?.trim() ?? '';
+  const condition = firstClause.split('，')[0]?.trim() ?? '';
+  if (condition.length >= 5 && condition.length <= 24) return condition;
+  if (firstClause.length >= 5 && firstClause.length <= 24) return firstClause;
+  return firstClause ? `${firstClause.slice(0, 23)}…` : '核心规则说明';
 }
 
 export function getGrammarCatalog(): GrammarCatalog {
@@ -113,6 +137,8 @@ export function getGrammarTopicContext(topicId: string): {
     english: sourceTopic.english,
     overview: sourceTopic.overview,
     pilot: false,
+    patterns: sourceTopic.patterns,
+    related: sourceTopic.related,
     stages: sourceTopic.levels.map((level, levelIndex) => ({
       id: `${sourceTopic.id}:${level.id}`,
       level: level.id,
@@ -121,7 +147,9 @@ export function getGrammarTopicContext(topicId: string): {
       estimatedMinutes: 5,
       objectives: [level.focus],
       rules: level.content.map((body, ruleIndex) => ({
-        title: `要点 ${String(ruleIndex + 1).padStart(2, '0')}`,
+        title:
+          curatedRuleTitles[sourceTopic.id]?.[levelIndex * level.content.length + ruleIndex] ??
+          inferRuleTitle(body),
         body,
       })),
       examples: sourceTopic.examples.slice(levelIndex * 2, levelIndex * 2 + 2),

@@ -79,6 +79,75 @@
   background: var(--brand-50);
 }
 
+.resumePanel {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+  border: 1px solid var(--brand-300);
+  border-radius: var(--radius-md);
+  background: linear-gradient(120deg, var(--brand-50), var(--surface));
+  box-shadow: var(--shadow-sm);
+  padding: 16px 18px;
+}
+
+.resumeIcon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 11px;
+  background: var(--brand-700);
+  color: #fff;
+}
+
+.resumePanel strong {
+  color: var(--ink-900);
+  font-size: 14px;
+}
+
+.resumePanel p {
+  margin: 3px 0 0;
+  color: var(--ink-500);
+  font-size: 11px;
+}
+
+.resumeActions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.resumeActions button {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--brand-700);
+  border-radius: 8px;
+  background: var(--surface);
+  padding: 0 12px;
+  color: var(--brand-700);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.resumeActions button:first-child {
+  background: var(--brand-700);
+  color: #fff;
+}
+
+.resumeActions button:hover {
+  border-color: var(--brand-500);
+  background: var(--brand-50);
+}
+
+.resumeActions button:first-child:hover {
+  background: var(--brand-600);
+}
+
 .sentenceSection,
 .modeSection,
 .wrongSection {
@@ -210,6 +279,26 @@
 .sentenceGroup > div > button strong {
   font-size: 10px;
   font-variant-numeric: tabular-nums;
+}
+
+.unitGroups .sentenceGroup > div {
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 5px;
+}
+
+.unitGroups .sentenceGroup > div > button {
+  min-height: 42px;
+  padding: 6px 8px;
+}
+
+.unitGroups .sentenceGroup > div > button strong {
+  overflow: hidden;
+  width: 100%;
+  font-size: 9px;
+  line-height: 1.35;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .sentenceGroup > div > .sentenceSelected {
@@ -823,8 +912,13 @@
 
 @media (max-width: 720px) {
   .selectionSummary,
+  .resumePanel,
   .resultHero {
     grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .resumeActions {
+    grid-column: 1 / -1;
   }
 
   .selectionSummary > button,
@@ -872,6 +966,10 @@
 
   .selectionSummary {
     grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .resumeActions button {
+    flex: 1;
   }
 
   .selectionSummary > button {

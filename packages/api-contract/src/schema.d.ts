@@ -1207,6 +1207,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/tenants/{tenantId}/learning/toefl/listening/{assetId}/questions/check": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                assetId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Score a complete four-question listening response */
+        post: operations["checkToeflListeningAnswers"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/tenants/{tenantId}/learning/toefl/listening/{assetId}/playback": {
         parameters: {
             query?: never;
@@ -2744,12 +2765,21 @@ export interface components {
             sizeBytes: number;
             sha256: components["schemas"]["ContentHash"];
         };
+        ToeflListeningCollection: {
+            /** @enum {string} */
+            id: "minute-earth" | "bbc-6-minute-english";
+            label: string;
+            description: string;
+            count: number;
+        };
         ToeflListeningAsset: {
             id: components["schemas"]["Uuid"];
+            sourceId: string;
             /** @example minute-earth */
             collection: string;
             sequence: number;
             title: string;
+            publishedAt: string | null;
             durationSeconds: number | null;
             sizeBytes: number;
             hasStudyContent: boolean;
@@ -2760,6 +2790,33 @@ export interface components {
             word: string;
             ipa: string;
             definition: string;
+            partOfSpeech?: string;
+            englishDefinition?: string;
+            context?: string;
+            contextTranslation?: string;
+        };
+        ToeflListeningQuestionOption: {
+            /** @enum {string} */
+            id: "a" | "b" | "c" | "d";
+            text: string;
+        };
+        ToeflListeningPublicQuestion: {
+            id: string;
+            position: number;
+            /** @enum {string} */
+            type: "main_idea" | "detail" | "rhetorical_purpose" | "inference" | "organization" | "prediction";
+            /** @enum {string} */
+            difficulty: "low" | "medium" | "high";
+            prompt: string;
+            options: components["schemas"]["ToeflListeningQuestionOption"][];
+        };
+        ToeflListeningQuestionSet: {
+            sourceId: string;
+            label: string;
+            exactSimulation: boolean;
+            /** @enum {string} */
+            reviewStatus: "reviewed" | "adjudicated" | "approved";
+            questions: components["schemas"]["ToeflListeningPublicQuestion"][];
         };
         ToeflListeningStudyContent: {
             id: components["schemas"]["Uuid"];
@@ -2769,6 +2826,49 @@ export interface components {
             transcriptWordCount: number;
             transcript: string;
             vocabulary: components["schemas"]["ToeflVocabularyEntry"][];
+            studyAidsLocked: boolean;
+            /** @enum {string} */
+            questionBankStatus: "ready" | "generating" | "missing-transcript";
+            questionSet: components["schemas"]["ToeflListeningQuestionSet"] | null;
+        };
+        ToeflListeningAnswerEvidence: {
+            start: number;
+            end: number;
+            quote: string;
+            /** @enum {string} */
+            region: "开头" | "中段" | "结尾";
+            progressPercent: number;
+        };
+        ToeflListeningAnswerResult: {
+            questionId: string;
+            selectedOptionId: ("a" | "b" | "c" | "d") | null;
+            /** @enum {string} */
+            correctOptionId: "a" | "b" | "c" | "d";
+            correct: boolean;
+            explanationZh: string;
+            optionRationalesZh: {
+                a: string;
+                b: string;
+                c: string;
+                d: string;
+            };
+            evidence: components["schemas"]["ToeflListeningAnswerEvidence"][];
+        };
+        ToeflListeningCheckResult: {
+            sourceId: string;
+            answeredCount: number;
+            correctCount: number;
+            /** @constant */
+            totalCount: 4;
+            percentage: number;
+            /** @enum {string} */
+            reviewStatus: "reviewed" | "adjudicated" | "approved";
+            results: components["schemas"]["ToeflListeningAnswerResult"][];
+            studyAids: {
+                transcriptWordCount: number;
+                transcript: string;
+                vocabulary: components["schemas"]["ToeflVocabularyEntry"][];
+            };
         };
         PresignedUpload: {
             fileId: components["schemas"]["Uuid"];
@@ -5319,6 +5419,7 @@ export interface operations {
     listToeflListeningAssets: {
         parameters: {
             query?: {
+                collection?: "minute-earth" | "bbc-6-minute-english";
                 query?: string;
                 pageSize?: number;
             };
@@ -5339,6 +5440,7 @@ export interface operations {
                 content: {
                     "application/json": {
                         data: components["schemas"]["ToeflListeningAsset"][];
+                        collections: components["schemas"]["ToeflListeningCollection"][];
                         page: components["schemas"]["PageInfo"];
                     };
                 };
@@ -5373,6 +5475,43 @@ export interface operations {
             401: components["responses"]["Unauthorized"];
             403: components["responses"]["Forbidden"];
             404: components["responses"]["NotFound"];
+        };
+    };
+    checkToeflListeningAnswers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                assetId: components["schemas"]["Uuid"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    answers: {
+                        [key: string]: "a" | "b" | "c" | "d";
+                    };
+                };
+            };
+        };
+        responses: {
+            /** @description Score, private explanations, and unlocked study aids */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ToeflListeningCheckResult"];
+                };
+            };
+            400: components["responses"]["ValidationProblem"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
         };
     };
     createToeflListeningPlayback: {

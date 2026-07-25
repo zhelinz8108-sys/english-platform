@@ -3,23 +3,18 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ArrowRight, BookOpenCheck, Search } from 'lucide-react';
-import { useMemo, useState } from 'react';
-import type { GrammarCatalog, GrammarLevelId } from '@english/shared';
+import { useState } from 'react';
+import type { GrammarCatalog } from '@english/shared';
+import { summarizeGrammarTopicProgress } from '@/lib/grammar-topic-progress';
 import { grammarBasePath, useGrammarProgress } from './grammar-api';
 import styles from './grammar-course.module.css';
-
-const levels: GrammarLevelId[] = ['beginner', 'intermediate', 'advanced'];
 
 export function GrammarOverview({ catalog }: { catalog: GrammarCatalog }) {
   const pathname = usePathname();
   const base = grammarBasePath(pathname);
   const { progress, loading, error } = useGrammarProgress();
   const [query, setQuery] = useState('');
-  const progressMap = useMemo(
-    () =>
-      new Map((progress?.entries ?? []).map((entry) => [`${entry.topicId}:${entry.level}`, entry])),
-    [progress],
-  );
+  const progressEntries = progress?.entries ?? [];
   const normalized = query.trim().toLocaleLowerCase('zh-CN');
   const modules = catalog.modules.filter((module) =>
     normalized
@@ -34,15 +29,20 @@ export function GrammarOverview({ catalog }: { catalog: GrammarCatalog }) {
           .includes(normalized)
       : true,
   );
-  const nextStage = catalog.modules
+  const nextTopic = catalog.modules
     .flatMap((module) => module.topics)
     .filter((topic) => topic.pilot)
-    .flatMap((topic) => levels.map((level) => ({ topic, level })))
-    .find(({ topic, level }) => progressMap.get(`${topic.id}:${level}`)?.status !== 'mastered');
+    .find((topic) => !summarizeGrammarTopicProgress(progressEntries, topic.id).mastered);
   const firstPilot = catalog.modules
     .flatMap((module) => module.topics)
     .find((topic) => topic.pilot);
-  const continueTopic = nextStage?.topic ?? firstPilot;
+  const continueTopic = nextTopic ?? firstPilot;
+  const started = progressEntries.some((entry) => entry.status !== 'not_started');
+  const masteredTopicCount = catalog.modules
+    .flatMap((module) => module.topics)
+    .filter(
+      (topic) => topic.pilot && summarizeGrammarTopicProgress(progressEntries, topic.id).mastered,
+    ).length;
 
   return (
     <div className={styles.page}>
@@ -50,11 +50,13 @@ export function GrammarOverview({ catalog }: { catalog: GrammarCatalog }) {
         <div>
           <p className={styles.eyebrow}>English · Grammar</p>
           <h1>语法学习路径</h1>
-          <p>按知识依赖学习86个去重知识点；初级、中级、高级内容在每个知识点内纵向衔接。</p>
+          <p>
+            按知识依赖学习86个去重知识点；每个知识点融合三本教材内容，由核心规则自然过渡到复杂应用。
+          </p>
         </div>
         {continueTopic ? (
           <Link className={styles.primaryLink} href={`${base}/topic/${continueTopic.id}`}>
-            {progress?.summary.startedStageCount ? '继续学习' : '开始试点课程'}
+            {started ? '继续学习' : '开始学习'}
             <ArrowRight size={16} />
           </Link>
         ) : null}
@@ -70,12 +72,12 @@ export function GrammarOverview({ catalog }: { catalog: GrammarCatalog }) {
           <strong>{catalog.summary.topicCount}</strong>
         </div>
         <div>
-          <span>试点已上线</span>
+          <span>完整课程</span>
           <strong>{catalog.summary.publishedTopicCount}</strong>
         </div>
         <div>
-          <span>已掌握阶段</span>
-          <strong>{loading ? '—' : (progress?.summary.masteredStageCount ?? 0)}</strong>
+          <span>已掌握知识点</span>
+          <strong>{loading ? '—' : masteredTopicCount}</strong>
         </div>
       </section>
 
@@ -84,7 +86,7 @@ export function GrammarOverview({ catalog }: { catalog: GrammarCatalog }) {
       ) : null}
       <div className={styles.notice}>
         <BookOpenCheck size={15} />{' '}
-        当前已开放5个完整试点知识点、15个学习阶段和150道原创练习；其余知识点保留提纲并逐步上线。
+        当前已开放5个完整知识点和150道原创练习；三本教材的内容已按由简到难合并，其余知识点逐步补充练习。
       </div>
 
       <div className={styles.toolbar}>
@@ -108,14 +110,9 @@ export function GrammarOverview({ catalog }: { catalog: GrammarCatalog }) {
         <div className={styles.moduleList}>
           {modules.map((module) => {
             const pilotTopics = module.topics.filter((topic) => topic.pilot);
-            const masteredStages = pilotTopics.reduce(
-              (total, topic) =>
-                total +
-                levels.filter(
-                  (level) => progressMap.get(`${topic.id}:${level}`)?.status === 'mastered',
-                ).length,
-              0,
-            );
+            const masteredTopics = pilotTopics.filter(
+              (topic) => summarizeGrammarTopicProgress(progressEntries, topic.id).mastered,
+            ).length;
             return (
               <Link
                 className={styles.moduleRow}
@@ -134,7 +131,7 @@ export function GrammarOverview({ catalog }: { catalog: GrammarCatalog }) {
                   <strong>{module.topics.length}个知识点</strong>
                   <span>
                     {pilotTopics.length
-                      ? `${masteredStages}/${pilotTopics.length * 3}个试点阶段已掌握`
+                      ? `${masteredTopics}/${pilotTopics.length}个完整知识点已掌握`
                       : '内容提纲已建立'}
                   </span>
                 </span>

@@ -170,7 +170,6 @@ export function VocabularyCards({
           <div className="listening-vocabulary-entry" key={entry.word}>
             <div className="listening-vocabulary-word">
               <div>
-                <strong>{entry.word}</strong>
                 <button
                   aria-label={`播放 ${entry.word} 的美式发音`}
                   className={
@@ -189,6 +188,7 @@ export function VocabularyCards({
                 >
                   <Icon name="volume" size={14} />
                 </button>
+                <strong>{entry.word}</strong>
               </div>
               {entry.ipa ? <span>{entry.ipa}</span> : null}
               <small className="vocabulary-part-of-speech">{entry.partOfSpeech}</small>

@@ -5236,33 +5236,6 @@ strong {
   color: var(--ink-700);
   text-align: left;
 }
-.reading-annotation-task {
-  display: flex;
-  max-width: 760px;
-  align-items: flex-start;
-  gap: 10px;
-  margin: 18px auto 0;
-  border-left: 3px solid var(--coral-500);
-  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-  background: #fff7e6;
-  padding: 12px 14px;
-  color: var(--ink-700);
-  text-align: left;
-}
-.reading-annotation-task svg {
-  flex: 0 0 auto;
-  margin-top: 2px;
-  color: var(--coral-500);
-}
-.reading-annotation-task p {
-  margin: 0;
-  font-size: 12px;
-}
-.reading-annotation-task strong {
-  display: block;
-  color: var(--amber-700);
-}
-
 .reading-vocabulary-section {
   margin: 0 0 16px;
 }
@@ -5811,8 +5784,7 @@ strong {
   .reading-article-header {
     padding-inline: 18px;
   }
-  .reading-article-intro,
-  .reading-annotation-task {
+  .reading-article-intro {
     font-size: 12px;
   }
   .reading-options label {

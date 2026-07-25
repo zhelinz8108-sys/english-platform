@@ -23,6 +23,10 @@ __pycache__/
 uploads/
 tmp/
 
+# Cloud credential exports must never be committed.
+创建用户结果_*.csv
+*AccessKey*.csv
+
 # Local source materials are large and may not be redistributable.
 source/
 

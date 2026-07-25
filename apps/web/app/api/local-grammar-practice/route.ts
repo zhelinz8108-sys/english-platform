@@ -41,12 +41,12 @@ export async function POST(request: Request): Promise<Response> {
     const topicId = typeof body.topicId === 'string' ? body.topicId : '';
     const level = body.level as GrammarLevelId;
     if (!['beginner', 'intermediate', 'advanced'].includes(level)) {
-      return problem('学习阶段无效', 400);
+      return problem('练习组无效', 400);
     }
     const session = createLocalGrammarSession(topicId, level);
     return session
       ? Response.json(session, { status: 201 })
-      : problem('该知识点阶段尚未开放练习', 404);
+      : problem('该知识点的当前练习组尚未开放', 404);
   }
   const sessionId = typeof body.sessionId === 'string' ? body.sessionId : '';
   const idempotencyKey = request.headers.get('Idempotency-Key') ?? '';

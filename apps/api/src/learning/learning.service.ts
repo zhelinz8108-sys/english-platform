@@ -6,6 +6,11 @@ import { ProblemException } from '../common/problem.js';
 import { requirePrincipal, requireTenant, type ApiRequest } from '../common/request.js';
 import { AppConfig } from '../config.js';
 import { DatabaseService } from '../infrastructure/database.service.js';
+import {
+  publicListeningQuestionSet,
+  readyListeningQuestionSet,
+  scoreListeningAnswers,
+} from './listening-questions.js';
 
 function requestContext(request: ApiRequest) {
   const principal = requirePrincipal(request);
@@ -38,23 +43,34 @@ export class LearningService {
     });
   }
 
-  listListening(request: ApiRequest, input: { query?: string | undefined; pageSize: number }) {
+  listListening(
+    request: ApiRequest,
+    input: {
+      collection?: 'minute-earth' | 'bbc-6-minute-english' | undefined;
+      query?: string | undefined;
+      pageSize: number;
+    },
+  ) {
     const context = requestContext(request);
     return this.database.withTenant(context, async (transaction) => {
       const search = input.query ? `%${input.query}%` : null;
+      const collection = input.collection ?? null;
+      const resultLimit = input.pageSize + 1;
       const result = await sql<{
         id: string;
+        source_id: string;
         collection_slug: string;
         sequence_no: number;
         title: string;
         duration_seconds: number | null;
+        published_at: string | null;
         size_bytes: string;
         has_study_content: boolean;
         transcript_word_count: number | null;
         vocabulary_count: number;
       }>`
-        select asset.id, asset.collection_slug, asset.sequence_no, asset.title,
-               asset.duration_seconds, file.size_bytes,
+        select asset.id, asset.source_id, asset.collection_slug, asset.sequence_no, asset.title,
+               asset.duration_seconds, asset.published_at, file.size_bytes,
                (study.id is not null) as has_study_content,
                study.transcript_word_count,
                coalesce(jsonb_array_length(study.vocabulary), 0)::integer as vocabulary_count
@@ -65,24 +81,58 @@ export class LearningService {
           on study.tenant_id = asset.tenant_id and study.listening_asset_id = asset.id
         where asset.tenant_id = ${context.tenantId}::uuid
           and file.status = 'ready'
+          and (${collection}::text is null or asset.collection_slug = ${collection})
           and (${search}::text is null or asset.title ilike ${search})
         order by asset.collection_slug, asset.sequence_no
-        limit ${input.pageSize}
+        limit ${resultLimit}
       `.execute(transaction);
 
+      const collectionResult = await sql<{ collection_slug: string; item_count: number }>`
+        select asset.collection_slug, count(*)::integer as item_count
+        from toefl_listening_assets asset
+        join file_objects file
+          on file.tenant_id = asset.tenant_id and file.id = asset.file_object_id
+        where asset.tenant_id = ${context.tenantId}::uuid and file.status = 'ready'
+        group by asset.collection_slug
+      `.execute(transaction);
+      const counts = new Map(
+        collectionResult.rows.map((row) => [row.collection_slug, row.item_count]),
+      );
+      const rows = result.rows.slice(0, input.pageSize);
+
       return {
-        data: result.rows.map((row) => ({
+        data: rows.map((row) => ({
           id: row.id,
+          sourceId: row.source_id,
           collection: row.collection_slug,
           sequence: row.sequence_no,
           title: row.title,
+          publishedAt: row.published_at,
           durationSeconds: row.duration_seconds,
           sizeBytes: Number(row.size_bytes),
           hasStudyContent: row.has_study_content,
           transcriptWordCount: row.transcript_word_count,
           vocabularyCount: row.vocabulary_count,
         })),
-        page: { nextCursor: null, hasMore: false, limit: input.pageSize },
+        collections: [
+          {
+            id: 'minute-earth',
+            label: 'Minute Earth',
+            description: '科学与地理主题短篇，含音频、英文原文和 TOEFL/SAT 词汇。',
+            count: counts.get('minute-earth') ?? 0,
+          },
+          {
+            id: 'bbc-6-minute-english',
+            label: 'BBC 6 Minute English',
+            description: 'BBC 六分钟英语，含音频、原版对话稿和重点词汇。',
+            count: counts.get('bbc-6-minute-english') ?? 0,
+          },
+        ],
+        page: {
+          nextCursor: null,
+          hasMore: result.rows.length > input.pageSize,
+          limit: input.pageSize,
+        },
       };
     });
   }
@@ -92,31 +142,158 @@ export class LearningService {
     return this.database.withTenant(context, async (transaction) => {
       const result = await sql<{
         id: string;
+        source_id: string;
+        collection_slug: string;
         sequence_no: number;
         title: string;
         duration_seconds: number | null;
-        transcript: string;
-        transcript_word_count: number;
-        vocabulary: unknown;
+        transcript: string | null;
+        transcript_word_count: number | null;
+        vocabulary: unknown | null;
+        question_source_hash: string | null;
+        question_label: string | null;
+        question_exact_simulation: boolean | null;
+        question_review_status: string | null;
+        question_questions: unknown | null;
       }>`
-        select asset.id, asset.sequence_no, asset.title, asset.duration_seconds,
-               study.transcript, study.transcript_word_count, study.vocabulary
+        select asset.id, asset.source_id, asset.collection_slug, asset.sequence_no, asset.title,
+               asset.duration_seconds, study.transcript, study.transcript_word_count,
+               study.vocabulary, question_set.source_hash as question_source_hash,
+               question_set.label as question_label,
+               question_set.exact_simulation as question_exact_simulation,
+               question_set.review_status as question_review_status,
+               question_set.questions as question_questions
         from toefl_listening_assets asset
-        join toefl_listening_study_contents study
+        left join toefl_listening_study_contents study
           on study.tenant_id = asset.tenant_id and study.listening_asset_id = asset.id
+        left join toefl_listening_question_sets question_set
+          on question_set.tenant_id = asset.tenant_id
+         and question_set.listening_asset_id = asset.id
         where asset.tenant_id = ${context.tenantId}::uuid
           and asset.id = ${assetId}::uuid
       `.execute(transaction);
       const row = result.rows[0];
       if (!row) throw ProblemException.notFound();
+      const transcript = row.transcript ?? '';
+      const readyQuestionSet = row.transcript
+        ? readyListeningQuestionSet(
+            {
+              sourceId: row.source_id,
+              collection: row.collection_slug,
+              title: row.title,
+              durationSeconds: row.duration_seconds,
+              transcript,
+            },
+            row.question_source_hash &&
+              row.question_label &&
+              row.question_exact_simulation !== null &&
+              row.question_review_status &&
+              row.question_questions
+              ? {
+                  sourceHash: row.question_source_hash,
+                  label: row.question_label,
+                  exactSimulation: row.question_exact_simulation,
+                  reviewStatus: row.question_review_status,
+                  questions: row.question_questions,
+                }
+              : null,
+          )
+        : null;
+      const questionBankStatus = !row.transcript
+        ? 'missing-transcript'
+        : readyQuestionSet
+          ? 'ready'
+          : 'generating';
+      const studyAidsLocked = questionBankStatus === 'ready';
       return {
         id: row.id,
         sequence: row.sequence_no,
         title: row.title,
         durationSeconds: row.duration_seconds,
-        transcriptWordCount: row.transcript_word_count,
-        transcript: row.transcript,
-        vocabulary: Array.isArray(row.vocabulary) ? row.vocabulary : [],
+        transcriptWordCount: row.transcript_word_count ?? 0,
+        transcript: studyAidsLocked ? '' : transcript,
+        vocabulary: studyAidsLocked ? [] : Array.isArray(row.vocabulary) ? row.vocabulary : [],
+        studyAidsLocked,
+        questionBankStatus,
+        questionSet: readyQuestionSet ? publicListeningQuestionSet(readyQuestionSet) : null,
+      };
+    });
+  }
+
+  checkListeningAnswers(
+    request: ApiRequest,
+    assetId: string,
+    submittedAnswers: Record<string, 'a' | 'b' | 'c' | 'd'>,
+  ) {
+    const context = requestContext(request);
+    return this.database.withTenant(context, async (transaction) => {
+      const result = await sql<{
+        source_id: string;
+        collection_slug: string;
+        title: string;
+        duration_seconds: number | null;
+        transcript: string;
+        transcript_word_count: number;
+        vocabulary: unknown;
+        source_hash: string;
+        label: string;
+        exact_simulation: boolean;
+        review_status: string;
+        questions: unknown;
+      }>`
+        select asset.source_id, asset.collection_slug, asset.title, asset.duration_seconds,
+               study.transcript, study.transcript_word_count, study.vocabulary,
+               question_set.source_hash, question_set.label, question_set.exact_simulation,
+               question_set.review_status, question_set.questions
+        from toefl_listening_assets asset
+        join toefl_listening_study_contents study
+          on study.tenant_id = asset.tenant_id and study.listening_asset_id = asset.id
+        join toefl_listening_question_sets question_set
+          on question_set.tenant_id = asset.tenant_id
+         and question_set.listening_asset_id = asset.id
+        where asset.tenant_id = ${context.tenantId}::uuid
+          and asset.id = ${assetId}::uuid
+      `.execute(transaction);
+      const row = result.rows[0];
+      if (!row) throw ProblemException.notFound();
+      const readyQuestionSet = readyListeningQuestionSet(
+        {
+          sourceId: row.source_id,
+          collection: row.collection_slug,
+          title: row.title,
+          durationSeconds: row.duration_seconds,
+          transcript: row.transcript,
+        },
+        {
+          sourceHash: row.source_hash,
+          label: row.label,
+          exactSimulation: row.exact_simulation,
+          reviewStatus: row.review_status,
+          questions: row.questions,
+        },
+      );
+      if (!readyQuestionSet) {
+        throw ProblemException.conflict(
+          'listening_question_bank_not_ready',
+          'The listening question bank is not ready for this source.',
+        );
+      }
+      const score = scoreListeningAnswers(readyQuestionSet, submittedAnswers, row.transcript);
+      if (score.answeredCount !== score.totalCount) {
+        throw ProblemException.badRequest(
+          'incomplete_listening_answers',
+          'Complete all four questions before submitting.',
+        );
+      }
+      return {
+        sourceId: row.source_id,
+        ...score,
+        reviewStatus: readyQuestionSet.reviewStatus,
+        studyAids: {
+          transcriptWordCount: row.transcript_word_count,
+          transcript: row.transcript,
+          vocabulary: Array.isArray(row.vocabulary) ? row.vocabulary : [],
+        },
       };
     });
   }

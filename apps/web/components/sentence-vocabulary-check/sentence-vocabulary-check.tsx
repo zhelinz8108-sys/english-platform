@@ -22,6 +22,14 @@ import type {
   SentenceVocabularyAssessmentMode,
   SentenceVocabularyAssessmentPayload,
 } from '@/lib/sentence-vocabulary-assessment';
+import {
+  clearSentenceVocabularyProgress,
+  createSentenceVocabularyProgress,
+  loadSentenceVocabularyProgress,
+  saveSentenceVocabularyProgress,
+  sentenceVocabularyProgressKey,
+  type SentenceVocabularyProgress,
+} from '@/lib/sentence-vocabulary-progress';
 import styles from './sentence-vocabulary-check.module.css';
 
 type CheckStage = 'selection' | 'running' | 'result';
@@ -35,6 +43,21 @@ const AMERICAN_VOICE_PREFERENCES = [
   /Microsoft David/iu,
 ];
 
+const MODE_OPTIONS: Array<{
+  mode: SentenceVocabularyAssessmentMode;
+  title: string;
+  sampleSize: number | null;
+}> = [
+  { mode: 'sample-100', title: '100 词快速检测', sampleSize: 100 },
+  { mode: 'sample-300', title: '300 词标准检测', sampleSize: 300 },
+  { mode: 'sample-500', title: '500 词深度检测', sampleSize: 500 },
+  { mode: 'all', title: '全部词汇检测', sampleSize: null },
+];
+
+const MODE_LABELS: Record<SentenceVocabularyAssessmentMode, string> = Object.fromEntries(
+  MODE_OPTIONS.map((option) => [option.mode, option.title]),
+) as Record<SentenceVocabularyAssessmentMode, string>;
+
 function chooseAmericanVoice(voices: SpeechSynthesisVoice[]) {
   const americanVoices = voices.filter(
     (voice) => voice.lang.replace('_', '-').toLowerCase() === 'en-us',
@@ -47,7 +70,7 @@ function chooseAmericanVoice(voices: SpeechSynthesisVoice[]) {
 }
 
 function modeLabel(mode: SentenceVocabularyAssessmentMode) {
-  return mode === 'sample-100' ? '随机抽取 100 词' : '检测全部词汇';
+  return MODE_LABELS[mode];
 }
 
 export function SentenceVocabularyCheck({
@@ -60,6 +83,9 @@ export function SentenceVocabularyCheck({
   studentRoute: boolean;
 }) {
   const bookPath = `${studentRoute ? '/student' : ''}/learning/english/vocabulary/books/${book.id}`;
+  const isSentenceBook = book.id === 'toefl-sentences';
+  const unitNoun = isSentenceBook ? '句子' : '单元';
+  const checkTitle = isSentenceBook ? '句子词汇检测' : `${book.shortTitle}词汇检测`;
   const allUnitIds = useMemo(
     () => book.sections.flatMap((section) => section.items.map((item) => item.id)),
     [book.sections],
@@ -77,8 +103,10 @@ export function SentenceVocabularyCheck({
   const [audioSupported, setAudioSupported] = useState(true);
   const [speakingQuestionId, setSpeakingQuestionId] = useState<string | null>(null);
   const [autoAdvanceQuestionId, setAutoAdvanceQuestionId] = useState<string | null>(null);
+  const [savedProgress, setSavedProgress] = useState<SentenceVocabularyProgress | null>(null);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const autoAdvanceTimerRef = useRef<number | null>(null);
+  const progressKey = sentenceVocabularyProgressKey(book.id, studentRoute);
 
   const currentQuestion = assessment?.questions[currentIndex] ?? null;
   const selectedOptionId = currentQuestion ? answers[currentQuestion.id] : undefined;
@@ -106,6 +134,28 @@ export function SentenceVocabularyCheck({
       }
     };
   }, []);
+
+  useEffect(() => {
+    setSavedProgress(
+      loadSentenceVocabularyProgress(window.localStorage, progressKey, book.id, allUnitIds),
+    );
+  }, [allUnitIds, book.id, progressKey]);
+
+  useEffect(() => {
+    if (stage !== 'running' || !assessment) return;
+    saveSentenceVocabularyProgress(
+      window.localStorage,
+      progressKey,
+      createSentenceVocabularyProgress({
+        bookId: book.id,
+        mode: assessment.mode,
+        selectedUnitIds: assessment.selectedUnitIds,
+        assessment,
+        answers,
+        currentIndex,
+      }),
+    );
+  }, [answers, assessment, book.id, currentIndex, progressKey, stage]);
 
   useEffect(() => {
     window.speechSynthesis?.cancel();
@@ -202,6 +252,7 @@ export function SentenceVocabularyCheck({
       setAnswers({});
       setCurrentIndex(0);
       setAutoAdvanceQuestionId(null);
+      setSavedProgress(null);
       setStage('running');
       window.scrollTo({ behavior: 'smooth', top: 0 });
     } catch (caught) {
@@ -211,12 +262,44 @@ export function SentenceVocabularyCheck({
     }
   }
 
+  const clearStoredProgress = useCallback(() => {
+    clearSentenceVocabularyProgress(window.localStorage, progressKey);
+    setSavedProgress(null);
+  }, [progressKey]);
+
+  function resumeProgress() {
+    if (!savedProgress) return;
+    setMode(savedProgress.mode);
+    setSelectedUnitIds(new Set(savedProgress.selectedUnitIds));
+    setAssessment(savedProgress.assessment);
+    setAnswers(savedProgress.answers);
+    setCurrentIndex(savedProgress.currentIndex);
+    setAutoAdvanceQuestionId(null);
+    setSavedProgress(null);
+    setStage('running');
+    window.scrollTo({ behavior: 'smooth', top: 0 });
+  }
+
+  function restartFromSelection() {
+    if (autoAdvanceTimerRef.current !== null) {
+      window.clearTimeout(autoAdvanceTimerRef.current);
+      autoAdvanceTimerRef.current = null;
+    }
+    clearStoredProgress();
+    setAssessment(null);
+    setAnswers({});
+    setCurrentIndex(0);
+    setAutoAdvanceQuestionId(null);
+    setStage('selection');
+  }
+
   const finishAssessment = useCallback(() => {
     if (!assessment) return;
+    clearStoredProgress();
     setAutoAdvanceQuestionId(null);
     setStage('result');
     window.scrollTo({ behavior: 'smooth', top: 0 });
-  }, [assessment]);
+  }, [assessment, clearStoredProgress]);
 
   const moveNext = useCallback(() => {
     if (!assessment || !currentQuestion || !selectedOptionId) return;
@@ -243,14 +326,13 @@ export function SentenceVocabularyCheck({
         autoAdvanceTimerRef.current = null;
         setAutoAdvanceQuestionId(null);
         if (currentIndex === assessment.questionCount - 1) {
-          setStage('result');
-          window.scrollTo({ behavior: 'smooth', top: 0 });
+          finishAssessment();
         } else {
           setCurrentIndex((index) => index + 1);
         }
       }, 800);
     },
-    [assessment, currentIndex, currentQuestion, selectedOptionId],
+    [assessment, currentIndex, currentQuestion, finishAssessment, selectedOptionId],
   );
 
   useEffect(() => {
@@ -271,22 +353,11 @@ export function SentenceVocabularyCheck({
     return (
       <div className={styles.runnerPage}>
         <header className={styles.runnerHeader}>
-          <button
-            className={styles.exitButton}
-            onClick={() => {
-              if (autoAdvanceTimerRef.current !== null) {
-                window.clearTimeout(autoAdvanceTimerRef.current);
-                autoAdvanceTimerRef.current = null;
-              }
-              setAutoAdvanceQuestionId(null);
-              setStage('selection');
-            }}
-            type="button"
-          >
+          <button className={styles.exitButton} onClick={restartFromSelection} type="button">
             <ArrowLeft size={17} /> 返回选择
           </button>
           <div>
-            <strong>句子词汇检测</strong>
+            <strong>{checkTitle}</strong>
             <span>{modeLabel(assessment.mode)}</span>
           </div>
           <div className={styles.runnerMetrics}>
@@ -312,7 +383,6 @@ export function SentenceVocabularyCheck({
           <section className={styles.questionCard} aria-labelledby="sentence-vocabulary-word">
             <p>选择与这个单词最匹配的中文释义</p>
             <div className={styles.wordHeading}>
-              <h1 id="sentence-vocabulary-word">{currentQuestion.word}</h1>
               <button
                 aria-label={`${
                   speakingQuestionId === currentQuestion.id ? '停止' : '播放'
@@ -336,6 +406,7 @@ export function SentenceVocabularyCheck({
                   <Volume2 size={17} />
                 )}
               </button>
+              <h1 id="sentence-vocabulary-word">{currentQuestion.word}</h1>
             </div>
             <div className={styles.wordMeta}>
               {currentQuestion.pronunciation ? <span>{currentQuestion.pronunciation}</span> : null}
@@ -448,9 +519,9 @@ export function SentenceVocabularyCheck({
               <ArrowLeft size={17} /> 返回词汇书
             </Link>
           }
-          description={`本次检测来自 ${assessment.selectedUnitIds.length} 个句子，共 ${assessment.questionCount} 个词。`}
+          description={`本次检测来自 ${assessment.selectedUnitIds.length} 个${unitNoun}，共 ${assessment.questionCount} 个词。`}
           eyebrow="英语 · 词汇 · 检测结果"
-          title="句子词汇检测结果"
+          title={`${book.shortTitle}词汇检测结果`}
         />
         <section className={styles.resultHero}>
           <div className={styles.resultScore}>
@@ -464,17 +535,10 @@ export function SentenceVocabularyCheck({
             <CheckCircle2 size={26} />
             <div>
               <h2>{result.percentage >= 80 ? '掌握得不错' : '已经定位到需要复习的词'}</h2>
-              <p>下面列出错题及正确释义；返回句子阅读页后可以针对这些词继续复习。</p>
+              <p>下面列出错题及正确释义；返回词汇书后可以针对这些词继续复习。</p>
             </div>
           </div>
-          <button
-            onClick={() => {
-              setAssessment(null);
-              setAnswers({});
-              setStage('selection');
-            }}
-            type="button"
-          >
+          <button onClick={restartFromSelection} type="button">
             <RotateCcw size={17} /> 重新选择检测范围
           </button>
         </section>
@@ -518,7 +582,7 @@ export function SentenceVocabularyCheck({
             <div className={styles.perfectState}>
               <CheckCircle2 size={30} />
               <strong>全部答对</strong>
-              <span>这组句子的词汇掌握得非常扎实。</span>
+              <span>这组词汇掌握得非常扎实。</span>
             </div>
           )}
           {result.wrong.length > 100 ? (
@@ -537,10 +601,38 @@ export function SentenceVocabularyCheck({
             <ArrowLeft size={17} /> 返回词汇书
           </Link>
         }
-        description="选择要覆盖的托福长句，再随机抽取 100 个词或检测所选句子的全部词汇。"
-        eyebrow="英语 · 词汇 · TOEFL"
-        title="句子词汇检测"
+        description={
+          isSentenceBook
+            ? '选择要覆盖的托福长句，再检测 100、300、500 个随机词或全部词汇。'
+            : `选择要覆盖的${book.shortTitle}学习单元，再检测 100、300、500 个随机词或全部词汇。`
+        }
+        eyebrow={`英语 · 词汇 · ${book.category}`}
+        title={checkTitle}
       />
+
+      {savedProgress ? (
+        <section className={styles.resumePanel} aria-label="未完成的词汇检测">
+          <span className={styles.resumeIcon}>
+            <ClipboardCheck size={22} />
+          </span>
+          <div>
+            <strong>发现未完成的{modeLabel(savedProgress.mode)}</strong>
+            <p>
+              已作答 {Object.keys(savedProgress.answers).length} /{' '}
+              {savedProgress.assessment.questionCount} 题 · 上次停在第{' '}
+              {savedProgress.currentIndex + 1} 题
+            </p>
+          </div>
+          <div className={styles.resumeActions}>
+            <button onClick={resumeProgress} type="button">
+              继续上次检测 <ArrowRight size={16} />
+            </button>
+            <button onClick={restartFromSelection} type="button">
+              重新开始
+            </button>
+          </div>
+        </section>
+      ) : null}
 
       <section className={styles.selectionSummary}>
         <span className={styles.summaryIcon}>
@@ -548,12 +640,12 @@ export function SentenceVocabularyCheck({
         </span>
         <div>
           <strong>
-            已选择 {selectedUnitIds.size} / {allUnitIds.length} 个句子
+            已选择 {selectedUnitIds.size} / {allUnitIds.length} 个{unitNoun}
           </strong>
-          <p>干扰项优先来自同一句、同词性的词汇，四个选项均为真实中文释义。</p>
+          <p>干扰项优先来自同一{unitNoun}、同词性的词汇，四个选项均为真实中文释义。</p>
         </div>
         <button onClick={() => setSelectedUnitIds(new Set(allUnitIds))} type="button">
-          <ListChecks size={16} /> 全选 100 句
+          <ListChecks size={16} /> 全选 {allUnitIds.length} 个{unitNoun}
         </button>
         <button onClick={() => setSelectedUnitIds(new Set())} type="button">
           清空
@@ -564,11 +656,11 @@ export function SentenceVocabularyCheck({
         <div className={styles.sectionHeading}>
           <div>
             <span>Step 01</span>
-            <h2 id="sentence-selection-title">选择句子</h2>
+            <h2 id="sentence-selection-title">选择{unitNoun}</h2>
           </div>
-          <p>可以单选、多选，也可以按每组 10 句快速选择。</p>
+          <p>可以单选、多选，也可以按目录分组快速选择。</p>
         </div>
-        <div className={styles.sentenceGroups}>
+        <div className={`${styles.sentenceGroups} ${isSentenceBook ? '' : styles.unitGroups}`}>
           {book.sections.map((section) => {
             const sectionUnitIds = section.items.map((item) => item.id);
             const sectionSelected = sectionUnitIds.every((unitId) => selectedUnitIds.has(unitId));
@@ -577,7 +669,9 @@ export function SentenceVocabularyCheck({
                 <header>
                   <div>
                     <strong>{section.title}</strong>
-                    <span>{section.items.length} 句</span>
+                    <span>
+                      {section.items.length} 个{unitNoun}
+                    </span>
                   </div>
                   <button onClick={() => toggleSection(sectionUnitIds)} type="button">
                     {sectionSelected ? '取消本组' : '选择本组'}
@@ -586,7 +680,9 @@ export function SentenceVocabularyCheck({
                 <div>
                   {section.items.map((item) => {
                     const selected = selectedUnitIds.has(item.id);
-                    const sentenceNumber = item.title.replace(/^Sentence\s+/u, '');
+                    const itemLabel = isSentenceBook
+                      ? item.title.replace(/^Sentence\s+/u, '')
+                      : (item.label ?? item.title);
                     return (
                       <button
                         aria-label={item.title}
@@ -598,7 +694,7 @@ export function SentenceVocabularyCheck({
                         type="button"
                       >
                         <span>{selected ? <Check size={14} /> : null}</span>
-                        <strong>{sentenceNumber}</strong>
+                        <strong>{itemLabel}</strong>
                       </button>
                     );
                   })}
@@ -615,38 +711,36 @@ export function SentenceVocabularyCheck({
             <span>Step 02</span>
             <h2 id="sentence-mode-title">选择检测题量</h2>
           </div>
-          <p>随机抽取适合快速定位；全部检测适合完整复习。</p>
+          <p>100 词适合快速定位，300/500 词提高覆盖率，全部检测用于完整复习。</p>
         </div>
         <div className={styles.modeGrid}>
-          <button
-            aria-pressed={mode === 'sample-100'}
-            className={mode === 'sample-100' ? styles.modeSelected : undefined}
-            onClick={() => setMode('sample-100')}
-            type="button"
-          >
-            <span>{mode === 'sample-100' ? <Check size={15} /> : null}</span>
-            <Sparkles size={23} />
-            <strong>随机抽取 100 词</strong>
-            <p>从所选句子的首次出现词条中随机抽取；不足 100 词时检测全部。</p>
-          </button>
-          <button
-            aria-pressed={mode === 'all'}
-            className={mode === 'all' ? styles.modeSelected : undefined}
-            onClick={() => setMode('all')}
-            type="button"
-          >
-            <span>{mode === 'all' ? <Check size={15} /> : null}</span>
-            <Target size={23} />
-            <strong>检测全部词汇</strong>
-            <p>覆盖所选句子的全部有效词条，适合完成阶段性复习。</p>
-          </button>
+          {MODE_OPTIONS.map((option) => (
+            <button
+              aria-pressed={mode === option.mode}
+              className={mode === option.mode ? styles.modeSelected : undefined}
+              key={option.mode}
+              onClick={() => setMode(option.mode)}
+              type="button"
+            >
+              <span>{mode === option.mode ? <Check size={15} /> : null}</span>
+              {option.sampleSize === null ? <Target size={23} /> : <Sparkles size={23} />}
+              <strong>{option.title}</strong>
+              <p>
+                {option.sampleSize === null
+                  ? `覆盖所选${unitNoun}的全部有效词条，适合完整复习。`
+                  : `随机抽取最多 ${option.sampleSize} 个有效词条；不足时检测全部。`}
+              </p>
+            </button>
+          ))}
         </div>
       </section>
 
       <section className={styles.startPanel}>
         <div>
           <strong>
-            {selectedUnitIds.size ? `准备检测 ${selectedUnitIds.size} 个句子` : '请先选择句子'}
+            {selectedUnitIds.size
+              ? `准备检测 ${selectedUnitIds.size} 个${unitNoun}`
+              : `请先选择${unitNoun}`}
           </strong>
           <p>{modeLabel(mode)} · 每题 4 个中文释义 · 提交后统一查看结果</p>
         </div>

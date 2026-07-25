@@ -9,14 +9,9 @@ import type {
   GrammarPracticeResult,
   GrammarPracticeSessionEnvelope,
 } from '@english/shared';
+import { grammarLevelIds } from '@english/shared';
 import { grammarBasePath, useGrammarPracticeApi } from './grammar-api';
 import styles from './grammar-course.module.css';
-
-const levelLabels: Record<GrammarLevelId, string> = {
-  beginner: '初级',
-  intermediate: '中级',
-  advanced: '高级',
-};
 
 const kindLabels = {
   single_choice: 'Single choice',
@@ -36,6 +31,8 @@ export function GrammarPractice(props: { topicId: string; title: string; level: 
   const [draft, setDraft] = useState('');
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const groupIndex = grammarLevelIds.indexOf(level);
+  const nextLevel = grammarLevelIds[groupIndex + 1] ?? null;
 
   const start = useCallback(async () => {
     setBusy(true);
@@ -97,7 +94,7 @@ export function GrammarPractice(props: { topicId: string; title: string; level: 
   }
 
   if (busy && !session && !result) {
-    return <div className={styles.loading}>正在准备10道原创语法题…</div>;
+    return <div className={styles.loading}>正在准备知识点练习…</div>;
   }
 
   if (result) {
@@ -105,13 +102,13 @@ export function GrammarPractice(props: { topicId: string; title: string; level: 
       <div className={styles.practiceShell}>
         <header className={styles.practiceHeader}>
           <p className={styles.eyebrow}>Grammar practice result</p>
-          <h1>
-            {title} · {levelLabels[level]}
-          </h1>
+          <h1>{title}</h1>
           <p>
             {result.mastered
-              ? '本阶段已掌握。你仍可以再次练习并刷新最佳正确率。'
-              : '本次尚未达到80%，可查看解析后再次练习。'}
+              ? nextLevel
+                ? '本组已完成，可以继续学习下一组更深入的应用。'
+                : '这个知识点已掌握。你仍可以再次练习并刷新最佳正确率。'
+              : '本组尚未达到80%，可查看解析后再次练习。'}
           </p>
         </header>
         <section className={styles.resultSummary} aria-label="练习成绩">
@@ -153,6 +150,15 @@ export function GrammarPractice(props: { topicId: string; title: string; level: 
               <RotateCcw size={15} />
               再次练习
             </button>
+            {result.mastered && nextLevel ? (
+              <Link
+                className={styles.primaryLink}
+                href={`${base}/topic/${topicId}/practice?level=${nextLevel}`}
+              >
+                继续下一组
+                <ArrowRight size={15} />
+              </Link>
+            ) : null}
           </div>
         </div>
         <div className={styles.reviewList}>
@@ -197,9 +203,9 @@ export function GrammarPractice(props: { topicId: string; title: string; level: 
   return (
     <div className={styles.practiceShell}>
       <header className={styles.practiceHeader}>
-        <p className={styles.eyebrow}>Grammar practice · {levelLabels[level]}</p>
+        <p className={styles.eyebrow}>Grammar topic practice</p>
         <h1>{title}</h1>
-        <p>共10题；答案会逐题保存，全部完成后显示正确率、最佳成绩和解析。</p>
+        <p>每组10题，题目由核心规则逐步过渡到复杂应用；答案会逐题保存。</p>
       </header>
       <div className={styles.practiceTopline}>
         <span>

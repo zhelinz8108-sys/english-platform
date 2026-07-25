@@ -16,5 +16,7 @@ export default async function GrammarPracticePage({
   const context = getGrammarTopicContext(topicId);
   const stage = context?.lesson.stages.find((item) => item.level === level);
   if (!context?.lesson.pilot || !stage?.practiceAvailable) notFound();
-  return <GrammarPractice level={level} title={context.lesson.title} topicId={topicId} />;
+  return (
+    <GrammarPractice key={level} level={level} title={context.lesson.title} topicId={topicId} />
+  );
 }

@@ -1,6 +1,19 @@
 import type { VocabularyBookUnitContent } from '@/data/vocabulary-library';
 
-export type SentenceVocabularyAssessmentMode = 'sample-100' | 'all';
+export type SentenceVocabularyAssessmentMode = 'sample-100' | 'sample-300' | 'sample-500' | 'all';
+
+const SAMPLE_LIMITS: Record<SentenceVocabularyAssessmentMode, number | null> = {
+  'sample-100': 100,
+  'sample-300': 300,
+  'sample-500': 500,
+  all: null,
+};
+
+export function isSentenceVocabularyAssessmentMode(
+  value: unknown,
+): value is SentenceVocabularyAssessmentMode {
+  return typeof value === 'string' && Object.prototype.hasOwnProperty.call(SAMPLE_LIMITS, value);
+}
 
 export interface SentenceVocabularyEntry {
   id: string;
@@ -69,13 +82,29 @@ export function extractSentenceVocabularyEntries(content: VocabularyBookUnitCont
   const entries: SentenceVocabularyEntry[] = [];
   const seenWords = new Set<string>();
   for (const page of content.pages) {
-    for (const block of page.blocks) {
+    for (let blockIndex = 0; blockIndex < page.blocks.length; blockIndex += 1) {
+      const block = page.blocks[blockIndex];
+      if (!block) continue;
       if (block.type !== 'entry' || !block.headword) continue;
       const word = block.headword.replace(/\s+/gu, ' ').trim();
       const normalizedWord = word.toLocaleLowerCase('en');
       if (!/[a-z]/iu.test(word) || seenWords.has(normalizedWord)) continue;
       const detail = block.text.slice(block.headword.length).trim();
-      const parsed = parseEntryDetail(detail);
+      let parsed = parseEntryDetail(detail);
+      if (!parsed.definition) {
+        for (let detailIndex = blockIndex + 1; detailIndex < page.blocks.length; detailIndex += 1) {
+          const detailBlock = page.blocks[detailIndex];
+          if (!detailBlock || detailBlock.type === 'entry') break;
+          if (detailBlock.type !== 'definition') continue;
+          const separatedDetail = parseEntryDetail(detailBlock.text);
+          parsed = {
+            definition: separatedDetail.definition,
+            partOfSpeech: parsed.partOfSpeech || separatedDetail.partOfSpeech,
+            pronunciation: parsed.pronunciation || separatedDetail.pronunciation,
+          };
+          break;
+        }
+      }
       if (!parsed.definition) continue;
       seenWords.add(normalizedWord);
       entries.push({
@@ -132,8 +161,10 @@ export function createSentenceVocabularyQuestions(
 ) {
   const uniqueEntries = sourceEntries.filter(
     (entry, index, all) =>
-      all.findIndex((candidate) => candidate.word.toLocaleLowerCase('en') === entry.word.toLocaleLowerCase('en')) ===
-      index,
+      all.findIndex(
+        (candidate) =>
+          candidate.word.toLocaleLowerCase('en') === entry.word.toLocaleLowerCase('en'),
+      ) === index,
   );
   if (uniqueEntries.length < 4) throw new Error('至少需要 4 个有效词条才能生成检测题。');
 
@@ -146,9 +177,10 @@ export function createSentenceVocabularyQuestions(
     addToIndex(byUnitAndPart, `${entry.unitId}:${entry.partOfSpeech}`, entry);
   }
 
+  const sampleLimit = SAMPLE_LIMITS[mode];
   const targets = shuffled(uniqueEntries, random).slice(
     0,
-    mode === 'sample-100' ? Math.min(100, uniqueEntries.length) : uniqueEntries.length,
+    sampleLimit === null ? uniqueEntries.length : Math.min(sampleLimit, uniqueEntries.length),
   );
 
   return targets.map<SentenceVocabularyQuestion>((target, questionIndex) => {

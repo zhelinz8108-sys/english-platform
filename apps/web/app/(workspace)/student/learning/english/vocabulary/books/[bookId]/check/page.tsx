@@ -7,10 +7,10 @@ export default async function StudentSentenceVocabularyCheckPage({
   searchParams,
 }: {
   params: Promise<{ bookId: string }>;
-  searchParams: Promise<{ sentence?: string }>;
+  searchParams: Promise<{ sentence?: string; unit?: string }>;
 }) {
-  const [{ bookId }, { sentence }] = await Promise.all([params, searchParams]);
+  const [{ bookId }, { sentence, unit }] = await Promise.all([params, searchParams]);
   const book = findVocabularyBook(bookId);
-  if (!book || book.id !== 'toefl-sentences') notFound();
-  return <SentenceVocabularyCheck book={book} initialUnitId={sentence} studentRoute />;
+  if (!book) notFound();
+  return <SentenceVocabularyCheck book={book} initialUnitId={unit ?? sentence} studentRoute />;
 }

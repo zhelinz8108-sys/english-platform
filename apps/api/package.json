@@ -13,6 +13,8 @@
     "test": "vitest run",
     "import:minute-earth": "node scripts/import-minute-earth.mjs",
     "import:minute-earth-study-content": "node scripts/import-minute-earth-study-content.mjs",
+    "import:listening-library": "node scripts/import-listening-library.mjs",
+    "import:listening-question-bank": "node scripts/import-listening-question-bank.mjs",
     "simulate:vocabulary-assessment": "node scripts/simulate-vocabulary-assessment.mjs",
     "audit:vocabulary-bank": "node scripts/audit-vocabulary-bank.mjs",
     "generate:vocabulary-forms": "node scripts/generate-vocabulary-forms.mjs",

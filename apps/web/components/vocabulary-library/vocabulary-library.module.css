@@ -216,7 +216,7 @@
 
 .bookCard {
   overflow: hidden;
-  min-height: 255px;
+  min-height: 180px;
   border: 1px solid var(--ink-150);
   border-radius: 17px;
   background: white;
@@ -236,109 +236,46 @@
 .bookCopy {
   display: flex;
   min-width: 0;
-  min-height: 205px;
+  min-height: 130px;
   flex-direction: column;
   align-items: flex-start;
 }
 
 .bookTopline {
   display: flex;
-  width: 100%;
   align-items: center;
-  justify-content: space-between;
-  gap: 14px;
 }
 
 .bookTopline span {
   border-radius: 999px;
   background: var(--brand-50);
-  padding: 5px 9px;
+  padding: 7px 12px;
   color: var(--brand-700);
-  font-size: 9.5px;
-  font-weight: 850;
-  letter-spacing: 0.06em;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
 }
 
-.bookTopline small {
-  color: var(--ink-500);
-  font-size: 10.5px;
-}
-
-.bookCopy h3 {
-  margin: 15px 0 0;
-  color: var(--ink-950);
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: clamp(25px, 3vw, 34px);
-  font-weight: 500;
-  letter-spacing: -0.035em;
-}
-
-.fullTitle {
-  margin: 2px 0 0;
-  color: var(--brand-700);
-  font-size: 11.5px;
-  font-weight: 700;
-}
-
-.description {
-  max-width: 760px;
-  margin: 14px 0 0;
-  color: var(--ink-600);
-  font-size: 12.5px;
-  line-height: 1.75;
-}
-
-.featureRow {
+.bookCount {
   display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-top: 17px;
+  align-items: baseline;
+  gap: 6px;
+  margin: 22px 0 0;
+  color: var(--ink-700);
 }
 
-.featureRow span {
-  border: 1px solid var(--ink-150);
-  border-radius: 8px;
-  background: var(--ink-50);
-  padding: 5px 8px;
-  color: var(--ink-600);
-  font-size: 9.5px;
-  font-weight: 700;
-}
-
-.bookScale {
-  display: grid;
-  grid-template-columns: 36px minmax(0, 1fr);
-  align-items: center;
-  gap: 2px 10px;
-  width: 100%;
-  margin-top: auto;
-  border-top: 1px solid var(--ink-100);
-  padding-top: 16px;
-}
-
-.bookScale svg {
-  grid-row: 1 / span 2;
-  width: 36px;
-  height: 36px;
-  padding: 8px;
-  border-radius: 10px;
-  background: var(--brand-50);
-  color: var(--brand-600);
-}
-
-.bookScale span {
-  color: var(--ink-800);
-  font-size: 11.5px;
-}
-
-.bookScale span strong {
+.bookCount strong {
   color: var(--brand-700);
+  font-family: inherit;
   font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 720;
 }
 
-.bookScale small {
-  color: var(--ink-500);
-  font-size: 9.5px;
+.bookCount span {
+  font-size: 11px;
+  font-weight: 700;
 }
 
 .readButton {
@@ -350,7 +287,7 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 9px;
-  margin-top: 15px;
+  margin-top: 20px;
 }
 
 .checkButton {
@@ -511,24 +448,7 @@
   }
 
   .bookCopy {
-    min-height: 230px;
-  }
-
-  .bookCopy h3 {
-    margin-top: 10px;
-    font-size: 22px;
-  }
-
-  .description {
-    font-size: 10.5px;
-  }
-
-  .featureRow {
-    display: none;
-  }
-
-  .bookScale {
-    padding-top: 11px;
+    min-height: 0;
   }
 
   .readButton,

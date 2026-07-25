@@ -77,7 +77,6 @@ interface ReadingArticle extends ReadingIndexItem {
   subtitle: string;
   slug: string;
   intro: string;
-  annotationTask: string;
   permissions: string;
   isPoem: boolean;
   blocks: ReadingBlock[];
@@ -672,15 +671,6 @@ export function ToeflReadingPage({ initialGrade = null }: { initialGrade?: numbe
               {[article.author, article.publicationYear].filter(Boolean).join(' · ')}
             </p>
             {article.intro ? <p className="reading-article-intro">{article.intro}</p> : null}
-            {article.annotationTask ? (
-              <div className="reading-annotation-task">
-                <Icon name="target" size={18} />
-                <p>
-                  <strong>阅读任务</strong>
-                  {article.annotationTask}
-                </p>
-              </div>
-            ) : null}
           </header>
 
           <VocabularyCards

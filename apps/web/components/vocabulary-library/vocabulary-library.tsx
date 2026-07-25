@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   ArrowRight,
-  BookOpenCheck,
   CheckCircle2,
   ClipboardCheck,
   FileText,
@@ -27,10 +26,6 @@ const bookLabels: Record<string, string> = {
   'gre-random': 'GRE',
   'situational-15000': '分类词汇',
 };
-
-function learningUnitCount(book: VocabularyBook) {
-  return book.sections.reduce((total, section) => total + section.items.length, 0);
-}
 
 function matchesBook(book: VocabularyBook, normalizedQuery: string) {
   if (!normalizedQuery) return true;
@@ -170,57 +165,36 @@ export function VocabularyLibrary({ catalog }: { catalog: VocabularyBookCatalog 
 
         {filteredBooks.length ? (
           <div className={styles.bookGrid}>
-            {filteredBooks.map((book) => {
-              const unitCount = learningUnitCount(book);
-              return (
-                <article className={styles.bookCard} key={book.id}>
-                  <div className={styles.bookCopy}>
-                    <div className={styles.bookTopline}>
-                      <span>{bookLabels[book.id] ?? book.category}</span>
-                      <small>{book.extractionMethod === 'ocr' ? 'OCR 识别文字' : '网页文字'}</small>
-                    </div>
-                    <h3>{book.shortTitle}</h3>
-                    <p className={styles.fullTitle}>{book.title}</p>
-                    <p className={styles.description}>{book.description}</p>
-                    <div className={styles.featureRow}>
-                      {book.features.map((feature) => (
-                        <span key={feature}>{feature}</span>
-                      ))}
-                    </div>
-                    <div className={styles.bookScale}>
-                      <BookOpenCheck size={17} />
-                      <span>
-                        <strong>{unitCount}</strong> 个单元 ·{' '}
-                        {book.wordEntryCount.toLocaleString('zh-CN')} 个保留词条
-                      </span>
-                      <small>
-                        {book.scale} · 去除 {book.duplicateEntryCount.toLocaleString('zh-CN')}{' '}
-                        个后续重复
-                      </small>
-                    </div>
-                    <div className={styles.bookActions}>
-                      <Link
-                        className={styles.readButton}
-                        data-testid={'read-' + book.id}
-                        href={vocabularyBase + '/books/' + book.id}
-                        onClick={() => rememberBook(book.id)}
-                      >
-                        立即阅读 <ArrowRight size={17} />
-                      </Link>
-                      {book.id === 'toefl-sentences' ? (
-                        <Link
-                          className={styles.checkButton}
-                          data-testid="check-toefl-sentences"
-                          href={vocabularyBase + '/books/' + book.id + '/check'}
-                        >
-                          <ClipboardCheck size={16} /> 词汇检测
-                        </Link>
-                      ) : null}
-                    </div>
+            {filteredBooks.map((book) => (
+              <article className={styles.bookCard} key={book.id}>
+                <div className={styles.bookCopy}>
+                  <div className={styles.bookTopline}>
+                    <span>{bookLabels[book.id] ?? book.category}</span>
                   </div>
-                </article>
-              );
-            })}
+                  <p className={styles.bookCount}>
+                    <strong>{book.wordEntryCount.toLocaleString('zh-CN')}</strong>
+                    <span>个单词</span>
+                  </p>
+                  <div className={styles.bookActions}>
+                    <Link
+                      className={styles.readButton}
+                      data-testid={'read-' + book.id}
+                      href={vocabularyBase + '/books/' + book.id}
+                      onClick={() => rememberBook(book.id)}
+                    >
+                      立即阅读 <ArrowRight size={17} />
+                    </Link>
+                    <Link
+                      className={styles.checkButton}
+                      data-testid={'check-' + book.id}
+                      href={vocabularyBase + '/books/' + book.id + '/check'}
+                    >
+                      <ClipboardCheck size={16} /> 词汇检测
+                    </Link>
+                  </div>
+                </div>
+              </article>
+            ))}
           </div>
         ) : (
           <div className={styles.emptyState}>

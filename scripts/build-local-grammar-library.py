@@ -20,6 +20,180 @@ LEVELS = (
 )
 
 
+CURRICULUM_PARTS: tuple[dict[str, Any], ...] = (
+    {
+        "title": "句子骨架、be/do/have",
+        "english": "Sentence Structure and Core Auxiliaries",
+        "summary": "先掌握句子的层级、核心成分和基本语序，再用 be、do、have 搭起最常用的句型骨架。",
+        "topics": (
+            "grammar-levels",
+            "word-classes",
+            "sentence-elements",
+            "basic-patterns",
+            "agreement-order",
+            "core-auxiliaries",
+        ),
+    },
+    {
+        "title": "名词、代词、冠词与基础介词",
+        "english": "Nouns, Pronouns, Articles and Basic Prepositions",
+        "summary": "建立名词短语系统，掌握指代、数量、限定和所属关系，并补齐时间、地点与移动的基础介词。",
+        "topics": (
+            "countability",
+            "number-plurals",
+            "possession",
+            "indefinite-article",
+            "definite-article",
+            "zero-generic",
+            "determiners-pronouns",
+            "reflexive-reciprocal",
+            "quantifiers",
+            "prepositions",
+        ),
+    },
+    {
+        "title": "一般现在时和过去时、否定与疑问",
+        "english": "Present and Past Simple, Negation and Questions",
+        "summary": "用一般现在时和过去时表达事实、习惯与已发生事件，同时学会构造否定句、疑问句和简短回应。",
+        "topics": (
+            "verb-forms",
+            "state-dynamic",
+            "present-simple",
+            "past-simple",
+            "negation",
+            "yes-no-questions",
+            "wh-questions",
+            "tags-short-answers",
+        ),
+    },
+    {
+        "title": "进行时、完成时与时态对比",
+        "english": "Progressive and Perfect Aspect, Tense Contrasts",
+        "summary": "从进行中的过程、与现在相关的经历和先后关系出发，系统比较容易混淆的时态和体。",
+        "topics": (
+            "present-progressive",
+            "present-contrast",
+            "past-progressive",
+            "present-perfect",
+            "perfect-progressive",
+            "perfect-vs-past",
+            "past-perfect",
+            "time-expressions",
+        ),
+    },
+    {
+        "title": "情态动词、祈使句与基本语气",
+        "english": "Modal Verbs, Imperatives and Basic Mood",
+        "summary": "围绕能力、许可、义务、建议和可能性表达说话者态度，并掌握祈使、感叹和基础强调。",
+        "topics": (
+            "ability",
+            "permission-requests",
+            "obligation",
+            "prohibition-need",
+            "advice",
+            "possibility-deduction",
+            "modal-perfect",
+            "used-to-habit",
+            "imperatives-emphasis",
+        ),
+    },
+    {
+        "title": "将来表达与时间关系",
+        "english": "Future Forms and Time Relations",
+        "summary": "区分预测、意图、计划和安排，理解英语如何用多种形式表达将来及时间从句。",
+        "topics": (
+            "will-shall",
+            "going-to",
+            "present-future",
+            "future-progressive-perfect",
+            "future-past-clauses",
+        ),
+    },
+    {
+        "title": "形容词、副词、比较与修饰",
+        "english": "Adjectives, Adverbs, Comparison and Modification",
+        "summary": "建立描述、程度、比较和修饰的完整系统，并掌握形容词、名词和动词常见的介词搭配。",
+        "topics": (
+            "adjective-position-order",
+            "adjective-complements",
+            "adverbs-order",
+            "comparison",
+            "degree-result",
+            "dependent-prepositions",
+        ),
+    },
+    {
+        "title": "动词配价、不定式、动名词与分词",
+        "english": "Verb Valency, Infinitives, Gerunds and Participles",
+        "summary": "从动词需要哪些成分出发，学习宾语、补语、非谓语选择、分词结构和高频动词搭配。",
+        "topics": (
+            "transitivity-linking",
+            "objects-complements",
+            "common-verbs",
+            "infinitive-basics",
+            "gerunds",
+            "verb-infinitive",
+            "verb-gerund",
+            "meaning-change",
+            "purpose-result",
+            "participles",
+            "participle-clauses",
+            "phrasal-verbs",
+        ),
+    },
+    {
+        "title": "被动语态、使役与报告结构",
+        "english": "Passive Voice, Causatives and Reporting Structures",
+        "summary": "学习改变事件视角、表达使役关系和转述信息，理解形式变化背后的信息焦点。",
+        "topics": (
+            "passive-forms",
+            "passive-use-reporting",
+            "causatives",
+            "reported-speech",
+        ),
+    },
+    {
+        "title": "名词性、定语与状语从句",
+        "english": "Complement, Relative and Adverbial Clauses",
+        "summary": "先掌握嵌入疑问，再系统学习名词性、关系和状语从句如何扩展简单句。",
+        "topics": (
+            "indirect-questions",
+            "that-wh-clauses",
+            "whether-if",
+            "defining-relatives",
+            "nondefining-relatives",
+            "advanced-relatives",
+            "time-reason-purpose",
+            "contrast-comparison-clauses",
+        ),
+    },
+    {
+        "title": "条件句、愿望与虚拟语气",
+        "english": "Conditionals, Wishes and Subjunctive Meaning",
+        "summary": "在掌握基础从句后学习真实、假设和反事实条件，并表达愿望、建议与虚拟意义。",
+        "topics": (
+            "conditionals-basic",
+            "second-conditional",
+            "third-mixed",
+            "conditional-connectors",
+            "wishes-subjunctive",
+        ),
+    },
+    {
+        "title": "倒装、省略、强调与信息结构",
+        "english": "Inversion, Ellipsis, Emphasis and Information Structure",
+        "summary": "从句法压缩和焦点安排理解高级表达，调整语序、突出重点并保持段落衔接。",
+        "topics": (
+            "substitution-ellipsis",
+            "inversion",
+            "clefts-fronting",
+            "information-structure",
+            "cohesion-register",
+        ),
+    },
+)
+
+
 def load_module(name: str, path: Path) -> ModuleType:
     spec = importlib.util.spec_from_file_location(name, path)
     if spec is None or spec.loader is None:
@@ -82,19 +256,33 @@ def build_library(grammar_root: Path) -> dict[str, Any]:
     grammar_data = load_module("grammar_data", tools_dir / "grammar_data.py")
     grammar_builder = load_module("aurelis_grammar_builder", tools_dir / "build_grammar_pdf.py")
 
-    parts = grammar_data.PARTS
+    source_parts = grammar_data.PARTS
     books = grammar_builder.BOOKS
-    all_topics = [topic for part in parts for topic in part.topics]
-    topic_slugs = {topic.slug for topic in all_topics}
-    if len(topic_slugs) != len(all_topics):
+    source_topics = [topic for part in source_parts for topic in part.topics]
+    source_topic_slugs = {topic.slug for topic in source_topics}
+    if len(source_topic_slugs) != len(source_topics):
         raise ValueError("知识点 slug 存在重复")
+
+    topics_by_slug = {topic.slug: topic for topic in source_topics}
+    curriculum_topic_slugs = [
+        slug for part in CURRICULUM_PARTS for slug in part["topics"]
+    ]
+    if len(curriculum_topic_slugs) != len(set(curriculum_topic_slugs)):
+        raise ValueError("新学习路径中的知识点 slug 存在重复")
+    if set(curriculum_topic_slugs) != source_topic_slugs:
+        missing = sorted(source_topic_slugs - set(curriculum_topic_slugs))
+        extra = sorted(set(curriculum_topic_slugs) - source_topic_slugs)
+        raise ValueError(f"新学习路径知识点不完整，缺失={missing}，未知={extra}")
+    all_topics = [topics_by_slug[slug] for slug in curriculum_topic_slugs]
+    topic_slugs = set(curriculum_topic_slugs)
 
     reverse, mappings = build_source_map(topic_slugs, books, grammar_builder.SOURCE_SEQUENCES)
     global_sequence = 0
     part_rows: list[dict[str, Any]] = []
-    for part_index, part in enumerate(parts, start=1):
+    for part_index, part in enumerate(CURRICULUM_PARTS, start=1):
         topic_rows: list[dict[str, Any]] = []
-        for topic_index, topic in enumerate(part.topics, start=1):
+        for topic_index, topic_slug in enumerate(part["topics"], start=1):
+            topic = topics_by_slug[topic_slug]
             global_sequence += 1
             sources = []
             for book, _ in books:
@@ -148,9 +336,9 @@ def build_library(grammar_root: Path) -> dict[str, Any]:
             {
                 "id": f"part-{part_index:02d}",
                 "sequence": part_index,
-                "title": part.title,
-                "english": part.english,
-                "summary": part.summary,
+                "title": part["title"],
+                "english": part["english"],
+                "summary": part["summary"],
                 "topics": topic_rows,
             }
         )
@@ -160,7 +348,7 @@ def build_library(grammar_root: Path) -> dict[str, Any]:
         "schemaVersion": 1,
         "generatedAt": datetime.now(timezone.utc).isoformat(),
         "title": "Aurelis 英语语法完整学习路径",
-        "description": "基于《剑桥初级英语语法》《剑桥中级英语语法》《剑桥高级英语语法》的三阶融合路径。",
+        "description": "融合《剑桥初级英语语法》《剑桥中级英语语法》《剑桥高级英语语法》，每个知识点按由简到难连续编排。",
         "sources": [
             {
                 "id": level_id,

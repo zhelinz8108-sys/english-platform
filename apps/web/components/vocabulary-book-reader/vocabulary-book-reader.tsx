@@ -135,7 +135,6 @@ function EntryBlock({
   const speechText = extractEnglishSpeechText(headword);
   return (
     <div className={styles.entryBlock}>
-      <strong>{headword}</strong>
       {speechText ? (
         <AudioButton
           audioId={audioId}
@@ -146,6 +145,7 @@ function EntryBlock({
           text={speechText}
         />
       ) : null}
+      <strong>{headword}</strong>
       {detail ? <span>{detail}</span> : null}
     </div>
   );
@@ -210,7 +210,6 @@ function TextBlock({
   if (supplementalWord) {
     return (
       <div className={styles.bodyAudioRow}>
-        <p className={styles.bodyText}>{block.text}</p>
         <AudioButton
           audioId={audioId}
           disabled={!audioSupported}
@@ -219,6 +218,7 @@ function TextBlock({
           onSpeak={onSpeak}
           text={supplementalWord}
         />
+        <p className={styles.bodyText}>{block.text}</p>
       </div>
     );
   }
@@ -287,7 +287,6 @@ function VocabularyEntryGroup({
     <section className={styles.entryGroup}>
       <div className={styles.entryLead}>
         <div>
-          <strong>{headword}</strong>
           {speechText ? (
             <AudioButton
               audioId={entryAudioId}
@@ -298,6 +297,7 @@ function VocabularyEntryGroup({
               text={speechText}
             />
           ) : null}
+          <strong>{headword}</strong>
         </div>
         {phonetic ? <span>{phonetic}</span> : null}
       </div>
@@ -347,6 +347,7 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
   const [audioSupported, setAudioSupported] = useState(true);
   const [speakingId, setSpeakingId] = useState<string | null>(null);
   const [catalogOpen, setCatalogOpen] = useState(true);
+  const [catalogIsCompact, setCatalogIsCompact] = useState(false);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const activeSpeechIdRef = useRef<string | null>(null);
   const speechStartTimerRef = useRef<number | null>(null);
@@ -445,7 +446,15 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
   }, [currentUnitId, resetSpeech]);
 
   useEffect(() => {
-    if (!catalogOpen) return;
+    const mediaQuery = window.matchMedia('(max-width: 1180px)');
+    const updateCatalogMode = () => setCatalogIsCompact(mediaQuery.matches);
+    updateCatalogMode();
+    mediaQuery.addEventListener('change', updateCatalogMode);
+    return () => mediaQuery.removeEventListener('change', updateCatalogMode);
+  }, []);
+
+  useEffect(() => {
+    if (!catalogOpen || !catalogIsCompact) return;
     const previousOverflow = document.body.style.overflow;
     const focusFrame = window.requestAnimationFrame(() => catalogSearchRef.current?.focus());
     function closeOnEscape(event: KeyboardEvent) {
@@ -459,7 +468,7 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
       document.removeEventListener('keydown', closeOnEscape);
       catalogTriggerRef.current?.focus();
     };
-  }, [catalogOpen]);
+  }, [catalogIsCompact, catalogOpen]);
 
   const playAmericanAudio = useCallback<SpeakHandler>(
     (audioId, text, kind) => {
@@ -538,7 +547,7 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
   function openItem(located: LocatedItem) {
     setCurrentUnitId(located.item.id);
     setActiveSectionId(located.sectionId);
-    setCatalogOpen(false);
+    if (catalogIsCompact) setCatalogOpen(false);
     window.requestAnimationFrame(() =>
       readerTopRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }),
     );
@@ -568,31 +577,31 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
         title={book.shortTitle}
       />
 
-      <section className={styles.readerShell}>
+      <section
+        className={`${styles.readerShell} ${catalogOpen ? styles.readerShellWithCatalog : ''}`}
+      >
         <div className={styles.viewerPanel}>
           <div className={styles.viewerToolbar} ref={readerTopRef}>
             <button
               aria-controls="vocabulary-catalog-drawer"
               aria-expanded={catalogOpen}
               className={styles.catalogTrigger}
-              onClick={() => setCatalogOpen(true)}
+              onClick={() => setCatalogOpen((open) => !open)}
               ref={catalogTriggerRef}
               type="button"
             >
-              <ListTree size={17} /> 目录
+              <ListTree size={17} /> {catalogOpen ? '收起目录' : '目录'}
             </button>
             <div>
               <small>正在阅读 · {current?.sectionTitle}</small>
               <strong>{current?.item.title}</strong>
             </div>
-            {book.id === 'toefl-sentences' ? (
-              <Link
-                className={styles.checkLink}
-                href={`${vocabularyBase}/books/${book.id}/check?sentence=${encodeURIComponent(currentUnitId)}`}
-              >
-                <ClipboardCheck size={16} /> 检测
-              </Link>
-            ) : null}
+            <Link
+              className={styles.checkLink}
+              href={`${vocabularyBase}/books/${book.id}/check?unit=${encodeURIComponent(currentUnitId)}`}
+            >
+              <ClipboardCheck size={16} /> 检测
+            </Link>
             <nav aria-label="切换学习单元">
               <button
                 aria-label="上一个单元"
@@ -685,122 +694,124 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
             ) : null}
           </div>
         </div>
+
+        {catalogOpen ? (
+          <div className={styles.catalogOverlay}>
+            <button
+              aria-label="关闭文字目录"
+              className={styles.catalogBackdrop}
+              onClick={() => setCatalogOpen(false)}
+              type="button"
+            />
+            <aside
+              aria-label={`${book.shortTitle}目录`}
+              aria-modal={catalogIsCompact ? true : undefined}
+              className={styles.catalogPanel}
+              id="vocabulary-catalog-drawer"
+              role={catalogIsCompact ? 'dialog' : 'navigation'}
+            >
+              <div className={styles.catalogTitle}>
+                <div>
+                  <p className={styles.kicker}>BOOK CONTENTS</p>
+                  <h2>文字目录</h2>
+                </div>
+                <span>{allItems.length} 单元</span>
+                <button
+                  aria-label={catalogIsCompact ? '关闭文字目录' : '收起文字目录'}
+                  className={styles.catalogClose}
+                  onClick={() => setCatalogOpen(false)}
+                  type="button"
+                >
+                  <X size={19} />
+                </button>
+              </div>
+              <label className={styles.searchBox}>
+                <Search size={16} />
+                <span className="sr-only">搜索原书目录</span>
+                <input
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder="搜索 Sentence、Word List 或场景"
+                  ref={catalogSearchRef}
+                  type="search"
+                  value={query}
+                />
+              </label>
+
+              {normalizedQuery ? (
+                <div className={styles.searchResults}>
+                  <p>找到 {searchResults.length} 个目录项</p>
+                  {searchResults.slice(0, 120).map((located) => (
+                    <button
+                      className={located.item.id === currentUnitId ? styles.activeItem : undefined}
+                      key={`${located.sectionId}-${located.item.id}`}
+                      onClick={() => openItem(located)}
+                      type="button"
+                    >
+                      <span>
+                        <strong>{located.item.title}</strong>
+                        <small>{located.sectionTitle}</small>
+                      </span>
+                      <em>P. {located.item.page}</em>
+                    </button>
+                  ))}
+                  {searchResults.length > 120 ? (
+                    <small>结果较多，请输入更具体的关键词。</small>
+                  ) : null}
+                </div>
+              ) : (
+                <div className={styles.sectionList}>
+                  {book.sections.map((section) => {
+                    const expanded = section.id === activeSection?.id;
+                    return (
+                      <div className={expanded ? styles.sectionOpen : undefined} key={section.id}>
+                        <button
+                          aria-expanded={expanded}
+                          className={styles.sectionButton}
+                          onClick={() => setActiveSectionId(expanded ? '' : section.id)}
+                          type="button"
+                        >
+                          <span>
+                            <small>{section.label ?? '目录分组'}</small>
+                            <strong>{section.title}</strong>
+                          </span>
+                          <em>{section.items.length}</em>
+                          <ChevronDown size={17} />
+                        </button>
+                        {expanded ? (
+                          <div className={styles.itemList}>
+                            {section.items.map((item) => (
+                              <button
+                                className={
+                                  item.id === currentUnitId ? styles.activeItem : undefined
+                                }
+                                key={item.id}
+                                onClick={() =>
+                                  openItem({
+                                    item,
+                                    sectionId: section.id,
+                                    sectionTitle: section.title,
+                                  })
+                                }
+                                type="button"
+                              >
+                                <span>
+                                  {item.label ? <small>{item.label}</small> : null}
+                                  <strong>{item.title}</strong>
+                                </span>
+                                <em>P. {item.page}</em>
+                              </button>
+                            ))}
+                          </div>
+                        ) : null}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </aside>
+          </div>
+        ) : null}
       </section>
-
-      {catalogOpen ? (
-        <div className={styles.catalogOverlay}>
-          <button
-            aria-label="关闭文字目录"
-            className={styles.catalogBackdrop}
-            onClick={() => setCatalogOpen(false)}
-            type="button"
-          />
-          <aside
-            aria-label={`${book.shortTitle}目录`}
-            aria-modal="true"
-            className={styles.catalogPanel}
-            id="vocabulary-catalog-drawer"
-            role="dialog"
-          >
-            <div className={styles.catalogTitle}>
-              <div>
-                <p className={styles.kicker}>BOOK CONTENTS</p>
-                <h2>文字目录</h2>
-              </div>
-              <span>{allItems.length} 单元</span>
-              <button
-                aria-label="关闭文字目录"
-                className={styles.catalogClose}
-                onClick={() => setCatalogOpen(false)}
-                type="button"
-              >
-                <X size={19} />
-              </button>
-            </div>
-            <label className={styles.searchBox}>
-              <Search size={16} />
-              <span className="sr-only">搜索原书目录</span>
-              <input
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="搜索 Sentence、Word List 或场景"
-                ref={catalogSearchRef}
-                type="search"
-                value={query}
-              />
-            </label>
-
-            {normalizedQuery ? (
-              <div className={styles.searchResults}>
-                <p>找到 {searchResults.length} 个目录项</p>
-                {searchResults.slice(0, 120).map((located) => (
-                  <button
-                    className={located.item.id === currentUnitId ? styles.activeItem : undefined}
-                    key={`${located.sectionId}-${located.item.id}`}
-                    onClick={() => openItem(located)}
-                    type="button"
-                  >
-                    <span>
-                      <strong>{located.item.title}</strong>
-                      <small>{located.sectionTitle}</small>
-                    </span>
-                    <em>P. {located.item.page}</em>
-                  </button>
-                ))}
-                {searchResults.length > 120 ? (
-                  <small>结果较多，请输入更具体的关键词。</small>
-                ) : null}
-              </div>
-            ) : (
-              <div className={styles.sectionList}>
-                {book.sections.map((section) => {
-                  const expanded = section.id === activeSection?.id;
-                  return (
-                    <div className={expanded ? styles.sectionOpen : undefined} key={section.id}>
-                      <button
-                        aria-expanded={expanded}
-                        className={styles.sectionButton}
-                        onClick={() => setActiveSectionId(expanded ? '' : section.id)}
-                        type="button"
-                      >
-                        <span>
-                          <small>{section.label ?? '目录分组'}</small>
-                          <strong>{section.title}</strong>
-                        </span>
-                        <em>{section.items.length}</em>
-                        <ChevronDown size={17} />
-                      </button>
-                      {expanded ? (
-                        <div className={styles.itemList}>
-                          {section.items.map((item) => (
-                            <button
-                              className={item.id === currentUnitId ? styles.activeItem : undefined}
-                              key={item.id}
-                              onClick={() =>
-                                openItem({
-                                  item,
-                                  sectionId: section.id,
-                                  sectionTitle: section.title,
-                                })
-                              }
-                              type="button"
-                            >
-                              <span>
-                                {item.label ? <small>{item.label}</small> : null}
-                                <strong>{item.title}</strong>
-                              </span>
-                              <em>P. {item.page}</em>
-                            </button>
-                          ))}
-                        </div>
-                      ) : null}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </aside>
-        </div>
-      ) : null}
     </div>
   );
 }

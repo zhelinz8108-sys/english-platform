@@ -2127,6 +2127,11 @@ paths:
       summary: List tenant TOEFL listening audio assets
       operationId: listToeflListeningAssets
       parameters:
+        - name: collection
+          in: query
+          schema:
+            type: string
+            enum: [minute-earth, bbc-6-minute-english]
         - name: query
           in: query
           schema:
@@ -2137,7 +2142,7 @@ paths:
           schema:
             type: integer
             minimum: 1
-            maximum: 300
+            maximum: 2000
             default: 300
       responses:
         '200':
@@ -2146,12 +2151,16 @@ paths:
             application/json:
               schema:
                 type: object
-                required: [data, page]
+                required: [data, collections, page]
                 properties:
                   data:
                     type: array
                     items:
                       $ref: '#/components/schemas/ToeflListeningAsset'
+                  collections:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ToeflListeningCollection'
                   page:
                     $ref: '#/components/schemas/PageInfo'
         '401':
@@ -2185,6 +2194,54 @@ paths:
           $ref: '#/components/responses/Forbidden'
         '404':
           $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/learning/toefl/listening/{assetId}/questions/check:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - name: assetId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/Uuid'
+    post:
+      tags: [TOEFL Learning]
+      summary: Score a complete four-question listening response
+      operationId: checkToeflListeningAnswers
+      security:
+        - accessCookie: []
+          csrfHeader: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              required: [answers]
+              properties:
+                answers:
+                  type: object
+                  minProperties: 4
+                  maxProperties: 4
+                  additionalProperties:
+                    type: string
+                    enum: [a, b, c, d]
+      responses:
+        '200':
+          description: Score, private explanations, and unlocked study aids
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ToeflListeningCheckResult'
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
   /api/v1/tenants/{tenantId}/learning/toefl/listening/{assetId}/playback:
     parameters:
       - $ref: '#/components/parameters/TenantId'
@@ -5751,13 +5808,30 @@ components:
           maximum: 52428800
         sha256:
           $ref: '#/components/schemas/ContentHash'
+    ToeflListeningCollection:
+      type: object
+      additionalProperties: false
+      required: [id, label, description, count]
+      properties:
+        id:
+          type: string
+          enum: [minute-earth, bbc-6-minute-english]
+        label:
+          type: string
+        description:
+          type: string
+        count:
+          type: integer
+          minimum: 0
     ToeflListeningAsset:
       type: object
       additionalProperties: false
-      required: [id, collection, sequence, title, durationSeconds, sizeBytes, hasStudyContent, transcriptWordCount, vocabularyCount]
+      required: [id, sourceId, collection, sequence, title, publishedAt, durationSeconds, sizeBytes, hasStudyContent, transcriptWordCount, vocabularyCount]
       properties:
         id:
           $ref: '#/components/schemas/Uuid'
+        sourceId:
+          type: string
         collection:
           type: string
           example: minute-earth
@@ -5767,6 +5841,9 @@ components:
         title:
           type: string
           maxLength: 300
+        publishedAt:
+          type: [string, 'null']
+          pattern: '^[0-9]{8}$'
         durationSeconds:
           type: [integer, 'null']
           minimum: 0
@@ -5794,10 +5871,75 @@ components:
         definition:
           type: string
           minLength: 1
+        partOfSpeech:
+          type: string
+        englishDefinition:
+          type: string
+        context:
+          type: string
+        contextTranslation:
+          type: string
+    ToeflListeningQuestionOption:
+      type: object
+      additionalProperties: false
+      required: [id, text]
+      properties:
+        id:
+          type: string
+          enum: [a, b, c, d]
+        text:
+          type: string
+          minLength: 1
+    ToeflListeningPublicQuestion:
+      type: object
+      additionalProperties: false
+      required: [id, position, type, difficulty, prompt, options]
+      properties:
+        id:
+          type: string
+        position:
+          type: integer
+          minimum: 1
+          maximum: 4
+        type:
+          type: string
+          enum: [main_idea, detail, rhetorical_purpose, inference, organization, prediction]
+        difficulty:
+          type: string
+          enum: [low, medium, high]
+        prompt:
+          type: string
+          minLength: 1
+        options:
+          type: array
+          minItems: 4
+          maxItems: 4
+          items:
+            $ref: '#/components/schemas/ToeflListeningQuestionOption'
+    ToeflListeningQuestionSet:
+      type: object
+      additionalProperties: false
+      required: [sourceId, label, exactSimulation, reviewStatus, questions]
+      properties:
+        sourceId:
+          type: string
+        label:
+          type: string
+        exactSimulation:
+          type: boolean
+        reviewStatus:
+          type: string
+          enum: [reviewed, adjudicated, approved]
+        questions:
+          type: array
+          minItems: 4
+          maxItems: 4
+          items:
+            $ref: '#/components/schemas/ToeflListeningPublicQuestion'
     ToeflListeningStudyContent:
       type: object
       additionalProperties: false
-      required: [id, sequence, title, durationSeconds, transcriptWordCount, transcript, vocabulary]
+      required: [id, sequence, title, durationSeconds, transcriptWordCount, transcript, vocabulary, studyAidsLocked, questionBankStatus, questionSet]
       properties:
         id:
           $ref: '#/components/schemas/Uuid'
@@ -5812,14 +5954,120 @@ components:
           minimum: 0
         transcriptWordCount:
           type: integer
-          minimum: 1
+          minimum: 0
         transcript:
           type: string
-          minLength: 1
         vocabulary:
           type: array
           items:
             $ref: '#/components/schemas/ToeflVocabularyEntry'
+        studyAidsLocked:
+          type: boolean
+        questionBankStatus:
+          type: string
+          enum: [ready, generating, missing-transcript]
+        questionSet:
+          oneOf:
+            - $ref: '#/components/schemas/ToeflListeningQuestionSet'
+            - type: 'null'
+    ToeflListeningAnswerEvidence:
+      type: object
+      additionalProperties: false
+      required: [start, end, quote, region, progressPercent]
+      properties:
+        start:
+          type: integer
+          minimum: 0
+        end:
+          type: integer
+          minimum: 1
+        quote:
+          type: string
+        region:
+          type: string
+          enum: [开头, 中段, 结尾]
+        progressPercent:
+          type: integer
+          minimum: 0
+          maximum: 100
+    ToeflListeningAnswerResult:
+      type: object
+      additionalProperties: false
+      required: [questionId, selectedOptionId, correctOptionId, correct, explanationZh, optionRationalesZh, evidence]
+      properties:
+        questionId:
+          type: string
+        selectedOptionId:
+          oneOf:
+            - type: string
+              enum: [a, b, c, d]
+            - type: 'null'
+        correctOptionId:
+          type: string
+          enum: [a, b, c, d]
+        correct:
+          type: boolean
+        explanationZh:
+          type: string
+        optionRationalesZh:
+          type: object
+          additionalProperties: false
+          required: [a, b, c, d]
+          properties:
+            a: { type: string }
+            b: { type: string }
+            c: { type: string }
+            d: { type: string }
+        evidence:
+          type: array
+          items:
+            $ref: '#/components/schemas/ToeflListeningAnswerEvidence'
+    ToeflListeningCheckResult:
+      type: object
+      additionalProperties: false
+      required: [sourceId, answeredCount, correctCount, totalCount, percentage, reviewStatus, results, studyAids]
+      properties:
+        sourceId:
+          type: string
+        answeredCount:
+          type: integer
+          minimum: 0
+          maximum: 4
+        correctCount:
+          type: integer
+          minimum: 0
+          maximum: 4
+        totalCount:
+          type: integer
+          const: 4
+        percentage:
+          type: integer
+          minimum: 0
+          maximum: 100
+        reviewStatus:
+          type: string
+          enum: [reviewed, adjudicated, approved]
+        results:
+          type: array
+          minItems: 4
+          maxItems: 4
+          items:
+            $ref: '#/components/schemas/ToeflListeningAnswerResult'
+        studyAids:
+          type: object
+          additionalProperties: false
+          required: [transcriptWordCount, transcript, vocabulary]
+          properties:
+            transcriptWordCount:
+              type: integer
+              minimum: 1
+            transcript:
+              type: string
+              minLength: 1
+            vocabulary:
+              type: array
+              items:
+                $ref: '#/components/schemas/ToeflVocabularyEntry'
     PresignedUpload:
       type: object
       additionalProperties: false

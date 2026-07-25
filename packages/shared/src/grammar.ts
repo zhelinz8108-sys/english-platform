@@ -54,6 +54,8 @@ export interface GrammarLesson {
   english: string;
   overview: string;
   pilot: boolean;
+  patterns?: string[];
+  related?: string[];
   stages: GrammarStage[];
 }
 

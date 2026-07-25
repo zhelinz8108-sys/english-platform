@@ -502,10 +502,12 @@ export interface FileObjectsTable extends TenantOwned, MutableTimestamps {
 
 export interface ToeflListeningAssetsTable extends TenantOwned, ImmutableTimestamp {
   file_object_id: Uuid;
+  source_id: string;
   collection_slug: string;
   sequence_no: number;
   title: string;
   duration_seconds: number | null;
+  published_at: string | null;
 }
 
 export interface ToeflListeningStudyContentsTable extends TenantOwned, MutableTimestamps {
@@ -515,6 +517,17 @@ export interface ToeflListeningStudyContentsTable extends TenantOwned, MutableTi
   vocabulary: JsonColumn;
   source_file_name: string;
   source_sha256: string;
+}
+
+export interface ToeflListeningQuestionSetsTable extends TenantOwned, MutableTimestamps {
+  listening_asset_id: Uuid;
+  source_hash: string;
+  label: string;
+  exact_simulation: boolean;
+  review_status: 'reviewed' | 'adjudicated' | 'approved';
+  questions: JsonColumn;
+  skill_version: string;
+  content_generated_at: DbTimestamp;
 }
 
 export interface VocabularyAssessmentItemsTable extends TenantOwned, MutableTimestamps {
@@ -870,6 +883,7 @@ export interface Database {
   file_objects: FileObjectsTable;
   toefl_listening_assets: ToeflListeningAssetsTable;
   toefl_listening_study_contents: ToeflListeningStudyContentsTable;
+  toefl_listening_question_sets: ToeflListeningQuestionSetsTable;
   vocabulary_assessment_items: VocabularyAssessmentItemsTable;
   vocabulary_assessment_item_reviews: VocabularyAssessmentItemReviewsTable;
   vocabulary_assessment_calibrations: VocabularyAssessmentCalibrationsTable;

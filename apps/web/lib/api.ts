@@ -23,6 +23,10 @@ export interface ApiRequestOptions extends Omit<RequestInit, 'body'> {
   onResponse?: (response: Response) => void;
 }
 
+export function resolveApiRequestUrl(path: string, origin = publicOrigin): string {
+  return path.startsWith('/api/local-') ? path : origin + path;
+}
+
 export function isDemoMode(): boolean {
   const configured = process.env.NEXT_PUBLIC_DEMO_MODE;
   return configured === 'true';
@@ -157,7 +161,8 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
     requestInit.body = JSON.stringify(options.json);
   }
 
-  let response = await fetch(publicOrigin + path, requestInit);
+  const requestUrl = resolveApiRequestUrl(path);
+  let response = await fetch(requestUrl, requestInit);
   if (
     response.status === 401 &&
     options.retryAuthentication !== false &&
@@ -165,7 +170,7 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
   ) {
     const refreshed = await refreshSession();
     if (refreshed) {
-      response = await fetch(publicOrigin + path, requestInit);
+      response = await fetch(requestUrl, requestInit);
     }
   }
 

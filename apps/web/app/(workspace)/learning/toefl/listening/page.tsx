@@ -140,7 +140,7 @@ const fallbackCollections: ListeningCollection[] = [
     id: 'bbc-6-minute-english',
     label: 'BBC 6 Minute English',
     description: 'BBC 六分钟英语，含音频、原版对话稿和全库首次出现词汇。',
-    count: 0,
+    count: 863,
   },
 ];
 
@@ -312,9 +312,13 @@ export default function ToeflListeningPage() {
       }
 
       const response = await apiRequest<ListeningResponse>(
-        tenantPath(currentTenant.id, '/learning/toefl/listening?pageSize=300'),
+        tenantPath(
+          currentTenant.id,
+          `/learning/toefl/listening?collection=${encodeURIComponent(activeCollectionId)}&pageSize=2000`,
+        ),
       );
-      setTracks(response.data.filter((track) => track.collection === activeCollectionId));
+      setTracks(response.data);
+      if (response.collections) setCollections(response.collections);
       setExpandedId(null);
       setStudyById({});
       setPlaybackById({});
@@ -490,16 +494,26 @@ export default function ToeflListeningPage() {
     setSubmittingQuestionId(trackId);
     setQuestionMessagesById((current) => ({ ...current, [trackId]: '' }));
     try {
-      const response = await fetch(
-        `/api/local-listening/${encodeURIComponent(trackId)}/questions/check`,
-        {
-          body: JSON.stringify({ answers }),
-          headers: { 'Content-Type': 'application/json' },
-          method: 'POST',
-        },
-      );
-      if (!response.ok) throw new Error('答案暂时无法核对');
-      const checked = (await response.json()) as ListeningCheckResult;
+      const checked = isDemoMode()
+        ? await (async () => {
+            const response = await fetch(
+              `/api/local-listening/${encodeURIComponent(trackId)}/questions/check`,
+              {
+                body: JSON.stringify({ answers }),
+                headers: { 'Content-Type': 'application/json' },
+                method: 'POST',
+              },
+            );
+            if (!response.ok) throw new Error('答案暂时无法核对');
+            return (await response.json()) as ListeningCheckResult;
+          })()
+        : await apiRequest<ListeningCheckResult>(
+            tenantPath(
+              currentTenant.id,
+              `/learning/toefl/listening/${encodeURIComponent(trackId)}/questions/check`,
+            ),
+            { method: 'POST', json: { answers } },
+          );
       setQuestionResultsById((current) => ({ ...current, [trackId]: checked }));
       setStudyById((current) => {
         const study = current[trackId];
@@ -1022,7 +1036,6 @@ export default function ToeflListeningPage() {
                                     >
                                       <div className="listening-vocabulary-word">
                                         <div>
-                                          <strong>{entry.word}</strong>
                                           <button
                                             aria-label={`播放 ${entry.word} 的美式发音`}
                                             className={
@@ -1041,6 +1054,7 @@ export default function ToeflListeningPage() {
                                           >
                                             <Icon name="volume" size={14} />
                                           </button>
+                                          <strong>{entry.word}</strong>
                                         </div>
                                         {entry.ipa ? <span>{entry.ipa}</span> : null}
                                         {entry.partOfSpeech ? (
