@@ -76,11 +76,23 @@ describe('S3 endpoint configuration', () => {
     ).toBe(false);
   });
 
-  it('fails fast on unsafe production cookie and placeholder-secret settings', () => {
+  it('requires secure cookies for HTTPS production origins and rejects placeholder secrets', () => {
     expect(
-      environmentSchema.safeParse({ ...base, NODE_ENV: 'production', COOKIE_SECURE: 'false' })
-        .success,
+      environmentSchema.safeParse({
+        ...base,
+        NODE_ENV: 'production',
+        WEB_ORIGIN: 'https://english.example.com',
+        COOKIE_SECURE: 'false',
+      }).success,
     ).toBe(false);
+    expect(
+      environmentSchema.safeParse({
+        ...base,
+        NODE_ENV: 'production',
+        WEB_ORIGIN: 'http://101.37.18.48',
+        COOKIE_SECURE: 'false',
+      }).success,
+    ).toBe(true);
     expect(
       environmentSchema.safeParse({
         ...base,

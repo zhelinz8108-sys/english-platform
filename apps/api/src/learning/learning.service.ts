@@ -204,16 +204,15 @@ export class LearningService {
         : readyQuestionSet
           ? 'ready'
           : 'generating';
-      const studyAidsLocked = questionBankStatus === 'ready';
       return {
         id: row.id,
         sequence: row.sequence_no,
         title: row.title,
         durationSeconds: row.duration_seconds,
         transcriptWordCount: row.transcript_word_count ?? 0,
-        transcript: studyAidsLocked ? '' : transcript,
-        vocabulary: studyAidsLocked ? [] : Array.isArray(row.vocabulary) ? row.vocabulary : [],
-        studyAidsLocked,
+        transcript,
+        vocabulary: Array.isArray(row.vocabulary) ? row.vocabulary : [],
+        studyAidsLocked: false,
         questionBankStatus,
         questionSet: readyQuestionSet ? publicListeningQuestionSet(readyQuestionSet) : null,
       };

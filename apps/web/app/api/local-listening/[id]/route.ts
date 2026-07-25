@@ -18,7 +18,6 @@ export async function GET(_request: Request, context: { params: Promise<{ id: st
     getLocalListeningQuestionSet(id),
     getLocalListeningQuestionBankStatus(id),
   ]);
-  const studyAidsLocked = questionBankStatus === 'ready';
   const encodedId = encodeURIComponent(item.id);
   return Response.json(
     {
@@ -28,9 +27,9 @@ export async function GET(_request: Request, context: { params: Promise<{ id: st
       publishedAt: item.publishedAt,
       durationSeconds: item.durationSeconds,
       transcriptWordCount: item.transcriptWordCount,
-      transcript: studyAidsLocked ? '' : item.transcript,
-      vocabulary: studyAidsLocked ? [] : item.vocabulary,
-      studyAidsLocked,
+      transcript: item.transcript,
+      vocabulary: item.vocabulary,
+      studyAidsLocked: false,
       questionBankStatus,
       questionSet,
       playbackUrl: item.audioPath ? `/api/local-listening/${encodedId}/media?type=audio` : null,

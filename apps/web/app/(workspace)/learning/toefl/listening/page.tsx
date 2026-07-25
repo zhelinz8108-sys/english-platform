@@ -707,7 +707,6 @@ export default function ToeflListeningPage() {
                 const answeredQuestionCount = questionSet
                   ? questionSet.questions.filter((question) => questionAnswers[question.id]).length
                   : 0;
-                const showStudyAids = !questionSet || Boolean(questionResult);
                 const publishedDate = formatPublishedDate(track.publishedAt);
                 const publishedLabel = publishedDate ?? (track.year ? `${track.year} 年` : null);
                 return (
@@ -768,6 +767,10 @@ export default function ToeflListeningPage() {
                                   controls
                                   onEnded={() => {
                                     if (questionSet) revealQuestions(track.id);
+                                  }}
+                                  onPlay={(event) => {
+                                    event.currentTarget.muted = false;
+                                    event.currentTarget.volume = 1;
                                   }}
                                   preload="metadata"
                                   src={playbackUrl}
@@ -1005,17 +1008,7 @@ export default function ToeflListeningPage() {
                               </section>
                             )}
 
-                            {!showStudyAids ? (
-                              <div className="listening-study-locked">
-                                <Icon name="book" size={19} />
-                                <div>
-                                  <strong>原文和重点词汇将在提交四题后解锁</strong>
-                                  <p>避免提前看到文字线索影响听力练习的真实性。</p>
-                                </div>
-                              </div>
-                            ) : null}
-
-                            {showStudyAids && study.vocabulary.length ? (
+                            {study.vocabulary.length ? (
                               <section className="listening-study-section">
                                 <div className="listening-section-heading">
                                   <div>
@@ -1090,29 +1083,27 @@ export default function ToeflListeningPage() {
                               </section>
                             ) : null}
 
-                            {showStudyAids ? (
-                              <section className="listening-study-section">
-                                <div className="listening-section-heading">
-                                  <div>
-                                    <p className="eyebrow">Transcript</p>
-                                    <h3>英文原文</h3>
-                                  </div>
-                                  <span>{study.transcriptWordCount} 词</span>
+                            <section className="listening-study-section">
+                              <div className="listening-section-heading">
+                                <div>
+                                  <p className="eyebrow">Transcript</p>
+                                  <h3>英文原文</h3>
                                 </div>
-                                {study.transcript ? (
-                                  <div className="listening-transcript">
-                                    {study.transcript.split(/\n\n+/u).map((paragraph, index) => (
-                                      <p key={index}>{paragraph}</p>
-                                    ))}
-                                  </div>
-                                ) : (
-                                  <p className="listening-empty-note">
-                                    这组旧资料暂未提取出文本
-                                    {study.documentUrl ? '，请查看原版资料。' : '。'}
-                                  </p>
-                                )}
-                              </section>
-                            ) : null}
+                                <span>{study.transcriptWordCount} 词</span>
+                              </div>
+                              {study.transcript ? (
+                                <div className="listening-transcript">
+                                  {study.transcript.split(/\n\n+/u).map((paragraph, index) => (
+                                    <p key={index}>{paragraph}</p>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="listening-empty-note">
+                                  这组旧资料暂未提取出文本
+                                  {study.documentUrl ? '，请查看原版资料。' : '。'}
+                                </p>
+                              )}
+                            </section>
                           </>
                         ) : (
                           <LoadingState label="正在加载音频、词汇和原文" />
