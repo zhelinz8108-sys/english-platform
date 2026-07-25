@@ -320,7 +320,6 @@ export class LearningService {
       new GetObjectCommand({
         Bucket: this.config.values.S3_BUCKET,
         Key: asset.storage_key,
-        ResponseContentType: asset.media_type,
         ResponseCacheControl: 'private, max-age=3600',
       }),
       { expiresIn },

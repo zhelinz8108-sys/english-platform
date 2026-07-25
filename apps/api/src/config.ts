@@ -48,11 +48,13 @@ const environmentSchema = z
   })
   .superRefine((environment, ctx) => {
     if (environment.NODE_ENV !== 'production') return;
-    if (!environment.COOKIE_SECURE)
+    // HTTP is retained temporarily for the IP-based ECS deployment.  Require
+    // secure cookies as soon as the public origin is served over HTTPS.
+    if (new URL(environment.WEB_ORIGIN).protocol === 'https:' && !environment.COOKIE_SECURE)
       ctx.addIssue({
         code: 'custom',
         path: ['COOKIE_SECURE'],
-        message: 'must be true in production',
+        message: 'must be true when the production web origin uses HTTPS',
       });
     for (const [name, value] of [
       ['JWT_ACCESS_SECRET', environment.JWT_ACCESS_SECRET],
