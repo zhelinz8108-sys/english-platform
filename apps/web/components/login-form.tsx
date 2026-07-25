@@ -120,7 +120,7 @@ export function LoginForm() {
 
       <div className="login-options">
         <span>登录状态由安全会话策略自动管理</span>
-        <span>忘记密码请联系机构管理员</span>
+        <span>忘记密码请联系管理员</span>
       </div>
 
       <button className="button button-primary login-submit" disabled={submitting} type="submit">

@@ -64,7 +64,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
             type: 'about:blank',
             title: '没有可用机构',
             status: 403,
-            detail: '当前账号没有活跃的机构成员资格，请联系机构管理员。',
+            detail: '当前账号没有活跃的机构成员资格，请联系管理员。',
           }),
         );
         setState('error');

@@ -164,7 +164,7 @@ export function MemberManager() {
               <select onChange={(event) => setRole(event.target.value as TenantRole)} value={role}>
                 <option value="student">学生</option>
                 <option value="teacher">教师</option>
-                <option value="admin">机构管理员</option>
+                <option value="admin">管理员</option>
                 <option value="content_editor">内容编辑</option>
               </select>
             </label>

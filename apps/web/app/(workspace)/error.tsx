@@ -19,7 +19,7 @@ export default function WorkspaceError({
     type: 'about:blank',
     title: '页面暂时不可用',
     status: 500,
-    detail: '工作台加载时出现问题，请重试。若问题持续，请联系机构管理员。',
+    detail: '工作台加载时出现问题，请重试。若问题持续，请联系管理员。',
   };
   const problem = new ApiProblemError(
     error.digest ? { ...problemDetails, requestId: error.digest } : problemDetails,

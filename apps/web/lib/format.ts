@@ -19,8 +19,8 @@ export const taskKindLabels: Record<TaskKind, string> = {
 };
 
 export const roleLabels: Record<TenantRole, string> = {
-  owner: '机构所有者',
-  admin: '机构管理员',
+  owner: '所有者',
+  admin: '管理员',
   teacher: '教师',
   student: '学生',
   content_editor: '内容编辑',

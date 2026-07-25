@@ -81,7 +81,7 @@ export default function AdminDashboardPage() {
               ? caught
               : new ApiProblemError({
                   type: 'about:blank',
-                  title: '机构总览加载失败',
+                  title: '总览加载失败',
                   status: 500,
                 }),
           );
@@ -94,7 +94,7 @@ export default function AdminDashboardPage() {
     };
   }, [currentTenant.id]);
 
-  if (loading) return <LoadingState label="正在加载机构总览" />;
+  if (loading) return <LoadingState label="正在加载总览" />;
   if (error) return <ErrorState error={error} onRetry={() => window.location.reload()} />;
 
   const activeMembers = members.filter((member) => member.status === 'active').length;
@@ -111,7 +111,7 @@ export default function AdminDashboardPage() {
         }
         description="管理成员权限、租户内容副本与不可变发布版本。"
         eyebrow="机构管理"
-        title="机构总览"
+        title="总览"
       />
       <div className="stats-grid">
         <StatCard hint="跨角色去重" icon="users" label="活跃成员" value={activeMembers} />
