@@ -868,7 +868,12 @@ export function ToeflReadingPage({ initialGrade = null }: { initialGrade?: numbe
                   onClick={() => void completeExercise()}
                   type="button"
                 >
-                  <Icon name="check" size={17} /> {grading ? '正在判分…' : '提交并判分'}
+                  <Icon name="check" size={17} />{' '}
+                  {grading
+                    ? '正在判分…'
+                    : article.answerBankStatus === 'ready'
+                      ? '提交并判分'
+                      : '保存作答'}
                 </button>
               </div>
             ) : null}

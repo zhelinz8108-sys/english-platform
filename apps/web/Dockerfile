@@ -28,6 +28,9 @@ COPY --from=build --chown=node:node /app/node_modules ./node_modules
 COPY --from=build --chown=node:node /app/apps/web/node_modules ./apps/web/node_modules
 COPY --from=build --chown=node:node /app/packages/shared/node_modules ./packages/shared/node_modules
 COPY --from=build --chown=node:node /app/apps/web/.next ./apps/web/.next
+COPY --from=build --chown=node:node /app/apps/web/data/commonlit-reading ./apps/web/data/commonlit-reading
+COPY --from=build --chown=node:node /app/apps/web/data/commonlit-reading-answers ./apps/web/data/commonlit-reading-answers
+COPY --from=build --chown=node:node /app/apps/web/data/commonlit-reading-vocabulary ./apps/web/data/commonlit-reading-vocabulary
 COPY --from=build --chown=node:node /app/apps/web/data/vocabulary-book-content ./apps/web/data/vocabulary-book-content
 COPY --from=build --chown=node:node /app/apps/web/package.json ./apps/web/package.json
 COPY --from=build --chown=node:node /app/apps/web/next.config.ts ./apps/web/next.config.ts
