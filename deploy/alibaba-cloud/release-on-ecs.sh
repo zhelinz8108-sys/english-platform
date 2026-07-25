@@ -82,7 +82,8 @@ if [[ -z "${web_address}" ]]; then
   echo "Unable to determine the published web address." >&2
   exit 70
 fi
-curl --fail --show-error --silent --retry 12 --retry-delay 2 "http://${web_address}/healthz" >/dev/null
+curl --fail --show-error --silent --retry 12 --retry-all-errors --retry-delay 2 \
+  "http://${web_address}/healthz" >/dev/null
 
 rm -rf "${release_dir}"
 mv "${staging_dir}" "${release_dir}"
