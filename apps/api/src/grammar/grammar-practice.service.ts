@@ -12,7 +12,7 @@ import {
   grammarContentVersion,
   grammarCorrectAnswerLabel,
   isGrammarAnswerCorrect,
-  pilotGrammarTopicIds,
+  grammarTopicIds,
   toPublicGrammarQuestion,
 } from '@english/shared/grammar-content';
 import { sql } from 'kysely';
@@ -81,10 +81,10 @@ export class GrammarPracticeService {
         from grammar_practice_sessions
         where tenant_id = ${context.tenantId}::uuid
           and learner_membership_id = ${context.membershipId}::uuid
-          and topic_id in (${sql.join(pilotGrammarTopicIds.map((id) => sql`${id}`))})
+          and topic_id in (${sql.join(grammarTopicIds.map((id) => sql`${id}`))})
         order by updated_at desc
       `.execute(transaction);
-      const entries = pilotGrammarTopicIds.flatMap((topicId) =>
+      const entries = grammarTopicIds.flatMap((topicId) =>
         grammarLevelIds.map((level) => {
           const rows = result.rows.filter((row) => row.topic_id === topicId && row.level === level);
           const completed = rows.filter((row) => row.status === 'completed');
@@ -120,7 +120,7 @@ export class GrammarPracticeService {
             (entry) => entry.status === 'practiced' || entry.status === 'mastered',
           ).length,
           masteredStageCount: entries.filter((entry) => entry.status === 'mastered').length,
-          publishedStageCount: pilotGrammarTopicIds.length * grammarLevelIds.length,
+          publishedStageCount: grammarTopicIds.length * grammarLevelIds.length,
         },
       };
     });

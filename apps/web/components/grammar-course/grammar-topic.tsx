@@ -136,7 +136,7 @@ export function GrammarTopic(props: {
             <span>{lesson.title}</span>
           </nav>
           <p className={styles.eyebrow}>
-            {lesson.pilot ? 'Complete topic lesson' : 'Curriculum topic'}
+            {lesson.pilot ? 'Complete grammar lesson' : 'Curriculum topic'}
           </p>
           <h1>{lesson.title}</h1>
           <h2>{lesson.english}</h2>
@@ -336,7 +336,7 @@ export function GrammarTopic(props: {
                   <CheckCircle2 size={14} /> 已掌握，可再次练习巩固这个知识点。
                 </>
               ) : (
-                `${questionCount}道原创题按由简到难排列，每组达到80%后继续下一组。`
+                `${questionCount}道分级练习按由简到难排列，每组达到80%后继续下一组。`
               )}
             </p>
             {practiceLevel ? (

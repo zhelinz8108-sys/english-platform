@@ -4,9 +4,8 @@ import type {
   GrammarLesson,
   GrammarLevelId,
   GrammarModuleSummary,
-  GrammarSourceRef,
 } from '@english/shared';
-import { getPilotGrammarLesson, pilotGrammarTopicIds } from '@english/shared/grammar-content';
+import { getGrammarLesson, grammarTopicIds } from '@english/shared/grammar-content';
 import grammarLibrary from '@/data/grammar-library.json';
 
 interface RawSource {
@@ -52,33 +51,7 @@ const raw = grammarLibrary as unknown as {
   summary: GrammarCatalog['summary'];
   parts: RawPart[];
 };
-const pilotTopicSet = new Set(pilotGrammarTopicIds);
-
-function sourceRef(level: GrammarLevelId, value: RawSource): GrammarSourceRef {
-  return { bookId: level, levelLabel: value.level, rangeLabel: value.rangeLabel };
-}
-
-const curatedRuleTitles: Record<string, string[]> = {
-  'verb-forms': [
-    '规则动词：-ed 与 -ing',
-    '以辅音字母 + y 结尾',
-    '何时需要双写末字母',
-    '过去式不等于过去分词',
-    '把不规则动词成组记',
-    'do / does / did 后用原形',
-    '英式与美式变体',
-    'hung 还是 hanged？',
-    '分词作形容词时的变化',
-  ],
-};
-
-function inferRuleTitle(body: string): string {
-  const firstClause = body.split(/[；。]/u)[0]?.trim() ?? '';
-  const condition = firstClause.split('，')[0]?.trim() ?? '';
-  if (condition.length >= 5 && condition.length <= 24) return condition;
-  if (firstClause.length >= 5 && firstClause.length <= 24) return firstClause;
-  return firstClause ? `${firstClause.slice(0, 23)}…` : '核心规则说明';
-}
+const publishedTopicSet = new Set<string>(grammarTopicIds);
 
 export function getGrammarCatalog(): GrammarCatalog {
   return {
@@ -89,7 +62,7 @@ export function getGrammarCatalog(): GrammarCatalog {
       topicCount: raw.summary.topicCount,
       levelLessonCount: raw.summary.levelLessonCount,
       sourceUnitCount: raw.summary.sourceUnitCount,
-      publishedTopicCount: pilotGrammarTopicIds.length,
+      publishedTopicCount: grammarTopicIds.length,
     },
     modules: raw.parts.map((part) => ({
       id: part.id,
@@ -104,7 +77,7 @@ export function getGrammarCatalog(): GrammarCatalog {
         title: topic.title,
         english: topic.english,
         overview: topic.overview,
-        pilot: pilotTopicSet.has(topic.id),
+        pilot: publishedTopicSet.has(topic.id),
       })),
     })),
   };
@@ -127,38 +100,8 @@ export function getGrammarTopicContext(topicId: string): {
   const index = flatTopics.findIndex(({ topic }) => topic.id === topicId);
   const context = flatTopics[index];
   if (!context) return null;
-  const pilot = getPilotGrammarLesson(topicId);
-  const sourceTopic = raw.parts
-    .flatMap((part) => part.topics)
-    .find((topic) => topic.id === topicId)!;
-  const lesson: GrammarLesson = pilot ?? {
-    topicId: sourceTopic.id,
-    title: sourceTopic.title,
-    english: sourceTopic.english,
-    overview: sourceTopic.overview,
-    pilot: false,
-    patterns: sourceTopic.patterns,
-    related: sourceTopic.related,
-    stages: sourceTopic.levels.map((level, levelIndex) => ({
-      id: `${sourceTopic.id}:${level.id}`,
-      level: level.id,
-      label: level.label,
-      focus: level.focus,
-      estimatedMinutes: 5,
-      objectives: [level.focus],
-      rules: level.content.map((body, ruleIndex) => ({
-        title:
-          curatedRuleTitles[sourceTopic.id]?.[levelIndex * level.content.length + ruleIndex] ??
-          inferRuleTitle(body),
-        body,
-      })),
-      examples: sourceTopic.examples.slice(levelIndex * 2, levelIndex * 2 + 2),
-      mistakes: sourceTopic.mistakes,
-      sources: level.source ? [sourceRef(level.id, level.source)] : [],
-      questionCount: 0,
-      practiceAvailable: false,
-    })),
-  };
+  const lesson = getGrammarLesson(topicId);
+  if (!lesson) return null;
   return {
     lesson,
     module: context.module,

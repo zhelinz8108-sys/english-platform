@@ -1,27 +1,27 @@
 import { describe, expect, it } from 'vitest';
 import {
   getGrammarQuestionDefinitions,
-  getPilotGrammarLesson,
+  getGrammarLesson,
   grammarCorrectAnswerLabel,
+  grammarTopicIds,
   isGrammarAnswerCorrect,
-  pilotGrammarTopicIds,
   toPublicGrammarQuestion,
-  validateGrammarPilotContent,
+  validateGrammarContent,
 } from './grammar-content.js';
 
-describe('pilot grammar content', () => {
-  it('publishes five lessons, fifteen stages and 150 original questions', () => {
-    expect(validateGrammarPilotContent()).toEqual({
-      lessonCount: 5,
-      stageCount: 15,
-      questionCount: 150,
+describe('complete grammar content', () => {
+  it('publishes 86 lessons, 258 stages and 2580 questions', () => {
+    expect(validateGrammarContent()).toEqual({
+      lessonCount: 86,
+      stageCount: 258,
+      questionCount: 2580,
     });
-    expect(new Set(pilotGrammarTopicIds).size).toBe(5);
+    expect(new Set(grammarTopicIds).size).toBe(86);
   });
 
   it('gives every stage the required lesson structure', () => {
-    for (const topicId of pilotGrammarTopicIds) {
-      const lesson = getPilotGrammarLesson(topicId);
+    for (const topicId of grammarTopicIds) {
+      const lesson = getGrammarLesson(topicId);
       expect(lesson?.stages.map((stage) => stage.level)).toEqual([
         'beginner',
         'intermediate',
@@ -29,10 +29,10 @@ describe('pilot grammar content', () => {
       ]);
       for (const stage of lesson?.stages ?? []) {
         expect(stage.rules.length).toBeGreaterThanOrEqual(3);
-        expect(stage.examples).toHaveLength(6);
-        expect(stage.mistakes).toHaveLength(3);
+        expect(stage.examples.length).toBeGreaterThanOrEqual(6);
+        expect(stage.mistakes.length).toBeGreaterThanOrEqual(2);
         expect(stage.questionCount).toBe(10);
-        expect(stage.sources).toHaveLength(1);
+        expect(stage.practiceAvailable).toBe(true);
       }
     }
   });
@@ -44,6 +44,26 @@ describe('pilot grammar content', () => {
     expect(publicQuestion).not.toHaveProperty('acceptedAnswers');
     expect(publicQuestion).not.toHaveProperty('explanation');
     expect(grammarCorrectAnswerLabel(privateQuestion)).not.toBe('');
+  });
+
+  it('keeps every generated question answerable and unambiguous at the payload level', () => {
+    for (const topicId of grammarTopicIds) {
+      for (const level of ['beginner', 'intermediate', 'advanced'] as const) {
+        for (const question of getGrammarQuestionDefinitions(topicId, level)) {
+          expect(question.prompt.trim()).not.toBe('');
+          expect(question.explanation.trim()).not.toBe('');
+          if (question.options) {
+            expect(question.options.length).toBeGreaterThanOrEqual(2);
+            expect(new Set(question.options.map((option) => option.label)).size).toBe(
+              question.options.length,
+            );
+            expect(question.options.some((option) => option.id === question.correctAnswer)).toBe(
+              true,
+            );
+          }
+        }
+      }
+    }
   });
 
   it('scores choice and fill-in answers with normalized text', () => {

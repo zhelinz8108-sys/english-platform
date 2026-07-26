@@ -72,7 +72,7 @@ export function GrammarOverview({ catalog }: { catalog: GrammarCatalog }) {
           <strong>{catalog.summary.topicCount}</strong>
         </div>
         <div>
-          <span>完整课程</span>
+          <span>已开放知识点</span>
           <strong>{catalog.summary.publishedTopicCount}</strong>
         </div>
         <div>
@@ -86,7 +86,7 @@ export function GrammarOverview({ catalog }: { catalog: GrammarCatalog }) {
       ) : null}
       <div className={styles.notice}>
         <BookOpenCheck size={15} />{' '}
-        当前已开放5个完整知识点和150道原创练习；三本教材的内容已按由简到难合并，其余知识点逐步补充练习。
+        86个知识点和2580道分级练习均已开放；三本教材的内容已去重，并按初级、中级、高级连续编排。
       </div>
 
       <div className={styles.toolbar}>

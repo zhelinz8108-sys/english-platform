@@ -10,6 +10,7 @@ import type {
   GrammarSourceRef,
   GrammarStage,
 } from './grammar.js';
+import grammarLibraryData from './grammar-library.generated.js';
 
 interface PracticeExample extends GrammarExample {
   practice?: {
@@ -2089,27 +2090,218 @@ const lessons: LessonBlueprint[] = [
   },
 ];
 
-export const grammarContentVersion = 'grammar-pilot-2026-07-v1';
-export const pilotGrammarTopicIds = lessons.map((lesson) => lesson.topicId);
+type GeneratedTopic = (typeof grammarLibraryData.parts)[number]['topics'][number];
+type GeneratedLevel = GeneratedTopic['levels'][number];
 
+const generatedTopics = grammarLibraryData.parts.flatMap((part) => [...part.topics]);
+const generatedTopicById = new Map<string, GeneratedTopic>(
+  generatedTopics.map((topic) => [topic.id, topic]),
+);
+const handcraftedTopicIds = new Set(lessons.map((lesson) => lesson.topicId));
 const lessonById = new Map(lessons.map((lesson) => [lesson.topicId, lesson]));
-const questions = lessons.flatMap((lesson) =>
+
+function inferredRuleTitle(body: string, index: number): string {
+  const firstClause = body.split(/[。；：]/u)[0]?.trim() ?? '';
+  if (firstClause.length >= 4 && firstClause.length <= 26) return firstClause;
+  if (firstClause.length > 26) return `${firstClause.slice(0, 25)}…`;
+  return `核心规则 ${index + 1}`;
+}
+
+function generatedStage(topic: GeneratedTopic, level: GeneratedLevel): GrammarStage {
+  const grammarLevel = level.id as GrammarLevelId;
+  return {
+    id: `${topic.id}:${grammarLevel}`,
+    level: grammarLevel,
+    label: level.label,
+    focus: level.focus,
+    estimatedMinutes: 10,
+    objectives: [
+      `理解${level.focus}`,
+      `识别“${topic.title}”的正确结构`,
+      '能够在真实句子中发现并修正常见错误',
+    ],
+    rules: level.content.map((body, index) => ({
+      title: inferredRuleTitle(body, index),
+      body,
+    })),
+    examples: topic.examples.map((example) => ({ ...example })),
+    mistakes: topic.mistakes.map((mistake) => ({ ...mistake })),
+    sources: level.source
+      ? [
+          {
+            bookId: grammarLevel,
+            levelLabel: level.source.level,
+            rangeLabel: level.source.rangeLabel,
+          },
+        ]
+      : [],
+    questionCount: 10,
+    practiceAvailable: true,
+  };
+}
+
+function generatedLesson(topic: GeneratedTopic): GrammarLesson {
+  return {
+    topicId: topic.id,
+    title: topic.title,
+    english: topic.english,
+    overview: topic.overview,
+    pilot: true,
+    patterns: [...topic.patterns],
+    related: [...topic.related],
+    stages: topic.levels.map((level) => generatedStage(topic, level)),
+  };
+}
+
+const allRuleBodies = generatedTopics.flatMap((topic) =>
+  topic.levels.flatMap((level) => [...level.content]),
+);
+const allPatterns = generatedTopics.flatMap((topic) => [...topic.patterns]);
+
+function distinctChoices(correct: string, candidates: readonly string[]): string[] {
+  const choices = [correct];
+  for (const candidate of candidates) {
+    if (candidate !== correct && !choices.includes(candidate)) choices.push(candidate);
+    if (choices.length === 4) break;
+  }
+  return choices;
+}
+
+function rotatedCandidates(values: readonly string[], seed: string): string[] {
+  const offset = hash(seed) % values.length;
+  return values.map((_, index) => values[(index + offset) % values.length]!);
+}
+
+function generatedQuestionsForStage(
+  topic: GeneratedTopic,
+  level: GeneratedLevel,
+  levelIndex: number,
+): GrammarQuestionDefinition[] {
+  const grammarLevel = level.id as GrammarLevelId;
+  const prefix = `${topic.id}:${grammarLevel}`;
+  const ruleQuestions = level.content.map((body, index) => {
+    const id = `${prefix}:q${index + 1}`;
+    const labels = distinctChoices(body, rotatedCandidates(allRuleBodies, id));
+    return {
+      id,
+      topicId: topic.id,
+      level: grammarLevel,
+      kind: 'single_choice' as const,
+      prompt: `关于“${topic.title}”（${level.label}），哪项是本阶段讲解的规则？`,
+      instruction: '选择本阶段课程中讲解的内容。',
+      ...choiceOptions(labels, 0, id),
+      explanation: body,
+    };
+  });
+  const exampleStart = levelIndex * 2;
+  const exampleQuestions = [0, 1].map((offset) => {
+    const example = topic.examples[(exampleStart + offset) % topic.examples.length]!;
+    const id = `${prefix}:q${level.content.length + offset + 1}`;
+    return {
+      id,
+      topicId: topic.id,
+      level: grammarLevel,
+      kind: 'true_false' as const,
+      prompt: `句子“${example.english}”在本知识点下表达正确。`,
+      instruction: '判断句子的语法是否正确。',
+      options: [
+        { id: 'true', label: '正确' },
+        { id: 'false', label: '错误' },
+      ],
+      correctAnswer: 'true',
+      explanation: `${example.chinese}；该句展示了“${topic.title}”的正确用法。`,
+    };
+  });
+  const mistakeJudgements = topic.mistakes.map((mistake, index) => {
+    const id = `${prefix}:q${level.content.length + 3 + index}`;
+    return {
+      id,
+      topicId: topic.id,
+      level: grammarLevel,
+      kind: 'true_false' as const,
+      prompt: `句子“${mistake.wrong}”语法正确。`,
+      instruction: '判断句子的语法是否正确。',
+      options: [
+        { id: 'true', label: '正确' },
+        { id: 'false', label: '错误' },
+      ],
+      correctAnswer: 'false',
+      explanation: mistake.explanation,
+    };
+  });
+  const correctionQuestions = topic.mistakes.map((mistake, index) => {
+    const id = `${prefix}:q${level.content.length + 5 + index}`;
+    const delivered = choiceOptions([mistake.right, mistake.wrong], 0, id);
+    return {
+      id,
+      topicId: topic.id,
+      level: grammarLevel,
+      kind: 'error_correction' as const,
+      prompt: `选择“${mistake.wrong}”的正确改写。`,
+      instruction: '在两个句子中选择语法正确的一项。',
+      ...delivered,
+      explanation: mistake.explanation,
+    };
+  });
+  const patternId = `${prefix}:q10`;
+  const pattern = topic.patterns[levelIndex % topic.patterns.length]!;
+  const patternLabels = distinctChoices(pattern, rotatedCandidates(allPatterns, patternId));
+  const patternQuestion: GrammarQuestionDefinition = {
+    id: patternId,
+    topicId: topic.id,
+    level: grammarLevel,
+    kind: 'single_choice',
+    prompt: `哪一个是“${topic.title}”课程列出的核心结构？`,
+    instruction: '根据课程中的结构板选择。',
+    ...choiceOptions(patternLabels, 0, patternId),
+    explanation: `本阶段的核心结构包括：${topic.patterns.join('；')}。`,
+  };
+  return [
+    ...ruleQuestions,
+    ...exampleQuestions,
+    ...mistakeJudgements,
+    ...correctionQuestions,
+    patternQuestion,
+  ];
+}
+
+const handcraftedQuestions = lessons.flatMap((lesson) =>
   lesson.stages.flatMap((stage) => buildQuestions(lesson.topicId, stage)),
 );
+const generatedQuestions = generatedTopics
+  .filter((topic) => !handcraftedTopicIds.has(topic.id))
+  .flatMap((topic) =>
+    topic.levels.flatMap((level, levelIndex) =>
+      generatedQuestionsForStage(topic, level, levelIndex),
+    ),
+  );
+const questions = [...handcraftedQuestions, ...generatedQuestions];
 const questionById = new Map(questions.map((question) => [question.id, question]));
 
-export function getPilotGrammarLesson(topicId: string): GrammarLesson | null {
+export const grammarContentVersion = 'grammar-complete-2026-07-v2';
+export const grammarTopicIds = generatedTopics.map((topic) => topic.id);
+/** @deprecated Use grammarTopicIds. */
+export const pilotGrammarTopicIds = grammarTopicIds;
+
+export function getGrammarLesson(topicId: string): GrammarLesson | null {
   const lesson = lessonById.get(topicId);
-  if (!lesson) return null;
+  const generated = generatedTopicById.get(topicId);
+  if (!generated) return null;
+  if (!lesson) return generatedLesson(generated);
   return {
     topicId: lesson.topicId,
     title: lesson.title,
     english: lesson.english,
     overview: lesson.overview,
     pilot: true,
+    patterns: [...generated.patterns],
+    related: [...generated.related],
     stages: lesson.stages.map((stage) => toStage(lesson.topicId, stage)),
   };
 }
+
+/** @deprecated Use getGrammarLesson. */
+export const getPilotGrammarLesson = getGrammarLesson;
 
 export function getGrammarQuestionDefinitions(
   topicId: string,
@@ -2155,39 +2347,55 @@ export function grammarCorrectAnswerLabel(question: GrammarQuestionDefinition): 
   );
 }
 
-export function validateGrammarPilotContent(): {
+export function validateGrammarContent(): {
   lessonCount: number;
   stageCount: number;
   questionCount: number;
 } {
-  if (lessons.length !== 5) throw new Error(`Expected 5 pilot lessons, found ${lessons.length}.`);
-  const topicIds = new Set(lessons.map((lesson) => lesson.topicId));
-  if (topicIds.size !== lessons.length) throw new Error('Duplicate pilot grammar topic id.');
-  for (const lesson of lessons) {
+  if (grammarTopicIds.length !== 86) {
+    throw new Error(`Expected 86 grammar lessons, found ${grammarTopicIds.length}.`);
+  }
+  if (new Set(grammarTopicIds).size !== grammarTopicIds.length) {
+    throw new Error('Duplicate grammar topic id.');
+  }
+  for (const topicId of grammarTopicIds) {
+    const lesson = getGrammarLesson(topicId);
+    if (!lesson) throw new Error(`Missing grammar lesson: ${topicId}.`);
     const levels = lesson.stages.map((stage) => stage.level).join(',');
     if (levels !== 'beginner,intermediate,advanced') {
-      throw new Error(`Invalid stage order for ${lesson.topicId}: ${levels}`);
+      throw new Error(`Invalid stage order for ${topicId}: ${levels}`);
     }
     for (const stage of lesson.stages) {
-      toStage(lesson.topicId, stage);
-      const stageQuestions = getGrammarQuestionDefinitions(lesson.topicId, stage.level);
+      if (
+        stage.rules.length < 3 ||
+        stage.examples.length < 6 ||
+        stage.mistakes.length < 2 ||
+        !stage.practiceAvailable
+      ) {
+        throw new Error(`Incomplete grammar stage: ${topicId}:${stage.level}.`);
+      }
+      const stageQuestions = getGrammarQuestionDefinitions(topicId, stage.level);
       if (stageQuestions.length !== 10) {
         throw new Error(
-          `Expected 10 questions for ${lesson.topicId}:${stage.level}, found ${stageQuestions.length}.`,
+          `Expected 10 questions for ${topicId}:${stage.level}, found ${stageQuestions.length}.`,
         );
       }
     }
   }
-  if (questions.length !== 150)
-    throw new Error(`Expected 150 questions, found ${questions.length}.`);
+  if (questions.length !== 2_580) {
+    throw new Error(`Expected 2580 questions, found ${questions.length}.`);
+  }
   if (new Set(questions.map((question) => question.id)).size !== questions.length) {
-    throw new Error('Duplicate pilot grammar question id.');
+    throw new Error('Duplicate grammar question id.');
   }
   return {
-    lessonCount: lessons.length,
-    stageCount: lessons.length * 3,
+    lessonCount: grammarTopicIds.length,
+    stageCount: grammarTopicIds.length * 3,
     questionCount: questions.length,
   };
 }
 
-validateGrammarPilotContent();
+/** @deprecated Use validateGrammarContent. */
+export const validateGrammarPilotContent = validateGrammarContent;
+
+validateGrammarContent();

@@ -12,7 +12,7 @@ import {
   getGrammarQuestionDefinitions,
   grammarCorrectAnswerLabel,
   isGrammarAnswerCorrect,
-  pilotGrammarTopicIds,
+  grammarTopicIds,
   toPublicGrammarQuestion,
 } from '@english/shared/grammar-content';
 
@@ -86,7 +86,7 @@ export function localGrammarPracticeEnabled(): boolean {
 }
 
 export function getLocalGrammarProgress(): GrammarProgressEnvelope {
-  const entries = pilotGrammarTopicIds.flatMap((topicId) =>
+  const entries = grammarTopicIds.flatMap((topicId) =>
     grammarLevelIds.map((level) => {
       const sessions = [...store.sessions.values()]
         .filter((session) => session.topicId === topicId && session.level === level)
@@ -121,7 +121,7 @@ export function getLocalGrammarProgress(): GrammarProgressEnvelope {
         (entry) => entry.status === 'practiced' || entry.status === 'mastered',
       ).length,
       masteredStageCount: entries.filter((entry) => entry.status === 'mastered').length,
-      publishedStageCount: pilotGrammarTopicIds.length * grammarLevelIds.length,
+      publishedStageCount: grammarTopicIds.length * grammarLevelIds.length,
     },
   };
 }

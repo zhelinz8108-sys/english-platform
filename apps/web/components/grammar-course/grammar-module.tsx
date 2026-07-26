@@ -39,7 +39,7 @@ export function GrammarModule({ module }: { module: GrammarModuleSummary }) {
             <strong>{module.topics.length}</strong> 个知识点
           </span>
           <span>
-            <strong>{pilotCount}</strong> 个完整课程
+            <strong>{pilotCount}</strong> 个已开放课程
           </span>
           <span>
             <strong>3</strong> 本教材融合
@@ -91,7 +91,7 @@ export function GrammarModule({ module }: { module: GrammarModuleSummary }) {
                         : '开始学习'}
                   </span>
                 ) : (
-                  <span className={styles.comingSoon}>课程内容</span>
+                  <span className={styles.comingSoon}>内容整理中</span>
                 )}
                 <ArrowRight aria-hidden size={16} />
               </Link>
