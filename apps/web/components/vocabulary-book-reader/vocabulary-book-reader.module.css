@@ -292,14 +292,6 @@
   white-space: nowrap;
 }
 
-.itemList button em,
-.searchResults button em {
-  flex: 0 0 auto;
-  color: var(--ink-500);
-  font-size: 8px;
-  font-style: normal;
-}
-
 .searchResults > p {
   margin: 0 0 3px;
   color: var(--ink-500);
@@ -487,14 +479,6 @@
   border-top: 1px solid var(--ink-100);
 }
 
-.pageMarker {
-  margin-bottom: 18px;
-  color: var(--ink-500);
-  font-size: 8.5px;
-  font-weight: 750;
-  letter-spacing: 0.06em;
-}
-
 .blockList {
   display: block;
 }
@@ -548,7 +532,6 @@
 }
 
 .contentSection + .entryGroup,
-.pageMarker + .blockList > .entryGroup:first-child,
 .blockList > .entryGroup:first-child {
   border-top: 0;
 }

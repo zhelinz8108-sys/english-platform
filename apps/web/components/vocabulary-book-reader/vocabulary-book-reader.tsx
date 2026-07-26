@@ -654,10 +654,6 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
                   <p>{content.sectionTitle}</p>
                   <h1>{content.title}</h1>
                   <div>
-                    <span>
-                      原书 P. {content.pageStart}
-                      {content.pageEnd > content.pageStart ? `–${content.pageEnd}` : ''}
-                    </span>
                     <span>{content.wordEntryCount} 个首次出现词条</span>
                     {content.duplicateEntryCount > 0 ? (
                       <span>已去除 {content.duplicateEntryCount} 个重复词条</span>
@@ -667,7 +663,6 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
                 {visiblePages.length ? (
                   visiblePages.map((page) => (
                     <section className={styles.contentPage} key={page.number}>
-                      <div className={styles.pageMarker}>原书第 {page.number} 页</div>
                       <div className={styles.blockList}>
                         {groupVocabularyBlocks(page.blocks).map((item) => {
                           const audioIdPrefix = `${content.unitId}-${page.number}`;
@@ -741,7 +736,7 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
               </div>
               <label className={styles.searchBox}>
                 <Search size={16} />
-                <span className="sr-only">搜索原书目录</span>
+                <span className="sr-only">搜索文字目录</span>
                 <input
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="搜索 Sentence、Word List 或场景"
@@ -765,7 +760,6 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
                         <strong>{located.item.title}</strong>
                         <small>{located.sectionTitle}</small>
                       </span>
-                      <em>P. {located.item.page}</em>
                     </button>
                   ))}
                   {searchResults.length > 120 ? (
@@ -812,7 +806,6 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
                                   {item.label ? <small>{item.label}</small> : null}
                                   <strong>{item.title}</strong>
                                 </span>
-                                <em>P. {item.page}</em>
                               </button>
                             ))}
                           </div>
