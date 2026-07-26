@@ -130,13 +130,14 @@ async function refreshSession(): Promise<boolean> {
 
 export async function apiRequest<T>(path: string, options: ApiRequestOptions = {}): Promise<T> {
   const method = (options.method ?? 'GET').toUpperCase();
+  const requiresCsrf = !['GET', 'HEAD', 'OPTIONS'].includes(method);
   const headers = new Headers(options.headers);
   headers.set('Accept', 'application/json');
 
   if (options.json !== undefined) {
     headers.set('Content-Type', 'application/json');
   }
-  if (!['GET', 'HEAD', 'OPTIONS'].includes(method)) {
+  if (requiresCsrf) {
     headers.set('X-CSRF-Token', await bootstrapCsrf());
   }
   if (options.idempotencyKey) {
@@ -163,6 +164,14 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
 
   const requestUrl = resolveApiRequestUrl(path);
   let response = await fetch(requestUrl, requestInit);
+  if (requiresCsrf && response.status === 403) {
+    const problem = await readProblem(response.clone());
+    if (problem.code === 'csrf_failed') {
+      csrfToken = null;
+      headers.set('X-CSRF-Token', await bootstrapCsrf());
+      response = await fetch(requestUrl, requestInit);
+    }
+  }
   if (
     response.status === 401 &&
     options.retryAuthentication !== false &&
