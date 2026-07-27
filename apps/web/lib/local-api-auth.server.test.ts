@@ -67,4 +67,54 @@ describe('authorizeLocalApiRequest', () => {
     expect(response?.status).toBe(403);
     expect(fetcher).not.toHaveBeenCalled();
   });
+
+  it('uses the configured public origin behind a reverse proxy', async () => {
+    const fetcher = vi.fn<typeof fetch>().mockResolvedValue(new Response('{}', { status: 200 }));
+    const proxiedRequest = new Request(
+      'http://web:3000/api/local-vocabulary-books/toefl-sentences/sentence-assessment',
+      {
+        method: 'POST',
+        headers: {
+          cookie: 'access_token=valid',
+          origin: 'https://learn.example.com',
+          'sec-fetch-site': 'same-origin',
+        },
+      },
+    );
+
+    const response = await authorizeLocalApiRequest(
+      proxiedRequest,
+      fetcher,
+      'http://api:4000',
+      'https://learn.example.com/',
+    );
+
+    expect(response).toBeNull();
+    expect(fetcher).toHaveBeenCalledOnce();
+  });
+
+  it('still rejects a foreign origin when a public origin is configured', async () => {
+    const fetcher = vi.fn<typeof fetch>();
+    const proxiedRequest = new Request(
+      'http://web:3000/api/local-vocabulary-books/toefl-sentences/sentence-assessment',
+      {
+        method: 'POST',
+        headers: {
+          cookie: 'access_token=valid',
+          origin: 'https://evil.example',
+          'sec-fetch-site': 'cross-site',
+        },
+      },
+    );
+
+    const response = await authorizeLocalApiRequest(
+      proxiedRequest,
+      fetcher,
+      'http://api:4000',
+      'https://learn.example.com',
+    );
+
+    expect(response?.status).toBe(403);
+    expect(fetcher).not.toHaveBeenCalled();
+  });
 });

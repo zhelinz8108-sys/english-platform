@@ -167,6 +167,7 @@ services:
     environment:
       NODE_ENV: production
       API_ORIGIN: http://api:4000
+      WEB_ORIGIN: ${WEB_ORIGIN:-http://localhost:3000}
     ports:
       - '${WEB_PORT:-3000}:3000'
     depends_on:

@@ -17,10 +17,10 @@ function problem(status: number, title: string, detail: string): Response {
   );
 }
 
-function validateSameOrigin(request: Request): Response | null {
+function validateSameOrigin(request: Request, configuredWebOrigin?: string): Response | null {
   if (safeMethods.has(request.method.toUpperCase())) return null;
 
-  const requestOrigin = new URL(request.url).origin;
+  const requestOrigin = new URL(configuredWebOrigin || request.url).origin;
   const origin = request.headers.get('origin');
   const fetchSite = request.headers.get('sec-fetch-site');
   if (
@@ -36,8 +36,9 @@ export async function authorizeLocalApiRequest(
   request: Request,
   fetcher: FetchLike = fetch,
   apiOrigin = process.env.API_ORIGIN?.replace(/\/$/, '') ?? 'http://localhost:4000',
+  webOrigin = process.env.WEB_ORIGIN,
 ): Promise<Response | null> {
-  const originProblem = validateSameOrigin(request);
+  const originProblem = validateSameOrigin(request, webOrigin);
   if (originProblem) return originProblem;
 
   const cookie = request.headers.get('cookie');

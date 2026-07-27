@@ -176,6 +176,7 @@ services:
       NODE_ENV: production
       NODE_OPTIONS: --max-old-space-size=192
       API_ORIGIN: http://api:4000
+      WEB_ORIGIN: ${WEB_ORIGIN}
       ENABLE_LOCAL_READING: 'true'
     ports:
       - '127.0.0.1:${PLATFORM_WEB_PORT:-3100}:3000'
