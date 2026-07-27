@@ -15,7 +15,9 @@ export interface AppTenant {
 export interface AppUser {
   id: string;
   displayName: string;
-  email: string;
+  email: string | null;
+  loginName: string | null;
+  mustChangePassword: boolean;
 }
 
 export interface PageEnvelope<T> {
@@ -217,11 +219,15 @@ export interface StudentSummary {
 
 export interface Membership {
   id: string;
-  email: string;
+  email: string | null;
+  loginName: string | null;
   displayName: string;
   status: 'invited' | 'active' | 'suspended' | 'left';
   roles: TenantRole[];
   joinedAt: string | null;
+  mustChangePassword?: boolean;
+  studentNumber?: string | null;
+  gradeLevel?: string | null;
 }
 
 export interface CatalogItem {

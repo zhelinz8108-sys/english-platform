@@ -54,7 +54,7 @@ class Client {
     await this.request('/api/v1/auth/login', {
       method: 'POST',
       mutate: true,
-      body: { email: 'student@example.test', password: 'Demo123!' },
+      body: { identifier: 'student@example.test', password: 'Demo123!' },
     });
   }
 }

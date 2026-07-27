@@ -13,6 +13,7 @@ import {
 import { Icon } from '@/components/icon';
 import { useWorkspace } from '@/components/workspace-provider';
 import { ApiProblemError, apiRequest, isDemoMode, tenantPath } from '@/lib/api';
+import { createProgressEventId, recordSelfStudyProgress } from '@/lib/self-study-progress';
 
 type ListeningCollectionId = 'minute-earth' | 'bbc-6-minute-english';
 type BbcYearFilter = number | 'all' | 'latest';
@@ -515,6 +516,22 @@ export default function ToeflListeningPage() {
             { method: 'POST', json: { answers } },
           );
       setQuestionResultsById((current) => ({ ...current, [trackId]: checked }));
+      if (!isDemoMode()) {
+        void recordSelfStudyProgress(currentTenant.id, {
+          module: 'listening',
+          activityType: 'assessment',
+          contentKey: trackId,
+          contentTitle: studyById[trackId]?.title ?? `Listening ${trackId}`,
+          clientEventId: createProgressEventId('listening'),
+          questionCount: checked.totalCount,
+          correctCount: checked.correctCount,
+          scorePercent:
+            checked.totalCount > 0
+              ? Math.round((checked.correctCount / checked.totalCount) * 100)
+              : null,
+          durationSeconds: studyById[trackId]?.durationSeconds ?? null,
+        }).catch(() => undefined);
+      }
       setStudyById((current) => {
         const study = current[trackId];
         if (!study) return current;

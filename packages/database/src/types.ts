@@ -101,7 +101,10 @@ export interface UsersTable {
   id: Generated<Uuid>;
   email_normalized: string | null;
   phone_e164: string | null;
+  login_name: string | null;
   password_hash: string;
+  must_change_password: boolean;
+  password_changed_at: NullableTimestamp;
   display_name: string;
   status: UserStatus;
   platform_role: PlatformRole;
@@ -803,6 +806,21 @@ export interface GrammarPracticeSessionsTable extends TenantOwned {
   completed_at: NullableTimestamp;
 }
 
+export interface SelfStudyAttemptsTable extends TenantOwned, ImmutableTimestamp {
+  learner_membership_id: Uuid;
+  module: 'vocabulary' | 'grammar' | 'listening' | 'reading';
+  activity_type: 'study' | 'practice' | 'assessment';
+  content_key: string;
+  content_title: string;
+  client_event_id: string;
+  question_count: number | null;
+  correct_count: number | null;
+  score_percent: string | null;
+  duration_seconds: number | null;
+  metadata: JsonColumn;
+  completed_at: DbTimestamp;
+}
+
 export interface PlatformExamsTable {
   id: Generated<Uuid>;
   code: string;
@@ -897,6 +915,7 @@ export interface Database {
   vocabulary_assessment_responses: VocabularyAssessmentResponsesTable;
   vocabulary_assessment_results: VocabularyAssessmentResultsTable;
   grammar_practice_sessions: GrammarPracticeSessionsTable;
+  self_study_attempts: SelfStudyAttemptsTable;
   content_version_files: ContentVersionFilesTable;
   question_version_files: QuestionVersionFilesTable;
   feedback_files: FeedbackFilesTable;

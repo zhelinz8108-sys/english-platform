@@ -197,6 +197,105 @@ export class TeacherOperationsService {
         byKind,
         generatedAt: new Date().toISOString(),
       };
+      const [selfStudyRows, grammarProgress, vocabularyProgress] = await Promise.all([
+        sql<any>`
+          select module, count(*)::int attempt_count,
+            count(distinct content_key)::int content_count,
+            round(avg(score_percent), 2)::float8 average_score_percent,
+            coalesce(sum(duration_seconds), 0)::int duration_seconds,
+            max(completed_at) last_completed_at
+          from self_study_attempts
+          where learner_membership_id = ${membershipId}::uuid
+          group by module
+          order by module
+        `.execute(trx),
+        sql<any>`
+          select count(*) filter(where status='completed')::int attempt_count,
+            count(distinct topic_id) filter(where status='completed')::int content_count,
+            round(avg(accuracy) filter(where status='completed'), 2)::float8 average_score_percent,
+            max(completed_at) last_completed_at
+          from grammar_practice_sessions
+          where learner_membership_id = ${membershipId}::uuid
+        `.execute(trx),
+        sql<any>`
+          select count(*)::int attempt_count,
+            count(distinct session.mode)::int content_count,
+            max(result.completed_at) last_completed_at,
+            (array_agg(result.estimate order by result.completed_at desc))[1]::int latest_estimate
+          from vocabulary_assessment_results result
+          join vocabulary_assessment_sessions session
+            on session.tenant_id = result.tenant_id and session.id = result.session_id
+          where result.learner_membership_id = ${membershipId}::uuid
+        `.execute(trx),
+      ]);
+      const learningModules = new Map<string, any>();
+      const mergeLearningModule = (incoming: any) => {
+        const existing = learningModules.get(incoming.module);
+        if (!existing) {
+          learningModules.set(incoming.module, incoming);
+          return;
+        }
+        const existingWeight = existing.averageScorePercent === null ? 0 : existing.attemptCount;
+        const incomingWeight = incoming.averageScorePercent === null ? 0 : incoming.attemptCount;
+        const totalWeight = existingWeight + incomingWeight;
+        learningModules.set(incoming.module, {
+          module: incoming.module,
+          attemptCount: existing.attemptCount + incoming.attemptCount,
+          contentCount: existing.contentCount + incoming.contentCount,
+          averageScorePercent:
+            totalWeight === 0
+              ? null
+              : (existing.averageScorePercent * existingWeight +
+                  incoming.averageScorePercent * incomingWeight) /
+                totalWeight,
+          durationSeconds: existing.durationSeconds + incoming.durationSeconds,
+          lastCompletedAt:
+            !existing.lastCompletedAt ||
+            (incoming.lastCompletedAt &&
+              new Date(incoming.lastCompletedAt).getTime() >
+                new Date(existing.lastCompletedAt).getTime())
+              ? incoming.lastCompletedAt
+              : existing.lastCompletedAt,
+        });
+      };
+      for (const module of selfStudyRows.rows) {
+        mergeLearningModule({
+          module: module.module,
+          attemptCount: module.attempt_count,
+          contentCount: module.content_count,
+          averageScorePercent: module.average_score_percent,
+          durationSeconds: module.duration_seconds,
+          lastCompletedAt: module.last_completed_at
+            ? new Date(module.last_completed_at).toISOString()
+            : null,
+        });
+      }
+      const grammar = grammarProgress.rows[0];
+      if (grammar?.attempt_count) {
+        mergeLearningModule({
+          module: 'grammar',
+          attemptCount: grammar.attempt_count,
+          contentCount: grammar.content_count,
+          averageScorePercent: grammar.average_score_percent,
+          durationSeconds: 0,
+          lastCompletedAt: grammar.last_completed_at
+            ? new Date(grammar.last_completed_at).toISOString()
+            : null,
+        });
+      }
+      const vocabulary = vocabularyProgress.rows[0];
+      if (vocabulary?.attempt_count) {
+        mergeLearningModule({
+          module: 'vocabulary',
+          attemptCount: vocabulary.attempt_count,
+          contentCount: vocabulary.content_count,
+          averageScorePercent: null,
+          durationSeconds: 0,
+          lastCompletedAt: vocabulary.last_completed_at
+            ? new Date(vocabulary.last_completed_at).toISOString()
+            : null,
+        });
+      }
       const tasks =
         await sql<any>`select item.id,item.task_version_id,item.occurrence_key,item.slot_key,item.resolution_state,item.resolution_reason,item.workflow_state,item.available_at,item.due_at,item.close_at,item.created_at,version.title,version.task_kind,
         (select count(*)::int from student_task_sources source where source.student_task_item_id=item.id) source_count,
@@ -246,6 +345,15 @@ export class TeacherOperationsService {
           status: goal.status,
         })),
         progress,
+        learningProgress: {
+          modules: [...learningModules.values()].sort((left, right) =>
+            left.module.localeCompare(right.module),
+          ),
+          latestVocabularyEstimate: vocabulary?.latest_estimate ?? null,
+          latestVocabularyAssessmentAt: vocabulary?.last_completed_at
+            ? new Date(vocabulary.last_completed_at).toISOString()
+            : null,
+        },
         recentTaskItems,
       };
     });

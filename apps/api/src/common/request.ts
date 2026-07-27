@@ -5,6 +5,7 @@ export interface AccessPrincipal {
   userId: string;
   sessionId: string;
   platformRole: PlatformRole;
+  mustChangePassword: boolean;
 }
 
 export interface ActiveTenant {

@@ -26,6 +26,10 @@ export default function HomePage() {
 
       try {
         const session = await loadWorkspaceSession();
+        if (session.user.mustChangePassword) {
+          router.replace('/change-password');
+          return;
+        }
         const tenantId = chooseTenantId(
           session.tenants,
           window.localStorage.getItem(tenantStorageKey),

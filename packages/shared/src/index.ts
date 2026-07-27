@@ -94,9 +94,11 @@ export interface ProblemDetails {
 
 export interface SessionUser {
   id: string;
-  email: string;
+  email: string | null;
+  loginName: string | null;
   displayName: string;
   platformRole: PlatformRole;
+  mustChangePassword: boolean;
 }
 
 export interface TenantSummary {

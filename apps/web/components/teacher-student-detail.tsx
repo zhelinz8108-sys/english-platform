@@ -40,6 +40,20 @@ export function TeacherStudentDetail({ studentMembershipId }: { studentMembershi
           overdueTaskCount: student.overdueTaskCount,
           activePathCount: student.activePathCount,
         },
+        learningProgress: {
+          modules: [
+            {
+              module: 'vocabulary',
+              attemptCount: 6,
+              contentCount: 4,
+              averageScorePercent: 86,
+              durationSeconds: 0,
+              lastCompletedAt: '2026-07-26T10:00:00Z',
+            },
+          ],
+          latestVocabularyEstimate: 6850,
+          latestVocabularyAssessmentAt: '2026-07-26T10:00:00Z',
+        },
         recentTaskItems: demoTasks.map((task) => ({
           ...task,
           title: task.title,
@@ -57,6 +71,11 @@ export function TeacherStudentDetail({ studentMembershipId }: { studentMembershi
       },
       examGoals: [],
       progress: {},
+      learningProgress: {
+        modules: [],
+        latestVocabularyEstimate: null,
+        latestVocabularyAssessmentAt: null,
+      },
       recentTaskItems: [],
     };
   }, [studentMembershipId]);
@@ -169,6 +188,58 @@ export function TeacherStudentDetail({ studentMembershipId }: { studentMembershi
           )}
         </Card>
       </div>
+      <Card>
+        <div className="card-header">
+          <div>
+            <h2>自主学习进度</h2>
+            <p>汇总词汇、语法、听力与阅读的服务器记录</p>
+          </div>
+          {data.learningProgress.latestVocabularyEstimate !== null ? (
+            <div className="learning-progress-estimate">
+              <span>最新词汇量估值</span>
+              <strong>
+                {data.learningProgress.latestVocabularyEstimate.toLocaleString('zh-CN')} 词
+              </strong>
+              <small>{formatDateTime(data.learningProgress.latestVocabularyAssessmentAt)}</small>
+            </div>
+          ) : null}
+        </div>
+        {data.learningProgress.modules.length === 0 ? (
+          <EmptyState description="学生完成练习后会显示在这里。" title="暂无自主学习记录" />
+        ) : (
+          <div className="member-table learning-progress-table">
+            <div className="member-table-head">
+              <span>模块</span>
+              <span>练习次数</span>
+              <span>已学内容</span>
+              <span>平均正确率</span>
+              <span>最近完成</span>
+            </div>
+            {data.learningProgress.modules.map((module) => (
+              <div className="member-table-row" key={module.module}>
+                <strong>
+                  {
+                    {
+                      vocabulary: '词汇',
+                      grammar: '语法',
+                      listening: '听力',
+                      reading: '阅读',
+                    }[module.module]
+                  }
+                </strong>
+                <span>{module.attemptCount}</span>
+                <span>{module.contentCount}</span>
+                <span>
+                  {module.averageScorePercent === null
+                    ? '—'
+                    : `${Math.round(module.averageScorePercent)}%`}
+                </span>
+                <span>{formatDateTime(module.lastCompletedAt)}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
     </>
   );
 }

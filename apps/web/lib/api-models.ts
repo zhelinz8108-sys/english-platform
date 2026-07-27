@@ -220,6 +220,18 @@ export interface ApiTeacherStudentDetail {
     overdueTaskCount?: number;
     activePathCount?: number;
   };
+  learningProgress: {
+    modules: Array<{
+      module: 'vocabulary' | 'grammar' | 'listening' | 'reading';
+      attemptCount: number;
+      contentCount: number;
+      averageScorePercent: number | null;
+      durationSeconds: number;
+      lastCompletedAt: string | null;
+    }>;
+    latestVocabularyEstimate: number | null;
+    latestVocabularyAssessmentAt: string | null;
+  };
   recentTaskItems: ApiTaskItem[];
 }
 
@@ -232,11 +244,27 @@ export interface ApiAssignment {
 export interface ApiMembership {
   id: string;
   membershipId?: string;
-  email: string;
+  email: string | null;
+  loginName: string | null;
   displayName: string;
   status: 'invited' | 'active' | 'suspended' | 'left';
   roles: TenantRole[];
   joinedAt: string | null;
+  mustChangePassword: boolean;
+  studentNumber: string | null;
+  gradeLevel: string | null;
+}
+
+export interface ApiStudentCredential {
+  membershipId: string;
+  userId?: string;
+  loginName: string;
+  displayName?: string;
+  email?: string | null;
+  studentNumber?: string | null;
+  gradeLevel?: string | null;
+  temporaryPassword: string;
+  mustChangePassword: true;
 }
 
 export interface ApiCatalogEntity {

@@ -28,6 +28,8 @@ import { VocabularyAssessmentController } from './vocabulary/vocabulary-assessme
 import { VocabularyAssessmentService } from './vocabulary/vocabulary-assessment.service.js';
 import { GrammarPracticeController } from './grammar/grammar-practice.controller.js';
 import { GrammarPracticeService } from './grammar/grammar-practice.service.js';
+import { SelfStudyController } from './progress/self-study.controller.js';
+import { SelfStudyService } from './progress/self-study.service.js';
 
 @Module({
   controllers: [
@@ -42,6 +44,7 @@ import { GrammarPracticeService } from './grammar/grammar-practice.service.js';
     LearningController,
     VocabularyAssessmentController,
     GrammarPracticeController,
+    SelfStudyController,
   ],
   providers: [
     AppConfig,
@@ -58,6 +61,7 @@ import { GrammarPracticeService } from './grammar/grammar-practice.service.js';
     LearningService,
     VocabularyAssessmentService,
     GrammarPracticeService,
+    SelfStudyService,
     { provide: APP_GUARD, useClass: AccessGuard },
     { provide: APP_GUARD, useClass: CsrfGuard },
     { provide: APP_GUARD, useClass: TenantGuard },

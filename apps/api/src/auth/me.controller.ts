@@ -1,12 +1,14 @@
 import { Controller, Get, Inject, Query, Req } from '@nestjs/common';
 import { requirePrincipal, type ApiRequest } from '../common/request.js';
 import { AuthService } from './auth.service.js';
+import { AllowBeforePasswordChange } from './guards.js';
 
 @Controller('api/v1/me')
 export class MeController {
   constructor(@Inject(AuthService) private readonly auth: AuthService) {}
 
   @Get()
+  @AllowBeforePasswordChange()
   current(@Req() request: ApiRequest) {
     return this.auth.currentUser(requirePrincipal(request).userId);
   }

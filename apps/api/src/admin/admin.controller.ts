@@ -31,6 +31,30 @@ const memberUpdate = z.object({
   status: z.enum(['invited', 'active', 'suspended', 'left']).optional(),
   roles: z.array(roles).min(1).optional(),
 });
+const temporaryPassword = z
+  .string()
+  .min(12)
+  .max(128)
+  .regex(/[a-z]/)
+  .regex(/[A-Z]/)
+  .regex(/[0-9]/)
+  .regex(/[^A-Za-z0-9]/);
+const studentAccount = z.object({
+  loginName: z
+    .string()
+    .trim()
+    .min(3)
+    .max(64)
+    .regex(/^[A-Za-z0-9][A-Za-z0-9._-]*$/),
+  displayName: z.string().trim().min(1).max(100),
+  email: z.email().max(254).nullable().optional(),
+  studentNumber: z.string().trim().max(64).nullable().optional(),
+  gradeLevel: z.string().trim().max(64).nullable().optional(),
+  temporaryPassword: temporaryPassword.optional(),
+});
+const studentAccounts = z.object({
+  students: z.array(studentAccount).min(1).max(200),
+});
 const entitySchemas = {
   content: z
     .object({
@@ -212,6 +236,24 @@ export class AdminController {
     @Body() b: unknown,
   ) {
     return this.service.updateMembership(r, id, parseBody(memberUpdate, b));
+  }
+  @Post('student-accounts') @Roles('owner', 'admin') @RequiresCsrf() createStudentAccount(
+    @Req() r: ApiRequest,
+    @Body() b: unknown,
+  ) {
+    return this.service.createStudentAccount(r, parseBody(studentAccount, b));
+  }
+  @Post('student-accounts/bulk') @Roles('owner', 'admin') @RequiresCsrf() createStudentAccounts(
+    @Req() r: ApiRequest,
+    @Body() b: unknown,
+  ) {
+    return this.service.createStudentAccounts(r, parseBody(studentAccounts, b).students);
+  }
+  @Post('memberships/:membershipId/reset-password')
+  @Roles('owner', 'admin')
+  @RequiresCsrf()
+  resetStudentPassword(@Req() r: ApiRequest, @Param('membershipId') id: string) {
+    return this.service.resetStudentPassword(r, id);
   }
   @Get('contents') contents(@Req() r: ApiRequest, @Query() q: unknown) {
     return this.service.listCatalog(r, 'content', parseBody(contentList, q));

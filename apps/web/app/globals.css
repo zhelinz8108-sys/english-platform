@@ -510,6 +510,28 @@ strong {
   font-size: 12px;
 }
 
+.learning-progress-estimate {
+  display: grid;
+  min-width: 150px;
+  gap: 2px;
+  padding: 10px 13px;
+  border: 1px solid var(--brand-200);
+  border-radius: 12px;
+  background: var(--brand-50);
+  text-align: right;
+}
+
+.learning-progress-estimate span,
+.learning-progress-estimate small {
+  color: var(--ink-500);
+  font-size: 11px;
+}
+
+.learning-progress-estimate strong {
+  color: var(--brand-700);
+  font-size: 18px;
+}
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -4177,6 +4199,51 @@ strong {
   padding: 15px 17px;
 }
 
+.student-account-form {
+  grid-template-columns: repeat(5, minmax(130px, 1fr)) auto;
+}
+
+.toolbar-actions,
+.credential-toolbar,
+.member-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  flex-wrap: wrap;
+}
+
+.credential-toolbar {
+  margin-top: 14px;
+}
+
+.credential-list {
+  display: grid;
+  gap: 7px;
+  max-height: 220px;
+  margin-top: 14px;
+  overflow: auto;
+}
+
+.credential-list code {
+  padding: 9px 11px;
+  border: 1px solid var(--ink-100);
+  border-radius: 8px;
+  background: var(--ink-50);
+  color: var(--ink-800);
+  font-size: 11px;
+}
+
+.status-hint {
+  display: block;
+  margin-top: 5px;
+  color: var(--ochre-700);
+  font-size: 9px;
+}
+
+.member-actions {
+  justify-content: flex-end;
+}
+
 .panel-message {
   padding: 13px 17px 0;
 }
@@ -4193,7 +4260,7 @@ strong {
 
 .member-table-head,
 .member-table-row {
-  grid-template-columns: minmax(240px, 1.3fr) minmax(180px, 1fr) 90px 110px 35px;
+  grid-template-columns: minmax(240px, 1.3fr) minmax(150px, 0.8fr) 110px 110px minmax(140px, auto);
 }
 
 .member-table-head,

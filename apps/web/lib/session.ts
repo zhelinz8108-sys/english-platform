@@ -6,9 +6,11 @@ export const tenantStorageKey = 'english-platform:tenant';
 
 interface CurrentUserResponse {
   id: string;
-  email: string;
+  email: string | null;
+  loginName: string | null;
   displayName: string;
   platformRole: 'none' | 'super_admin';
+  mustChangePassword: boolean;
   createdAt: string;
 }
 
@@ -78,6 +80,18 @@ export async function loadWorkspaceSession(): Promise<WorkspaceSession> {
   // Deliberately sequential: if access cookies expire, a single refresh rotation
   // completes before the second request and avoids a refresh-token reuse race.
   const userResponse = await apiRequest<CurrentUserResponse>('/api/v1/me');
+  if (userResponse.mustChangePassword) {
+    return {
+      user: {
+        id: userResponse.id,
+        displayName: userResponse.displayName,
+        email: userResponse.email,
+        loginName: userResponse.loginName,
+        mustChangePassword: true,
+      },
+      tenants: [],
+    };
+  }
   const memberships = await apiRequest<TenantMembershipPageResponse>(
     '/api/v1/me/tenants?pageSize=100',
   );
@@ -87,6 +101,8 @@ export async function loadWorkspaceSession(): Promise<WorkspaceSession> {
       id: userResponse.id,
       displayName: userResponse.displayName,
       email: userResponse.email,
+      loginName: userResponse.loginName,
+      mustChangePassword: userResponse.mustChangePassword,
     },
     tenants: normalizeTenantMemberships(memberships.data),
   };

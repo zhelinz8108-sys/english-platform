@@ -2,6 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { getQuestionVersionsForAuthoring, publishQuestionVersion } from '@english/database';
 import { sql } from 'kysely';
 import { hash as hashPassword } from '@node-rs/argon2';
+import { randomBytes } from 'node:crypto';
 import { v7 as uuidv7 } from 'uuid';
 import { canonicalJson, sha256 } from '../common/domain.js';
 import { CursorService, cursorKey } from '../common/cursor.js';
@@ -60,6 +61,38 @@ export function roleProfilePlan(roles: readonly string[]) {
   };
 }
 
+export interface StudentAccountInput {
+  loginName: string;
+  displayName: string;
+  email?: string | null | undefined;
+  studentNumber?: string | null | undefined;
+  gradeLevel?: string | null | undefined;
+  temporaryPassword?: string | undefined;
+}
+
+export function normalizeLoginName(value: string): string {
+  return value.trim().toLowerCase();
+}
+
+export function generateTemporaryPassword(): string {
+  const groups = [
+    'ABCDEFGHJKLMNPQRSTUVWXYZ',
+    'abcdefghijkmnopqrstuvwxyz',
+    '23456789',
+    '!@#$%&*+-=?',
+  ];
+  const characters = groups.map((group) => group[randomBytes(1)[0]! % group.length]!);
+  const alphabet = groups.join('');
+  while (characters.length < 16) {
+    characters.push(alphabet[randomBytes(1)[0]! % alphabet.length]!);
+  }
+  for (let index = characters.length - 1; index > 0; index -= 1) {
+    const swapIndex = randomBytes(1)[0]! % (index + 1);
+    [characters[index], characters[swapIndex]] = [characters[swapIndex]!, characters[index]!];
+  }
+  return characters.join('');
+}
+
 @Injectable()
 export class AdminService {
   constructor(
@@ -77,10 +110,13 @@ export class AdminService {
     const after = this.cursors.read(input.cursor, cursorContext, cursorKey.stringAndUuid);
     return this.db.withTenant(context(a), async (trx) => {
       const q = await sql<any>`
-    select tm.id,tm.tenant_id,tm.user_id,u.email_normalized::text email,u.display_name,
+    select tm.id,tm.tenant_id,tm.user_id,u.email_normalized::text email,
+      u.login_name::text login_name,u.must_change_password,u.status user_status,u.display_name,
+      sp.student_no,sp.grade_level,
       tm.status,tm.joined_at,tm.suspended_at,tm.left_at,
       coalesce(array_agg(mr.code order by mr.code) filter(where mr.code is not null),'{}') roles
     from tenant_memberships tm join users u on u.id=tm.user_id
+    left join student_profiles sp on sp.tenant_id=tm.tenant_id and sp.membership_id=tm.id
     left join membership_role_assignments mra on mra.tenant_id=tm.tenant_id and mra.membership_id=tm.id
     left join membership_roles mr on mr.tenant_id=mra.tenant_id and mr.id=mra.role_id
     where (${input.status ?? null}::membership_status is null or tm.status=${input.status ?? null}::membership_status)
@@ -93,7 +129,7 @@ export class AdminService {
       ))
       and (${after?.[0] ?? null}::text is null
         or (u.display_name,tm.id)>(${after?.[0] ?? null},${after?.[1] ?? null}::uuid))
-    group by tm.id,u.id order by u.display_name,tm.id limit ${pageSize + 1}
+    group by tm.id,u.id,sp.id order by u.display_name,tm.id limit ${pageSize + 1}
    `.execute(trx);
       const page = this.cursors.page(q.rows, pageSize, cursorContext, (row: any) => [
         row.display_name,
@@ -161,6 +197,79 @@ export class AdminService {
       };
     });
   }
+
+  async createStudentAccount(r: ApiRequest, input: StudentAccountInput) {
+    const a = actorFrom(r);
+    return this.db.withTenant(context(a), async (trx) => {
+      const credential = await this.insertStudentAccount(trx, a, input);
+      return { data: credential };
+    });
+  }
+
+  async createStudentAccounts(r: ApiRequest, inputs: StudentAccountInput[]) {
+    const a = actorFrom(r);
+    const normalized = inputs.map((input) => normalizeLoginName(input.loginName));
+    if (new Set(normalized).size !== normalized.length) {
+      throw ProblemException.conflict('duplicate_login_name', '批量名单中存在重复登录名。');
+    }
+    return this.db.withTenant(context(a), async (trx) => {
+      const data = [];
+      for (const input of inputs) {
+        data.push(await this.insertStudentAccount(trx, a, input));
+      }
+      return { data };
+    });
+  }
+
+  async resetStudentPassword(r: ApiRequest, membershipId: string) {
+    const a = actorFrom(r);
+    return this.db.withTenant(context(a), async (trx) => {
+      const account = await sql<{ user_id: string; login_name: string | null }>`
+        select tm.user_id, u.login_name::text
+        from tenant_memberships tm
+        join users u on u.id = tm.user_id
+        where tm.id = ${membershipId}::uuid
+          and exists (
+            select 1 from membership_role_assignments mra
+            join membership_roles mr
+              on mr.tenant_id = mra.tenant_id and mr.id = mra.role_id
+            where mra.tenant_id = tm.tenant_id
+              and mra.membership_id = tm.id
+              and mr.code = 'student'
+          )
+        for update of u
+      `.execute(trx);
+      const row = account.rows[0];
+      if (!row) throw ProblemException.notFound();
+      const temporaryPassword = generateTemporaryPassword();
+      await sql`
+        update users
+        set password_hash = ${await hashPassword(temporaryPassword)},
+            must_change_password = true,
+            password_changed_at = null,
+            status = 'active',
+            updated_at = now()
+        where id = ${row.user_id}::uuid
+      `.execute(trx);
+      await sql`
+        update auth_sessions
+        set revoked_at = coalesce(revoked_at, now())
+        where user_id = ${row.user_id}::uuid
+      `.execute(trx);
+      await this.events.append(trx, a, {
+        action: 'student_account.password_reset',
+        resourceType: 'tenant_membership',
+        resourceId: membershipId,
+        eventType: 'student_account.password_reset.v1',
+      });
+      return {
+        membershipId,
+        loginName: row.login_name,
+        temporaryPassword,
+        mustChangePassword: true,
+      };
+    });
+  }
   async updateMembership(
     r: ApiRequest,
     id: string,
@@ -172,6 +281,15 @@ export class AdminService {
         await sql`update tenant_memberships set status=${input.status},joined_at=case when ${input.status}='active' then coalesce(joined_at,now()) else joined_at end,suspended_at=case when ${input.status}='suspended' then now() else null end,left_at=case when ${input.status}='left' then now() else null end,updated_at=now() where id=${id}::uuid`.execute(
           trx,
         );
+      if (input.status === 'suspended' || input.status === 'left') {
+        await sql`
+          update auth_sessions
+          set revoked_at = coalesce(revoked_at, now())
+          where user_id = (
+            select user_id from tenant_memberships where id = ${id}::uuid
+          )
+        `.execute(trx);
+      }
       if (input.roles) {
         await this.replaceRoles(trx, a, id, input.roles);
         await this.syncRoleProfiles(trx, a, id, input.roles);
@@ -184,7 +302,7 @@ export class AdminService {
         payload: input,
       });
       const q =
-        await sql<any>`select tm.id,tm.tenant_id,tm.user_id,u.email_normalized::text email,u.display_name,tm.status,tm.joined_at,tm.suspended_at,tm.left_at,coalesce(array_agg(mr.code order by mr.code) filter(where mr.code is not null),'{}') roles from tenant_memberships tm join users u on u.id=tm.user_id left join membership_role_assignments mra on mra.tenant_id=tm.tenant_id and mra.membership_id=tm.id left join membership_roles mr on mr.tenant_id=mra.tenant_id and mr.id=mra.role_id where tm.id=${id}::uuid group by tm.id,u.id`.execute(
+        await sql<any>`select tm.id,tm.tenant_id,tm.user_id,u.email_normalized::text email,u.login_name::text login_name,u.must_change_password,u.status user_status,u.display_name,sp.student_no,sp.grade_level,tm.status,tm.joined_at,tm.suspended_at,tm.left_at,coalesce(array_agg(mr.code order by mr.code) filter(where mr.code is not null),'{}') roles from tenant_memberships tm join users u on u.id=tm.user_id left join student_profiles sp on sp.tenant_id=tm.tenant_id and sp.membership_id=tm.id left join membership_role_assignments mra on mra.tenant_id=tm.tenant_id and mra.membership_id=tm.id left join membership_roles mr on mr.tenant_id=mra.tenant_id and mr.id=mra.role_id where tm.id=${id}::uuid group by tm.id,u.id,sp.id`.execute(
           trx,
         );
       if (!q.rows[0]) throw ProblemException.notFound();
@@ -579,14 +697,88 @@ export class AdminService {
     id: x.id,
     tenantId: x.tenant_id,
     userId: x.user_id,
-    email: x.email,
+    email: x.email ?? null,
+    loginName: x.login_name ?? null,
     displayName: x.display_name,
+    userStatus: x.user_status,
+    mustChangePassword: Boolean(x.must_change_password),
+    studentNumber: x.student_no ?? null,
+    gradeLevel: x.grade_level ?? null,
     status: x.status,
     roles: x.roles,
     joinedAt: x.joined_at ? new Date(x.joined_at).toISOString() : null,
     suspendedAt: x.suspended_at ? new Date(x.suspended_at).toISOString() : null,
     leftAt: x.left_at ? new Date(x.left_at).toISOString() : null,
   });
+  private async insertStudentAccount(
+    trx: TenantTransaction,
+    a: EventActor,
+    input: StudentAccountInput,
+  ) {
+    const loginName = normalizeLoginName(input.loginName);
+    const email = input.email?.trim().toLowerCase() || null;
+    const existing = await sql<{ id: string }>`
+      select id from users
+      where login_name = ${loginName}::citext
+         or (${email}::citext is not null and email_normalized = ${email}::citext)
+      limit 1
+    `.execute(trx);
+    if (existing.rows[0]) {
+      throw ProblemException.conflict(
+        'student_account_exists',
+        `登录名或邮箱已被使用：${loginName}`,
+      );
+    }
+    const temporaryPassword = input.temporaryPassword ?? generateTemporaryPassword();
+    const userId = uuidv7();
+    const membershipId = uuidv7();
+    await sql`
+      insert into users (
+        id, email_normalized, login_name, password_hash, must_change_password,
+        display_name, status, platform_role, created_at, updated_at
+      ) values (
+        ${userId}::uuid, ${email}::citext, ${loginName}::citext,
+        ${await hashPassword(temporaryPassword)}, true,
+        ${input.displayName.trim()}, 'active', 'none', now(), now()
+      )
+    `.execute(trx);
+    await sql`
+      insert into tenant_memberships (
+        id, tenant_id, user_id, status, invited_by_membership_id,
+        joined_at, created_at, updated_at
+      ) values (
+        ${membershipId}::uuid, ${a.tenantId}::uuid, ${userId}::uuid, 'active',
+        ${a.membershipId}::uuid, now(), now(), now()
+      )
+    `.execute(trx);
+    await this.replaceRoles(trx, a, membershipId, ['student']);
+    await this.syncRoleProfiles(trx, a, membershipId, ['student']);
+    await sql`
+      update student_profiles
+      set student_no = ${input.studentNumber?.trim() || null},
+          grade_level = ${input.gradeLevel?.trim() || null},
+          updated_at = now()
+      where membership_id = ${membershipId}::uuid
+    `.execute(trx);
+    await this.events.append(trx, a, {
+      action: 'student_account.create',
+      resourceType: 'tenant_membership',
+      resourceId: membershipId,
+      eventType: 'student_account.created.v1',
+      payload: { loginName, userId },
+    });
+    return {
+      membershipId,
+      userId,
+      loginName,
+      displayName: input.displayName.trim(),
+      email,
+      studentNumber: input.studentNumber?.trim() || null,
+      gradeLevel: input.gradeLevel?.trim() || null,
+      temporaryPassword,
+      mustChangePassword: true,
+    };
+  }
   private async assertContentAttachments(trx: TenantTransaction, fileIds: string[]) {
     if (fileIds.length === 0) return;
     const unique = [...new Set(fileIds)];

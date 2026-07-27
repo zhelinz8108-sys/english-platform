@@ -41,6 +41,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Replace the current or temporary password */
+        post: operations["changePassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/refresh": {
         parameters: {
             query?: never;
@@ -787,6 +804,67 @@ export interface paths {
         patch: operations["updateMembership"];
         trace?: never;
     };
+    "/api/v1/tenants/{tenantId}/admin/memberships/{membershipId}/reset-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                membershipId: components["parameters"]["MembershipId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reset a student's password and revoke active sessions */
+        post: operations["resetStudentPassword"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tenants/{tenantId}/admin/student-accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Provision one active student account */
+        post: operations["createStudentAccount"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tenants/{tenantId}/admin/student-accounts/bulk": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Provision up to 200 active student accounts atomically */
+        post: operations["createStudentAccounts"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/tenants/{tenantId}/admin/contents": {
         parameters: {
             query?: never;
@@ -1394,6 +1472,46 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/tenants/{tenantId}/learning/progress": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+            };
+            cookie?: never;
+        };
+        /** Get current student's self-study module summary */
+        get: operations["getSelfStudyProgress"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tenants/{tenantId}/learning/progress/events": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+            };
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Record one completed self-study activity idempotently */
+        post: operations["recordSelfStudyProgress"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/tenants/{tenantId}/learning/grammar/practice-sessions": {
         parameters: {
             query?: never;
@@ -1720,19 +1838,26 @@ export interface components {
             expiresAt: components["schemas"]["UtcDateTime"];
         };
         LoginRequest: {
-            /** Format: email */
-            email: string;
+            identifier: string;
             /** Format: password */
             password: string;
+        };
+        ChangePasswordRequest: {
+            /** Format: password */
+            currentPassword: string;
+            /** Format: password */
+            newPassword: string;
         };
         /** @enum {string} */
         PlatformRole: "none" | "super_admin";
         CurrentUser: {
             id: components["schemas"]["Uuid"];
             /** Format: email */
-            email: string;
+            email: string | null;
+            loginName: string | null;
             displayName: string;
             platformRole: components["schemas"]["PlatformRole"];
+            mustChangePassword: boolean;
             createdAt: components["schemas"]["UtcDateTime"];
         };
         SessionResponse: {
@@ -2037,6 +2162,49 @@ export interface components {
             byKind: components["schemas"]["ProgressByKind"][];
             generatedAt: components["schemas"]["UtcDateTime"];
         };
+        /** @enum {string} */
+        SelfStudyModule: "vocabulary" | "grammar" | "listening" | "reading";
+        SelfStudyAttempt: {
+            id: components["schemas"]["Uuid"];
+            module: components["schemas"]["SelfStudyModule"];
+            /** @enum {string} */
+            activityType: "study" | "practice" | "assessment";
+            contentKey: string;
+            contentTitle: string;
+            questionCount: number | null;
+            correctCount: number | null;
+            scorePercent: number | null;
+            durationSeconds: number | null;
+            completedAt: components["schemas"]["UtcDateTime"];
+        };
+        SelfStudyModuleSummary: {
+            module: components["schemas"]["SelfStudyModule"];
+            attemptCount: number;
+            contentCount: number;
+            averageScorePercent: number | null;
+            durationSeconds: number;
+            lastCompletedAt: components["schemas"]["UtcDateTime"] | null;
+        };
+        SelfStudyProgress: {
+            modules: components["schemas"]["SelfStudyModuleSummary"][];
+            latestVocabularyEstimate: number | null;
+            latestVocabularyAssessmentAt: components["schemas"]["UtcDateTime"] | null;
+        };
+        SelfStudyProgressEvent: {
+            module: components["schemas"]["SelfStudyModule"];
+            /** @enum {string} */
+            activityType: "study" | "practice" | "assessment";
+            contentKey: string;
+            contentTitle: string;
+            clientEventId: string;
+            questionCount?: number | null;
+            correctCount?: number | null;
+            scorePercent?: number | null;
+            durationSeconds?: number | null;
+            metadata?: {
+                [key: string]: unknown;
+            };
+        };
         /**
          * @description Final-grade precedence is admin_override, then teacher_confirmed, then auto_scored.
          * @enum {string}
@@ -2110,6 +2278,7 @@ export interface components {
             student: components["schemas"]["TeacherStudentSummary"];
             examGoals: components["schemas"]["StudentExamGoal"][];
             progress: components["schemas"]["StudentProgress"];
+            learningProgress: components["schemas"]["SelfStudyProgress"];
             recentTaskItems: components["schemas"]["StudentTaskItem"][];
         };
         /** @enum {string} */
@@ -2394,7 +2563,11 @@ export interface components {
             tenantId: components["schemas"]["Uuid"];
             userId: components["schemas"]["Uuid"];
             /** Format: email */
-            email: string;
+            email: string | null;
+            loginName?: string | null;
+            mustChangePassword?: boolean;
+            studentNumber?: string | null;
+            gradeLevel?: string | null;
             displayName: string;
             status: components["schemas"]["MembershipStatus"];
             roles: components["schemas"]["TenantRole"][];
@@ -2419,6 +2592,30 @@ export interface components {
         UpdateMembershipRequest: {
             status?: components["schemas"]["MembershipStatus"];
             roles?: components["schemas"]["TenantRole"][];
+        };
+        StudentAccountInput: {
+            loginName: string;
+            displayName: string;
+            /** Format: email */
+            email?: string | null;
+            studentNumber?: string | null;
+            gradeLevel?: string | null;
+            /** Format: password */
+            temporaryPassword?: string;
+        };
+        StudentCredential: {
+            membershipId: components["schemas"]["Uuid"];
+            userId?: components["schemas"]["Uuid"];
+            loginName: string;
+            displayName?: string;
+            /** Format: email */
+            email?: string | null;
+            studentNumber?: string | null;
+            gradeLevel?: string | null;
+            /** Format: password */
+            temporaryPassword: string;
+            /** @constant */
+            mustChangePassword: true;
         };
         /**
          * @description Official objects in the separate platform schema are read-only; editing requires a tenant-owned clone.
@@ -3116,7 +3313,7 @@ export interface operations {
             content: {
                 /**
                  * @example {
-                 *       "email": "learner@example.cn",
+                 *       "identifier": "learner001",
                  *       "password": "correct-horse-battery-staple"
                  *     }
                  */
@@ -3137,6 +3334,31 @@ export interface operations {
             400: components["responses"]["ValidationProblem"];
             401: components["responses"]["Unauthorized"];
             429: components["responses"]["TooManyRequests"];
+        };
+    };
+    changePassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangePasswordRequest"];
+            };
+        };
+        responses: {
+            /** @description Password changed and all other sessions revoked */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            400: components["responses"]["ValidationProblem"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["CsrfForbidden"];
         };
     };
     refreshSession: {
@@ -4619,6 +4841,101 @@ export interface operations {
             409: components["responses"]["Conflict"];
         };
     };
+    resetStudentPassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                membershipId: components["parameters"]["MembershipId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description One-time temporary credential */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StudentCredential"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    createStudentAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StudentAccountInput"];
+            };
+        };
+        responses: {
+            /** @description One-time temporary credential */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["StudentCredential"];
+                    };
+                };
+            };
+            400: components["responses"]["ValidationProblem"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            409: components["responses"]["Conflict"];
+        };
+    };
+    createStudentAccounts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    students: components["schemas"]["StudentAccountInput"][];
+                };
+            };
+        };
+        responses: {
+            /** @description One-time temporary credentials */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["StudentCredential"][];
+                    };
+                };
+            };
+            400: components["responses"]["ValidationProblem"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            409: components["responses"]["Conflict"];
+        };
+    };
     listContents: {
         parameters: {
             query?: {
@@ -5773,6 +6090,64 @@ export interface operations {
                 };
             };
             401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    getSelfStudyProgress: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Self-study progress grouped by module */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SelfStudyProgress"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    recordSelfStudyProgress: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SelfStudyProgressEvent"];
+            };
+        };
+        responses: {
+            /** @description Recorded activity */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["SelfStudyAttempt"];
+                    };
+                };
+            };
+            400: components["responses"]["ValidationProblem"];
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["CsrfForbidden"];
             404: components["responses"]["NotFound"];
         };
     };

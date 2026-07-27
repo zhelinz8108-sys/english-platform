@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { verify } from '@node-rs/argon2';
+import { hash, verify } from '@node-rs/argon2';
 import type { PlatformRole, SessionUser, TenantRole } from '@english/shared';
 import { jwtVerify, SignJWT } from 'jose';
 import { sql } from 'kysely';
@@ -13,8 +13,10 @@ import { DatabaseService } from '../infrastructure/database.service.js';
 
 interface UserRow {
   id: string;
-  email: string;
+  email: string | null;
+  login_name: string | null;
   password_hash: string;
+  must_change_password: boolean;
   display_name: string;
   platform_role: PlatformRole;
   status: 'active' | 'locked' | 'disabled';
@@ -60,16 +62,18 @@ export class AuthService {
   }
 
   async login(
-    emailInput: string,
+    identifierInput: string,
     password: string,
     ip: string,
     userAgent: string,
   ): Promise<IssuedSession> {
-    const email = emailInput.trim().toLowerCase();
+    const identifier = identifierInput.trim().toLowerCase();
     const result = await sql<UserRow>`
-      select id, email_normalized::text as email, password_hash, display_name,
-             platform_role, status, created_at
-      from users where email_normalized = ${email}::citext
+      select id, email_normalized::text as email, login_name::text, password_hash,
+             must_change_password, display_name, platform_role, status, created_at
+      from users
+      where email_normalized = ${identifier}::citext
+         or login_name = ${identifier}::citext
     `.execute(this.database.db);
     const user = result.rows[0];
     if (!user || !(await verify(user.password_hash, password))) {
@@ -135,8 +139,8 @@ export class AuthService {
         throw ProblemException.unauthorized('refresh_expired', 'Refresh Session 已过期或撤销。');
       }
       const users = await sql<UserRow>`
-        select id, email_normalized::text as email, password_hash, display_name,
-               platform_role, status, created_at
+        select id, email_normalized::text as email, login_name::text, password_hash,
+               must_change_password, display_name, platform_role, status, created_at
         from users where id = ${current.user_id}::uuid
       `.execute(transaction);
       const user = users.rows[0];
@@ -205,15 +209,26 @@ export class AuthService {
       const payload = verified.payload as unknown as AccessClaims;
       if (!payload.sub || !payload.sid || !['none', 'super_admin'].includes(payload.pr))
         throw new Error('claims');
-      const sessions = await sql<{ active: boolean }>`
-        select exists(
-          select 1 from auth_sessions
-          where id = ${payload.sid}::uuid and user_id = ${payload.sub}::uuid
-            and revoked_at is null and reuse_detected_at is null and expires_at > now()
-        ) as active
+      const sessions = await sql<{ active: boolean; must_change_password: boolean }>`
+        select
+          exists(
+            select 1 from auth_sessions
+            where id = ${payload.sid}::uuid and user_id = ${payload.sub}::uuid
+              and revoked_at is null and reuse_detected_at is null and expires_at > now()
+          ) as active,
+          coalesce(
+            (select must_change_password from users where id = ${payload.sub}::uuid),
+            false
+          ) as must_change_password
       `.execute(this.database.db);
-      if (!sessions.rows[0]?.active) throw new Error('revoked');
-      return { userId: payload.sub, sessionId: payload.sid, platformRole: payload.pr };
+      const session = sessions.rows[0];
+      if (!session?.active) throw new Error('revoked');
+      return {
+        userId: payload.sub,
+        sessionId: payload.sid,
+        platformRole: payload.pr,
+        mustChangePassword: session.must_change_password,
+      };
     } catch {
       throw ProblemException.unauthorized();
     }
@@ -221,7 +236,8 @@ export class AuthService {
 
   async currentUser(userId: string): Promise<SessionUser & { createdAt: string }> {
     const result = await sql<Omit<UserRow, 'password_hash' | 'status'>>`
-      select id, email_normalized::text as email, display_name, platform_role, created_at
+      select id, email_normalized::text as email, login_name::text, must_change_password,
+             display_name, platform_role, created_at
       from users where id = ${userId}::uuid and status = 'active'
     `.execute(this.database.db);
     const row = result.rows[0];
@@ -229,10 +245,44 @@ export class AuthService {
     return {
       id: row.id,
       email: row.email,
+      loginName: row.login_name,
       displayName: row.display_name,
       platformRole: row.platform_role,
+      mustChangePassword: row.must_change_password,
       createdAt: row.created_at.toISOString(),
     };
+  }
+
+  async changePassword(
+    userId: string,
+    sessionId: string,
+    currentPassword: string,
+    newPassword: string,
+  ): Promise<void> {
+    await this.database.withGlobal(async (transaction) => {
+      const result = await sql<{ password_hash: string }>`
+        select password_hash from users where id = ${userId}::uuid and status = 'active' for update
+      `.execute(transaction);
+      const user = result.rows[0];
+      if (!user || !(await verify(user.password_hash, currentPassword))) {
+        throw ProblemException.unauthorized('current_password_invalid', '当前密码不正确。');
+      }
+      if (await verify(user.password_hash, newPassword)) {
+        throw ProblemException.badRequest('password_unchanged', '新密码不能与当前密码相同。');
+      }
+      const passwordHash = await hash(newPassword);
+      await sql`
+        update users
+        set password_hash = ${passwordHash}, must_change_password = false,
+            password_changed_at = now(), updated_at = now()
+        where id = ${userId}::uuid
+      `.execute(transaction);
+      await sql`
+        update auth_sessions
+        set revoked_at = coalesce(revoked_at, now())
+        where user_id = ${userId}::uuid and id <> ${sessionId}::uuid
+      `.execute(transaction);
+    });
   }
 
   async listTenants(
@@ -313,8 +363,10 @@ export class AuthService {
       user: {
         id: user.id,
         email: user.email,
+        loginName: user.login_name,
         displayName: user.display_name,
         platformRole: user.platform_role,
+        mustChangePassword: user.must_change_password,
         createdAt: user.created_at.toISOString(),
       },
       accessToken,

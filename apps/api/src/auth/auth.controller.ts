@@ -6,12 +6,28 @@ import { parseBody } from '../common/problem.js';
 import { requirePrincipal, type ApiRequest } from '../common/request.js';
 import { AppConfig } from '../config.js';
 import { AuthService, type IssuedSession } from './auth.service.js';
-import { Public, RequiresCsrf } from './guards.js';
+import { AllowBeforePasswordChange, Public, RequiresCsrf } from './guards.js';
 
 const loginSchema = z.object({
-  email: z.email().max(254),
+  identifier: z.string().trim().min(3).max(254),
   password: z.string().min(8).max(128),
 });
+const passwordSchema = z
+  .object({
+    currentPassword: z.string().min(8).max(128),
+    newPassword: z
+      .string()
+      .min(12)
+      .max(128)
+      .regex(/[a-z]/, '必须包含小写字母')
+      .regex(/[A-Z]/, '必须包含大写字母')
+      .regex(/[0-9]/, '必须包含数字')
+      .regex(/[^A-Za-z0-9]/, '必须包含符号'),
+  })
+  .refine((value) => value.currentPassword !== value.newPassword, {
+    path: ['newPassword'],
+    message: '新密码不能与当前密码相同',
+  });
 
 @Controller('api/v1/auth')
 export class AuthController {
@@ -44,13 +60,28 @@ export class AuthController {
   ): Promise<ReturnType<AuthController['sessionBody']>> {
     const body = parseBody(loginSchema, rawBody);
     const issued = await this.auth.login(
-      body.email,
+      body.identifier,
       body.password,
       request.ip ?? '',
       request.header('user-agent') ?? '',
     );
     this.setSessionCookies(response, issued);
     return this.sessionBody(issued);
+  }
+
+  @Post('password')
+  @HttpCode(204)
+  @AllowBeforePasswordChange()
+  @RequiresCsrf()
+  async changePassword(@Body() rawBody: unknown, @Req() request: ApiRequest): Promise<void> {
+    const body = parseBody(passwordSchema, rawBody);
+    const principal = requirePrincipal(request);
+    await this.auth.changePassword(
+      principal.userId,
+      principal.sessionId,
+      body.currentPassword,
+      body.newPassword,
+    );
   }
 
   @Post('refresh')
@@ -72,6 +103,7 @@ export class AuthController {
 
   @Delete('session')
   @HttpCode(204)
+  @AllowBeforePasswordChange()
   @RequiresCsrf()
   async logout(
     @Req() request: ApiRequest,

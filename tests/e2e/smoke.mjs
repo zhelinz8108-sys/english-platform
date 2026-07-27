@@ -43,13 +43,13 @@ class ApiClient {
     return { response, body };
   }
 
-  async login(email, password = 'Demo123!') {
+  async login(identifier, password = 'Demo123!') {
     const csrf = await this.request('/api/v1/auth/csrf');
     this.csrfToken = csrf.body.token;
     return this.request('/api/v1/auth/login', {
       method: 'POST',
       mutate: true,
-      body: { email, password },
+      body: { identifier, password },
     });
   }
 }
@@ -191,7 +191,7 @@ const missingCsrf = new ApiClient();
 await missingCsrf.request('/api/v1/auth/csrf');
 await missingCsrf.request('/api/v1/auth/login', {
   method: 'POST',
-  body: { email: 'student@example.test', password: 'Demo123!' },
+  body: { identifier: 'student@example.test', password: 'Demo123!' },
   expect: 403,
 });
 
@@ -490,6 +490,98 @@ await ownerGrader.request(
   `/api/v1/tenants/${tenantId}/teacher/classes/${seededClass.id}/students/${invited.body.id}`,
   { method: 'PUT', mutate: true, expect: 204 },
 );
+const provisionedLoginName = `student-${randomUUID().slice(0, 8)}`;
+const provisionedAccount = await ownerGrader.request(
+  `/api/v1/tenants/${tenantId}/admin/student-accounts`,
+  {
+    method: 'POST',
+    mutate: true,
+    body: {
+      loginName: provisionedLoginName,
+      displayName: '账号流程学生',
+      studentNumber: `E2E-${randomUUID().slice(0, 8)}`,
+      gradeLevel: 'Grade 8',
+    },
+    expect: 201,
+  },
+);
+assert.equal(provisionedAccount.body.data.loginName, provisionedLoginName);
+assert.equal(provisionedAccount.body.data.mustChangePassword, true);
+assert.ok(provisionedAccount.body.data.temporaryPassword);
+
+const provisionedStudent = new ApiClient();
+const firstStudentLogin = await provisionedStudent.login(
+  provisionedLoginName,
+  provisionedAccount.body.data.temporaryPassword,
+);
+assert.equal(firstStudentLogin.body.user.mustChangePassword, true);
+await provisionedStudent.request('/api/v1/me/tenants', { expect: 403 });
+await provisionedStudent.request('/api/v1/auth/password', {
+  method: 'POST',
+  mutate: true,
+  body: {
+    currentPassword: provisionedAccount.body.data.temporaryPassword,
+    newPassword: 'Changed-Password-1!',
+  },
+  expect: 204,
+});
+const provisionedTenant = await tenantFor(provisionedStudent);
+assert.deepEqual(provisionedTenant.roles, ['student']);
+
+const progressEventId = randomUUID();
+const progressEvent = {
+  module: 'reading',
+  activityType: 'assessment',
+  contentKey: 'e2e-reading-grade-8',
+  contentTitle: '端到端阅读检测',
+  clientEventId: progressEventId,
+  questionCount: 4,
+  correctCount: 3,
+  scorePercent: 75,
+  durationSeconds: 180,
+  metadata: { source: 'e2e' },
+};
+await provisionedStudent.request(`/api/v1/tenants/${tenantId}/learning/progress/events`, {
+  method: 'POST',
+  mutate: true,
+  body: progressEvent,
+});
+await provisionedStudent.request(`/api/v1/tenants/${tenantId}/learning/progress/events`, {
+  method: 'POST',
+  mutate: true,
+  body: progressEvent,
+});
+const provisionedProgress = await provisionedStudent.request(
+  `/api/v1/tenants/${tenantId}/learning/progress`,
+);
+const readingProgress = provisionedProgress.body.modules.find(
+  (module) => module.module === 'reading',
+);
+assert.equal(readingProgress.attemptCount, 1);
+assert.equal(readingProgress.averageScorePercent, 75);
+const teacherStudentProgress = await ownerGrader.request(
+  `/api/v1/tenants/${tenantId}/teacher/students/${provisionedAccount.body.data.membershipId}`,
+);
+assert.equal(
+  teacherStudentProgress.body.learningProgress.modules.find((module) => module.module === 'reading')
+    .attemptCount,
+  1,
+);
+
+const resetCredential = await ownerGrader.request(
+  `/api/v1/tenants/${tenantId}/admin/memberships/${provisionedAccount.body.data.membershipId}/reset-password`,
+  { method: 'POST', mutate: true },
+);
+assert.equal(resetCredential.body.mustChangePassword, true);
+await provisionedStudent.request(`/api/v1/tenants/${tenantId}/learning/progress`, {
+  expect: 401,
+});
+const resetStudent = new ApiClient();
+const resetLogin = await resetStudent.login(
+  provisionedLoginName,
+  resetCredential.body.temporaryPassword,
+);
+assert.equal(resetLogin.body.user.mustChangePassword, true);
 const [teacherGrade, ownerGrade] = await Promise.all([
   teacher.request(`${teacherBase}/grades`, {
     method: 'POST',
@@ -666,6 +758,9 @@ console.log(
       immutableSubmissionReadableForTeacher: true,
       multiTeacherClassVerified: true,
       invitedStudentProvisioned: true,
+      studentAccountPasswordLifecycleVerified: true,
+      selfStudyProgressIdempotencyVerified: true,
+      teacherStudentProgressVerified: true,
       officialContentCloned: true,
       historicalAttemptSnapshotStable: true,
       pathPauseAndRestorePreservedHistory: true,

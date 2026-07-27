@@ -14,7 +14,7 @@ import { Icon } from './icon';
 
 export function LoginForm() {
   const router = useRouter();
-  const [email, setEmail] = useState(() => (isDemoMode() ? 'student@example.test' : ''));
+  const [identifier, setIdentifier] = useState(() => (isDemoMode() ? 'student@example.test' : ''));
   const [password, setPassword] = useState(() => (isDemoMode() ? 'Demo123!' : ''));
   const [showPassword, setShowPassword] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -30,7 +30,11 @@ export function LoginForm() {
         window.sessionStorage.setItem('english-platform:demo-session', 'active');
         router.push('/student');
       } else {
-        await authApi.login(email, password);
+        const login = await authApi.login(identifier, password);
+        if (login.user.mustChangePassword) {
+          router.push('/change-password');
+          return;
+        }
         const session = await loadWorkspaceSession();
         const selectedTenantId = chooseTenantId(
           session.tenants,
@@ -84,15 +88,14 @@ export function LoginForm() {
       ) : null}
 
       <label className="field">
-        <span>邮箱</span>
+        <span>账号或邮箱</span>
         <input
-          autoComplete="email"
-          inputMode="email"
-          name="email"
-          onChange={(event) => setEmail(event.target.value)}
+          autoComplete="username"
+          name="identifier"
+          onChange={(event) => setIdentifier(event.target.value)}
           required
-          type="email"
-          value={email}
+          type="text"
+          value={identifier}
         />
       </label>
 

@@ -20,6 +20,8 @@ export const demoUser: AppUser = {
   id: '01900000-0000-7000-8000-000000000001',
   displayName: '林晓然',
   email: 'xiaoran@example.com',
+  loginName: 'xiaoran',
+  mustChangePassword: false,
 };
 
 export const demoTenants: AppTenant[] = [
@@ -387,6 +389,7 @@ export const demoMemberships: Membership[] = [
   {
     id: 'member-01',
     email: 'xiaoran@example.com',
+    loginName: 'xiaoran',
     displayName: '林晓然',
     status: 'active',
     roles: ['student', 'teacher', 'admin'],
@@ -395,6 +398,7 @@ export const demoMemberships: Membership[] = [
   {
     id: 'member-02',
     email: 'zhou.teacher@example.com',
+    loginName: 'zhou.teacher',
     displayName: '周老师',
     status: 'active',
     roles: ['teacher'],
@@ -403,6 +407,7 @@ export const demoMemberships: Membership[] = [
   {
     id: 'member-03',
     email: 'chen.zhixia@example.com',
+    loginName: 'chen.zhixia',
     displayName: '陈知夏',
     status: 'active',
     roles: ['student'],
@@ -411,6 +416,7 @@ export const demoMemberships: Membership[] = [
   {
     id: 'member-04',
     email: 'new.student@example.com',
+    loginName: 'new.student',
     displayName: '待加入学生',
     status: 'invited',
     roles: ['student'],

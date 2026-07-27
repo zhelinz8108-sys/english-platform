@@ -75,7 +75,7 @@ describe('API client contract helpers', () => {
     await expect(
       apiRequest('/api/v1/auth/login', {
         method: 'POST',
-        json: { email: 'learner@example.com', password: 'not-a-real-password' },
+        json: { identifier: 'learner@example.com', password: 'not-a-real-password' },
       }),
     ).resolves.toBeUndefined();
 

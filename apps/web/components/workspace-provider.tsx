@@ -54,6 +54,10 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     setError(null);
     try {
       const session = await loadWorkspaceSession();
+      if (session.user.mustChangePassword) {
+        router.replace('/change-password');
+        return;
+      }
       if (session.tenants.length === 0) {
         setUser(session.user);
         setTenants([]);

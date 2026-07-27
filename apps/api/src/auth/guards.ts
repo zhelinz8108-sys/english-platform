@@ -20,10 +20,13 @@ import { AuthService } from './auth.service.js';
 const PUBLIC_KEY = 'api.public';
 const CSRF_KEY = 'api.csrf';
 const ROLES_KEY = 'api.roles';
+const ALLOW_BEFORE_PASSWORD_CHANGE_KEY = 'api.allowBeforePasswordChange';
 
 export const Public = (): CustomDecorator => SetMetadata(PUBLIC_KEY, true);
 export const RequiresCsrf = (): CustomDecorator => SetMetadata(CSRF_KEY, true);
 export const Roles = (...roles: TenantRole[]): CustomDecorator => SetMetadata(ROLES_KEY, roles);
+export const AllowBeforePasswordChange = (): CustomDecorator =>
+  SetMetadata(ALLOW_BEFORE_PASSWORD_CHANGE_KEY, true);
 
 @Injectable()
 export class AccessGuard implements CanActivate {
@@ -44,6 +47,13 @@ export class AccessGuard implements CanActivate {
     request.principal = await this.auth.verifyAccess(
       request.cookies?.access_token as string | undefined,
     );
+    const allowedBeforePasswordChange = this.reflector.getAllAndOverride<boolean>(
+      ALLOW_BEFORE_PASSWORD_CHANGE_KEY,
+      [context.getHandler(), context.getClass()],
+    );
+    if (request.principal.mustChangePassword && !allowedBeforePasswordChange) {
+      throw ProblemException.forbidden('password_change_required', '首次登录必须先修改临时密码。');
+    }
     return true;
   }
 }

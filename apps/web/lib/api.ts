@@ -206,10 +206,22 @@ export function tenantPath(tenantId: string, suffix: string): string {
 }
 
 export const authApi = {
-  async login(email: string, password: string): Promise<void> {
-    await apiRequest('/api/v1/auth/login', {
+  async login(
+    identifier: string,
+    password: string,
+  ): Promise<{
+    user: { mustChangePassword: boolean };
+  }> {
+    return apiRequest('/api/v1/auth/login', {
       method: 'POST',
-      json: { email, password },
+      json: { identifier, password },
+      retryAuthentication: false,
+    });
+  },
+  async changePassword(currentPassword: string, newPassword: string): Promise<void> {
+    await apiRequest('/api/v1/auth/password', {
+      method: 'POST',
+      json: { currentPassword, newPassword },
       retryAuthentication: false,
     });
   },

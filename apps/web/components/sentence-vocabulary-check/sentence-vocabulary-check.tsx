@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PageHeader } from '@/components/ui';
+import { useWorkspace } from '@/components/workspace-provider';
 import type { VocabularyBook } from '@/data/vocabulary-library';
 import type {
   SentenceVocabularyAssessmentMode,
@@ -30,6 +31,7 @@ import {
   sentenceVocabularyProgressKey,
   type SentenceVocabularyProgress,
 } from '@/lib/sentence-vocabulary-progress';
+import { createProgressEventId, recordSelfStudyProgress } from '@/lib/self-study-progress';
 import styles from './sentence-vocabulary-check.module.css';
 
 type CheckStage = 'selection' | 'running' | 'result';
@@ -82,6 +84,7 @@ export function SentenceVocabularyCheck({
   initialUnitId?: string | undefined;
   studentRoute: boolean;
 }) {
+  const { currentTenant } = useWorkspace();
   const bookPath = `${studentRoute ? '/student' : ''}/learning/english/vocabulary/books/${book.id}`;
   const isSentenceBook = book.id === 'toefl-sentences';
   const unitNoun = isSentenceBook ? '句子' : '单元';
@@ -106,6 +109,7 @@ export function SentenceVocabularyCheck({
   const [savedProgress, setSavedProgress] = useState<SentenceVocabularyProgress | null>(null);
   const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null);
   const autoAdvanceTimerRef = useRef<number | null>(null);
+  const recordedAssessmentIdRef = useRef<string | null>(null);
   const progressKey = sentenceVocabularyProgressKey(book.id, studentRoute);
 
   const currentQuestion = assessment?.questions[currentIndex] ?? null;
@@ -207,6 +211,36 @@ export function SentenceVocabularyCheck({
       wrong,
     };
   }, [answers, assessment]);
+
+  useEffect(() => {
+    const assessmentKey = assessment
+      ? `${assessment.bookId}:${assessment.mode}:${assessment.selectedUnitIds.join(',')}:${assessment.questions.map((question) => question.id).join(',')}`
+      : null;
+    if (
+      stage !== 'result' ||
+      !assessment ||
+      !result ||
+      recordedAssessmentIdRef.current === assessmentKey
+    ) {
+      return;
+    }
+    recordedAssessmentIdRef.current = assessmentKey;
+    void recordSelfStudyProgress(currentTenant.id, {
+      module: 'vocabulary',
+      activityType: 'assessment',
+      contentKey: `${book.id}:${assessment.selectedUnitIds.join(',')}`,
+      contentTitle: checkTitle,
+      clientEventId: createProgressEventId('vocabulary'),
+      questionCount: assessment.questionCount,
+      correctCount: result.correctCount,
+      scorePercent: result.percentage,
+      metadata: {
+        bookId: book.id,
+        mode: assessment.mode,
+        selectedUnitIds: assessment.selectedUnitIds,
+      },
+    }).catch(() => undefined);
+  }, [assessment, book.id, checkTitle, currentTenant.id, result, stage]);
 
   function toggleUnit(unitId: string) {
     setSelectedUnitIds((current) => {

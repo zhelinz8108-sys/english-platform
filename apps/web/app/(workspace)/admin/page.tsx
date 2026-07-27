@@ -60,6 +60,7 @@ export default function AdminDashboardPage() {
           membershipPage.data.map((member) => ({
             id: member.membershipId ?? member.id,
             email: member.email,
+            loginName: member.loginName,
             displayName: member.displayName,
             status: member.status,
             roles: member.roles,
@@ -106,7 +107,7 @@ export default function AdminDashboardPage() {
       <PageHeader
         actions={
           <ButtonLink href="/admin/members" icon="plus">
-            邀请成员
+            开通学生账号
           </ButtonLink>
         }
         description="管理成员权限、租户内容副本与不可变发布版本。"
@@ -156,7 +157,7 @@ export default function AdminDashboardPage() {
                   <span className="avatar">{member.displayName.slice(-2)}</span>
                   <div>
                     <strong>{member.displayName}</strong>
-                    <span>{member.email}</span>
+                    <span>{member.loginName ?? member.email}</span>
                   </div>
                   <span className="role-list">
                     {member.roles.map((role) => (

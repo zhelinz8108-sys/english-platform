@@ -12,7 +12,9 @@ import {
 } from '@/components/ui';
 import { Icon } from '@/components/icon';
 import { VocabularyCards, type VocabularyCardEntry } from '@/components/vocabulary-cards';
+import { useWorkspace } from '@/components/workspace-provider';
 import { ApiProblemError, apiRequest } from '@/lib/api';
+import { createProgressEventId, recordSelfStudyProgress } from '@/lib/self-study-progress';
 
 interface GradeSummary {
   grade: number;
@@ -175,6 +177,7 @@ function articleMeta(item: ReadingIndexItem): string[] {
 }
 
 export function ToeflReadingPage({ initialGrade = null }: { initialGrade?: number | null }) {
+  const { currentTenant } = useWorkspace();
   const pathname = usePathname();
   const router = useRouter();
   const toeflHome = pathname.startsWith('/student/')
@@ -363,6 +366,17 @@ export function ToeflReadingPage({ initialGrade = null }: { initialGrade?: numbe
         if (!response.ok) throw new Error('答案暂时无法核对');
         const checked = (await response.json()) as ReadingCheckResult;
         setCheckResult(checked);
+        void recordSelfStudyProgress(currentTenant.id, {
+          module: 'reading',
+          activityType: 'assessment',
+          contentKey: article.id,
+          contentTitle: article.title,
+          clientEventId: createProgressEventId('reading'),
+          questionCount: checked.totalCount,
+          correctCount: checked.correctCount,
+          scorePercent: checked.percentage,
+          metadata: { grade: article.grade, lexile: article.lexile },
+        }).catch(() => undefined);
         const next = new Set(completedIds);
         next.add(article.id);
         setCompletedIds(next);
@@ -381,6 +395,15 @@ export function ToeflReadingPage({ initialGrade = null }: { initialGrade?: numbe
     next.add(article.id);
     setCompletedIds(next);
     localStorage.setItem(completedKey(), JSON.stringify([...next]));
+    void recordSelfStudyProgress(currentTenant.id, {
+      module: 'reading',
+      activityType: 'study',
+      contentKey: article.id,
+      contentTitle: article.title,
+      clientEventId: createProgressEventId('reading-study'),
+      questionCount: article.questions.length,
+      metadata: { grade: article.grade, answerBankStatus: article.answerBankStatus ?? 'missing' },
+    }).catch(() => undefined);
     setSubmissionMessage('已保存本篇作答；这篇文章的自编答案仍在生成中。');
   }
 

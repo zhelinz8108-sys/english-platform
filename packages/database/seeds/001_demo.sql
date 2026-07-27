@@ -141,7 +141,7 @@ INSERT INTO membership_role_assignments (
   ('0194a000-0000-7000-8000-000000000313', '0194a000-0000-7000-8000-000000000001',
    '0194a000-0000-7000-8000-000000000203', '0194a000-0000-7000-8000-000000000304',
    '0194a000-0000-7000-8000-000000000201')
-ON CONFLICT (id) DO NOTHING;
+ON CONFLICT (tenant_id, membership_id, role_id) DO NOTHING;
 
 INSERT INTO teacher_profiles (
   id, tenant_id, membership_id, employee_no, specialties, status
