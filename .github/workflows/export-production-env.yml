@@ -14,21 +14,20 @@ jobs:
       - name: Configure pinned SSH access
         env:
           ECS_SSH_PRIVATE_KEY: ${{ secrets.ECS_SSH_PRIVATE_KEY }}
-          ECS_SSH_KNOWN_HOSTS: ${{ secrets.ECS_SSH_KNOWN_HOSTS }}
+          ECS_KNOWN_HOSTS: ${{ secrets.ECS_KNOWN_HOSTS }}
         run: |
           install -d -m 700 "$HOME/.ssh"
           printf '%s\n' "$ECS_SSH_PRIVATE_KEY" > "$RUNNER_TEMP/ecs_deploy_key"
           chmod 600 "$RUNNER_TEMP/ecs_deploy_key"
-          printf '%s\n' "$ECS_SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          printf '%s\n' "$ECS_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
           chmod 600 "$HOME/.ssh/known_hosts"
 
       - name: Download production environment
         env:
           ECS_HOST: ${{ secrets.ECS_HOST }}
-          ECS_PORT: ${{ secrets.ECS_PORT }}
           ECS_USER: ${{ secrets.ECS_USER }}
         run: |
-          scp -P "$ECS_PORT" -i "$RUNNER_TEMP/ecs_deploy_key" \
+          scp -i "$RUNNER_TEMP/ecs_deploy_key" \
             "$ECS_USER@$ECS_HOST:/opt/english-platform/shared/.env.ecs" \
             "$RUNNER_TEMP/production.env"
           chmod 600 "$RUNNER_TEMP/production.env"
