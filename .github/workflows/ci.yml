@@ -147,6 +147,8 @@ jobs:
           target="${ECS_USER}@${ECS_HOST}"
           archive="/tmp/english-platform-${GITHUB_SHA}.tar.gz"
           remote_archive="/opt/english-platform/releases/${GITHUB_SHA}.tar.gz"
+          ssh "${ssh_options[@]}" "$target" \
+            'docker image prune --all --force && docker builder prune --all --force'
           ssh "${ssh_options[@]}" "$target" 'mkdir -p /opt/english-platform/releases'
           if test -s "$HOME/.ssh/production.env"; then
             scp "${ssh_options[@]}" "$HOME/.ssh/production.env" \
