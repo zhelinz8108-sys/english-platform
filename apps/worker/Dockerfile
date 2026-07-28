@@ -1,4 +1,4 @@
-FROM node:24.14.0-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114 AS base
+FROM node:24.14.0-alpine AS base
 RUN corepack enable
 WORKDIR /app
 
@@ -14,7 +14,7 @@ COPY apps/worker apps/worker
 COPY packages/shared packages/shared
 RUN pnpm --filter @english/shared build && pnpm --filter @english/worker build
 
-FROM node:24.14.0-alpine@sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114 AS runner
+FROM node:24.14.0-alpine AS runner
 ENV NODE_ENV=production
 WORKDIR /app
 USER node

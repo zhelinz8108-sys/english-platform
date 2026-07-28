@@ -111,6 +111,10 @@ jobs:
       - name: Create immutable release archive
         run: |
           set -euo pipefail
+          node_digest='sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114'
+          docker pull "node@${node_digest}"
+          docker tag "node@${node_digest}" node:24.14.0-alpine
+          docker save node:24.14.0-alpine | gzip -1 > /tmp/node-24.14.0-alpine.tar.gz
           tar \
             --create \
             --gzip \
@@ -147,9 +151,14 @@ jobs:
           target="${ECS_USER}@${ECS_HOST}"
           archive="/tmp/english-platform-${GITHUB_SHA}.tar.gz"
           remote_archive="/opt/english-platform/releases/${GITHUB_SHA}.tar.gz"
+          node_base="/tmp/node-24.14.0-alpine.tar.gz"
+          remote_node_base="/opt/english-platform/releases/node-24.14.0-alpine.tar.gz"
           ssh "${ssh_options[@]}" "$target" \
             'docker image prune --all --force && docker builder prune --all --force'
           ssh "${ssh_options[@]}" "$target" 'mkdir -p /opt/english-platform/releases'
+          scp "${ssh_options[@]}" "$node_base" "$target:$remote_node_base"
+          ssh "${ssh_options[@]}" "$target" \
+            "docker load --input '$remote_node_base' && rm -f '$remote_node_base'"
           if test -s "$HOME/.ssh/production.env"; then
             scp "${ssh_options[@]}" "$HOME/.ssh/production.env" \
               "$target:/opt/english-platform/shared/.env.ecs.next"

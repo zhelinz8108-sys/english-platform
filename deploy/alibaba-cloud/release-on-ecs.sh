@@ -34,10 +34,8 @@ flock -n 9 || {
   exit 75
 }
 
-# Every release uses an immutable image tag. Remove images that are no longer
-# referenced by any running or stopped container before the next build. Never
-# prune volumes: the PostgreSQL data volume must remain untouched.
-docker image prune --all --force
+# GitHub Actions removes unused images before loading the pinned Node base.
+# Never prune images here: doing so would discard that freshly loaded base.
 docker_root="$(docker info --format '{{.DockerRootDir}}')"
 available_bytes="$(df --output=avail --block-size=1 "${docker_root}" | tail -n 1 | tr -d ' ')"
 minimum_build_bytes=$((8 * 1024 * 1024 * 1024))
