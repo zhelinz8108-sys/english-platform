@@ -41,19 +41,22 @@ it when it is no longer required.
 
 The `backup` Compose service runs `pg_dump` immediately after it starts and then
 once every `BACKUP_INTERVAL_SECONDS`. Dumps and SHA-256 metadata are uploaded to
-`BACKUP_S3_PREFIX`. Cleanup of objects older than `BACKUP_RETENTION_DAYS` is
-best-effort so a missing delete permission can never invalidate a successful
-backup.
+`BACKUP_S3_PREFIX`. The fixed `latest.json` pointer identifies the newest dump,
+so verification and recovery do not require permission to list the bucket.
+Cleanup of objects older than `BACKUP_RETENTION_DAYS` is best-effort so a
+missing list or delete permission can never invalidate a successful backup.
 
 The production OSS RAM policy needs these permissions:
 
 - read/write objects below `private-archive/workstation/`;
-- write objects below `private-archive/database-backups/`;
+- read/write objects below `private-archive/database-backups/`;
 - optionally list and delete only the backup prefix for retention cleanup.
 
 Verify at least monthly that a dump can be downloaded, its SHA-256 matches the
 metadata object, and `pg_restore --list` can read it. Perform full restoration
-only into an isolated database.
+only into an isolated database. The production release script performs the
+non-destructive download, checksum, and `pg_restore --list` checks on every
+deployment.
 
 Run the non-destructive verification inside the production API image:
 

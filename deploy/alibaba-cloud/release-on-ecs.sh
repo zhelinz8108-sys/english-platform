@@ -77,6 +77,21 @@ done
 
 "${compose[@]}" up -d --no-deps --force-recreate api worker backup web
 
+backup_verified=false
+for attempt in {1..12}; do
+  if "${compose[@]}" run --rm --no-deps --interactive=false backup \
+    node apps/api/scripts/verify-production-database-backup.mjs; then
+    backup_verified=true
+    break
+  fi
+  echo "Database backup is not ready yet (attempt ${attempt}/12)." >&2
+  sleep 5
+done
+if [[ "${backup_verified}" != "true" ]]; then
+  echo "Unable to verify a restorable production database backup." >&2
+  exit 70
+fi
+
 web_address="$("${compose[@]}" port web 3000 | head -n 1)"
 if [[ -z "${web_address}" ]]; then
   echo "Unable to determine the published web address." >&2
