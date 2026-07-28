@@ -1,0 +1,76 @@
+name: encrypted-production-environment-export
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Configure pinned SSH access
+        env:
+          ECS_SSH_PRIVATE_KEY: ${{ secrets.ECS_SSH_PRIVATE_KEY }}
+          ECS_SSH_KNOWN_HOSTS: ${{ secrets.ECS_SSH_KNOWN_HOSTS }}
+        run: |
+          install -d -m 700 "$HOME/.ssh"
+          printf '%s\n' "$ECS_SSH_PRIVATE_KEY" > "$RUNNER_TEMP/ecs_deploy_key"
+          chmod 600 "$RUNNER_TEMP/ecs_deploy_key"
+          printf '%s\n' "$ECS_SSH_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          chmod 600 "$HOME/.ssh/known_hosts"
+
+      - name: Download production environment
+        env:
+          ECS_HOST: ${{ secrets.ECS_HOST }}
+          ECS_PORT: ${{ secrets.ECS_PORT }}
+          ECS_USER: ${{ secrets.ECS_USER }}
+        run: |
+          scp -P "$ECS_PORT" -i "$RUNNER_TEMP/ecs_deploy_key" \
+            "$ECS_USER@$ECS_HOST:/opt/english-platform/shared/.env.ecs" \
+            "$RUNNER_TEMP/production.env"
+          chmod 600 "$RUNNER_TEMP/production.env"
+
+      - name: Encrypt for one-time transfer
+        run: |
+          cat > "$RUNNER_TEMP/recipient.pem" <<'PUBLIC_KEY'
+          -----BEGIN PUBLIC KEY-----
+          MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAsbijSRKi2TGcw49RTOzb
+          /PLlT6wVe6aHhAgqHtq9uNBEhHvJxGDIAY/YB4RaZVBZhxAybI+XgLhoIiXXFyct
+          Jh+H+HOmAMdzHjO18YOAJLMl7Wy8ojpaC5RDr17gbtvhx+Uss8bISHGSvYKOSd74
+          zEhWC/4FHB7wQWxlzIWtkz+tMuI0J71QC+SYvzrw1XQciOCsus6THRxMXCtUA19B
+          dlcaTiWJOHIaks/MAtx49RKIM9y/pi9E2my1orhaXRTueHQ3dR88AEyeL9uZzjjL
+          82tEXLlczhoMPwYr8yWru/RjKsGSuWo8xZHXIozB10KZSm6LN7pXrtGfIq0vTWV7
+          zCE0440mTR8WrxA82bbLimyZUoc638uI38DxUox+Dg7c9qr35Wg968Anl+gFwn3/
+          H3Re8QQRbeXrhPCf9u9LhBF2AzbqpM7NxWE6Hp/PseKelXyLjrKKQh8W+kf0PHyR
+          nYp7Slt47W/UtAX0eOGWeYqUamjOEGCqTx1CFpic32WntD6JZTLD0Th4OhB5/V0g
+          4+AVuRP26vBcVFJxUzNrWycW722XlcaFk4i2yRPQheNvQtJ9AaURbt5+UKcGc+nr
+          HgKoKmQb0EWCK8euO2FZNNzYWEGGy5DHJnwKVFLJfqPVYP+QDWBNEGeD8dKHbQiU
+          OmMgncPvwkO3wkVllh5S+u0CAwEAAQ==
+          -----END PUBLIC KEY-----
+          PUBLIC_KEY
+          openssl rand -hex 32 > "$RUNNER_TEMP/passphrase"
+          openssl enc -aes-256-cbc -pbkdf2 -salt \
+            -pass file:"$RUNNER_TEMP/passphrase" \
+            -in "$RUNNER_TEMP/production.env" \
+            -out "$RUNNER_TEMP/production.env.enc"
+          openssl pkeyutl -encrypt -pubin \
+            -inkey "$RUNNER_TEMP/recipient.pem" \
+            -in "$RUNNER_TEMP/passphrase" \
+            -out "$RUNNER_TEMP/passphrase.enc" \
+            -pkeyopt rsa_padding_mode:oaep \
+            -pkeyopt rsa_oaep_md:sha256
+          rm -f "$RUNNER_TEMP/production.env" "$RUNNER_TEMP/passphrase" \
+            "$RUNNER_TEMP/recipient.pem"
+
+      - name: Upload encrypted transfer
+        uses: actions/upload-artifact@v4
+        with:
+          name: encrypted-production-environment
+          path: |
+            ${{ runner.temp }}/production.env.enc
+            ${{ runner.temp }}/passphrase.enc
+          if-no-files-found: error
+          retention-days: 1
