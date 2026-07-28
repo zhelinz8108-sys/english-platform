@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto';
 import { spawn } from 'node:child_process';
 import { createReadStream, createWriteStream } from 'node:fs';
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdtemp, rm, stat } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { pipeline } from 'node:stream/promises';
@@ -47,6 +47,28 @@ function run(command, args) {
 }
 
 async function latestBackup() {
+  try {
+    const pointerKey = `${prefix}/latest.json`;
+    const pointer = await client.send(new GetObjectCommand({ Bucket: bucket, Key: pointerKey }));
+    if (!pointer.Body) throw new Error(`Empty backup pointer: ${pointerKey}`);
+    const metadata = JSON.parse(await pointer.Body.transformToString());
+    if (
+      typeof metadata.dumpKey !== 'string' ||
+      !metadata.dumpKey.startsWith(`${prefix}/`) ||
+      !metadata.dumpKey.endsWith('.dump')
+    ) {
+      throw new Error(`Invalid dumpKey in ${pointerKey}.`);
+    }
+    return {
+      Key: metadata.dumpKey,
+      ExpectedSha256: typeof metadata.sha256 === 'string' ? metadata.sha256 : undefined,
+      ExpectedSize: Number.isFinite(metadata.size) ? metadata.size : undefined,
+    };
+  } catch (error) {
+    const status = error?.$metadata?.httpStatusCode;
+    if (status !== 404 && error?.name !== 'NoSuchKey' && error?.Code !== 'NoSuchKey') throw error;
+  }
+
   let continuationToken;
   let latest;
   do {
@@ -75,9 +97,16 @@ try {
   if (!response.Body) throw new Error(`Empty backup body: ${object.Key}`);
   await pipeline(response.Body, createWriteStream(dumpPath));
 
+  const downloadedSize = (await stat(dumpPath)).size;
+  if (object.ExpectedSize && object.ExpectedSize !== downloadedSize) {
+    throw new Error(`Size mismatch for ${object.Key}.`);
+  }
   const hash = createHash('sha256');
   for await (const chunk of createReadStream(dumpPath)) hash.update(chunk);
   const digest = hash.digest('hex');
+  if (object.ExpectedSha256 && object.ExpectedSha256 !== digest) {
+    throw new Error(`SHA-256 mismatch for ${object.Key}.`);
+  }
   if (response.Metadata?.sha256 && response.Metadata.sha256 !== digest) {
     throw new Error(`SHA-256 mismatch for ${object.Key}.`);
   }

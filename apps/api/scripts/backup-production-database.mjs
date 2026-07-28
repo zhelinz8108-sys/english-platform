@@ -125,6 +125,14 @@ async function backup() {
     const details = await stat(dumpPath);
     const digest = await sha256(dumpPath);
     const key = `${prefix}/english-platform-${timestamp()}.dump`;
+    const metadata = {
+      schemaVersion: 1,
+      createdAt: new Date().toISOString(),
+      database: 'english_platform',
+      dumpKey: key,
+      size: details.size,
+      sha256: digest,
+    };
     await client.send(
       new PutObjectCommand({
         Bucket: bucket,
@@ -140,18 +148,16 @@ async function backup() {
       new PutObjectCommand({
         Bucket: bucket,
         Key: `${key}.json`,
-        Body: JSON.stringify(
-          {
-            schemaVersion: 1,
-            createdAt: new Date().toISOString(),
-            database: 'english_platform',
-            dumpKey: key,
-            size: details.size,
-            sha256: digest,
-          },
-          null,
-          2,
-        ),
+        Body: JSON.stringify(metadata, null, 2),
+        ContentType: 'application/json',
+        ...encryptionOptions,
+      }),
+    );
+    await client.send(
+      new PutObjectCommand({
+        Bucket: bucket,
+        Key: `${prefix}/latest.json`,
+        Body: JSON.stringify(metadata, null, 2),
         ContentType: 'application/json',
         ...encryptionOptions,
       }),
