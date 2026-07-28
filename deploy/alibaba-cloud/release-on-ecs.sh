@@ -34,6 +34,18 @@ flock -n 9 || {
   exit 75
 }
 
+# Every release uses an immutable image tag. Remove images that are no longer
+# referenced by any running or stopped container before the next build. Never
+# prune volumes: the PostgreSQL data volume must remain untouched.
+docker image prune --all --force
+docker_root="$(docker info --format '{{.DockerRootDir}}')"
+available_bytes="$(df --output=avail --block-size=1 "${docker_root}" | tail -n 1 | tr -d ' ')"
+minimum_build_bytes=$((8 * 1024 * 1024 * 1024))
+if (( available_bytes < minimum_build_bytes )); then
+  echo "Docker storage is low; pruning unused BuildKit cache."
+  docker builder prune --all --force
+fi
+
 release_dir="${RELEASES_DIR}/${RELEASE_ID}"
 staging_dir="$(mktemp -d "${RELEASES_DIR}/.${RELEASE_ID}.XXXXXX")"
 cleanup() {
