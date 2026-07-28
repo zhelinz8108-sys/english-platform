@@ -163,6 +163,23 @@ services:
     mem_limit: 192m
     logging: *logging
 
+  backup:
+    image: ${API_IMAGE:-english-platform-api}:${IMAGE_TAG:-ecs}
+    command: ['node', 'apps/api/scripts/backup-production-database.mjs', '--loop']
+    env_file: ${ECS_ENV_FILE:-.env.ecs}
+    environment:
+      NODE_ENV: production
+      BACKUP_S3_PREFIX: ${BACKUP_S3_PREFIX:-private-archive/database-backups}
+      BACKUP_INTERVAL_SECONDS: ${BACKUP_INTERVAL_SECONDS:-86400}
+      BACKUP_RETENTION_DAYS: ${BACKUP_RETENTION_DAYS:-30}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks: [application]
+    restart: unless-stopped
+    mem_limit: 192m
+    logging: *logging
+
   web:
     image: ${WEB_IMAGE:-english-platform-web}:${IMAGE_TAG:-ecs}
     build:

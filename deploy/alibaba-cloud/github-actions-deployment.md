@@ -29,7 +29,13 @@ the `main` branch. Add these environment secrets:
 - `ECS_SSH_PRIVATE_KEY` — the private half of the dedicated deployment key.
 - `ECS_KNOWN_HOSTS` — the pinned `known_hosts` line for the ECS host, generated
   from a trusted connection rather than accepted automatically by CI.
+- `ECS_ENV_FILE_B64` — optional but strongly recommended. Store the complete
+  production `.env.ecs` file as base64 so a deployment can recreate the server
+  copy after an ECS replacement. The workflow decodes it without printing it.
 
 After this setup, each successful push to `main` deploys automatically. The
 workflow uses a concurrency lock so a later push waits for an active production
 deployment instead of canceling it.
+
+See `docs/cloud-independence.md` for the private OSS archive, daily PostgreSQL
+backup, new-workstation bootstrap, and recovery-drill procedure.

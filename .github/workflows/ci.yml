@@ -92,6 +92,7 @@ jobs:
           ECS_USER: ${{ secrets.ECS_USER }}
           ECS_SSH_PRIVATE_KEY: ${{ secrets.ECS_SSH_PRIVATE_KEY }}
           ECS_KNOWN_HOSTS: ${{ secrets.ECS_KNOWN_HOSTS }}
+          ECS_ENV_FILE_B64: ${{ secrets.ECS_ENV_FILE_B64 }}
         run: |
           set -euo pipefail
           test -n "$ECS_HOST"
@@ -102,6 +103,10 @@ jobs:
           printf '%s\n' "$ECS_SSH_PRIVATE_KEY" > ~/.ssh/production_deploy_key
           printf '%s\n' "$ECS_KNOWN_HOSTS" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/production_deploy_key ~/.ssh/known_hosts
+          if test -n "$ECS_ENV_FILE_B64"; then
+            printf '%s' "$ECS_ENV_FILE_B64" | base64 --decode > ~/.ssh/production.env
+            chmod 600 ~/.ssh/production.env
+          fi
 
       - name: Create immutable release archive
         run: |
@@ -143,6 +148,12 @@ jobs:
           archive="/tmp/english-platform-${GITHUB_SHA}.tar.gz"
           remote_archive="/opt/english-platform/releases/${GITHUB_SHA}.tar.gz"
           ssh "${ssh_options[@]}" "$target" 'mkdir -p /opt/english-platform/releases'
+          if test -s "$HOME/.ssh/production.env"; then
+            scp "${ssh_options[@]}" "$HOME/.ssh/production.env" \
+              "$target:/opt/english-platform/shared/.env.ecs.next"
+            ssh "${ssh_options[@]}" "$target" \
+              'install -m 600 /opt/english-platform/shared/.env.ecs.next /opt/english-platform/shared/.env.ecs && rm -f /opt/english-platform/shared/.env.ecs.next'
+          fi
           scp "${ssh_options[@]}" "$archive" "$target:$remote_archive"
           ssh "${ssh_options[@]}" "$target" \
             "RELEASE_ID='${GITHUB_SHA}' ARCHIVE_PATH='$remote_archive' ENV_FILE='/opt/english-platform/shared/.env.ecs' bash -s" \

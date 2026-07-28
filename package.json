@@ -11,6 +11,8 @@
     "grammar:generate": "node scripts/generate-grammar-practice-data.mjs",
     "grammar:check": "node scripts/generate-grammar-practice-data.mjs --check",
     "contract:generate": "pnpm --filter @english/api-contract generate",
+    "archive:manifest": "node scripts/generate-cloud-assets-manifest.mjs",
+    "archive:sync": "pnpm --filter @english/api archive:sync",
     "predev": "pnpm --filter @english/shared build && pnpm --filter @english/database build",
     "dev": "node scripts/run-with-env.mjs --parallel --filter @english/api --filter @english/worker --filter @english/web dev",
     "format": "prettier --write .",

@@ -75,7 +75,7 @@ done
   apps/api/scripts/import-listening-question-bank.mjs \
   --tenant=019f8d4f-c7ce-77b8-979a-206f28f8fda4
 
-"${compose[@]}" up -d --no-deps --force-recreate api worker web
+"${compose[@]}" up -d --no-deps --force-recreate api worker backup web
 
 web_address="$("${compose[@]}" port web 3000 | head -n 1)"
 if [[ -z "${web_address}" ]]; then
