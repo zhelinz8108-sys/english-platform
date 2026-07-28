@@ -23,7 +23,7 @@ const RECENT_BOOK_KEY = 'aurelis:vocabulary-books:recent:v1';
 
 const bookLabels: Record<string, string> = {
   'toefl-sentences': '托福',
-  'gre-random': 'GRE',
+  'gre-random': 'SAT',
   'situational-15000': '分类词汇',
 };
 
@@ -200,7 +200,7 @@ export function VocabularyLibrary({ catalog }: { catalog: VocabularyBookCatalog 
           <div className={styles.emptyState}>
             <Search size={25} />
             <h3>没有找到匹配的词书或目录</h3>
-            <p>可以搜索 TOEFL、GRE、场景名称或具体章节。</p>
+            <p>可以搜索 TOEFL、SAT、场景名称或具体章节。</p>
             <button onClick={() => setQuery('')} type="button">
               清除搜索
             </button>
