@@ -99,6 +99,10 @@ describe('local vocabulary book catalog', () => {
           expect(unit.unitId).toBe(item.id);
           expect(unit.pages.length).toBeGreaterThan(0);
           for (const block of unit.pages.flatMap((page) => page.blocks)) {
+            if (book.id === 'high-frequency') {
+              expect(block.type).toBe('entry');
+              expect(block.text).toBe(block.headword);
+            }
             if (block.type !== 'entry' || !block.headword) continue;
             const normalized = block.headword
               .replaceAll('’', "'")

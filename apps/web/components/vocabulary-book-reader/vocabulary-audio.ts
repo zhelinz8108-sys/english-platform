@@ -98,6 +98,16 @@ export function prepareVocabularyPages(pages: VocabularyContentPage[]) {
   });
 }
 
+export function extractVocabularyHeadwords(pages: VocabularyContentPage[]) {
+  return pages.flatMap((page) =>
+    page.blocks.flatMap((block) => {
+      if (block.type !== 'entry') return [];
+      const headword = block.headword?.trim() || block.text.trim().split(/\s+/u)[0] || '';
+      return headword ? [headword] : [];
+    }),
+  );
+}
+
 export function extractEnglishSpeechText(text: string) {
   const candidates = text.match(ENGLISH_FRAGMENT) ?? [];
   const best = candidates

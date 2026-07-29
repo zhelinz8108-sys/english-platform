@@ -106,9 +106,9 @@ export function GrammarPractice(props: { topicId: string; title: string; level: 
           <p>
             {result.mastered
               ? nextLevel
-                ? '本组已完成，可以继续学习下一组更深入的应用。'
-                : '这个知识点已掌握。你仍可以再次练习并刷新最佳正确率。'
-              : '本组尚未达到80%，可查看解析后再次练习。'}
+                ? '已掌握，可以继续下一组。'
+                : '这个知识点已掌握。'
+              : '未达到80%，查看解析后再试一次。'}
           </p>
         </header>
         <section className={styles.resultSummary} aria-label="练习成绩">
@@ -205,7 +205,7 @@ export function GrammarPractice(props: { topicId: string; title: string; level: 
       <header className={styles.practiceHeader}>
         <p className={styles.eyebrow}>Grammar topic practice</p>
         <h1>{title}</h1>
-        <p>每组10题，题目由核心规则逐步过渡到复杂应用；答案会逐题保存。</p>
+        <p>10题 · 自动保存</p>
       </header>
       <div className={styles.practiceTopline}>
         <span>

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ArrowRight, BookOpenCheck, Search } from 'lucide-react';
+import { ArrowRight, Search } from 'lucide-react';
 import { useState } from 'react';
 import type { GrammarCatalog } from '@english/shared';
 import { summarizeGrammarTopicProgress } from '@/lib/grammar-topic-progress';
@@ -50,9 +50,7 @@ export function GrammarOverview({ catalog }: { catalog: GrammarCatalog }) {
         <div>
           <p className={styles.eyebrow}>English · Grammar</p>
           <h1>语法学习路径</h1>
-          <p>
-            按知识依赖学习86个去重知识点；每个知识点融合三本教材内容，由核心规则自然过渡到复杂应用。
-          </p>
+          <p>按依赖顺序学习86个知识点，每个知识点分为初、中、高三级。</p>
         </div>
         {continueTopic ? (
           <Link className={styles.primaryLink} href={`${base}/topic/${continueTopic.id}`}>
@@ -72,10 +70,6 @@ export function GrammarOverview({ catalog }: { catalog: GrammarCatalog }) {
           <strong>{catalog.summary.topicCount}</strong>
         </div>
         <div>
-          <span>已开放知识点</span>
-          <strong>{catalog.summary.publishedTopicCount}</strong>
-        </div>
-        <div>
           <span>已掌握知识点</span>
           <strong>{loading ? '—' : masteredTopicCount}</strong>
         </div>
@@ -84,15 +78,11 @@ export function GrammarOverview({ catalog }: { catalog: GrammarCatalog }) {
       {error ? (
         <div className={styles.errorNotice}>{error} 课程仍可浏览，成绩暂时无法同步。</div>
       ) : null}
-      <div className={styles.notice}>
-        <BookOpenCheck size={15} />{' '}
-        86个知识点和2580道分级练习均已开放；三本教材的内容已去重，并按初级、中级、高级连续编排。
-      </div>
 
       <div className={styles.toolbar}>
         <div>
           <p className={styles.kicker}>Curriculum</p>
-          <h2>12个学习模块</h2>
+          <h2>课程目录</h2>
         </div>
         <label className={styles.search}>
           <Search size={16} />
@@ -131,8 +121,8 @@ export function GrammarOverview({ catalog }: { catalog: GrammarCatalog }) {
                   <strong>{module.topics.length}个知识点</strong>
                   <span>
                     {pilotTopics.length
-                      ? `${masteredTopics}/${pilotTopics.length}个完整知识点已掌握`
-                      : '内容提纲已建立'}
+                      ? `${masteredTopics}/${pilotTopics.length} 已掌握`
+                      : '暂未开放'}
                   </span>
                 </span>
                 <ArrowRight aria-hidden size={17} />

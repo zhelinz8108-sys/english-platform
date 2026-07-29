@@ -483,6 +483,35 @@
   display: block;
 }
 
+.wordOnlyPage {
+  padding-top: 28px;
+}
+
+.wordOnlyGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  margin: 0;
+  border: 1px solid var(--reader-border);
+  border-radius: 12px;
+  background: var(--reader-border);
+  padding: 0;
+  list-style: none;
+}
+
+.wordOnlyGrid li {
+  min-width: 0;
+  background: var(--surface);
+  padding: 14px 16px;
+  color: #0f6150;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 17px;
+  font-weight: 650;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
 .contentTitle {
   margin: 0 0 17px;
   color: var(--ink-900);

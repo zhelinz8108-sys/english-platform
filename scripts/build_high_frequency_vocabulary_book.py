@@ -73,28 +73,13 @@ def load_commonlit_overlap(exam_headwords: set[str]) -> dict[int, list[dict[str,
 
 
 def entry_blocks(entry: dict[str, str]) -> list[dict[str, str]]:
-    detail_parts = [
-        value.strip()
-        for value in (entry.get("ipa", ""), entry.get("definition", ""))
-        if value.strip()
-    ]
-    blocks: list[dict[str, str]] = [
+    return [
         {
             "type": "entry",
-            "text": " ".join([entry["word"], *detail_parts]),
+            "text": entry["word"],
             "headword": entry["word"],
         }
     ]
-    if entry.get("context"):
-        blocks.append({"type": "example", "text": entry["context"]})
-    if entry.get("contextTranslation"):
-        blocks.append(
-            {
-                "type": "text",
-                "text": f"中文语境：{entry['contextTranslation']}",
-            }
-        )
-    return blocks
 
 
 def build_units(
@@ -132,8 +117,6 @@ def build_units(
                     page_entry_start : page_entry_start + WORDS_PER_PAGE
                 ]
                 blocks: list[dict[str, str]] = []
-                if page_offset == 0:
-                    blocks.append({"type": "title", "text": title})
                 for entry in page_entries:
                     blocks.extend(entry_blocks(entry))
                 pages.append({"number": page_start + page_offset, "blocks": blocks})
@@ -218,18 +201,18 @@ def update_catalog(
     )
     derived_book = {
         "id": BOOK_ID,
-        "sourceFile": "CommonLit × TOEFL/SAT 重合词汇（派生数据）",
+        "sourceFile": "高频词汇",
         "pageCount": page_count,
         "cover": "",
         "extractionMethod": "text-layer",
         "title": "高频词汇",
         "shortTitle": "高频词汇",
         "author": "Aurelis English",
-        "description": "CommonLit 与托福、SAT 词库中共同出现的词汇，按首次出现年级组织。",
+        "description": "按年级与首次出现顺序整理的高频词表。",
         "scale": f"{word_count:,} 个重合词汇 · Grade 3–12",
         "category": "高频",
         "tone": "teal",
-        "features": ["跨词库重合", "年级分层", "原文语境", "中文释义"],
+        "features": ["纯单词", "年级分层", "频次排序"],
         "sections": sections,
         "contentReady": True,
         "wordEntryCount": word_count,

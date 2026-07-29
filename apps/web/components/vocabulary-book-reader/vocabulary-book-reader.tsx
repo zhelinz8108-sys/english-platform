@@ -27,6 +27,7 @@ import type {
 import {
   extractEnglishSpeechText,
   extractStandaloneVocabularySpeechText,
+  extractVocabularyHeadwords,
   prepareVocabularyPages,
   type PreparedVocabularyBlock,
 } from './vocabulary-audio';
@@ -324,6 +325,7 @@ function VocabularyEntryGroup({
 
 export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
   const pathname = usePathname();
+  const isWordOnlyBook = book.id === 'high-frequency';
   const vocabularyBase = pathname.startsWith('/student/')
     ? '/student/learning/english/vocabulary'
     : '/learning/english/vocabulary';
@@ -577,6 +579,10 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
       content ? prepareVocabularyPages(content.pages).filter((page) => page.blocks.length > 0) : [],
     [content],
   );
+  const visibleHeadwords = useMemo(
+    () => (isWordOnlyBook ? extractVocabularyHeadwords(visiblePages) : []),
+    [isWordOnlyBook, visiblePages],
+  );
 
   return (
     <div className={styles.page}>
@@ -586,7 +592,7 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
             <ArrowLeft size={17} /> 返回词汇书架
           </Link>
         }
-        description={book.description}
+        description={isWordOnlyBook ? '按年级与出现频率分组浏览。' : book.description}
         eyebrow={`英语 · 词汇 · ${book.category}`}
         title={book.shortTitle}
       />
@@ -661,39 +667,49 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
                   </div>
                 </header>
                 {visiblePages.length ? (
-                  visiblePages.map((page) => (
-                    <section className={styles.contentPage} key={page.number}>
-                      <div className={styles.blockList}>
-                        {groupVocabularyBlocks(page.blocks).map((item) => {
-                          const audioIdPrefix = `${content.unitId}-${page.number}`;
-                          if (item.kind === 'entry') {
+                  isWordOnlyBook ? (
+                    <section className={`${styles.contentPage} ${styles.wordOnlyPage}`}>
+                      <ul className={styles.wordOnlyGrid} aria-label="高频单词">
+                        {visibleHeadwords.map((headword, index) => (
+                          <li key={`${headword}:${index}`}>{headword}</li>
+                        ))}
+                      </ul>
+                    </section>
+                  ) : (
+                    visiblePages.map((page) => (
+                      <section className={styles.contentPage} key={page.number}>
+                        <div className={styles.blockList}>
+                          {groupVocabularyBlocks(page.blocks).map((item) => {
+                            const audioIdPrefix = `${content.unitId}-${page.number}`;
+                            if (item.kind === 'entry') {
+                              return (
+                                <VocabularyEntryGroup
+                                  audioIdPrefix={audioIdPrefix}
+                                  audioSupported={audioSupported}
+                                  details={item.details}
+                                  entry={item.entry}
+                                  key={`${audioIdPrefix}-${item.entry.index}-group`}
+                                  onSpeak={playAmericanAudio}
+                                  speakingId={speakingId}
+                                />
+                              );
+                            }
+                            const audioId = `${audioIdPrefix}-${item.index}`;
                             return (
-                              <VocabularyEntryGroup
-                                audioIdPrefix={audioIdPrefix}
+                              <TextBlock
+                                audioId={audioId}
                                 audioSupported={audioSupported}
-                                details={item.details}
-                                entry={item.entry}
-                                key={`${audioIdPrefix}-${item.entry.index}-group`}
+                                block={item.block}
+                                isSpeaking={speakingId === audioId}
+                                key={audioId}
                                 onSpeak={playAmericanAudio}
-                                speakingId={speakingId}
                               />
                             );
-                          }
-                          const audioId = `${audioIdPrefix}-${item.index}`;
-                          return (
-                            <TextBlock
-                              audioId={audioId}
-                              audioSupported={audioSupported}
-                              block={item.block}
-                              isSpeaking={speakingId === audioId}
-                              key={audioId}
-                              onSpeak={playAmericanAudio}
-                            />
-                          );
-                        })}
-                      </div>
-                    </section>
-                  ))
+                          })}
+                        </div>
+                      </section>
+                    ))
+                  )
                 ) : (
                   <div className={styles.emptyState}>
                     本单元词条均已在前面的书或单元中出现，已按你的规则移除后续重复内容。

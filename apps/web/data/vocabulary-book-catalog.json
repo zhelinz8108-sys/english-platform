@@ -874,22 +874,21 @@
     },
     {
       "id": "high-frequency",
-      "sourceFile": "CommonLit × TOEFL/SAT 重合词汇（派生数据）",
+      "sourceFile": "高频词汇",
       "pageCount": 274,
       "cover": "",
       "extractionMethod": "text-layer",
       "title": "高频词汇",
       "shortTitle": "高频词汇",
       "author": "Aurelis English",
-      "description": "CommonLit 与托福、SAT 词库中共同出现的词汇，按首次出现年级组织。",
+      "description": "按年级与首次出现顺序整理的高频词表。",
       "scale": "6,734 个重合词汇 · Grade 3–12",
       "category": "高频",
       "tone": "teal",
       "features": [
-        "跨词库重合",
+        "纯单词",
         "年级分层",
-        "原文语境",
-        "中文释义"
+        "频次排序"
       ],
       "sections": [
         {

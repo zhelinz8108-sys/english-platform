@@ -17,7 +17,6 @@ export function GrammarModule({ module }: { module: GrammarModuleSummary }) {
   const { progress, error } = useGrammarProgress();
   const [filter, setFilter] = useState<Filter>('all');
   const progressEntries = progress?.entries ?? [];
-  const pilotCount = module.topics.filter((topic) => topic.pilot).length;
   const topics = module.topics.filter((topic) => {
     if (filter === 'all') return true;
     return summarizeGrammarTopicProgress(progressEntries, topic.id).status === filter;
@@ -37,12 +36,6 @@ export function GrammarModule({ module }: { module: GrammarModuleSummary }) {
         <div className={styles.moduleStatsBar}>
           <span>
             <strong>{module.topics.length}</strong> 个知识点
-          </span>
-          <span>
-            <strong>{pilotCount}</strong> 个已开放课程
-          </span>
-          <span>
-            <strong>3</strong> 本教材融合
           </span>
         </div>
       </header>
@@ -78,7 +71,6 @@ export function GrammarModule({ module }: { module: GrammarModuleSummary }) {
                 <span className={styles.topicCopy}>
                   <small>{topic.english}</small>
                   <strong>{topic.title}</strong>
-                  <p>{topic.overview}</p>
                 </span>
                 {topic.pilot ? (
                   <span className={styles.topicStatus} data-state={topicProgress.status}>
@@ -87,7 +79,7 @@ export function GrammarModule({ module }: { module: GrammarModuleSummary }) {
                       : topicProgress.started
                         ? topicProgress.bestAccuracy === null
                           ? '学习中'
-                          : `学习中 · 最佳 ${topicProgress.bestAccuracy}%`
+                          : `学习中 · ${topicProgress.bestAccuracy}%`
                         : '开始学习'}
                   </span>
                 ) : (

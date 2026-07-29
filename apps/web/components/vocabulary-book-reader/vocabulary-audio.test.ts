@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import {
   extractEnglishSpeechText,
   extractStandaloneVocabularySpeechText,
+  extractVocabularyHeadwords,
   prepareVocabularyBlocks,
   prepareVocabularyPages,
 } from './vocabulary-audio';
@@ -76,5 +77,22 @@ describe('vocabulary American-audio helpers', () => {
     );
     expect(extractStandaloneVocabularySpeechText('essential a. 本质的')).toBe('essential');
     expect(extractStandaloneVocabularySpeechText('what引导名词性从句')).toBe('');
+  });
+
+  it('keeps only entry headwords for a word-only list', () => {
+    expect(
+      extractVocabularyHeadwords([
+        {
+          number: 1,
+          blocks: [
+            { type: 'title', text: 'Grade 3 高频词汇 001–100' },
+            { type: 'entry', text: "fluffy /'flʌfi/ adj. 毛绒绒的", headword: 'fluffy' },
+            { type: 'example', text: 'My fluffy tail shook over the river.' },
+            { type: 'text', text: '中文语境：我的毛茸茸的尾巴。' },
+            { type: 'entry', text: 'moan n. 呻吟' },
+          ],
+        },
+      ]),
+    ).toEqual(['fluffy', 'moan']);
   });
 });
