@@ -483,56 +483,6 @@
   display: block;
 }
 
-.wordOnlyPage {
-  padding-top: 28px;
-}
-
-.wordOnlyGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(245px, 1fr));
-  gap: 1px;
-  overflow: hidden;
-  margin: 0;
-  border: 1px solid var(--reader-border);
-  border-radius: 12px;
-  background: var(--reader-border);
-  padding: 0;
-  list-style: none;
-}
-
-.wordOnlyGrid li {
-  display: grid;
-  align-content: start;
-  gap: 7px;
-  min-width: 0;
-  background: var(--surface);
-  padding: 13px 15px;
-}
-
-.wordOnlyGrid li > div {
-  display: flex;
-  min-width: 0;
-  align-items: center;
-  gap: 8px;
-}
-
-.wordOnlyGrid strong {
-  min-width: 0;
-  color: #0f6150;
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 17px;
-  font-weight: 650;
-  line-height: 1.35;
-  overflow-wrap: anywhere;
-}
-
-.wordOnlyGrid p {
-  margin: 0;
-  color: var(--ink-700);
-  font-size: 11px;
-  line-height: 1.55;
-}
-
 .contentTitle {
   margin: 0 0 17px;
   color: var(--ink-900);

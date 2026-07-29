@@ -98,24 +98,6 @@ export function prepareVocabularyPages(pages: VocabularyContentPage[]) {
   });
 }
 
-export interface CompactVocabularyEntry {
-  headword: string;
-  meaning: string;
-}
-
-export function extractCompactVocabularyEntries(
-  pages: VocabularyContentPage[],
-): CompactVocabularyEntry[] {
-  return pages.flatMap((page) =>
-    page.blocks.flatMap((block) => {
-      if (block.type !== 'entry') return [];
-      const headword = block.headword?.trim() || block.text.trim().split(/\s+/u)[0] || '';
-      if (!headword) return [];
-      return [{ headword, meaning: block.text.slice(headword.length).trim() }];
-    }),
-  );
-}
-
 export function extractEnglishSpeechText(text: string) {
   const candidates = text.match(ENGLISH_FRAGMENT) ?? [];
   const best = candidates

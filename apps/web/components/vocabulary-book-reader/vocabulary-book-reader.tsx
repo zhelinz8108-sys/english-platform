@@ -25,7 +25,6 @@ import type {
   VocabularyContentBlock,
 } from '@/data/vocabulary-library';
 import {
-  extractCompactVocabularyEntries,
   extractEnglishSpeechText,
   extractStandaloneVocabularySpeechText,
   prepareVocabularyPages,
@@ -579,10 +578,6 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
       content ? prepareVocabularyPages(content.pages).filter((page) => page.blocks.length > 0) : [],
     [content],
   );
-  const compactEntries = useMemo(
-    () => (isHighFrequencyBook ? extractCompactVocabularyEntries(visiblePages) : []),
-    [isHighFrequencyBook, visiblePages],
-  );
 
   return (
     <div className={styles.page}>
@@ -667,65 +662,39 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
                   </div>
                 </header>
                 {visiblePages.length ? (
-                  isHighFrequencyBook ? (
-                    <section className={`${styles.contentPage} ${styles.wordOnlyPage}`}>
-                      <ul className={styles.wordOnlyGrid} aria-label="高频单词及中文释义">
-                        {compactEntries.map((entry, index) => {
-                          const audioId = `${content.unitId}-compact-${index}`;
-                          return (
-                            <li key={`${entry.headword}:${index}`}>
-                              <div>
-                                <AudioButton
-                                  audioId={audioId}
-                                  disabled={!audioSupported}
-                                  isSpeaking={speakingId === audioId}
-                                  kind="word"
-                                  onSpeak={playAmericanAudio}
-                                  text={entry.headword}
-                                />
-                                <strong>{entry.headword}</strong>
-                              </div>
-                              {entry.meaning ? <p>{entry.meaning}</p> : null}
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </section>
-                  ) : (
-                    visiblePages.map((page) => (
-                      <section className={styles.contentPage} key={page.number}>
-                        <div className={styles.blockList}>
-                          {groupVocabularyBlocks(page.blocks).map((item) => {
-                            const audioIdPrefix = `${content.unitId}-${page.number}`;
-                            if (item.kind === 'entry') {
-                              return (
-                                <VocabularyEntryGroup
-                                  audioIdPrefix={audioIdPrefix}
-                                  audioSupported={audioSupported}
-                                  details={item.details}
-                                  entry={item.entry}
-                                  key={`${audioIdPrefix}-${item.entry.index}-group`}
-                                  onSpeak={playAmericanAudio}
-                                  speakingId={speakingId}
-                                />
-                              );
-                            }
-                            const audioId = `${audioIdPrefix}-${item.index}`;
+                  visiblePages.map((page) => (
+                    <section className={styles.contentPage} key={page.number}>
+                      <div className={styles.blockList}>
+                        {groupVocabularyBlocks(page.blocks).map((item) => {
+                          const audioIdPrefix = `${content.unitId}-${page.number}`;
+                          if (item.kind === 'entry') {
                             return (
-                              <TextBlock
-                                audioId={audioId}
+                              <VocabularyEntryGroup
+                                audioIdPrefix={audioIdPrefix}
                                 audioSupported={audioSupported}
-                                block={item.block}
-                                isSpeaking={speakingId === audioId}
-                                key={audioId}
+                                details={item.details}
+                                entry={item.entry}
+                                key={`${audioIdPrefix}-${item.entry.index}-group`}
                                 onSpeak={playAmericanAudio}
+                                speakingId={speakingId}
                               />
                             );
-                          })}
-                        </div>
-                      </section>
-                    ))
-                  )
+                          }
+                          const audioId = `${audioIdPrefix}-${item.index}`;
+                          return (
+                            <TextBlock
+                              audioId={audioId}
+                              audioSupported={audioSupported}
+                              block={item.block}
+                              isSpeaking={speakingId === audioId}
+                              key={audioId}
+                              onSpeak={playAmericanAudio}
+                            />
+                          );
+                        })}
+                      </div>
+                    </section>
+                  ))
                 ) : (
                   <div className={styles.emptyState}>
                     本单元词条均已在前面的书或单元中出现，已按你的规则移除后续重复内容。
