@@ -25,9 +25,9 @@ import type {
   VocabularyContentBlock,
 } from '@/data/vocabulary-library';
 import {
+  extractCompactVocabularyEntries,
   extractEnglishSpeechText,
   extractStandaloneVocabularySpeechText,
-  extractVocabularyHeadwords,
   prepareVocabularyPages,
   type PreparedVocabularyBlock,
 } from './vocabulary-audio';
@@ -325,7 +325,7 @@ function VocabularyEntryGroup({
 
 export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
   const pathname = usePathname();
-  const isWordOnlyBook = book.id === 'high-frequency';
+  const isHighFrequencyBook = book.id === 'high-frequency';
   const vocabularyBase = pathname.startsWith('/student/')
     ? '/student/learning/english/vocabulary'
     : '/learning/english/vocabulary';
@@ -579,9 +579,9 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
       content ? prepareVocabularyPages(content.pages).filter((page) => page.blocks.length > 0) : [],
     [content],
   );
-  const visibleHeadwords = useMemo(
-    () => (isWordOnlyBook ? extractVocabularyHeadwords(visiblePages) : []),
-    [isWordOnlyBook, visiblePages],
+  const compactEntries = useMemo(
+    () => (isHighFrequencyBook ? extractCompactVocabularyEntries(visiblePages) : []),
+    [isHighFrequencyBook, visiblePages],
   );
 
   return (
@@ -592,7 +592,7 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
             <ArrowLeft size={17} /> 返回词汇书架
           </Link>
         }
-        description={isWordOnlyBook ? '按年级与出现频率分组浏览。' : book.description}
+        description={isHighFrequencyBook ? '按年级与出现频率分组浏览。' : book.description}
         eyebrow={`英语 · 词汇 · ${book.category}`}
         title={book.shortTitle}
       />
@@ -667,12 +667,28 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
                   </div>
                 </header>
                 {visiblePages.length ? (
-                  isWordOnlyBook ? (
+                  isHighFrequencyBook ? (
                     <section className={`${styles.contentPage} ${styles.wordOnlyPage}`}>
-                      <ul className={styles.wordOnlyGrid} aria-label="高频单词">
-                        {visibleHeadwords.map((headword, index) => (
-                          <li key={`${headword}:${index}`}>{headword}</li>
-                        ))}
+                      <ul className={styles.wordOnlyGrid} aria-label="高频单词及中文释义">
+                        {compactEntries.map((entry, index) => {
+                          const audioId = `${content.unitId}-compact-${index}`;
+                          return (
+                            <li key={`${entry.headword}:${index}`}>
+                              <div>
+                                <AudioButton
+                                  audioId={audioId}
+                                  disabled={!audioSupported}
+                                  isSpeaking={speakingId === audioId}
+                                  kind="word"
+                                  onSpeak={playAmericanAudio}
+                                  text={entry.headword}
+                                />
+                                <strong>{entry.headword}</strong>
+                              </div>
+                              {entry.meaning ? <p>{entry.meaning}</p> : null}
+                            </li>
+                          );
+                        })}
                       </ul>
                     </section>
                   ) : (

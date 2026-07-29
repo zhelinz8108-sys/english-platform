@@ -73,10 +73,11 @@ def load_commonlit_overlap(exam_headwords: set[str]) -> dict[int, list[dict[str,
 
 
 def entry_blocks(entry: dict[str, str]) -> list[dict[str, str]]:
+    definition = entry.get("definition", "").strip()
     return [
         {
             "type": "entry",
-            "text": entry["word"],
+            "text": " ".join(value for value in (entry["word"], definition) if value),
             "headword": entry["word"],
         }
     ]
@@ -212,7 +213,7 @@ def update_catalog(
         "scale": f"{word_count:,} 个重合词汇 · Grade 3–12",
         "category": "高频",
         "tone": "teal",
-        "features": ["纯单词", "年级分层", "频次排序"],
+        "features": ["美式发音", "中文释义", "年级分层"],
         "sections": sections,
         "contentReady": True,
         "wordEntryCount": word_count,

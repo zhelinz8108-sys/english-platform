@@ -101,7 +101,8 @@ describe('local vocabulary book catalog', () => {
           for (const block of unit.pages.flatMap((page) => page.blocks)) {
             if (book.id === 'high-frequency') {
               expect(block.type).toBe('entry');
-              expect(block.text).toBe(block.headword);
+              expect(block.text.startsWith(`${block.headword} `)).toBe(true);
+              expect(block.text).toMatch(/[\u3400-\u9fff]/u);
             }
             if (block.type !== 'entry' || !block.headword) continue;
             const normalized = block.headword

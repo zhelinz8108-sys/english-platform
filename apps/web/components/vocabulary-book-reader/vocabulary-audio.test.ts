@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
+  extractCompactVocabularyEntries,
   extractEnglishSpeechText,
   extractStandaloneVocabularySpeechText,
-  extractVocabularyHeadwords,
   prepareVocabularyBlocks,
   prepareVocabularyPages,
 } from './vocabulary-audio';
@@ -79,9 +79,9 @@ describe('vocabulary American-audio helpers', () => {
     expect(extractStandaloneVocabularySpeechText('what引导名词性从句')).toBe('');
   });
 
-  it('keeps only entry headwords for a word-only list', () => {
+  it('keeps headwords and meanings while dropping examples from a compact list', () => {
     expect(
-      extractVocabularyHeadwords([
+      extractCompactVocabularyEntries([
         {
           number: 1,
           blocks: [
@@ -93,6 +93,9 @@ describe('vocabulary American-audio helpers', () => {
           ],
         },
       ]),
-    ).toEqual(['fluffy', 'moan']);
+    ).toEqual([
+      { headword: 'fluffy', meaning: "/'flʌfi/ adj. 毛绒绒的" },
+      { headword: 'moan', meaning: 'n. 呻吟' },
+    ]);
   });
 });

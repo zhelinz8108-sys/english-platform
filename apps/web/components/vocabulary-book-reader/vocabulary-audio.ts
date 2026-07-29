@@ -98,12 +98,20 @@ export function prepareVocabularyPages(pages: VocabularyContentPage[]) {
   });
 }
 
-export function extractVocabularyHeadwords(pages: VocabularyContentPage[]) {
+export interface CompactVocabularyEntry {
+  headword: string;
+  meaning: string;
+}
+
+export function extractCompactVocabularyEntries(
+  pages: VocabularyContentPage[],
+): CompactVocabularyEntry[] {
   return pages.flatMap((page) =>
     page.blocks.flatMap((block) => {
       if (block.type !== 'entry') return [];
       const headword = block.headword?.trim() || block.text.trim().split(/\s+/u)[0] || '';
-      return headword ? [headword] : [];
+      if (!headword) return [];
+      return [{ headword, meaning: block.text.slice(headword.length).trim() }];
     }),
   );
 }
