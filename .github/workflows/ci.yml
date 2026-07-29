@@ -34,7 +34,16 @@ jobs:
       - name: Start integration dependencies
         run: |
           cp .env.example .env
-          docker compose up -d postgres redis minio minio-init
+          for attempt in 1 2 3 4; do
+            if docker compose pull postgres redis minio minio-init; then
+              break
+            fi
+            if test "$attempt" -eq 4; then
+              exit 1
+            fi
+            sleep "$((attempt * 10))"
+          done
+          docker compose up -d --no-build postgres redis minio minio-init
 
       - name: Migrate and seed
         run: |
@@ -112,7 +121,15 @@ jobs:
         run: |
           set -euo pipefail
           node_digest='sha256:7fddd9ddeae8196abf4a3ef2de34e11f7b1a722119f91f28ddf1e99dcafdf114'
-          docker pull "node@${node_digest}"
+          for attempt in 1 2 3 4; do
+            if docker pull "node@${node_digest}"; then
+              break
+            fi
+            if test "$attempt" -eq 4; then
+              exit 1
+            fi
+            sleep "$((attempt * 10))"
+          done
           docker tag "node@${node_digest}" node:24.14.0-alpine
           docker save node:24.14.0-alpine | gzip -1 > /tmp/node-24.14.0-alpine.tar.gz
           tar \
