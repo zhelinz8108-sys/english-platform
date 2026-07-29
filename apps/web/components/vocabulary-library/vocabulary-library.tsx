@@ -24,6 +24,7 @@ const RECENT_BOOK_KEY = 'aurelis:vocabulary-books:recent:v1';
 const bookLabels: Record<string, string> = {
   'toefl-sentences': '托福',
   'gre-random': 'SAT',
+  'high-frequency': '高频词汇',
   'situational-15000': '分类词汇',
 };
 
@@ -105,10 +106,8 @@ export function VocabularyLibrary({ catalog }: { catalog: VocabularyBookCatalog 
           </span>
           <div>
             <p className={styles.kicker}>YOUR LOCAL VOCABULARY SHELF</p>
-            <h2>三本词汇书，全部转换成可读的网页文字。</h2>
-            <p>
-              保留音标、释义、搭配和例句层级；全库相同词条只保留第一次出现，后续重复内容已移除。
-            </p>
+            <h2>原版词书与高频词库，全部转换成可读的网页文字。</h2>
+            <p>保留音标、释义、搭配和例句层级；高频词汇集中收录跨词库重复出现的重点词。</p>
           </div>
         </div>
         {recentBook ? (
@@ -125,7 +124,7 @@ export function VocabularyLibrary({ catalog }: { catalog: VocabularyBookCatalog 
       <section className={styles.stats} aria-label="本地词汇书统计">
         <div>
           <LibraryBig size={20} />
-          <span>原版词书</span>
+          <span>词汇书</span>
           <strong>{catalog.summary.bookCount}</strong>
         </div>
         <div>
@@ -213,8 +212,11 @@ export function VocabularyLibrary({ catalog }: { catalog: VocabularyBookCatalog 
           <CheckCircle2 size={21} />
         </span>
         <div>
-          <h2>只显示识别后的网页文字</h2>
-          <p>原文件仍保留在 source\单词书；网站按单元读取文字 JSON，不嵌入、流式传输或公开 PDF。</p>
+          <h2>只显示整理后的网页文字</h2>
+          <p>
+            原版文件仍保留在 source\单词书；高频词汇由现有词库和 CommonLit
+            语境派生，网站不嵌入、流式传输或公开 PDF。
+          </p>
         </div>
       </section>
 

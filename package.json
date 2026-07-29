@@ -10,6 +10,7 @@
     "build": "pnpm -r --if-present build",
     "grammar:generate": "node scripts/generate-grammar-practice-data.mjs",
     "grammar:check": "node scripts/generate-grammar-practice-data.mjs --check",
+    "vocabulary:high-frequency": "python scripts/build_high_frequency_vocabulary_book.py",
     "contract:generate": "pnpm --filter @english/api-contract generate",
     "archive:manifest": "node scripts/generate-cloud-assets-manifest.mjs",
     "archive:sync": "pnpm --filter @english/api archive:sync",

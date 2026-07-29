@@ -30,6 +30,13 @@ X-CSRF-Token。关键命令使用 Idempotency-Key，错误按 RFC 7807 展示。
 `scripts/build-local-reading-library.py` 从 CommonLit 保存页和配套 PDF 中生成按 Grade 拆分的文字版文章、原文理解题和讨论题。
 
 - `COMMONLIT_READING_SOURCE_DIR`：原始 PDF 根目录，仅用于网站中的“查看原 PDF”引用。
+
+## 高频词汇派生书
+
+`pnpm vocabulary:high-frequency` 会重新计算 CommonLit 与托福、SAT 词库的重合词头，按
+Grade 3–12 的首次出现顺序生成“高频词汇”。生成结果写入
+`data/vocabulary-book-content/high-frequency`，并同步更新词汇书目录和统计。
+
 - `ENABLE_LOCAL_READING=true`：在非演示模式显式启用本地阅读接口。
 
 学生作答草稿和完成状态保存在浏览器本地；原资料未包含标准答案，因此不做伪造的自动评分。

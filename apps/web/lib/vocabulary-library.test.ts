@@ -16,14 +16,15 @@ describe('local vocabulary book catalog', () => {
   it('indexes all source books and their complete navigation structure', () => {
     expect(vocabularyBookCatalog.summary).toEqual(
       expect.objectContaining({
-        bookCount: 3,
-        pageCount: 3361,
-        learningUnitCount: 594,
+        bookCount: 4,
+        pageCount: 3635,
+        learningUnitCount: 667,
       }),
     );
     expect(vocabularyBookCatalog.books.map((book) => book.id)).toEqual([
       'toefl-sentences',
       'gre-random',
+      'high-frequency',
       'situational-15000',
     ]);
     expect(findVocabularyBook('missing-book')).toBeNull();
@@ -64,10 +65,32 @@ describe('local vocabulary book catalog', () => {
     }
   });
 
-  it('stores every unit as HTML-ready blocks with no later duplicate headwords', () => {
+  it('stores source books without later duplicates and the derived overlap as intentional copies', () => {
     const seen = new Set<string>();
-    let entryCount = 0;
+    const commonLitHeadwords = new Set<string>();
+    for (let grade = 3; grade <= 12; grade += 1) {
+      const source = readFileSync(
+        path.join(
+          contentRoot(),
+          '..',
+          'commonlit-reading-vocabulary',
+          `grade-${String(grade).padStart(2, '0')}.json`,
+        ),
+        'utf8',
+      );
+      const document = JSON.parse(source) as {
+        articles: Array<{ vocabulary: Array<{ word: string }> }>;
+      };
+      for (const article of document.articles) {
+        for (const entry of article.vocabulary) {
+          commonLitHeadwords.add(entry.word.trim().toLocaleLowerCase('en-US'));
+        }
+      }
+    }
+
+    let derivedEntryCount = 0;
     for (const book of vocabularyBookCatalog.books) {
+      const seenInsideBook = new Set<string>();
       for (const section of book.sections) {
         for (const item of section.items) {
           const source = readFileSync(path.join(contentRoot(), book.id, `${item.id}.json`), 'utf8');
@@ -81,13 +104,30 @@ describe('local vocabulary book catalog', () => {
               .replaceAll('’', "'")
               .trim()
               .toLocaleLowerCase('en-US');
+            expect(
+              seenInsideBook.has(normalized),
+              `duplicate inside ${book.id}: ${normalized}`,
+            ).toBe(false);
+            seenInsideBook.add(normalized);
+            if (book.id === 'high-frequency') {
+              expect(seen.has(normalized), `not present in TOEFL/SAT books: ${normalized}`).toBe(
+                true,
+              );
+              expect(
+                commonLitHeadwords.has(normalized),
+                `not present in CommonLit vocabulary: ${normalized}`,
+              ).toBe(true);
+              derivedEntryCount += 1;
+              continue;
+            }
             expect(seen.has(normalized), `duplicate headword: ${normalized}`).toBe(false);
             seen.add(normalized);
-            entryCount += 1;
           }
         }
       }
     }
-    expect(entryCount).toBe(vocabularyBookCatalog.summary.uniqueWordEntryCount);
+    expect(seen.size).toBe(vocabularyBookCatalog.summary.uniqueWordEntryCount);
+    expect(derivedEntryCount).toBe(6_734);
+    expect(derivedEntryCount).toBe(findVocabularyBook('high-frequency')?.wordEntryCount);
   });
 });
