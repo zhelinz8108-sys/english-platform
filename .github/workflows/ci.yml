@@ -164,6 +164,11 @@ jobs:
             -o IdentitiesOnly=yes
             -o "UserKnownHostsFile=$HOME/.ssh/known_hosts"
             -o StrictHostKeyChecking=yes
+            -o ConnectTimeout=30
+            -o ConnectionAttempts=3
+            -o ServerAliveInterval=30
+            -o ServerAliveCountMax=20
+            -o TCPKeepAlive=yes
           )
           target="${ECS_USER}@${ECS_HOST}"
           archive="/tmp/english-platform-${GITHUB_SHA}.tar.gz"
