@@ -73,11 +73,14 @@ def load_commonlit_overlap(exam_headwords: set[str]) -> dict[int, list[dict[str,
 
 
 def entry_blocks(entry: dict[str, str]) -> list[dict[str, str]]:
+    ipa = entry.get("ipa", "").strip()
     definition = entry.get("definition", "").strip()
     return [
         {
             "type": "entry",
-            "text": " ".join(value for value in (entry["word"], definition) if value),
+            "text": " ".join(
+                value for value in (entry["word"], ipa, definition) if value
+            ),
             "headword": entry["word"],
         }
     ]

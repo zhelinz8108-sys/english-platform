@@ -68,6 +68,7 @@ describe('local vocabulary book catalog', () => {
   it('stores source books without later duplicates and the derived overlap as intentional copies', () => {
     const seen = new Set<string>();
     const commonLitHeadwords = new Set<string>();
+    const commonLitPhonetics = new Map<string, string>();
     for (let grade = 3; grade <= 12; grade += 1) {
       const source = readFileSync(
         path.join(
@@ -79,16 +80,19 @@ describe('local vocabulary book catalog', () => {
         'utf8',
       );
       const document = JSON.parse(source) as {
-        articles: Array<{ vocabulary: Array<{ word: string }> }>;
+        articles: Array<{ vocabulary: Array<{ word: string; ipa?: string }> }>;
       };
       for (const article of document.articles) {
         for (const entry of article.vocabulary) {
-          commonLitHeadwords.add(entry.word.trim().toLocaleLowerCase('en-US'));
+          const normalized = entry.word.trim().toLocaleLowerCase('en-US');
+          commonLitHeadwords.add(normalized);
+          if (entry.ipa?.trim()) commonLitPhonetics.set(normalized, entry.ipa.trim());
         }
       }
     }
 
     let derivedEntryCount = 0;
+    let derivedPhoneticCount = 0;
     for (const book of vocabularyBookCatalog.books) {
       const seenInsideBook = new Set<string>();
       for (const section of book.sections) {
@@ -122,6 +126,11 @@ describe('local vocabulary book catalog', () => {
                 commonLitHeadwords.has(normalized),
                 `not present in CommonLit vocabulary: ${normalized}`,
               ).toBe(true);
+              const phonetic = commonLitPhonetics.get(normalized);
+              if (phonetic) {
+                expect(block.text.startsWith(`${block.headword} ${phonetic} `)).toBe(true);
+                derivedPhoneticCount += 1;
+              }
               derivedEntryCount += 1;
               continue;
             }
@@ -133,6 +142,7 @@ describe('local vocabulary book catalog', () => {
     }
     expect(seen.size).toBe(vocabularyBookCatalog.summary.uniqueWordEntryCount);
     expect(derivedEntryCount).toBe(6_734);
+    expect(derivedPhoneticCount).toBe(6_679);
     expect(derivedEntryCount).toBe(findVocabularyBook('high-frequency')?.wordEntryCount);
   });
 });
