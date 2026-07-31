@@ -370,8 +370,8 @@
 
 .topicHeader {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 24px;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
 }
 
 .topicHeader h2 {
@@ -382,9 +382,9 @@
 }
 
 .topicCounter {
-  min-width: 170px;
-  padding-top: 25px;
-  text-align: right;
+  min-width: 0;
+  padding-top: 0;
+  text-align: left;
 }
 
 .topicCounter strong {
@@ -429,7 +429,7 @@
 
 .stageTabs {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 8px;
   margin-top: 18px;
 }
@@ -476,9 +476,8 @@
 }
 
 .stageHeading {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 20px;
 }
 
@@ -502,8 +501,11 @@
 }
 
 .stageMeta {
-  min-width: 105px;
-  text-align: right;
+  display: grid;
+  min-width: 0;
+  justify-items: start;
+  gap: 3px;
+  text-align: left;
 }
 
 .stageMeta strong {
@@ -531,7 +533,7 @@
 .patternBoard {
   scroll-margin-top: 70px;
   display: grid;
-  grid-template-columns: minmax(110px, 0.35fr) minmax(0, 1.65fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
   margin-top: 20px;
   padding: 16px 18px;
@@ -573,7 +575,7 @@
 
 .patternGrid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 8px;
 }
 
@@ -596,9 +598,9 @@
 
 .sectionTitleRow {
   display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 24px;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 5px;
   margin-bottom: 14px;
 }
 
@@ -717,7 +719,7 @@
 
 .ruleCardGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 1px;
   overflow: hidden;
   border: 1px solid var(--grammar-border);
@@ -729,7 +731,7 @@
   display: grid;
   grid-template-columns: 20px minmax(0, 1fr);
   gap: 9px;
-  min-height: 148px;
+  min-height: 0;
   padding: 17px 16px;
   background: #fff;
 }
@@ -824,7 +826,7 @@
 .exampleList,
 .mistakeList {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(0, 1fr);
   gap: 10px;
 }
 
@@ -916,9 +918,9 @@
 }
 
 .stageAction {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: start;
   gap: 16px;
   margin-top: 24px;
   padding-top: 18px;
