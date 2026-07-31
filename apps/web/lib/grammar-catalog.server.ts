@@ -32,8 +32,14 @@ interface RawTopic {
   levels: RawLevel[];
   examples: Array<{ english: string; chinese: string }>;
   mistakes: Array<{ wrong: string; right: string; explanation: string }>;
+  sections: GrammarReadingSection[];
   related: string[];
   sources: RawSource[];
+}
+
+export interface GrammarReadingSection {
+  title: string;
+  lines: string[];
 }
 
 interface RawPart {
@@ -90,6 +96,7 @@ export function getGrammarModule(moduleId: string): GrammarModuleSummary | null 
 export function getGrammarTopicContext(topicId: string): {
   lesson: GrammarLesson;
   module: GrammarModuleSummary;
+  sections: GrammarReadingSection[];
   previousTopicId: string | null;
   nextTopicId: string | null;
 } | null {
@@ -100,11 +107,16 @@ export function getGrammarTopicContext(topicId: string): {
   const index = flatTopics.findIndex(({ topic }) => topic.id === topicId);
   const context = flatTopics[index];
   if (!context) return null;
+  const sourceTopic = raw.parts
+    .flatMap((part) => part.topics)
+    .find((topic) => topic.id === topicId);
+  if (!sourceTopic) return null;
   const lesson = getGrammarLesson(topicId);
   if (!lesson) return null;
   return {
     lesson,
     module: context.module,
+    sections: sourceTopic.sections,
     previousTopicId: flatTopics[index - 1]?.topic.id ?? null,
     nextTopicId: flatTopics[index + 1]?.topic.id ?? null,
   };

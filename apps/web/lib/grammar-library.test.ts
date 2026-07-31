@@ -2,23 +2,23 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 interface GrammarLibraryDocument {
+  version: string;
   summary: {
     partCount: number;
     topicCount: number;
     levelLessonCount: number;
     sourceUnitCount: number;
   };
-  sources: Array<{ level: string; unitCount: number }>;
+  sources: Array<{ id: string; level: string; unitCount: number }>;
   parts: Array<{
     id: string;
     sequence: number;
     title: string;
     topics: Array<{
       id: string;
-      patterns: string[];
+      globalSequence: number;
       levels: Array<{ id: string; content: string[] }>;
-      examples: Array<{ english: string; chinese: string }>;
-      mistakes: Array<{ wrong: string; right: string; explanation: string }>;
+      sections: Array<{ title: string; lines: string[] }>;
     }>;
   }>;
   sourceMappings: Array<{ book: string; unit: number; topicId: string }>;
@@ -29,102 +29,58 @@ const library = JSON.parse(
 ) as GrammarLibraryDocument;
 const topics = library.parts.flatMap((part) => part.topics);
 
-describe('three-book grammar learning path', () => {
-  it('builds the complete deduplicated curriculum', () => {
+describe('SAT 3000-word grammar curriculum', () => {
+  it('replaces the old three-book path with 27 SAT chapters', () => {
+    expect(library.version).toBe('sat-grammar-3000-v1');
     expect(library.summary).toEqual({
-      partCount: 12,
-      topicCount: 86,
-      levelLessonCount: 258,
-      sourceUnitCount: 360,
+      partCount: 5,
+      topicCount: 27,
+      levelLessonCount: 27,
+      sourceUnitCount: 27,
     });
-    expect(library.parts).toHaveLength(12);
-    expect(topics).toHaveLength(86);
-    expect(new Set(topics.map((topic) => topic.id)).size).toBe(86);
+    expect(library.parts).toHaveLength(5);
+    expect(topics).toHaveLength(27);
+    expect(new Set(topics.map((topic) => topic.id)).size).toBe(27);
   });
 
-  it('orders the curriculum by practical learning dependencies', () => {
+  it('uses the five-stage order from the source PDF', () => {
     expect(library.parts.map((part) => part.title)).toEqual([
-      '句子骨架、be/do/have',
-      '名词、代词、冠词与基础介词',
-      '一般现在时和过去时、否定与疑问',
-      '进行时、完成时与时态对比',
-      '情态动词、祈使句与基本语气',
-      '将来表达与时间关系',
-      '形容词、副词、比较与修饰',
-      '动词配价、不定式、动名词与分词',
-      '被动语态、使役与报告结构',
-      '名词性、定语与状语从句',
-      '条件句、愿望与虚拟语气',
-      '倒装、省略、强调与信息结构',
+      '句子基础',
+      '标点与句子边界',
+      '动词系统',
+      '句子细节',
+      '逻辑与做题策略',
     ]);
-
-    const moduleByTopic = new Map(
-      library.parts.flatMap((part) =>
-        part.topics.map((topic) => [topic.id, part.sequence] as const),
-      ),
+    expect(topics.map((topic) => topic.globalSequence)).toEqual(
+      Array.from({ length: 27 }, (_, index) => index + 1),
     );
-    expect({
-      basicPrepositions: moduleByTopic.get('prepositions'),
-      conditionals: moduleByTopic.get('conditionals-basic'),
-      future: moduleByTopic.get('will-shall'),
-      gerunds: moduleByTopic.get('gerunds'),
-      inversion: moduleByTopic.get('inversion'),
-      negation: moduleByTopic.get('negation'),
-      passive: moduleByTopic.get('passive-forms'),
-      presentProgressive: moduleByTopic.get('present-progressive'),
-      relativeClauses: moduleByTopic.get('defining-relatives'),
-    }).toEqual({
-      basicPrepositions: 2,
-      conditionals: 11,
-      future: 6,
-      gerunds: 8,
-      inversion: 12,
-      negation: 3,
-      passive: 9,
-      presentProgressive: 4,
-      relativeClauses: 10,
-    });
   });
 
-  it('gives every topic a complete beginner, intermediate and advanced path', () => {
+  it('publishes one reading chapter without the old difficulty levels', () => {
     expect(
       topics.every(
         (topic) =>
-          topic.patterns.length > 0 &&
-          topic.levels.map((level) => level.id).join(',') === 'beginner,intermediate,advanced' &&
-          topic.levels.every((level) => level.content.length >= 3),
+          topic.levels.length === 1 &&
+          topic.levels[0]?.id === 'beginner' &&
+          topic.levels[0].content.length >= 1 &&
+          topic.sections.length >= 1 &&
+          topic.sections.every((section) => section.title && section.lines.length >= 1),
       ),
     ).toBe(true);
   });
 
-  it('keeps examples bilingual and mistakes fully explained', () => {
-    expect(
-      topics.every(
-        (topic) =>
-          topic.examples.length >= 6 &&
-          topic.examples.every(
-            (example) => example.english && /[\u3400-\u9fff]/u.test(example.chinese),
-          ) &&
-          topic.mistakes.length >= 2 &&
-          topic.mistakes.every((mistake) => mistake.wrong && mistake.right && mistake.explanation),
-      ),
-    ).toBe(true);
-  });
-
-  it('maps every source unit exactly once', () => {
-    expect(library.sources.map((source) => [source.level, source.unitCount])).toEqual([
-      ['初级', 115],
-      ['中级', 145],
-      ['高级', 100],
+  it('maps all chapters only to the selected SAT PDF', () => {
+    expect(library.sources).toEqual([
+      expect.objectContaining({
+        id: 'sat-grammar-3000',
+        level: 'SAT 3000词汇量版',
+        unitCount: 27,
+      }),
     ]);
-    expect(library.sourceMappings).toHaveLength(360);
-    expect(
-      new Set(library.sourceMappings.map((mapping) => `${mapping.book}:${mapping.unit}`)).size,
-    ).toBe(360);
-    expect(
-      library.sourceMappings.every((mapping) =>
-        topics.some((topic) => topic.id === mapping.topicId),
-      ),
-    ).toBe(true);
+    expect(library.sourceMappings).toHaveLength(27);
+    expect(new Set(library.sourceMappings.map((mapping) => mapping.unit)).size).toBe(27);
+    expect(library.sourceMappings.every((mapping) => mapping.book === 'sat-grammar-3000')).toBe(
+      true,
+    );
   });
 });
