@@ -795,6 +795,55 @@
   letter-spacing: 0.08em;
 }
 
+.chapterGuide {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.guideBlock,
+.trapGuide {
+  padding: 18px 20px;
+  border: 1px solid var(--grammar-border);
+  border-radius: 12px;
+  background: #fff;
+}
+
+.guideHeading {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--brand-700);
+}
+
+.guideHeading h3 {
+  margin: 0;
+  color: var(--ink-950);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.guideBlock ul,
+.guideBlock ol,
+.trapGuide ul,
+.readingExplanation ol {
+  display: grid;
+  gap: 7px;
+  margin: 12px 0 0;
+  padding-left: 21px;
+  color: #4f5c58;
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+.guideBlock li::marker,
+.trapGuide li::marker,
+.readingExplanation li::marker {
+  color: var(--brand-600);
+  font-weight: 750;
+}
+
 .readingChapter {
   display: grid;
   gap: 30px;
@@ -883,6 +932,34 @@
 .readingLinenote + .readingLinewrong,
 .readingLinenote + .readingLinecorrect {
   margin-top: 10px;
+}
+
+.readingExplanation {
+  margin-top: 15px;
+  padding: 14px 15px;
+  border-top: 1px solid #d9e6e1;
+  border-radius: 7px;
+  background: #f7faf9;
+}
+
+.readingExplanation strong {
+  color: var(--brand-700);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+}
+
+.readingExplanation ol {
+  margin-top: 8px;
+}
+
+.trapGuide {
+  margin-top: 30px;
+  border-color: #eadbd6;
+  background: #fdf9f7;
+}
+
+.trapGuide .guideHeading {
+  color: #a76053;
 }
 
 .reviewItem small {

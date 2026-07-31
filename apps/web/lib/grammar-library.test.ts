@@ -18,7 +18,8 @@ interface GrammarLibraryDocument {
       id: string;
       globalSequence: number;
       levels: Array<{ id: string; content: string[] }>;
-      sections: Array<{ title: string; lines: string[] }>;
+      guide: { goals: string[]; steps: string[]; traps: string[] };
+      sections: Array<{ title: string; lines: string[]; details: string[] }>;
     }>;
   }>;
   sourceMappings: Array<{ book: string; unit: number; topicId: string }>;
@@ -31,7 +32,7 @@ const topics = library.parts.flatMap((part) => part.topics);
 
 describe('SAT 3000-word grammar curriculum', () => {
   it('replaces the old three-book path with 27 SAT chapters', () => {
-    expect(library.version).toBe('sat-grammar-3000-v1');
+    expect(library.version).toBe('sat-grammar-3000-v2');
     expect(library.summary).toEqual({
       partCount: 5,
       topicCount: 27,
@@ -67,6 +68,25 @@ describe('SAT 3000-word grammar curriculum', () => {
           topic.sections.every((section) => section.title && section.lines.length >= 1),
       ),
     ).toBe(true);
+  });
+
+  it('adds a complete analysis path to every chapter and explains sparse sections', () => {
+    expect(
+      topics.every(
+        (topic) =>
+          topic.guide.goals.length >= 3 &&
+          topic.guide.steps.length >= 3 &&
+          topic.guide.traps.length >= 3,
+      ),
+    ).toBe(true);
+
+    const sections = topics.flatMap((topic) => topic.sections);
+    expect(sections.filter((section) => section.details.length > 0).length).toBeGreaterThan(90);
+
+    const dash = topics.find((topic) => topic.id === 'dashes');
+    expect(dash?.guide.steps).toHaveLength(4);
+    expect(dash?.sections).toHaveLength(3);
+    expect(dash?.sections.every((section) => section.details.length === 4)).toBe(true);
   });
 
   it('maps all chapters only to the selected SAT PDF', () => {

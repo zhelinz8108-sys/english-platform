@@ -33,6 +33,7 @@ interface RawTopic {
   examples: Array<{ english: string; chinese: string }>;
   mistakes: Array<{ wrong: string; right: string; explanation: string }>;
   sections: GrammarReadingSection[];
+  guide: GrammarChapterGuide;
   related: string[];
   sources: RawSource[];
 }
@@ -40,6 +41,13 @@ interface RawTopic {
 export interface GrammarReadingSection {
   title: string;
   lines: string[];
+  details: string[];
+}
+
+export interface GrammarChapterGuide {
+  goals: string[];
+  steps: string[];
+  traps: string[];
 }
 
 interface RawPart {
@@ -97,6 +105,7 @@ export function getGrammarTopicContext(topicId: string): {
   lesson: GrammarLesson;
   module: GrammarModuleSummary;
   sections: GrammarReadingSection[];
+  guide: GrammarChapterGuide;
   previousTopicId: string | null;
   nextTopicId: string | null;
 } | null {
@@ -117,6 +126,7 @@ export function getGrammarTopicContext(topicId: string): {
     lesson,
     module: context.module,
     sections: sourceTopic.sections,
+    guide: sourceTopic.guide,
     previousTopicId: flatTopics[index - 1]?.topic.id ?? null,
     nextTopicId: flatTopics[index + 1]?.topic.id ?? null,
   };

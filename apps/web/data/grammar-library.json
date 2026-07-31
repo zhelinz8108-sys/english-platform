@@ -1,8 +1,8 @@
 {
-  "version": "sat-grammar-3000-v1",
+  "version": "sat-grammar-3000-v2",
   "generatedAt": null,
   "title": "SAT 语法知识点大全",
-  "description": "基于《SAT 语法知识点大全 - 3000 词汇量版》的 27 章句子结构课程。",
+  "description": "基于《SAT 语法知识点大全 - 3000 词汇量版》的 27 章精讲课程，包含目标、判断步骤、例句分析与高频陷阱。",
   "summary": {
     "partCount": 5,
     "topicCount": 27,
@@ -137,7 +137,8 @@
                 "The student = 主语",
                 "reads = 谓语动词",
                 "the book = 宾语"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "主语 Subject",
@@ -148,7 +149,8 @@
                 "主语有时很长。不要把离动词最近的名词自动当成主语。",
                 "The color of the walls is blue.",
                 "真正主语：color；of the walls 只是修饰主语。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "谓语动词 Verb",
@@ -157,7 +159,8 @@
                 "The teacher explains the rule.",
                 "The room is quiet.",
                 "explains 和 is 都是谓语。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "宾语 Object",
@@ -165,7 +168,8 @@
                 "宾语是动作影响的对象。",
                 "The student opened the door.",
                 "student = 主语；opened = 谓语；door = 宾语。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "补语 Complement",
@@ -174,9 +178,27 @@
                 "The test was difficult.",
                 "They called the dog Max.",
                 "difficult 说明 test；Max 说明 the dog 的名字。"
-              ]
+              ],
+              "details": []
             }
           ],
+          "guide": {
+            "goals": [
+              "确认句子是否同时具备主语、限定动词和完整意思。",
+              "区分真正的谓语与分词、不定式等非谓语形式。",
+              "在长句中找到主干，而不被修饰成分干扰。"
+            ],
+            "steps": [
+              "圈出所有动词形式，先找带时态或情态的限定动词。",
+              "为每个限定动词找到对应主语，再暂时划掉介词短语和插入语。",
+              "只读剩余主干，检查它能否独立表达完整意思。"
+            ],
+            "traps": [
+              "看到 -ing 或过去分词就误认为已有谓语。",
+              "句子很长就默认完整，忽略主语或谓语缺失。",
+              "把从属从句误当成可以独立成句的主句。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -311,7 +333,8 @@
                 "running in the park",
                 "错误：After the class.",
                 "正确：After the class, the students went home."
-              ]
+              ],
+              "details": []
             },
             {
               "title": "从句 Clause",
@@ -319,14 +342,16 @@
                 "从句通常含有主语和谓语。",
                 "the student finished the test",
                 "student = 主语；finished = 谓语。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "独立从句 Independent Clause",
               "lines": [
                 "独立从句可以单独成为完整句子。",
                 "The student finished the test."
-              ]
+              ],
+              "details": []
             },
             {
               "title": "从属从句 Dependent Clause",
@@ -343,9 +368,27 @@
                 "• after / before（在……之后／之前）",
                 "• if / unless（如果／除非）",
                 "• since / until（自从／直到）"
-              ]
+              ],
+              "details": []
             }
           ],
+          "guide": {
+            "goals": [
+              "区分短语、从属从句与独立从句。",
+              "根据主语和限定动词判断结构层级。",
+              "识别一个句子中真正需要连接的从句。"
+            ],
+            "steps": [
+              "先标出限定动词，再为每个动词寻找主语。",
+              "有主谓组合时继续检查是否由 because、when、who 等词引导。",
+              "能独立表达完整意思的是独立从句；不能独立的是从属从句或短语。"
+            ],
+            "traps": [
+              "把含有名词和动词形式的短语误判为从句。",
+              "忽略关系词或从属连词，使从属从句看起来像主句。",
+              "只按长度判断结构，不检查限定动词。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -409,7 +452,8 @@
               "lines": [
                 "只有一个独立从句。",
                 "The boy opened the window."
-              ]
+              ],
+              "details": []
             },
             {
               "title": "并列句",
@@ -417,23 +461,43 @@
                 "含有两个或更多独立从句。",
                 "The boy opened the window, and the girl closed the door.",
                 "两边都可以单独成为完整句子。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "复合句",
               "lines": [
                 "一个独立从句加至少一个从属从句。",
                 "Because it was hot, the boy opened the window."
-              ]
+              ],
+              "details": []
             },
             {
               "title": "并列复合句",
               "lines": [
                 "至少有两个独立从句，同时还有从属从句。",
                 "Because it was hot, the boy opened the window, and the girl turned on the fan."
-              ]
+              ],
+              "details": []
             }
           ],
+          "guide": {
+            "goals": [
+              "识别简单句、并列句、复合句和并列复合句。",
+              "根据独立从句数量判断句型，而不是根据句长判断。",
+              "为不同句型选择正确的连接方式。"
+            ],
+            "steps": [
+              "数清句中有几个独立从句。",
+              "再检查是否含有从属从句。",
+              "用“独立从句数量 + 从属从句数量”确定句型。"
+            ],
+            "traps": [
+              "把含并列谓语的简单句误判为并列句。",
+              "看到多个动词就误以为有多个独立从句。",
+              "忽略从属连词对从句独立性的影响。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -526,18 +590,27 @@
               "title": "核心问题",
               "lines": [
                 "先判断空格左右是否都是完整句子。若两边都完整，就必须使用能够连接两个独立从句的结构。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "使用句号",
               "lines": [
                 "The test was hard. Many students finished it."
+              ],
+              "details": [
+                "这一节在考什么：区分分号、句号、逗号加并列连词和从属连接。",
+                "判断方法：先标出主语和限定动词，再确认这一结构能否独立成句。"
               ]
             },
             {
               "title": "使用分号",
               "lines": [
                 "The test was hard; many students finished it."
+              ],
+              "details": [
+                "这一节在考什么：依据句法关系而不是停顿感选择标点。",
+                "判断方法：先标出主语和限定动词，再确认这一结构能否独立成句。"
               ]
             },
             {
@@ -546,12 +619,17 @@
                 "完整句；完整句。分号两边必须都能单独成句。",
                 "错误：The test was hard; because many questions were long.",
                 "because 后面是从属从句，不能放在分号后独立存在。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "逗号加并列连词",
               "lines": [
                 "The test was hard, but many students finished it."
+              ],
+              "details": [
+                "这一节在考什么：区分分号、句号、逗号加并列连词和从属连接。",
+                "判断方法：先标出主语和限定动词，再确认这一结构能否独立成句。"
               ]
             },
             {
@@ -566,12 +644,17 @@
                 "• or = 或者",
                 "• yet = 但是",
                 "• so = 所以"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "分号加连接副词",
               "lines": [
                 "The test was hard; however, many students finished it."
+              ],
+              "details": [
+                "这一节在考什么：掌握连接两个独立从句的四种标准方式。",
+                "判断方法：先标出主语和限定动词，再确认这一结构能否独立成句。"
               ]
             },
             {
@@ -582,9 +665,27 @@
                 "错误：The test was hard, however, many students finished it.",
                 "正确：The test was hard; however, many students finished it.",
                 "正确：The test was hard. However, many students finished it."
-              ]
+              ],
+              "details": []
             }
           ],
+          "guide": {
+            "goals": [
+              "掌握连接两个独立从句的四种标准方式。",
+              "区分分号、句号、逗号加并列连词和从属连接。",
+              "依据句法关系而不是停顿感选择标点。"
+            ],
+            "steps": [
+              "先确认标点两侧是否都能独立成句。",
+              "若两侧都是独立从句，可用句号、分号或“逗号 + FANBOYS”。",
+              "若使用从属连词，确认它只把其中一部分变为从属从句。"
+            ],
+            "traps": [
+              "只用逗号连接两个独立从句，形成 comma splice。",
+              "在分号后再加 and 或 but。",
+              "把 however 等连接副词当作 FANBOYS 直接接在逗号后。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -666,7 +767,8 @@
                 "正确：The room was cold, so I closed the window.",
                 "正确：The room was cold; I closed the window.",
                 "正确：The room was cold. I closed the window."
-              ]
+              ],
+              "details": []
             },
             {
               "title": "Run-on Sentence：粘连句",
@@ -674,7 +776,8 @@
                 "两个完整句子之间没有正确标点或连接词。",
                 "错误：The room was cold I closed the window.",
                 "正确：The room was cold, so I closed the window."
-              ]
+              ],
+              "details": []
             },
             {
               "title": "Sentence Fragment：残句",
@@ -682,9 +785,27 @@
                 "句子缺少主语、谓语或完整意思。",
                 "错误：Because the room was cold.",
                 "正确：Because the room was cold, I closed the window."
-              ]
+              ],
+              "details": []
             }
           ],
+          "guide": {
+            "goals": [
+              "识别粘连句、逗号拼接和句子残缺。",
+              "用独立从句数量定位句子边界。",
+              "选择改变最少且语法完整的修正方式。"
+            ],
+            "steps": [
+              "逐个标出独立从句的起点和终点。",
+              "两个独立从句之间若没有合格连接，就是粘连句或逗号拼接。",
+              "若某一部分不能独立表达完整意思，检查它是否应并入相邻句。"
+            ],
+            "traps": [
+              "认为逗号足以连接两个完整句。",
+              "看到句号就默认前后都完整。",
+              "修复边界时无意改变原句逻辑关系。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -769,20 +890,26 @@
               "title": "从属从句在前",
               "lines": [
                 "Because the road was wet, the driver moved slowly."
+              ],
+              "details": [
+                "这一节在考什么：识别从属连词、关系词和主从句边界。",
+                "判断方法：先标出主语和限定动词，再确认这一结构能否独立成句。"
               ]
             },
             {
               "title": "公式",
               "lines": [
                 "从属从句，完整句。句首从属从句后通常使用逗号。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "主句在前",
               "lines": [
                 "The driver moved slowly because the road was wet.",
                 "主句在前、后面的从属从句提供必要原因时，because 前通常不用逗号。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "Although 和 But 不要重复",
@@ -790,6 +917,10 @@
                 "错误：Although the test was hard, but the student finished it.",
                 "正确：Although the test was hard, the student finished it.",
                 "正确：The test was hard, but the student finished it."
+              ],
+              "details": [
+                "这一节在考什么：识别从属连词、关系词和主从句边界。",
+                "判断方法：先标出主语和限定动词，再确认这一结构能否独立成句。"
               ]
             },
             {
@@ -798,9 +929,30 @@
                 "错误：Because it was raining, so we stayed home.",
                 "正确：Because it was raining, we stayed home.",
                 "正确：It was raining, so we stayed home."
+              ],
+              "details": [
+                "这一节在考什么：判断从属从句在句中的语法功能。",
+                "判断方法：先标出主语和限定动词，再确认这一结构能否独立成句。"
               ]
             }
           ],
+          "guide": {
+            "goals": [
+              "识别从属连词、关系词和主从句边界。",
+              "判断从属从句在句中的语法功能。",
+              "正确处理句首从属从句后的逗号。"
+            ],
+            "steps": [
+              "先圈出 because、although、when、if、who、which、that 等引导词。",
+              "找到它引导的主谓结构并确定从句终点。",
+              "确认全句另有一个可以独立成立的主句。"
+            ],
+            "traps": [
+              "把 because 或 although 引导的部分单独成句。",
+              "忽略关系从句中的谓语，导致主谓判断错误。",
+              "从句在前时漏掉与主句之间的逗号。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -896,25 +1048,35 @@
               "title": "本章要点",
               "lines": [
                 "冒号用于解释、举例、列出内容或给出具体信息。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "完整句加解释",
               "lines": [
                 "The class had one main rule: students had to arrive on time."
+              ],
+              "details": [
+                "这一节在考什么：识别冒号后的解释、列举、定义或强调。",
+                "判断方法：先判断标点两侧各有几个独立从句，再确认标点承担连接、解释还是插入功能。"
               ]
             },
             {
               "title": "完整句加列表",
               "lines": [
                 "We need three things: food, water, and time."
+              ],
+              "details": [
+                "这一节在考什么：区分冒号与破折号、分号的功能。",
+                "判断方法：先判断标点两侧各有几个独立从句，再确认标点承担连接、解释还是插入功能。"
               ]
             },
             {
               "title": "冒号规则",
               "lines": [
                 "冒号前必须是完整句子；冒号后可以是词、短语、列表或完整句。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "动词和宾语之间不能加冒号",
@@ -922,6 +1084,10 @@
                 "错误：We need: food, water, and time.",
                 "正确：We need food, water, and time.",
                 "正确：We need three things: food, water, and time."
+              ],
+              "details": [
+                "这一节在考什么：识别冒号后的解释、列举、定义或强调。",
+                "判断方法：先判断标点两侧各有几个独立从句，再确认标点承担连接、解释还是插入功能。"
               ]
             },
             {
@@ -929,6 +1095,10 @@
               "lines": [
                 "错误：The book is about: art, music, and history.",
                 "正确：The book is about art, music, and history."
+              ],
+              "details": [
+                "这一节在考什么：区分冒号与破折号、分号的功能。",
+                "判断方法：先判断标点两侧各有几个独立从句，再确认标点承担连接、解释还是插入功能。"
               ]
             },
             {
@@ -936,9 +1106,30 @@
               "lines": [
                 "错误：The shop sells fruit, such as: apples and oranges.",
                 "正确：The shop sells fruit, such as apples and oranges."
+              ],
+              "details": [
+                "这一节在考什么：掌握冒号前必须完整、冒号后负责说明的核心规则。",
+                "判断方法：先判断标点两侧各有几个独立从句，再确认标点承担连接、解释还是插入功能。"
               ]
             }
           ],
+          "guide": {
+            "goals": [
+              "掌握冒号前必须完整、冒号后负责说明的核心规则。",
+              "识别冒号后的解释、列举、定义或强调。",
+              "区分冒号与破折号、分号的功能。"
+            ],
+            "steps": [
+              "遮住冒号后的内容，检查前面能否独立成句。",
+              "再读冒号后内容，确认它具体说明前面的哪一部分。",
+              "若前面以 such as、including 或介词结尾，通常不应再加冒号。"
+            ],
+            "traps": [
+              "在不完整的引导语后加冒号。",
+              "在 such as 或 including 后重复使用冒号。",
+              "把冒号当成连接两个并列观点的分号。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -1006,6 +1197,12 @@
               "title": "一个破折号：引出解释或强调",
               "lines": [
                 "The student made one mistake - he forgot his name."
+              ],
+              "details": [
+                "规则：单个破折号通常出现在句末，引出对前面完整意思的解释、结果、列举或强调。",
+                "例句拆解：The student made one mistake 已经是完整主句；he forgot his name 具体说明 mistake 的内容。",
+                "SAT 判断：先遮住破折号后的内容。若前面不能独立成句，就不能仅凭停顿使用这种句末破折号。",
+                "与冒号比较：两者都可引出解释；破折号语气更突然、更强调，但在 SAT 中首先仍要检查前面是否完整。"
               ]
             },
             {
@@ -1013,6 +1210,12 @@
               "lines": [
                 "The student - who was very tired - made a mistake.",
                 "删除中间内容后：The student made a mistake."
+              ],
+              "details": [
+                "规则：一对破折号把非必要的补充信息嵌入主句，开、闭两个破折号共同标出插入范围。",
+                "删除测试：去掉 who was very tired 后，The student made a mistake 仍有主语、谓语和完整意思，因此中间内容可以作为插入语。",
+                "语气差别：成对逗号也能完成相同的语法工作；破折号通常让补充信息更醒目，括号则更弱化。",
+                "SAT 判断：先找主句被打断的位置，再找主句恢复的位置；这两个边界必须使用同类标点。"
               ]
             },
             {
@@ -1021,9 +1224,34 @@
                 "错误：The student - who was very tired, made a mistake.",
                 "正确：The student - who was very tired - made a mistake.",
                 "正确：The student, who was very tired, made a mistake."
+              ],
+              "details": [
+                "错误原因：第一个破折号开启了插入语，逗号却不能替它闭合；同一段插入信息不能用两种标点配对。",
+                "正确方案一：用“破折号 + 破折号”突出补充信息；正确方案二：用“逗号 + 逗号”平稳地补充说明。",
+                "检查顺序：定位插入语起点 → 定位终点 → 删除插入语检查主句 → 核对两侧标点是否匹配。",
+                "边界例外：如果补充信息一直延伸到句末，只需要在它开始前使用一个破折号，句末由句号或其他终止标点收尾。"
               ]
             }
           ],
+          "guide": {
+            "goals": [
+              "区分单个破折号的解释作用与一对破折号的插入作用。",
+              "使用删除测试判断插入内容是否为非必要信息。",
+              "在破折号、逗号和冒号之间作出有依据的选择。"
+            ],
+            "steps": [
+              "先数破折号：单个通常引出句末解释；一对通常包住插入信息。",
+              "遇到成对破折号时删除中间内容，检查剩余主句是否完整。",
+              "若是句末解释，再检查破折号前是否已构成完整主句。",
+              "最后检查开、闭标点是否同类，不能一边破折号、一边逗号。"
+            ],
+            "traps": [
+              "把连字符（-）和破折号（—）的排版形式当成不同语法规则；本讲义用短横线代替破折号。",
+              "用一个破折号开启句中插入语，却没有用第二个破折号闭合。",
+              "混用破折号和逗号包围同一段插入信息。",
+              "只凭语气强弱选择破折号，不检查标点两侧的句子结构。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -1135,6 +1363,10 @@
                 "After the class, the students went home.",
                 "In the morning, I read the news.",
                 "Tired after work, Mia went to bed."
+              ],
+              "details": [
+                "这一节在考什么：掌握句首成分、非必要信息和连接结构中的逗号。",
+                "判断方法：先判断标点两侧各有几个独立从句，再确认标点承担连接、解释还是插入功能。"
               ]
             },
             {
@@ -1142,6 +1374,10 @@
               "lines": [
                 "Tom, who lives next door, is a teacher.",
                 "删除 who lives next door 后，主句仍完整。"
+              ],
+              "details": [
+                "这一节在考什么：用删除测试区分必要与非必要信息。",
+                "判断方法：先判断标点两侧各有几个独立从句，再确认标点承担连接、解释还是插入功能。"
               ]
             },
             {
@@ -1149,6 +1385,10 @@
               "lines": [
                 "Students who study often get better results.",
                 "who study 决定具体是哪一类 students，不能删除。"
+              ],
+              "details": [
+                "这一节在考什么：避免把所有停顿都写成逗号。",
+                "判断方法：先判断标点两侧各有几个独立从句，再确认标点承担连接、解释还是插入功能。"
               ]
             },
             {
@@ -1156,12 +1396,20 @@
               "lines": [
                 "Lisa, my best friend, lives in New York.",
                 "my best friend 重新说明 Lisa 的身份。"
+              ],
+              "details": [
+                "这一节在考什么：掌握句首成分、非必要信息和连接结构中的逗号。",
+                "判断方法：先判断标点两侧各有几个独立从句，再确认标点承担连接、解释还是插入功能。"
               ]
             },
             {
               "title": "列表中的逗号",
               "lines": [
                 "I bought bread, milk, and fruit."
+              ],
+              "details": [
+                "这一节在考什么：用删除测试区分必要与非必要信息。",
+                "判断方法：先判断标点两侧各有几个独立从句，再确认标点承担连接、解释还是插入功能。"
               ]
             },
             {
@@ -1170,9 +1418,30 @@
                 "It was a long, difficult test.",
                 "可以改成 a long and difficult test，两个形容词地位相同。",
                 "a small wooden table 通常不用逗号，因为 small 与 wooden 属于不同层次。"
+              ],
+              "details": [
+                "这一节在考什么：避免把所有停顿都写成逗号。",
+                "判断方法：先判断标点两侧各有几个独立从句，再确认标点承担连接、解释还是插入功能。"
               ]
             }
           ],
+          "guide": {
+            "goals": [
+              "掌握句首成分、非必要信息和连接结构中的逗号。",
+              "用删除测试区分必要与非必要信息。",
+              "避免把所有停顿都写成逗号。"
+            ],
+            "steps": [
+              "先判断逗号附近是句首短语、插入信息还是两个从句的边界。",
+              "删除成对逗号之间的内容，检查主句是否仍完整且核心指代不变。",
+              "若逗号连接两个独立从句，确认后面紧跟 FANBOYS。"
+            ],
+            "traps": [
+              "必要关系从句前误加逗号。",
+              "只用一个逗号包围句中插入语。",
+              "仅凭朗读停顿添加逗号。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -1262,6 +1531,10 @@
               "lines": [
                 "错误：The students in the room, are reading.",
                 "正确：The students in the room are reading."
+              ],
+              "details": [
+                "这一节在考什么：识别主谓、动宾、介词与宾语之间不能插入的逗号。",
+                "判断方法：先判断标点两侧各有几个独立从句，再确认标点承担连接、解释还是插入功能。"
               ]
             },
             {
@@ -1269,6 +1542,10 @@
               "lines": [
                 "错误：The teacher explained, the rule.",
                 "正确：The teacher explained the rule."
+              ],
+              "details": [
+                "这一节在考什么：判断逗号是否真正标记了一个语法边界。",
+                "判断方法：先判断标点两侧各有几个独立从句，再确认标点承担连接、解释还是插入功能。"
               ]
             },
             {
@@ -1276,6 +1553,10 @@
               "lines": [
                 "错误：The book is on, the table.",
                 "正确：The book is on the table."
+              ],
+              "details": [
+                "这一节在考什么：删除不承担功能的多余逗号。",
+                "判断方法：先判断标点两侧各有几个独立从句，再确认标点承担连接、解释还是插入功能。"
               ]
             },
             {
@@ -1284,9 +1565,30 @@
                 "错误：The student opened the book, and started reading.",
                 "正确：The student opened the book and started reading.",
                 "有新主语时：The student opened the book, and the teacher started the class."
+              ],
+              "details": [
+                "这一节在考什么：识别主谓、动宾、介词与宾语之间不能插入的逗号。",
+                "判断方法：先判断标点两侧各有几个独立从句，再确认标点承担连接、解释还是插入功能。"
               ]
             }
           ],
+          "guide": {
+            "goals": [
+              "识别主谓、动宾、介词与宾语之间不能插入的逗号。",
+              "判断逗号是否真正标记了一个语法边界。",
+              "删除不承担功能的多余逗号。"
+            ],
+            "steps": [
+              "先读逗号左右紧邻的词，判断它们是否属于同一基本结构。",
+              "若逗号拆开主语与谓语、动词与宾语或介词与宾语，优先删除。",
+              "只有存在句首成分、插入语、并列项或合法从句连接时才保留。"
+            ],
+            "traps": [
+              "长主语之后凭感觉加逗号。",
+              "在 that 与其引导的从句之间加逗号。",
+              "在 such as 后无条件加冒号或逗号。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -1472,7 +1774,8 @@
                 "单数主语使用单数动词；复数主语使用复数动词。",
                 "The student reads every day.",
                 "The students read every day."
-              ]
+              ],
+              "details": []
             },
             {
               "title": "不要被中间的名词影响",
@@ -1480,13 +1783,18 @@
                 "The box of books is heavy.",
                 "The books in the box are old.",
                 "第一句主语是 box；第二句主语是 books。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "of 后面的名词通常不是主语",
               "lines": [
                 "The color of the walls is blue.",
                 "The effects of the change are clear."
+              ],
+              "details": [
+                "这一节在考什么：处理集合名词、不定代词和并列主语。",
+                "判断方法：先找到真正主语和带时态的谓语，再检查单复数或时间线。"
               ]
             },
             {
@@ -1494,12 +1802,20 @@
               "lines": [
                 "The teacher, along with her students, is in the room.",
                 "类似结构：along with, together with, as well as, in addition to, including。"
+              ],
+              "details": [
+                "这一节在考什么：找到真正主语并判断其单复数。",
+                "判断方法：先找到真正主语和带时态的谓语，再检查单复数或时间线。"
               ]
             },
             {
               "title": "and 连接两个主语",
               "lines": [
                 "Tom and Lisa are students."
+              ],
+              "details": [
+                "这一节在考什么：排除介词短语、插入语和倒装结构的干扰。",
+                "判断方法：先找到真正主语和带时态的谓语，再检查单复数或时间线。"
               ]
             },
             {
@@ -1508,7 +1824,8 @@
                 "动词通常与离它最近的主语一致。",
                 "Either the teachers or the student is coming.",
                 "Either the student or the teachers are coming."
-              ]
+              ],
+              "details": []
             },
             {
               "title": "Each 和 Every",
@@ -1516,6 +1833,10 @@
                 "Each student has a book.",
                 "Every student is ready.",
                 "Each of the students has a book."
+              ],
+              "details": [
+                "这一节在考什么：找到真正主语并判断其单复数。",
+                "判断方法：先找到真正主语和带时态的谓语，再检查单复数或时间线。"
               ]
             },
             {
@@ -1525,13 +1846,18 @@
                 "通常视为单数。",
                 "Everyone is ready.",
                 "Someone has opened the door."
-              ]
+              ],
+              "details": []
             },
             {
               "title": "A number of 与 The number of",
               "lines": [
                 "A number of students are absent.（许多学生）",
                 "The number of students is growing.（学生的数量）"
+              ],
+              "details": [
+                "这一节在考什么：处理集合名词、不定代词和并列主语。",
+                "判断方法：先找到真正主语和带时态的谓语，再检查单复数或时间线。"
               ]
             },
             {
@@ -1540,6 +1866,10 @@
                 "there 不是主语，真正主语在后面。",
                 "There is a book on the table.",
                 "There are three books on the table."
+              ],
+              "details": [
+                "这一节在考什么：找到真正主语并判断其单复数。",
+                "判断方法：先找到真正主语和带时态的谓语，再检查单复数或时间线。"
               ]
             },
             {
@@ -1548,9 +1878,30 @@
                 "Ten years is a long time.",
                 "Twenty dollars is enough.",
                 "Five miles is too far."
+              ],
+              "details": [
+                "这一节在考什么：排除介词短语、插入语和倒装结构的干扰。",
+                "判断方法：先找到真正主语和带时态的谓语，再检查单复数或时间线。"
               ]
             }
           ],
+          "guide": {
+            "goals": [
+              "找到真正主语并判断其单复数。",
+              "排除介词短语、插入语和倒装结构的干扰。",
+              "处理集合名词、不定代词和并列主语。"
+            ],
+            "steps": [
+              "圈出带时态的谓语，再向前追问“谁或什么执行动作”。",
+              "划掉主语与谓语之间的介词短语和插入成分。",
+              "根据核心主语而不是离谓语最近的名词选择单复数。"
+            ],
+            "traps": [
+              "让介词短语中的复数名词干扰单数主语。",
+              "在 there be 结构中把 there 当主语。",
+              "忽略 each、every、either、neither 通常按单数处理。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -1667,7 +2018,8 @@
               "title": "本章要点",
               "lines": [
                 "完整句必须有真正的谓语动词。-ing、过去分词和 to do 往往只是非谓语，不能单独承担整句谓语。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "真正的谓语",
@@ -1675,6 +2027,10 @@
                 "The student studies every day.",
                 "The students are studying.",
                 "studies 和 are studying 都是完整谓语。"
+              ],
+              "details": [
+                "这一节在考什么：保证每个独立从句有且只有合适的谓语中心。",
+                "判断方法：先找到真正主语和带时态的谓语，再检查单复数或时间线。"
               ]
             },
             {
@@ -1683,6 +2039,10 @@
                 "错误：The student studying in the library.",
                 "正确：The student is studying in the library.",
                 "正确：The student studying in the library is my friend."
+              ],
+              "details": [
+                "这一节在考什么：根据句法位置选择非谓语形式。",
+                "判断方法：先找到真正主语和带时态的谓语，再检查单复数或时间线。"
               ]
             },
             {
@@ -1691,6 +2051,10 @@
                 "错误：The book written by Tom.",
                 "正确：The book was written by Tom.",
                 "正确：The book written by Tom is popular."
+              ],
+              "details": [
+                "这一节在考什么：区分限定动词与不定式、动名词和分词。",
+                "判断方法：先找到真正主语和带时态的谓语，再检查单复数或时间线。"
               ]
             },
             {
@@ -1698,6 +2062,10 @@
               "lines": [
                 "错误：The student opened the book started reading.",
                 "正确：The student opened the book and started reading."
+              ],
+              "details": [
+                "这一节在考什么：保证每个独立从句有且只有合适的谓语中心。",
+                "判断方法：先找到真正主语和带时态的谓语，再检查单复数或时间线。"
               ]
             },
             {
@@ -1705,7 +2073,8 @@
               "lines": [
                 "形式：to + 动词原形。常用于表示目的。",
                 "She went to the library to study."
-              ]
+              ],
+              "details": []
             },
             {
               "title": "动名词",
@@ -1713,9 +2082,27 @@
                 "动词加 -ing 可以像名词一样作主语或宾语。",
                 "Reading is useful.",
                 "She enjoys reading."
-              ]
+              ],
+              "details": []
             }
           ],
+          "guide": {
+            "goals": [
+              "区分限定动词与不定式、动名词和分词。",
+              "保证每个独立从句有且只有合适的谓语中心。",
+              "根据句法位置选择非谓语形式。"
+            ],
+            "steps": [
+              "标出所有动词形式，并找出带时态、情态或主谓一致变化的限定动词。",
+              "确认每个从句需要一个谓语，但不能堆叠两个未连接的限定动词。",
+              "其余动作根据功能改为 to do、doing 或 done。"
+            ],
+            "traps": [
+              "把 -ing 形式单独当作完整谓语。",
+              "一个主语后连续放两个限定动词却没有连接词。",
+              "只按中文意思选择动词形式，不看句法位置。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -1843,7 +2230,8 @@
               "title": "做题原则",
               "lines": [
                 "先建立时间线，再选择动词。不要因为某个时态“看起来高级”就选它。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "一般现在时",
@@ -1852,7 +2240,8 @@
                 "Water freezes at 0°C.",
                 "She walks to school every day.",
                 "The writer argues that the rule is unfair."
-              ]
+              ],
+              "details": []
             },
             {
               "title": "一般过去时",
@@ -1861,7 +2250,8 @@
                 "The class started at nine yesterday.",
                 "The team won the game last week.",
                 "常见时间词：yesterday, last year, in 2020, two days ago。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "现在完成时",
@@ -1870,7 +2260,8 @@
                 "Scientists have studied the problem for many years.",
                 "She has lived here since 2020.",
                 "常见提示：since, for, recently, so far, over the past few years。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "过去完成时",
@@ -1878,7 +2269,8 @@
                 "结构：had + 过去分词。用于两个过去动作中更早发生的动作。",
                 "By the time the class started, Mia had finished her work.",
                 "先完成工作，后开始上课。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "进行时",
@@ -1886,13 +2278,18 @@
                 "结构：be + 动词-ing。强调动作正在进行。",
                 "The students are taking the test.",
                 "He was reading when I called."
-              ]
+              ],
+              "details": []
             },
             {
               "title": "时态保持一致",
               "lines": [
                 "错误：She opened the door and walks into the room.",
                 "正确：She opened the door and walked into the room."
+              ],
+              "details": [
+                "这一节在考什么：根据明确时间标志和上下文时间线选择时态。",
+                "判断方法：先找到真正主语和带时态的谓语，再检查单复数或时间线。"
               ]
             },
             {
@@ -1900,9 +2297,30 @@
               "lines": [
                 "Since 2020, the school has added five new classes.",
                 "In 2020, the school added five new classes."
+              ],
+              "details": [
+                "这一节在考什么：区分一般、完成和进行所表达的时间关系。",
+                "判断方法：先找到真正主语和带时态的谓语，再检查单复数或时间线。"
               ]
             }
           ],
+          "guide": {
+            "goals": [
+              "根据明确时间标志和上下文时间线选择时态。",
+              "区分一般、完成和进行所表达的时间关系。",
+              "保持同一叙述中的时态逻辑一致。"
+            ],
+            "steps": [
+              "圈出时间词、日期和相邻句中的时态线索。",
+              "把事件放到时间线上，判断先后、持续或已完成关系。",
+              "只有时间关系发生变化时才改变时态。"
+            ],
+            "traps": [
+              "为了形式多样而无理由切换时态。",
+              "看到 since 就机械选择某个时态而不看主句时间。",
+              "忽略过去完成时必须表达“过去中的更早”。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -2069,6 +2487,10 @@
               "lines": [
                 "The student finished his work.",
                 "The students finished their work."
+              ],
+              "details": [
+                "这一节在考什么：确保代词与先行词在人称和数上保持一致。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -2076,6 +2498,10 @@
               "lines": [
                 "不清楚：When Anna met Lisa, she was tired.",
                 "清楚：Anna was tired when she met Lisa."
+              ],
+              "details": [
+                "这一节在考什么：判断主格、宾格和反身代词的句法位置。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -2084,6 +2510,10 @@
                 "I, he, she, we, they, who 用作主语。",
                 "Tom and I went home.",
                 "去掉 Tom 后仍是 I went home。"
+              ],
+              "details": [
+                "这一节在考什么：消除含糊或不存在的指代。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -2092,6 +2522,10 @@
                 "me, him, her, us, them, whom 用在动词或介词之后。",
                 "The teacher helped Tom and me.",
                 "去掉 Tom 后仍是 The teacher helped me。"
+              ],
+              "details": [
+                "这一节在考什么：确保代词与先行词在人称和数上保持一致。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -2102,6 +2536,10 @@
                 "The teacher herself wrote the book.",
                 "错误：Please call John or myself.",
                 "正确：Please call John or me."
+              ],
+              "details": [
+                "这一节在考什么：判断主格、宾格和反身代词的句法位置。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -2113,7 +2551,8 @@
                 "Whom did you call?",
                 "I called him.",
                 "→"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "Who、Which 和 That",
@@ -2121,9 +2560,30 @@
                 "The man who called me is my teacher.",
                 "The book, which is very old, is valuable.",
                 "The book that I bought is useful."
+              ],
+              "details": [
+                "这一节在考什么：确保代词与先行词在人称和数上保持一致。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             }
           ],
+          "guide": {
+            "goals": [
+              "确保代词与先行词在人称和数上保持一致。",
+              "判断主格、宾格和反身代词的句法位置。",
+              "消除含糊或不存在的指代。"
+            ],
+            "steps": [
+              "为每个代词写出它具体指代的名词。",
+              "检查先行词是否唯一、清楚，并与代词单复数一致。",
+              "根据代词在从句中的主语或宾语位置选择格。"
+            ],
+            "traps": [
+              "用单数代词指代复数先行词，或反之。",
+              "在两个可能先行词之间留下含糊指代。",
+              "为了显得正式而滥用 myself、themselves 等反身代词。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -2314,20 +2774,26 @@
                 "→",
                 "错误：Three student's came.",
                 "正确：Three students came."
-              ]
+              ],
+              "details": []
             },
             {
               "title": "单数所有格",
               "lines": [
                 "the student's book",
                 "含义：一个学生的书。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "复数所有格",
               "lines": [
                 "the students' books",
                 "students 已经以 s 结尾，所以只加撇号。"
+              ],
+              "details": [
+                "这一节在考什么：掌握 its/it's、their/they're 等高频区别。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -2336,6 +2802,10 @@
                 "children's books",
                 "women's work",
                 "people's ideas"
+              ],
+              "details": [
+                "这一节在考什么：区分普通复数、单数所有格和复数所有格。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -2343,6 +2813,10 @@
               "lines": [
                 "The dog moved its tail.（its = 它的）",
                 "It's cold today.（it's = it is）"
+              ],
+              "details": [
+                "这一节在考什么：根据拥有者数量决定撇号位置。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -2352,6 +2826,10 @@
                 "They're ready.（They are ready.）",
                 "The books are over there.",
                 "There are two books on the table."
+              ],
+              "details": [
+                "这一节在考什么：掌握 its/it's、their/they're 等高频区别。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -2359,6 +2837,10 @@
               "lines": [
                 "Your answer is correct.",
                 "You're correct.（You are correct.）"
+              ],
+              "details": [
+                "这一节在考什么：区分普通复数、单数所有格和复数所有格。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -2366,9 +2848,30 @@
               "lines": [
                 "Whose book is this?",
                 "Who's at the door?（Who is at the door?）"
+              ],
+              "details": [
+                "这一节在考什么：根据拥有者数量决定撇号位置。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             }
           ],
+          "guide": {
+            "goals": [
+              "区分普通复数、单数所有格和复数所有格。",
+              "根据拥有者数量决定撇号位置。",
+              "掌握 its/it's、their/they're 等高频区别。"
+            ],
+            "steps": [
+              "先判断句意是“多个”还是“属于”。",
+              "若表示所属，找出拥有者是单数还是以 s 结尾的复数。",
+              "把缩写还原成完整形式，验证 it's、they're 等是否成立。"
+            ],
+            "traps": [
+              "给普通复数随意加撇号。",
+              "混淆 its 与 it's。",
+              "只看被拥有的东西数量，不看拥有者数量。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -2464,13 +2967,18 @@
               "lines": [
                 "核心规则",
                 "修饰语应尽量靠近它真正修饰的人或事物。句首修饰语后面应立刻出现动作的真正执行者。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "句首 -ing 修饰语",
               "lines": [
                 "错误：Walking to school, the rain started.",
                 "正确：Walking to school, Mia saw that it had started to rain."
+              ],
+              "details": [
+                "这一节在考什么：识别悬垂修饰和错位修饰。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -2479,6 +2987,10 @@
                 "Built in 1900, the house is very old.",
                 "错误：Built in 1900, people still visit the house.",
                 "正确：Built in 1900, the house is still visited by many people."
+              ],
+              "details": [
+                "这一节在考什么：通过改写主语修复逻辑不成立的修饰关系。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -2486,6 +2998,10 @@
               "lines": [
                 "不清楚：The teacher gave the book to the student with a red cover.",
                 "更清楚：The teacher gave the student the book with a red cover."
+              ],
+              "details": [
+                "这一节在考什么：让修饰语紧邻它真正修饰的对象。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -2494,9 +3010,30 @@
                 "Only Lisa answered the question.（只有 Lisa 回答）",
                 "Lisa only answered the question.（Lisa 只做了回答这一动作）",
                 "Lisa answered only the first question.（只回答第一题）"
+              ],
+              "details": [
+                "这一节在考什么：识别悬垂修饰和错位修饰。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             }
           ],
+          "guide": {
+            "goals": [
+              "让修饰语紧邻它真正修饰的对象。",
+              "识别悬垂修饰和错位修饰。",
+              "通过改写主语修复逻辑不成立的修饰关系。"
+            ],
+            "steps": [
+              "圈出句首或句中的修饰短语。",
+              "追问紧跟其后的名词是否能合理执行该动作或具有该特征。",
+              "若不能，移动修饰语或改写主句主语。"
+            ],
+            "traps": [
+              "句首分词短语后接形式主语 it 或无关名词。",
+              "修饰语离目标太远，产生多种解释。",
+              "只检查语法形式，不检查逻辑上的动作执行者。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -2559,14 +3096,16 @@
               "lines": [
                 "限制性信息决定具体指哪一个人或哪一类事物，不能删除，因此通常不加逗号。",
                 "Students who arrive late cannot enter."
-              ]
+              ],
+              "details": []
             },
             {
               "title": "非限制性信息",
               "lines": [
                 "非限制性信息只是补充说明，删除后主要意思仍完整，因此使用成对逗号、破折号或括号。",
                 "Lisa, who arrived late, could not enter."
-              ]
+              ],
+              "details": []
             },
             {
               "title": "删除测试",
@@ -2574,9 +3113,27 @@
                 "The school, which opened in 1990, has many students.",
                 "删除后：The school has many students.",
                 "主句仍完整，所以中间内容是补充信息。"
-              ]
+              ],
+              "details": []
             }
           ],
+          "guide": {
+            "goals": [
+              "区分决定身份的必要信息与可删除的补充信息。",
+              "正确使用逗号、破折号或括号包围非限制信息。",
+              "根据指代是否仍清楚应用删除测试。"
+            ],
+            "steps": [
+              "删除关系从句或同位语，观察所指对象是否仍唯一清楚。",
+              "若身份或范围改变，信息必要，不用成对标点。",
+              "若核心指代和主句都不变，使用一对匹配的插入标点。"
+            ],
+            "traps": [
+              "把所有 who/which 从句都用逗号隔开。",
+              "只看句子能否读通，不看删除后指代范围是否改变。",
+              "插入语只标一侧，造成标点不配对。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -2668,7 +3225,8 @@
               "lines": [
                 "核心规则",
                 "处于相同逻辑地位的内容，应使用相同或对应的语法形式。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "列表形式一致",
@@ -2676,24 +3234,40 @@
                 "错误：She likes reading, swimming, and to run.",
                 "正确：She likes reading, swimming, and running.",
                 "正确：She likes to read, to swim, and to run."
+              ],
+              "details": [
+                "这一节在考什么：识别相关连词两侧必须平行。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
               "title": "动词形式一致",
               "lines": [
                 "The class helps students read clearly, write well, and speak with confidence."
+              ],
+              "details": [
+                "这一节在考什么：在比较、列表和动作序列中保持一致。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
               "title": "Both A and B",
               "lines": [
                 "The book is both useful and easy to read."
+              ],
+              "details": [
+                "这一节在考什么：让并列项目保持相同词性和结构。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
               "title": "Either A or B",
               "lines": [
                 "We can either walk or take the bus."
+              ],
+              "details": [
+                "这一节在考什么：识别相关连词两侧必须平行。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -2702,9 +3276,30 @@
                 "The plan is not only simple but also useful.",
                 "错误：The plan is not only simple but also saves time.",
                 "正确：The plan not only saves time but also reduces cost."
+              ],
+              "details": [
+                "这一节在考什么：在比较、列表和动作序列中保持一致。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             }
           ],
+          "guide": {
+            "goals": [
+              "让并列项目保持相同词性和结构。",
+              "识别相关连词两侧必须平行。",
+              "在比较、列表和动作序列中保持一致。"
+            ],
+            "steps": [
+              "圈出 and、or、but、not only...but also 等连接词。",
+              "比较连接词两侧成分的语法标签和层级。",
+              "选择能让所有并列项采用同一结构的改写。"
+            ],
+            "traps": [
+              "并列名词、动名词和完整从句。",
+              "只让最后两个列表项平行，忽略第一项。",
+              "not only 与 but also 两侧起点不一致。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -2795,6 +3390,10 @@
                 "错误：The weather in New York is colder than California.",
                 "正确：The weather in New York is colder than the weather in California.",
                 "简化：The weather in New York is colder than that in California."
+              ],
+              "details": [
+                "这一节在考什么：确保比较双方属于同一类别。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -2802,6 +3401,10 @@
               "lines": [
                 "The cost of this car is lower than that of the other car.",
                 "The books in this class are easier than those in the other class."
+              ],
+              "details": [
+                "这一节在考什么：补足必要的替代词，避免拿人和物直接比较。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -2810,6 +3413,10 @@
                 "不清楚：Tom likes Anna more than Lisa.",
                 "意思一：Tom likes Anna more than he likes Lisa.",
                 "意思二：Tom likes Anna more than Lisa does."
+              ],
+              "details": [
+                "这一节在考什么：区分比较级、最高级及比较范围。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -2817,9 +3424,30 @@
               "lines": [
                 "Of the two books, this one is better.",
                 "Of the five books, this one is the best."
+              ],
+              "details": [
+                "这一节在考什么：确保比较双方属于同一类别。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             }
           ],
+          "guide": {
+            "goals": [
+              "确保比较双方属于同一类别。",
+              "补足必要的替代词，避免拿人和物直接比较。",
+              "区分比较级、最高级及比较范围。"
+            ],
+            "steps": [
+              "圈出 than、as...as、like、unlike 等比较信号。",
+              "写出比较符号两侧真正被比较的对象。",
+              "检查两者是否同类、结构平行且比较范围合理。"
+            ],
+            "traps": [
+              "把某人的作品与另一个人直接比较。",
+              "比较级用于三者以上却没有合适语境。",
+              "省略 that/those 后造成比较对象类别不同。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -2919,6 +3547,10 @@
               "lines": [
                 "a careful student",
                 "a difficult test"
+              ],
+              "details": [
+                "这一节在考什么：根据被修饰对象选择形容词或副词。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -2926,6 +3558,10 @@
               "lines": [
                 "The student answered carefully.",
                 "She spoke clearly."
+              ],
+              "details": [
+                "这一节在考什么：识别感官、状态等系动词后的表语形容词。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -2933,6 +3569,10 @@
               "lines": [
                 "The test was very difficult.",
                 "The plan was highly successful."
+              ],
+              "details": [
+                "这一节在考什么：避免把形式相似的词性混用。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -2941,6 +3581,10 @@
                 "常见系动词：be, seem, look, feel, sound, become, remain。",
                 "The food smells good.",
                 "The plan seems useful."
+              ],
+              "details": [
+                "这一节在考什么：根据被修饰对象选择形容词或副词。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -2948,9 +3592,30 @@
               "lines": [
                 "She is a good writer.",
                 "She writes well."
+              ],
+              "details": [
+                "这一节在考什么：识别感官、状态等系动词后的表语形容词。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             }
           ],
+          "guide": {
+            "goals": [
+              "根据被修饰对象选择形容词或副词。",
+              "识别感官、状态等系动词后的表语形容词。",
+              "避免把形式相似的词性混用。"
+            ],
+            "steps": [
+              "先找待修饰的中心词。",
+              "修饰名词用形容词；修饰动词、形容词或整句通常用副词。",
+              "若动词表示状态或感受，检查后面是否需要形容词作表语。"
+            ],
+            "traps": [
+              "看到动词就机械使用副词，忽略系动词。",
+              "混淆 hard/hardly、late/lately 等意义不同的形式。",
+              "只靠 -ly 词尾判断词性。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -3079,6 +3744,10 @@
                 "two books",
                 "many students",
                 "fewer classes"
+              ],
+              "details": [
+                "这一节在考什么：区分可数名词与不可数名词。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -3089,6 +3758,10 @@
                 "正确：much information",
                 "错误：an advice",
                 "正确：a piece of advice"
+              ],
+              "details": [
+                "这一节在考什么：正确搭配 many/few 与 much/little。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -3096,6 +3769,10 @@
               "lines": [
                 "many books（可数）",
                 "much information（不可数）"
+              ],
+              "details": [
+                "这一节在考什么：根据名词类型选择冠词和单复数。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -3103,6 +3780,10 @@
               "lines": [
                 "fewer students（可数）",
                 "less time（不可数）"
+              ],
+              "details": [
+                "这一节在考什么：区分可数名词与不可数名词。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             },
             {
@@ -3110,9 +3791,30 @@
               "lines": [
                 "the number of students",
                 "the amount of water"
+              ],
+              "details": [
+                "这一节在考什么：正确搭配 many/few 与 much/little。",
+                "判断方法：先确定被修饰、被指代或被比较的对象，再删除插入信息复核主干。"
               ]
             }
           ],
+          "guide": {
+            "goals": [
+              "区分可数名词与不可数名词。",
+              "正确搭配 many/few 与 much/little。",
+              "根据名词类型选择冠词和单复数。"
+            ],
+            "steps": [
+              "判断名词能否直接用数字逐个计数。",
+              "检查限定词与名词类型是否匹配。",
+              "需要计量不可数名词时使用 a piece of、an amount of 等单位结构。"
+            ],
+            "traps": [
+              "给 information、advice、research 等不可数名词直接加复数。",
+              "混用 fewer 与 less。",
+              "不可数名词前误用 a/an。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -3199,7 +3901,8 @@
                 "an idea",
                 "an hour",
                 "a university"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "The",
@@ -3207,9 +3910,27 @@
                 "the 表示特定的人或事物，或前文已经提到的对象。",
                 "I bought a book. The book was expensive.",
                 "第一次提到用 a，第二次指同一本书用 the。"
-              ]
+              ],
+              "details": []
             }
           ],
+          "guide": {
+            "goals": [
+              "根据是否特指选择 a/an、the 或零冠词。",
+              "依据发音而不是拼写选择 a 或 an。",
+              "掌握单数可数名词通常需要限定词的原则。"
+            ],
+            "steps": [
+              "先判断名词是否为单数可数名词。",
+              "若首次泛指同类中的一个，用 a/an；若双方已知或唯一，用 the。",
+              "若泛指复数或不可数概念，检查是否应使用零冠词。"
+            ],
+            "traps": [
+              "按首字母而不是首音选择 a/an。",
+              "单数可数名词裸用。",
+              "把所有抽象名词都无条件加 the。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -3330,13 +4051,18 @@
               "title": "做题方法",
               "lines": [
                 "先忽略选项，判断后一句与前一句是补充、转折、结果、举例、相似、解释还是顺序关系。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "补充",
               "lines": [
                 "also, moreover, furthermore, in addition, besides",
                 "The plan is simple. Moreover, it is cheap."
+              ],
+              "details": [
+                "这一节在考什么：区分转折、因果、递进、举例和顺序关系。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
@@ -3344,6 +4070,10 @@
               "lines": [
                 "however, yet, still, nevertheless, on the other hand, by contrast",
                 "The test was hard. However, most students passed."
+              ],
+              "details": [
+                "这一节在考什么：同时检查连接副词周围的句子边界。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
@@ -3351,6 +4081,10 @@
               "lines": [
                 "therefore, thus, as a result, so, for this reason",
                 "It rained all day. Therefore, the game was stopped."
+              ],
+              "details": [
+                "这一节在考什么：先判断句间逻辑，再选择连接词。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
@@ -3358,6 +4092,10 @@
               "lines": [
                 "for example, for instance, such as",
                 "Many animals live in groups. For example, wolves often live together."
+              ],
+              "details": [
+                "这一节在考什么：区分转折、因果、递进、举例和顺序关系。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
@@ -3365,12 +4103,20 @@
               "lines": [
                 "similarly, likewise, in the same way",
                 "Tom enjoys reading. Similarly, his sister spends much of her free time with books."
+              ],
+              "details": [
+                "这一节在考什么：同时检查连接副词周围的句子边界。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
               "title": "顺序",
               "lines": [
                 "first, next, then, later, finally, meanwhile, before, after"
+              ],
+              "details": [
+                "这一节在考什么：先判断句间逻辑，再选择连接词。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
@@ -3378,9 +4124,30 @@
               "lines": [
                 "in other words, that is, in fact, more clearly",
                 "The test is optional. In other words, students do not have to take it."
+              ],
+              "details": [
+                "这一节在考什么：区分转折、因果、递进、举例和顺序关系。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             }
           ],
+          "guide": {
+            "goals": [
+              "先判断句间逻辑，再选择连接词。",
+              "区分转折、因果、递进、举例和顺序关系。",
+              "同时检查连接副词周围的句子边界。"
+            ],
+            "steps": [
+              "遮住选项，只读前后句并用中文概括关系。",
+              "把关系归入同向、反向、因果、举例或顺序。",
+              "选词后代回原文，再检查标点与逻辑语气。"
+            ],
+            "traps": [
+              "因为连接词意思熟悉就直接选择。",
+              "只看前一句，不读后一句的立场。",
+              "逻辑正确却忽略 however 等连接副词不能只靠逗号连接完整句。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -3464,54 +4231,90 @@
               "title": "陷阱一：离动词最近的名词不一定是主语",
               "lines": [
                 "The group of students is ready. 主语是 group。"
+              ],
+              "details": [
+                "这一节在考什么：集中识别 SAT 最常见的结构性诱导项。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
               "title": "陷阱二：句子很长，不代表主干复杂",
               "lines": [
                 "The effects of the new rule on students in large schools are clear. 主语 effects；谓语 are。"
+              ],
+              "details": [
+                "这一节在考什么：把长句还原为主干后再判断。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
               "title": "陷阱三：一个逗号不能连接两个完整句子",
               "lines": [
                 "错误：The test ended, the students left."
+              ],
+              "details": [
+                "这一节在考什么：用可验证规则替代语感。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
               "title": "陷阱四：分号两边必须完整",
               "lines": [
                 "错误：The students left; after the test."
+              ],
+              "details": [
+                "这一节在考什么：集中识别 SAT 最常见的结构性诱导项。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
               "title": "陷阱五：冒号前必须完整",
               "lines": [
                 "错误：The class includes: reading and writing."
+              ],
+              "details": [
+                "这一节在考什么：把长句还原为主干后再判断。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
               "title": "陷阱六：插入信息的标点要成对",
               "lines": [
                 "正确：The teacher, who came from Canada, works here."
+              ],
+              "details": [
+                "这一节在考什么：用可验证规则替代语感。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
               "title": "陷阱七：看到复数名词，不要马上选复数动词",
               "lines": [
                 "Each of the students is ready. 主语是 each。"
+              ],
+              "details": [
+                "这一节在考什么：集中识别 SAT 最常见的结构性诱导项。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
               "title": "陷阱八：看到 -ing，不要认为它一定是谓语",
               "lines": [
                 "The students studying in the room are quiet. 真正谓语是 are。"
+              ],
+              "details": [
+                "这一节在考什么：把长句还原为主干后再判断。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
               "title": "陷阱九：不要只靠中文翻译判断时态",
               "lines": [
                 "Since 2020, she has worked here."
+              ],
+              "details": [
+                "这一节在考什么：用可验证规则替代语感。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
@@ -3519,9 +4322,30 @@
               "lines": [
                 "错误：After reading the book, the movie seemed boring. 正确：After reading the book, Mia thought",
                 "the movie was boring."
+              ],
+              "details": [
+                "这一节在考什么：集中识别 SAT 最常见的结构性诱导项。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             }
           ],
+          "guide": {
+            "goals": [
+              "集中识别 SAT 最常见的结构性诱导项。",
+              "把长句还原为主干后再判断。",
+              "用可验证规则替代语感。"
+            ],
+            "steps": [
+              "先判断题目考句子边界、动词、修饰还是逻辑。",
+              "删除介词短语和插入语，保留主干。",
+              "逐项说明错误原因，只保留同时满足语法和语意的选项。"
+            ],
+            "traps": [
+              "选择更长、更正式但结构错误的表达。",
+              "被离谓语最近的名词或离修饰语最近的错误对象干扰。",
+              "把“读起来顺”当作充分证据。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -3578,51 +4402,83 @@
               "title": "第一步：找到真正的主语",
               "lines": [
                 "忽略 of 短语、介词短语和插入语。例：The result of the tests is clear. 主语是 result。"
+              ],
+              "details": [
+                "这一节在考什么：建立从结构、规则到语意的固定做题顺序。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
               "title": "第二步：找到真正的谓语",
               "lines": [
                 "例：The student sitting by the door is my friend. 真正谓语是 is。"
+              ],
+              "details": [
+                "这一节在考什么：快速识别题型并调用对应检查方法。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
               "title": "第三步：数完整句子",
               "lines": [
                 "判断空格左右各有几个独立从句。"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "第四步：检查标点",
               "lines": [
                 "逗号是否误连两个完整句？冒号前是否完整？分号两边是否完整？插入标点是否成对？"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "第五步：检查动词",
               "lines": [
                 "主谓是否一致？时态是否符合时间线？句子是否缺谓语？"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "第六步：检查代词",
               "lines": [
                 "代词指谁？单复数是否一致？应使用主格还是宾格？"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "第七步：检查修饰语",
               "lines": [
                 "句首动作是谁做的？修饰语是否靠近正确名词？"
-              ]
+              ],
+              "details": []
             },
             {
               "title": "第八步：最后检查句意",
               "lines": [
                 "逻辑、时间、比较对象和前后连贯性是否合理？"
-              ]
+              ],
+              "details": []
             }
           ],
+          "guide": {
+            "goals": [
+              "建立从结构、规则到语意的固定做题顺序。",
+              "快速识别题型并调用对应检查方法。",
+              "在有限时间内完成复核。"
+            ],
+            "steps": [
+              "第一遍只看划线处附近，判断考点类型。",
+              "第二遍拆主干，标出主语、限定动词和从句边界。",
+              "第三遍应用对应规则并比较选项差异。",
+              "最后通读全句，确认语意、逻辑和简洁性。"
+            ],
+            "traps": [
+              "一开始就逐字翻译整句，浪费时间。",
+              "同时比较四个选项却没有先确定考点。",
+              "语法检查结束后不再通读，漏掉逻辑问题。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -3678,9 +4534,27 @@
                 "冒号前必须完整。",
                 "句首修饰语，逻辑主语 + 谓语。",
                 "逗号后必须出现真正执行动作的对象。"
-              ]
+              ],
+              "details": []
             }
           ],
+          "guide": {
+            "goals": [
+              "记住句子边界、插入信息和一致性的核心公式。",
+              "把公式转化为可执行检查动作。",
+              "根据题型快速调用正确规则。"
+            ],
+            "steps": [
+              "先识别公式中的结构变量，如 IC、DC、主语和谓语。",
+              "把原句替换成结构符号，忽略暂时无关的词义细节。",
+              "应用公式后再还原原句，检查意思是否保持。"
+            ],
+            "traps": [
+              "背下标点形式却不确认 IC 是否真的完整。",
+              "把公式机械套用到必要信息或特殊语境。",
+              "只记结论，不会在原句中定位对应成分。"
+            ]
+          },
           "related": [],
           "sources": [
             {
@@ -3740,6 +4614,10 @@
                 "• 宾语",
                 "• 独立从句",
                 "• 从属从句"
+              ],
+              "details": [
+                "这一节在考什么：按高频程度安排语法复习顺序。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
@@ -3751,6 +4629,10 @@
                 "• 冒号",
                 "• 破折号",
                 "• 插入语"
+              ],
+              "details": [
+                "这一节在考什么：把错题归因到具体规则而不是笼统粗心。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
@@ -3762,6 +4644,10 @@
                 "• 一般过去时",
                 "• 现在完成时",
                 "• 过去完成时"
+              ],
+              "details": [
+                "这一节在考什么：形成可循环复盘的个人清单。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
@@ -3773,6 +4659,10 @@
                 "• 单复数",
                 "• 平行结构",
                 "• 比较结构"
+              ],
+              "details": [
+                "这一节在考什么：按高频程度安排语法复习顺序。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
@@ -3783,12 +4673,20 @@
                 "• 因果",
                 "• 举例",
                 "• 顺序"
+              ],
+              "details": [
+                "这一节在考什么：把错题归因到具体规则而不是笼统粗心。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
               "title": "最终总结",
               "lines": [
                 "SAT 语法的核心不是难词，而是句子结构。遇到任何题目，都按照以下顺序分析："
+              ],
+              "details": [
+                "这一节在考什么：形成可循环复盘的个人清单。",
+                "判断方法：先概括前后逻辑并识别题型，再按固定流程排除只凭语感成立的选项。"
               ]
             },
             {
@@ -3802,9 +4700,27 @@
                 "4. 谓语与非谓语",
                 "5. 修饰语的位置",
                 "掌握这些规则后，SAT 语法将从“凭感觉选答案”变成“按照结构确定答案”。"
-              ]
+              ],
+              "details": []
             }
           ],
+          "guide": {
+            "goals": [
+              "按高频程度安排语法复习顺序。",
+              "把错题归因到具体规则而不是笼统粗心。",
+              "形成可循环复盘的个人清单。"
+            ],
+            "steps": [
+              "先巩固句子边界、动词和标点三类高频基础。",
+              "每道错题记录考点、误判原因和一条可执行检查动作。",
+              "定期混合复习，并优先重做重复出错的规则。"
+            ],
+            "traps": [
+              "平均分配时间，忽略自己的高频错误。",
+              "只看答案解释而不重新拆句。",
+              "大量刷题却不记录错误模式。"
+            ]
+          },
           "related": [],
           "sources": [
             {

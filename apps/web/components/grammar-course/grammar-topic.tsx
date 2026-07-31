@@ -2,7 +2,14 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ArrowLeft, ArrowRight, ChevronRight } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  ChevronRight,
+  ListChecks,
+  Target,
+  TriangleAlert,
+} from 'lucide-react';
 import type { GrammarLesson, GrammarModuleSummary } from '@english/shared';
 import { grammarBasePath } from './grammar-api';
 import styles from './grammar-course.module.css';
@@ -22,11 +29,12 @@ function readingLineKind(line: string): ReadingLineKind {
 export function GrammarTopic(props: {
   lesson: GrammarLesson;
   module: GrammarModuleSummary;
-  sections: Array<{ title: string; lines: string[] }>;
+  sections: Array<{ title: string; lines: string[]; details: string[] }>;
+  guide: { goals: string[]; steps: string[]; traps: string[] };
   previousTopicId: string | null;
   nextTopicId: string | null;
 }) {
-  const { lesson, module, sections, previousTopicId, nextTopicId } = props;
+  const { lesson, module, sections, guide, previousTopicId, nextTopicId } = props;
   const pathname = usePathname();
   const base = grammarBasePath(pathname);
   const topic = module.topics.find((item) => item.id === lesson.topicId);
@@ -57,6 +65,31 @@ export function GrammarTopic(props: {
         </div>
       </header>
 
+      <section className={styles.chapterGuide} aria-label="本章学习指南">
+        <div className={styles.guideBlock}>
+          <div className={styles.guideHeading}>
+            <Target size={17} />
+            <h3>本章学会什么</h3>
+          </div>
+          <ul>
+            {guide.goals.map((goal) => (
+              <li key={goal}>{goal}</li>
+            ))}
+          </ul>
+        </div>
+        <div className={styles.guideBlock}>
+          <div className={styles.guideHeading}>
+            <ListChecks size={17} />
+            <h3>SAT 判断步骤</h3>
+          </div>
+          <ol>
+            {guide.steps.map((step) => (
+              <li key={step}>{step}</li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
       <article className={styles.readingChapter}>
         {sections.map((section, sectionIndex) => (
           <section className={styles.readingSection} key={`${section.title}:${sectionIndex}`}>
@@ -76,13 +109,36 @@ export function GrammarTopic(props: {
                   </p>
                 );
               })}
+              {section.details.length > 0 ? (
+                <div className={styles.readingExplanation}>
+                  <strong>详细讲解</strong>
+                  <ol>
+                    {section.details.map((detail) => (
+                      <li key={detail}>{detail}</li>
+                    ))}
+                  </ol>
+                </div>
+              ) : null}
             </div>
           </section>
         ))}
       </article>
 
+      <section className={styles.trapGuide} aria-labelledby="trap-guide-title">
+        <div className={styles.guideHeading}>
+          <TriangleAlert size={17} />
+          <h3 id="trap-guide-title">高频陷阱</h3>
+        </div>
+        <ul>
+          {guide.traps.map((trap) => (
+            <li key={trap}>{trap}</li>
+          ))}
+        </ul>
+      </section>
+
       <p className={styles.sourceNote}>
-        内容依据：《SAT 语法知识点大全 - 3000 词汇量版》{source?.rangeLabel ?? ''}
+        规则与例句依据：《SAT 语法知识点大全 - 3000 词汇量版》
+        {source?.rangeLabel ?? ''}；判断步骤与例句讲解依据原规则补充。
       </p>
 
       <nav className={styles.topicNavigation} aria-label="知识点翻页">

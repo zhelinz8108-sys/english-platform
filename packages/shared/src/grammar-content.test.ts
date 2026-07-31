@@ -9,7 +9,7 @@ import {
 
 describe('SAT grammar reading content', () => {
   it('publishes 27 chapters and removes all old practice stages', () => {
-    expect(grammarContentVersion).toBe('sat-grammar-3000-v1');
+    expect(grammarContentVersion).toBe('sat-grammar-3000-v2');
     expect(validateGrammarContent()).toEqual({
       lessonCount: 27,
       stageCount: 27,

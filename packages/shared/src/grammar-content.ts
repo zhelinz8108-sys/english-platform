@@ -91,7 +91,7 @@ function normalizeAnswer(value: string): string {
 const questions: GrammarQuestionDefinition[] = [];
 const questionById = new Map<string, GrammarQuestionDefinition>();
 
-export const grammarContentVersion = 'sat-grammar-3000-v1';
+export const grammarContentVersion = 'sat-grammar-3000-v2';
 export const grammarTopicIds = generatedTopics.map((topic) => topic.id);
 /** @deprecated Use grammarTopicIds. */
 export const pilotGrammarTopicIds = grammarTopicIds;
