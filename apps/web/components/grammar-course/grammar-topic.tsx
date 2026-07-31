@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ArrowLeft, ArrowRight, CheckCircle2, ChevronRight, Clock3, Lightbulb } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CheckCircle2, ChevronRight, Clock3 } from 'lucide-react';
 import { useState } from 'react';
 import type { GrammarLesson, GrammarLevelId, GrammarModuleSummary } from '@english/shared';
 import { summarizeGrammarTopicProgress } from '@/lib/grammar-topic-progress';
@@ -52,15 +52,33 @@ export function GrammarTopic(props: {
     (example) => `${example.english}:${example.chinese}`,
   );
   const mistakes = uniqueBy(activeStage.mistakes, (mistake) => `${mistake.wrong}:${mistake.right}`);
+  const patterns = uniqueBy(
+    [...(lesson.patterns ?? []), ...rules.flatMap((rule) => (rule.pattern ? [rule.pattern] : []))],
+    (pattern) => pattern,
+  );
+  const teachingExamples = [
+    ...examples.map((example, index) => ({
+      id: `example:${example.english}:${index}`,
+      english: example.english,
+      chinese: example.chinese,
+      explanation: example.note ?? (rules.length ? (rules[index % rules.length]?.title ?? '') : ''),
+      pattern: patterns.length ? (patterns[index % patterns.length] ?? null) : null,
+      wrong: null,
+    })),
+    ...mistakes.map((mistake, index) => ({
+      id: `correction:${mistake.wrong}:${index}`,
+      english: mistake.right,
+      chinese: '',
+      explanation: mistake.explanation,
+      pattern: null,
+      wrong: mistake.wrong,
+    })),
+  ];
   const sources = uniqueBy(
     activeStage.sources,
     (source) => `${source.bookId}:${source.rangeLabel}`,
   );
   const totalQuestionCount = lesson.stages.reduce((total, stage) => total + stage.questionCount, 0);
-  const patterns = uniqueBy(
-    [...(lesson.patterns ?? []), ...rules.flatMap((rule) => (rule.pattern ? [rule.pattern] : []))],
-    (pattern) => pattern,
-  );
   const stageStatus =
     activeProgressEntry?.status === 'mastered'
       ? '已掌握'
@@ -137,19 +155,6 @@ export function GrammarTopic(props: {
           </div>
         </div>
 
-        {patterns.length ? (
-          <div className={styles.patternBoard}>
-            <div className={styles.patternIntro}>
-              <strong>核心结构</strong>
-            </div>
-            <div className={styles.patternGrid}>
-              {patterns.map((pattern) => (
-                <code key={pattern}>{pattern}</code>
-              ))}
-            </div>
-          </div>
-        ) : null}
-
         {lesson.topicId === 'verb-forms' ? (
           <div className={styles.formMatrix}>
             <div className={styles.sectionTitleRow}>
@@ -182,53 +187,32 @@ export function GrammarTopic(props: {
 
         <div className={styles.contentSection}>
           <div className={styles.sectionTitleRow}>
-            <h3>规则</h3>
-            <span>{rules.length} 条</span>
-          </div>
-          <div className={styles.ruleCardGrid}>
-            {rules.map((rule) => (
-              <section className={styles.ruleCard} key={`${activeStage.id}:${rule.title}`}>
-                <Lightbulb size={16} />
-                <div>
-                  <h4>{rule.title}</h4>
-                  <p>{rule.body}</p>
-                  {rule.pattern ? <code>{rule.pattern}</code> : null}
-                </div>
-              </section>
-            ))}
-          </div>
-        </div>
-
-        <div className={styles.contentSection}>
-          <div className={styles.sectionTitleRow}>
-            <h3>例句</h3>
-            <span>{examples.length} 组</span>
+            <h3>例句精讲</h3>
+            <span>{teachingExamples.length} 组</span>
           </div>
           <div className={styles.exampleList}>
-            {examples.map((example, index) => (
-              <div className={styles.example} key={`${example.english}:${index}`}>
-                <p>{example.english}</p>
-                <small>
-                  {example.chinese}
-                  {example.note ? ` · ${example.note}` : ''}
-                </small>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className={styles.contentSection}>
-          <div className={styles.sectionTitleRow}>
-            <h3>易错点</h3>
-            <span>{mistakes.length} 个</span>
-          </div>
-          <div className={styles.mistakeList}>
-            {mistakes.map((mistake) => (
-              <div className={styles.mistake} key={mistake.wrong}>
-                <p className={styles.wrong}>× {mistake.wrong}</p>
-                <p className={styles.right}>✓ {mistake.right}</p>
-                <small>{mistake.explanation}</small>
-              </div>
+            {teachingExamples.map((example) => (
+              <article className={styles.example} key={example.id}>
+                <p className={styles.exampleSentence}>{example.english}</p>
+                {example.pattern ? (
+                  <code className={styles.examplePattern}>{example.pattern}</code>
+                ) : null}
+                {example.wrong ? (
+                  <p className={styles.exampleWrong}>
+                    <span>避免</span>
+                    <s>{example.wrong}</s>
+                  </p>
+                ) : null}
+                <p className={styles.exampleExplanation}>
+                  {example.chinese ? <span>{example.chinese}</span> : null}
+                  {example.explanation ? (
+                    <span>
+                      <strong>{example.wrong ? '改错：' : '看点：'}</strong>
+                      {example.explanation}
+                    </span>
+                  ) : null}
+                </p>
+              </article>
             ))}
           </div>
         </div>
