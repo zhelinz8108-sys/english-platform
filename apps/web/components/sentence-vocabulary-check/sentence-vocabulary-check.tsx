@@ -87,6 +87,7 @@ export function SentenceVocabularyCheck({
   const { currentTenant } = useWorkspace();
   const bookPath = `${studentRoute ? '/student' : ''}/learning/english/vocabulary/books/${book.id}`;
   const isSentenceBook = book.id === 'toefl-sentences';
+  const isHighFrequencyBook = book.id === 'high-frequency';
   const unitNoun = isSentenceBook ? '句子' : '单元';
   const checkTitle = isSentenceBook ? '句子词汇检测' : `${book.shortTitle}词汇检测`;
   const allUnitIds = useMemo(
@@ -716,7 +717,9 @@ export function SentenceVocabularyCheck({
                     const selected = selectedUnitIds.has(item.id);
                     const itemLabel = isSentenceBook
                       ? item.title.replace(/^Sentence\s+/u, '')
-                      : (item.label ?? item.title);
+                      : isHighFrequencyBook
+                        ? item.title.replace(/^高频词汇\s+/u, '')
+                        : (item.label ?? item.title);
                     return (
                       <button
                         aria-label={item.title}

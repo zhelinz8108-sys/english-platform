@@ -324,7 +324,6 @@ function VocabularyEntryGroup({
 
 export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
   const pathname = usePathname();
-  const isHighFrequencyBook = book.id === 'high-frequency';
   const vocabularyBase = pathname.startsWith('/student/')
     ? '/student/learning/english/vocabulary'
     : '/learning/english/vocabulary';
@@ -587,7 +586,7 @@ export function VocabularyBookReader({ book }: { book: VocabularyBook }) {
             <ArrowLeft size={17} /> 返回词汇书架
           </Link>
         }
-        description={isHighFrequencyBook ? '按年级与出现频率分组浏览。' : book.description}
+        description={book.description}
         eyebrow={`英语 · 词汇 · ${book.category}`}
         title={book.shortTitle}
       />

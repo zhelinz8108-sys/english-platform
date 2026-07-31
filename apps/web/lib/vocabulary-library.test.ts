@@ -17,8 +17,8 @@ describe('local vocabulary book catalog', () => {
     expect(vocabularyBookCatalog.summary).toEqual(
       expect.objectContaining({
         bookCount: 4,
-        pageCount: 3635,
-        learningUnitCount: 667,
+        pageCount: 3631,
+        learningUnitCount: 662,
       }),
     );
     expect(vocabularyBookCatalog.books.map((book) => book.id)).toEqual([
@@ -28,6 +28,42 @@ describe('local vocabulary book catalog', () => {
       'situational-15000',
     ]);
     expect(findVocabularyBook('missing-book')).toBeNull();
+  });
+
+  it('organizes high-frequency vocabulary by continuous ranges instead of grades', () => {
+    const book = findVocabularyBook('high-frequency');
+    const items = book?.sections.flatMap((section) => section.items) ?? [];
+    expect(book).not.toBeNull();
+    expect(book?.sections).toHaveLength(7);
+    expect(items).toHaveLength(68);
+    expect(book?.sections[0]).toEqual(
+      expect.objectContaining({
+        id: 'range-0001-1000',
+        title: '高频词汇 0001–1000',
+      }),
+    );
+    expect(book?.sections.at(-1)).toEqual(
+      expect.objectContaining({
+        id: 'range-6001-6734',
+        title: '高频词汇 6001–6734',
+      }),
+    );
+    expect(book?.sections.some((section) => /grade/i.test(`${section.id} ${section.title}`))).toBe(
+      false,
+    );
+    expect(items[0]).toEqual(
+      expect.objectContaining({
+        id: 'word-list-001',
+        title: '高频词汇 0001–0100',
+      }),
+    );
+    expect(items.at(-1)).toEqual(
+      expect.objectContaining({
+        id: 'word-list-068',
+        title: '高频词汇 6701–6734',
+      }),
+    );
+    expect(items.some((item) => /grade/i.test(`${item.id} ${item.title}`))).toBe(false);
   });
 
   it('publishes recognized web text and word-level deduplication metadata', () => {

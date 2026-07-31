@@ -19,6 +19,7 @@ COMMONLIT_ROOT = WEB_DATA_ROOT / "commonlit-reading-vocabulary"
 BOOK_ID = "high-frequency"
 SOURCE_BOOK_IDS = ("toefl-sentences", "gre-random")
 WORDS_PER_UNIT = 100
+WORDS_PER_SECTION = 1_000
 WORDS_PER_PAGE = 25
 
 
@@ -53,13 +54,12 @@ def load_book_headwords(book_id: str) -> set[str]:
     return headwords
 
 
-def load_commonlit_overlap(exam_headwords: set[str]) -> dict[int, list[dict[str, str]]]:
-    overlap_by_grade: dict[int, list[dict[str, str]]] = {}
+def load_commonlit_overlap(exam_headwords: set[str]) -> list[dict[str, str]]:
+    entries: list[dict[str, str]] = []
     seen: set[str] = set()
     for grade in range(3, 13):
         path = COMMONLIT_ROOT / f"grade-{grade:02d}.json"
         document = json.loads(path.read_text(encoding="utf-8"))
-        grade_entries: list[dict[str, str]] = []
         for article in document.get("articles") or []:
             for raw_entry in article.get("vocabulary") or []:
                 entry = {key: str(value or "") for key, value in raw_entry.items()}
@@ -67,9 +67,8 @@ def load_commonlit_overlap(exam_headwords: set[str]) -> dict[int, list[dict[str,
                 if not normalized or normalized not in exam_headwords or normalized in seen:
                     continue
                 seen.add(normalized)
-                grade_entries.append(entry)
-        overlap_by_grade[grade] = grade_entries
-    return overlap_by_grade
+                entries.append(entry)
+    return entries
 
 
 def entry_blocks(entry: dict[str, str]) -> list[dict[str, str]]:
@@ -87,20 +86,29 @@ def entry_blocks(entry: dict[str, str]) -> list[dict[str, str]]:
 
 
 def build_units(
-    overlap_by_grade: dict[int, list[dict[str, str]]],
+    entries: list[dict[str, str]],
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], int]:
     sections: list[dict[str, Any]] = []
     unit_documents: list[dict[str, Any]] = []
     next_page = 1
 
-    for grade, entries in overlap_by_grade.items():
+    for section_start in range(0, len(entries), WORDS_PER_SECTION):
+        section_entries = entries[section_start : section_start + WORDS_PER_SECTION]
+        section_word_start = section_start + 1
+        section_word_end = section_start + len(section_entries)
+        section_id = f"range-{section_word_start:04d}-{section_word_end:04d}"
+        section_title = (
+            f"高频词汇 {section_word_start:04d}–{section_word_end:04d}"
+        )
         items: list[dict[str, Any]] = []
-        for unit_index, start in enumerate(range(0, len(entries), WORDS_PER_UNIT), start=1):
-            unit_entries = entries[start : start + WORDS_PER_UNIT]
-            unit_id = f"grade-{grade:02d}-{unit_index:02d}"
-            word_start = start + 1
-            word_end = start + len(unit_entries)
-            title = f"Grade {grade} 高频词汇 {word_start:03d}–{word_end:03d}"
+        section_page = next_page
+        for unit_start in range(section_start, section_word_end, WORDS_PER_UNIT):
+            unit_entries = entries[unit_start : unit_start + WORDS_PER_UNIT]
+            unit_index = unit_start // WORDS_PER_UNIT + 1
+            unit_id = f"word-list-{unit_index:03d}"
+            word_start = unit_start + 1
+            word_end = unit_start + len(unit_entries)
+            title = f"高频词汇 {word_start:04d}–{word_end:04d}"
             page_count = math.ceil(len(unit_entries) / WORDS_PER_PAGE)
             page_start = next_page
             page_end = next_page + page_count - 1
@@ -131,8 +139,8 @@ def build_units(
                     "bookId": BOOK_ID,
                     "unitId": unit_id,
                     "title": title,
-                    "sectionId": f"grade-{grade:02d}",
-                    "sectionTitle": f"Grade {grade}",
+                    "sectionId": section_id,
+                    "sectionTitle": section_title,
                     "pageStart": page_start,
                     "pageEnd": page_end,
                     "extractionMethod": "text-layer",
@@ -145,10 +153,10 @@ def build_units(
 
         sections.append(
             {
-                "id": f"grade-{grade:02d}",
-                "title": f"Grade {grade}",
-                "label": f"{len(entries):,} 词",
-                "page": items[0]["page"],
+                "id": section_id,
+                "title": section_title,
+                "label": f"{len(section_entries):,} 词",
+                "page": section_page,
                 "items": items,
             }
         )
@@ -212,11 +220,14 @@ def update_catalog(
         "title": "高频词汇",
         "shortTitle": "高频词汇",
         "author": "Aurelis English",
-        "description": "按年级与首次出现顺序整理的高频词表。",
-        "scale": f"{word_count:,} 个重合词汇 · Grade 3–12",
+        "description": "按连续词序整理、每 100 词一组的高频词表。",
+        "scale": (
+            f"{word_count:,} 个高频重合词汇 · "
+            f"{sum(len(section['items']) for section in sections)} 个词组"
+        ),
         "category": "高频",
         "tone": "teal",
-        "features": ["美式发音", "中文释义", "年级分层"],
+        "features": ["美式发音", "音标与释义", "每 100 词一组"],
         "sections": sections,
         "contentReady": True,
         "wordEntryCount": word_count,
@@ -253,9 +264,9 @@ def build_high_frequency_book() -> None:
     exam_headwords: set[str] = set()
     for book_id in SOURCE_BOOK_IDS:
         exam_headwords.update(load_book_headwords(book_id))
-    overlap_by_grade = load_commonlit_overlap(exam_headwords)
-    sections, unit_documents, page_count = build_units(overlap_by_grade)
-    word_count = sum(len(entries) for entries in overlap_by_grade.values())
+    entries = load_commonlit_overlap(exam_headwords)
+    sections, unit_documents, page_count = build_units(entries)
+    word_count = len(entries)
     if word_count != 6_734:
         raise RuntimeError(
             f"Expected 6,734 CommonLit overlap entries, found {word_count:,}"
