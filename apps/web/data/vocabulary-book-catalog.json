@@ -881,13 +881,14 @@
       "title": "高频词汇",
       "shortTitle": "高频词汇",
       "author": "Aurelis English",
-      "description": "按连续词序整理、每 100 词一组的高频词表。",
+      "description": "按连续词序整理、每 100 词一组，并保留原词书词汇扩展信息的高频词表。",
       "scale": "6,734 个高频重合词汇 · 68 个词组",
       "category": "高频",
       "tone": "teal",
       "features": [
         "美式发音",
         "音标与释义",
+        "词汇扩展",
         "每 100 词一组"
       ],
       "sections": [

@@ -129,6 +129,8 @@ describe('local vocabulary book catalog', () => {
 
     let derivedEntryCount = 0;
     let derivedPhoneticCount = 0;
+    let derivedEnrichedEntryCount = 0;
+    let derivedDetailBlockCount = 0;
     for (const book of vocabularyBookCatalog.books) {
       const seenInsideBook = new Set<string>();
       for (const section of book.sections) {
@@ -138,9 +140,27 @@ describe('local vocabulary book catalog', () => {
           expect(unit.bookId).toBe(book.id);
           expect(unit.unitId).toBe(item.id);
           expect(unit.pages.length).toBeGreaterThan(0);
+          if (book.id === 'high-frequency') {
+            for (const page of unit.pages) {
+              page.blocks.forEach((block, blockIndex) => {
+                if (block.type === 'entry') {
+                  const nextBlock = page.blocks[blockIndex + 1];
+                  if (nextBlock && nextBlock.type !== 'entry') {
+                    derivedEnrichedEntryCount += 1;
+                  }
+                  return;
+                }
+                expect(['definition', 'note', 'text']).toContain(block.type);
+                expect(block.text).not.toMatch(/^(?:原句|出处|中文语境)[：:]/u);
+                if (block.type === 'note') {
+                  expect(block.text).toMatch(/^(?:记忆|搭配|同义|反义|同根|参考)\s/u);
+                }
+                derivedDetailBlockCount += 1;
+              });
+            }
+          }
           for (const block of unit.pages.flatMap((page) => page.blocks)) {
-            if (book.id === 'high-frequency') {
-              expect(block.type).toBe('entry');
+            if (book.id === 'high-frequency' && block.type === 'entry') {
               expect(block.text.startsWith(`${block.headword} `)).toBe(true);
               expect(block.text).toMatch(/[\u3400-\u9fff]/u);
             }
@@ -179,6 +199,8 @@ describe('local vocabulary book catalog', () => {
     expect(seen.size).toBe(vocabularyBookCatalog.summary.uniqueWordEntryCount);
     expect(derivedEntryCount).toBe(6_734);
     expect(derivedPhoneticCount).toBe(6_679);
+    expect(derivedEnrichedEntryCount).toBe(4_108);
+    expect(derivedDetailBlockCount).toBe(5_482);
     expect(derivedEntryCount).toBe(findVocabularyBook('high-frequency')?.wordEntryCount);
   });
 });

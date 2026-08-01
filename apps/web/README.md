@@ -36,6 +36,8 @@ X-CSRF-Token。关键命令使用 Idempotency-Key，错误按 RFC 7807 展示。
 `pnpm vocabulary:high-frequency` 会重新计算 CommonLit 与托福、SAT 词库的重合词头，按
 Grade 3–12 的首次出现顺序生成“高频词汇”。生成结果写入
 `data/vocabulary-book-content/high-frequency`，并同步更新词汇书目录和统计。
+词条保留 CommonLit 音标与中文释义，并复用原词书中的补充词义、记忆、搭配、同义、
+反义和同根信息；不会复制原句、译文或出处。
 
 - `ENABLE_LOCAL_READING=true`：在非演示模式显式启用本地阅读接口。
 

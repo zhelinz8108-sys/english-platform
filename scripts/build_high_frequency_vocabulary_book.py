@@ -21,6 +21,7 @@ SOURCE_BOOK_IDS = ("toefl-sentences", "gre-random")
 WORDS_PER_UNIT = 100
 WORDS_PER_SECTION = 1_000
 WORDS_PER_PAGE = 25
+DETAIL_BLOCK_TYPES = {"definition", "note", "text"}
 
 
 def normalize_headword(value: str) -> str:
@@ -54,6 +55,49 @@ def load_book_headwords(book_id: str) -> set[str]:
     return headwords
 
 
+def normalize_note_text(value: str) -> str:
+    text = re.sub(r"^[图园圆圈回口固困囵囫□■●◎]+", "", value.strip())
+    memory = re.match(r"^(?:(?:词根|联想|词源)记忆|记忆)[：:]?\s*(.*)$", text)
+    if memory:
+        return f"记忆 {memory.group(1).strip()}"
+    derived = re.match(r"^派生[：:]?\s*(.*)$", text)
+    if derived:
+        return f"同根 {derived.group(1).strip()}"
+    return text
+
+
+def source_detail_blocks() -> dict[str, list[dict[str, str]]]:
+    """Reuse source-book word notes, never sentences, translations, or provenance."""
+    details_by_headword: dict[str, list[dict[str, str]]] = {}
+    for book_id in SOURCE_BOOK_IDS:
+        for path in content_files(book_id):
+            document = json.loads(path.read_text(encoding="utf-8"))
+            for page in document.get("pages") or []:
+                blocks = page.get("blocks") or []
+                for index, block in enumerate(blocks):
+                    if block.get("type") != "entry" or not block.get("headword"):
+                        continue
+                    headword = normalize_headword(str(block["headword"]))
+                    if not headword or headword in details_by_headword:
+                        continue
+                    candidates: list[dict[str, str]] = []
+                    for candidate in blocks[index + 1 :]:
+                        block_type = str(candidate.get("type") or "")
+                        text = str(candidate.get("text") or "").strip()
+                        if block_type not in DETAIL_BLOCK_TYPES or not text:
+                            break
+                        if block_type == "text" and re.search(r"[：:]\s*$", text):
+                            break
+                        if book_id == "gre-random" and block_type != "note":
+                            continue
+                        if block_type == "note":
+                            text = normalize_note_text(text)
+                        candidates.append({"type": block_type, "text": text})
+                    if candidates:
+                        details_by_headword[headword] = candidates
+    return details_by_headword
+
+
 def load_commonlit_overlap(exam_headwords: set[str]) -> list[dict[str, str]]:
     entries: list[dict[str, str]] = []
     seen: set[str] = set()
@@ -64,17 +108,24 @@ def load_commonlit_overlap(exam_headwords: set[str]) -> list[dict[str, str]]:
             for raw_entry in article.get("vocabulary") or []:
                 entry = {key: str(value or "") for key, value in raw_entry.items()}
                 normalized = normalize_headword(entry["word"])
-                if not normalized or normalized not in exam_headwords or normalized in seen:
+                if (
+                    not normalized
+                    or normalized not in exam_headwords
+                    or normalized in seen
+                ):
                     continue
                 seen.add(normalized)
                 entries.append(entry)
     return entries
 
 
-def entry_blocks(entry: dict[str, str]) -> list[dict[str, str]]:
+def entry_blocks(
+    entry: dict[str, str],
+    details_by_headword: dict[str, list[dict[str, str]]],
+) -> list[dict[str, str]]:
     ipa = entry.get("ipa", "").strip()
     definition = entry.get("definition", "").strip()
-    return [
+    blocks = [
         {
             "type": "entry",
             "text": " ".join(
@@ -83,10 +134,13 @@ def entry_blocks(entry: dict[str, str]) -> list[dict[str, str]]:
             "headword": entry["word"],
         }
     ]
+    blocks.extend(details_by_headword.get(normalize_headword(entry["word"]), []))
+    return blocks
 
 
 def build_units(
     entries: list[dict[str, str]],
+    details_by_headword: dict[str, list[dict[str, str]]],
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], int]:
     sections: list[dict[str, Any]] = []
     unit_documents: list[dict[str, Any]] = []
@@ -97,9 +151,7 @@ def build_units(
         section_word_start = section_start + 1
         section_word_end = section_start + len(section_entries)
         section_id = f"range-{section_word_start:04d}-{section_word_end:04d}"
-        section_title = (
-            f"高频词汇 {section_word_start:04d}–{section_word_end:04d}"
-        )
+        section_title = f"高频词汇 {section_word_start:04d}–{section_word_end:04d}"
         items: list[dict[str, Any]] = []
         section_page = next_page
         for unit_start in range(section_start, section_word_end, WORDS_PER_UNIT):
@@ -130,7 +182,7 @@ def build_units(
                 ]
                 blocks: list[dict[str, str]] = []
                 for entry in page_entries:
-                    blocks.extend(entry_blocks(entry))
+                    blocks.extend(entry_blocks(entry, details_by_headword))
                 pages.append({"number": page_start + page_offset, "blocks": blocks})
 
             unit_documents.append(
@@ -207,9 +259,7 @@ def update_catalog(
     catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
     base_books = [book for book in catalog["books"] if book["id"] != BOOK_ID]
     source_position = max(
-        index
-        for index, book in enumerate(base_books)
-        if book["id"] in SOURCE_BOOK_IDS
+        index for index, book in enumerate(base_books) if book["id"] in SOURCE_BOOK_IDS
     )
     derived_book = {
         "id": BOOK_ID,
@@ -220,14 +270,14 @@ def update_catalog(
         "title": "高频词汇",
         "shortTitle": "高频词汇",
         "author": "Aurelis English",
-        "description": "按连续词序整理、每 100 词一组的高频词表。",
+        "description": "按连续词序整理、每 100 词一组，并保留原词书词汇扩展信息的高频词表。",
         "scale": (
             f"{word_count:,} 个高频重合词汇 · "
             f"{sum(len(section['items']) for section in sections)} 个词组"
         ),
         "category": "高频",
         "tone": "teal",
-        "features": ["美式发音", "音标与释义", "每 100 词一组"],
+        "features": ["美式发音", "音标与释义", "词汇扩展", "每 100 词一组"],
         "sections": sections,
         "contentReady": True,
         "wordEntryCount": word_count,
@@ -265,7 +315,8 @@ def build_high_frequency_book() -> None:
     for book_id in SOURCE_BOOK_IDS:
         exam_headwords.update(load_book_headwords(book_id))
     entries = load_commonlit_overlap(exam_headwords)
-    sections, unit_documents, page_count = build_units(entries)
+    details_by_headword = source_detail_blocks()
+    sections, unit_documents, page_count = build_units(entries, details_by_headword)
     word_count = len(entries)
     if word_count != 6_734:
         raise RuntimeError(
@@ -275,7 +326,9 @@ def build_high_frequency_book() -> None:
     update_catalog(sections, page_count, word_count)
     print(
         f"Built 高频词汇: {word_count:,} words, "
-        f"{len(unit_documents)} units, {page_count} pages."
+        f"{len(unit_documents)} units, {page_count} pages, "
+        f"{sum(normalize_headword(entry['word']) in details_by_headword for entry in entries):,} "
+        "entries with source-book details."
     )
 
 
