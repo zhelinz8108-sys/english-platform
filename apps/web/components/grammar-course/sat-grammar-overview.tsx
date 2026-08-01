@@ -2,13 +2,19 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ArrowLeft, ArrowRight, ChevronDown, Search } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ChevronDown, ListChecks, Search } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import type { SatGrammarCatalog } from '@/lib/sat-grammar';
 import { grammarBasePath } from './grammar-api';
 import styles from './sat-grammar.module.css';
 
-export function SatGrammarOverview({ catalog }: { catalog: SatGrammarCatalog }) {
+export function SatGrammarOverview({
+  catalog,
+  practiceItemCount,
+}: {
+  catalog: SatGrammarCatalog;
+  practiceItemCount: number;
+}) {
   const pathname = usePathname();
   const grammarBase = grammarBasePath(pathname);
   const courseBase = `${grammarBase}/sat`;
@@ -53,12 +59,18 @@ export function SatGrammarOverview({ catalog }: { catalog: SatGrammarCatalog }) 
           <p>{catalog.description}</p>
           <small>{catalog.source.scope}</small>
         </div>
-        {firstChapter ? (
-          <Link className={styles.primaryLink} href={`${courseBase}/${firstChapter.id}`}>
-            从第一章开始
-            <ArrowRight size={16} />
+        <div className={styles.courseActions}>
+          {firstChapter ? (
+            <Link className={styles.primaryLink} href={`${courseBase}/${firstChapter.id}`}>
+              从第一章开始
+              <ArrowRight size={16} />
+            </Link>
+          ) : null}
+          <Link className={styles.secondaryLink} href={`${courseBase}/practice`}>
+            <ListChecks size={16} />
+            开始综合练习 · {practiceItemCount} 题
           </Link>
-        ) : null}
+        </div>
       </header>
 
       <section aria-label="SAT语法课程概况" className={styles.summaryList}>
@@ -77,6 +89,10 @@ export function SatGrammarOverview({ catalog }: { catalog: SatGrammarCatalog }) 
         <div>
           <span>速查附录</span>
           <strong>{catalog.summary.appendixCount}</strong>
+        </div>
+        <div>
+          <span>互动练习题</span>
+          <strong>{practiceItemCount}</strong>
         </div>
       </section>
 

@@ -2,7 +2,16 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ArrowLeft, ArrowRight, Check, ChevronRight, CircleAlert, Compass, X } from 'lucide-react';
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  ChevronRight,
+  CircleAlert,
+  Compass,
+  ListChecks,
+  X,
+} from 'lucide-react';
 import type { SatGrammarEntry, SatGrammarTable } from '@/lib/sat-grammar';
 import { grammarBasePath } from './grammar-api';
 import styles from './sat-grammar.module.css';
@@ -45,10 +54,12 @@ export function SatGrammarChapter({
   entry,
   previous,
   next,
+  practiceCount,
 }: {
   entry: SatGrammarEntry;
   previous: Pick<SatGrammarEntry, 'id' | 'label' | 'title'> | null;
   next: Pick<SatGrammarEntry, 'id' | 'label' | 'title'> | null;
+  practiceCount: number;
 }) {
   const pathname = usePathname();
   const grammarBase = grammarBasePath(pathname);
@@ -75,9 +86,17 @@ export function SatGrammarChapter({
         {entry.intro.map((paragraph) => (
           <p key={paragraph}>{paragraph}</p>
         ))}
-        <span>
-          {ruleCount ? `${ruleCount} 个规则知识点` : `${entry.sections.length} 个速查部分`}
-        </span>
+        <div className={styles.chapterHeaderActions}>
+          <span>
+            {ruleCount ? `${ruleCount} 个规则知识点` : `${entry.sections.length} 个速查部分`}
+          </span>
+          {practiceCount ? (
+            <Link className={styles.primaryLink} href={`${courseBase}/${entry.id}/practice`}>
+              <ListChecks size={15} />
+              练习本章 · {practiceCount} 题
+            </Link>
+          ) : null}
+        </div>
       </header>
 
       <nav aria-label="本页目录" className={styles.pageToc}>
@@ -183,6 +202,13 @@ export function SatGrammarChapter({
       </article>
 
       <p className={styles.sourceNote}>内容依据：《SAT语法知识点全整理》。</p>
+
+      {practiceCount ? (
+        <Link className={styles.primaryLink} href={`${courseBase}/${entry.id}/practice`}>
+          <ListChecks size={15} />
+          进入本章互动练习 · {practiceCount} 题
+        </Link>
+      ) : null}
 
       <nav aria-label="章节翻页" className={styles.chapterNavigation}>
         {previous ? (

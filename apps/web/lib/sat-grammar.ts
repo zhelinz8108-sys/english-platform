@@ -87,3 +87,41 @@ export interface SatGrammarCatalog {
   summary: SatGrammarLibrary['summary'];
   entries: SatGrammarCatalogEntry[];
 }
+
+export type SatGrammarPracticeAnswer = 'A' | 'B' | 'C' | 'D';
+
+export interface SatGrammarPracticeItem {
+  id: string;
+  chapterId: string;
+  category: string;
+  officialSkill: 'Boundaries' | 'Form, Structure, and Sense';
+  difficulty: 'Easy' | 'Medium' | 'Hard';
+  answer: SatGrammarPracticeAnswer;
+  answerStatus: 'original_answer' | 'inferred_duplicate';
+  asset: string;
+  assetWidth: number;
+  assetHeight: number;
+  explanation: string;
+}
+
+export interface SatGrammarPracticeLibrary {
+  version: string;
+  source: string;
+  summary: {
+    sourceItemCount: number;
+    interactiveItemCount: number;
+    excludedItemCount: number;
+    categoryCounts: Record<string, number>;
+    chapterCounts: Record<string, number>;
+  };
+  items: SatGrammarPracticeItem[];
+}
+
+export interface SatGrammarPracticeSet {
+  chapterId: string | null;
+  title: string;
+  description: string;
+  source: string;
+  totalCount: number;
+  items: SatGrammarPracticeItem[];
+}
