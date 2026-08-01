@@ -1,6 +1,6 @@
-import { GrammarOverview } from '@/components/grammar-course/grammar-overview';
-import { getGrammarCatalog } from '@/lib/grammar-catalog.server';
+import { GrammarShelf } from '@/components/grammar-course/grammar-shelf';
+import { getSatGrammarCatalog } from '@/lib/sat-grammar-catalog.server';
 
 export default function GrammarPage() {
-  return <GrammarOverview catalog={getGrammarCatalog()} />;
+  return <GrammarShelf summary={getSatGrammarCatalog().summary} />;
 }

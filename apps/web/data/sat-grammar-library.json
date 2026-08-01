@@ -1,0 +1,2802 @@
+{
+  "version": "sat-grammar-complete-v1",
+  "title": "SAT语法",
+  "english": "Standard English Conventions",
+  "description": "按句界、标点、主谓一致、代词、修饰语、动词、句法、平行结构、所有格与比较系统整理。",
+  "source": {
+    "fileName": "SAT语法知识点全整理.docx",
+    "scope": "基于 985 道去重题目的知识体系重构"
+  },
+  "summary": {
+    "chapterCount": 14,
+    "appendixCount": 2,
+    "ruleCount": 129,
+    "examplePairCount": 129
+  },
+  "chapters": [
+    {
+      "id": "problem-solving-framework",
+      "sequence": 1,
+      "kind": "chapter",
+      "label": "第1章",
+      "title": "语法题总解题框架",
+      "intro": [
+        "绝大多数SAT语法题都可以用“找谓语 - 划分分句 - 判断空格功能 - 检查语意”四步完成。"
+      ],
+      "sections": [
+        {
+          "id": "section-01",
+          "sequence": 1,
+          "title": "本章知识点",
+          "notes": [],
+          "lists": [],
+          "tables": [
+            {
+              "headers": [
+                "原PDF索引",
+                "适用于全部 G0001-G0985。"
+              ],
+              "rows": []
+            }
+          ],
+          "rules": []
+        },
+        {
+          "id": "section-02",
+          "sequence": 2,
+          "title": "1.1 四步法",
+          "notes": [],
+          "lists": [],
+          "tables": [],
+          "rules": [
+            {
+              "id": "rule-001",
+              "sequence": 1,
+              "title": "第一步：圈出所有限定动词",
+              "core": "限定动词会随主语、时态或语态变化，能够承担一个分句的谓语；不定式、动名词和分词通常不能单独构成谓语。",
+              "method": "先找 can/is/has/was 等助动词，再找实义动词；每个完整分句通常需要一个谓语中心。",
+              "examples": [
+                {
+                  "correct": "The experiment reveals a pattern.",
+                  "incorrect": "The experiment revealing a pattern."
+                }
+              ],
+              "trap": "看到 -ing 或 -ed 形式不要直接当作谓语，先检查前面是否有助动词。",
+              "notes": []
+            },
+            {
+              "id": "rule-002",
+              "sequence": 2,
+              "title": "第二步：判断每一侧是不是独立分句",
+              "core": "独立分句通常具备主语、限定动词和完整意思；从属连词或关系词引导的结构即使有主谓，也通常不能独立成句。",
+              "method": "把空格左右分别遮住，检查是否都能单独成为一句完整陈述。",
+              "examples": [
+                {
+                  "correct": "The sample was small; the result was clear.",
+                  "incorrect": "Although the sample was small. The result was clear."
+                }
+              ],
+              "trap": "含 although, because, when, which, who 等开头的结构常是从属成分。",
+              "notes": []
+            },
+            {
+              "id": "rule-003",
+              "sequence": 3,
+              "title": "第三步：确定空格的语法角色",
+              "core": "空格可能需要谓语、非谓语、代词、所有格、连接词或标点。先定角色，再比较选项，效率远高于逐项翻译。",
+              "method": "观察空格前后：前面是主语吗？后面已有谓语吗？空格是否位于两个完整句之间？",
+              "examples": [
+                {
+                  "correct": "Researchers found that the method works.",
+                  "incorrect": "Researchers finding that the method works."
+                }
+              ],
+              "trap": "四个选项若只在词形或标点上变化，题目主要考结构，不是词义。",
+              "notes": []
+            },
+            {
+              "id": "rule-004",
+              "sequence": 4,
+              "title": "第四步：最后检查语意与指代",
+              "core": "语法形式正确后，还要确认逻辑主体、时间关系、主动被动和代词指向合理。",
+              "method": "把完整答案放回原句，问“谁做动作”“动作发生在何时”“代词指谁”。",
+              "examples": [
+                {
+                  "correct": "After reviewing the data, the scientists revised the model.",
+                  "incorrect": "After reviewing the data, the model was revised by the scientists."
+                }
+              ],
+              "trap": "后一句语法表面可通，但开头修饰语错误地修饰了 model。",
+              "notes": []
+            }
+          ]
+        },
+        {
+          "id": "section-03",
+          "sequence": 3,
+          "title": "1.2 结构符号与最小术语",
+          "notes": [],
+          "lists": [],
+          "tables": [
+            {
+              "headers": [
+                "术语",
+                "做题含义"
+              ],
+              "rows": [
+                [
+                  "S (Subject)",
+                  "主语，动作或状态的承担者。"
+                ],
+                [
+                  "V (Finite Verb)",
+                  "限定动词/谓语中心。"
+                ],
+                [
+                  "O (Object)",
+                  "宾语，动作的接受者。"
+                ],
+                [
+                  "C (Complement)",
+                  "补语，用来说明主语或宾语。"
+                ],
+                [
+                  "IC (Independent Clause)",
+                  "独立分句，可独立成句。"
+                ],
+                [
+                  "DC (Dependent Clause)",
+                  "从属分句，不能独立成句。"
+                ],
+                [
+                  "Phrase",
+                  "短语，没有完整的主语+限定动词结构。"
+                ],
+                [
+                  "Modifier",
+                  "修饰语，必须与被修饰对象在逻辑和位置上匹配。"
+                ]
+              ]
+            }
+          ],
+          "rules": []
+        },
+        {
+          "id": "section-04",
+          "sequence": 4,
+          "title": "1.3 先结构、后含义的淘汰顺序",
+          "notes": [],
+          "lists": [
+            {
+              "ordered": false,
+              "items": [
+                "先删除会造成句子残缺、逗号拼接或重复谓语的选项。",
+                "再检查主谓一致、代词单复数、主动被动和时态。",
+                "再检查标点是否成对、冒号前是否完整、分号两侧是否完整。",
+                "最后才比较语意细节；语法题通常不需要理解所有专业词汇。"
+              ]
+            }
+          ],
+          "tables": [],
+          "rules": []
+        }
+      ]
+    },
+    {
+      "id": "clause-boundaries",
+      "sequence": 2,
+      "kind": "chapter",
+      "label": "第2章",
+      "title": "分句、句界与连接方式",
+      "intro": [
+        "本章解决独立分句、从属分句、逗号拼接、粘连句和连接副词等高频考点。"
+      ],
+      "sections": [
+        {
+          "id": "section-01",
+          "sequence": 1,
+          "title": "本章知识点",
+          "notes": [],
+          "lists": [],
+          "tables": [
+            {
+              "headers": [
+                "原PDF索引",
+                "原PDF重点：G0011-G0070“句界与独立分句”、G0899-G0900，以及部分“标点选择/句法与语意完整性”题。"
+              ],
+              "rows": []
+            }
+          ],
+          "rules": [
+            {
+              "id": "rule-005",
+              "sequence": 5,
+              "title": "独立分句与完整句",
+              "core": "独立分句必须有主语、限定动词和完整意思；祈使句的主语 you 可以省略。",
+              "method": "空格两侧若都能独立成句，需要强连接标点。",
+              "examples": [
+                {
+                  "correct": "The instrument measures salinity.",
+                  "incorrect": "Measuring salinity in the upper ocean."
+                }
+              ],
+              "trap": "分词短语即使很长，也不是完整句。",
+              "notes": []
+            },
+            {
+              "id": "rule-006",
+              "sequence": 6,
+              "title": "从属分句不能独立成句",
+              "core": "because, although, when, while, if, since, unless 等引导的从句需要依附主句。",
+              "method": "从属词一出现，该分句的“独立性”被取消。",
+              "examples": [
+                {
+                  "correct": "Although the sample was small, the result was reliable.",
+                  "incorrect": "Although the sample was small."
+                }
+              ],
+              "trap": "不要用句号或分号把从属分句单独切开。",
+              "notes": []
+            },
+            {
+              "id": "rule-007",
+              "sequence": 7,
+              "title": "句号和分号的等价关系",
+              "core": "句号和分号都能连接两个独立分句；分号表示两句关系较紧密。",
+              "method": "若两个选项仅在句号/分号间变化且两侧都是完整句，它们通常在纯语法上同等有效，题目会用其他细节区分。",
+              "examples": [
+                {
+                  "correct": "The method is efficient; it is inexpensive.",
+                  "incorrect": "The method is efficient, it is inexpensive."
+                }
+              ],
+              "trap": "逗号不能单独连接两个独立分句。",
+              "notes": []
+            },
+            {
+              "id": "rule-008",
+              "sequence": 8,
+              "title": "逗号 + FANBOYS",
+              "core": "两个独立分句可用逗号加并列连词 for, and, nor, but, or, yet, so 连接。",
+              "method": "检查逗号后是否有真正的并列连词，而不是 however/therefore 之类副词。",
+              "examples": [
+                {
+                  "correct": "The data were limited, but the trend was clear.",
+                  "incorrect": "The data were limited, however the trend was clear."
+                }
+              ],
+              "trap": "however 不是 FANBOYS，不能只靠前面的逗号连接两句。",
+              "notes": []
+            },
+            {
+              "id": "rule-009",
+              "sequence": 9,
+              "title": "逗号拼接 (comma splice)",
+              "core": "仅用逗号连接两个独立分句属于错误。",
+              "method": "把逗号换成句号、分号，或加 FANBOYS。",
+              "examples": [
+                {
+                  "correct": "The theory was influential; later evidence challenged it.",
+                  "incorrect": "The theory was influential, later evidence challenged it."
+                }
+              ],
+              "trap": "遇到“IC, IC”优先判错。",
+              "notes": []
+            },
+            {
+              "id": "rule-010",
+              "sequence": 10,
+              "title": "粘连句 (fused sentence)",
+              "core": "两个独立分句之间完全没有标点或连接词，也属于错误。",
+              "method": "数谓语并寻找句界；若出现两个完整主干却没有连接方式，就是粘连句。",
+              "examples": [
+                {
+                  "correct": "The species is rare. It survives in isolated habitats.",
+                  "incorrect": "The species is rare it survives in isolated habitats."
+                }
+              ],
+              "trap": "长主语和插入语会掩盖第二个谓语。",
+              "notes": []
+            },
+            {
+              "id": "rule-011",
+              "sequence": 11,
+              "title": "前置从属分句后的逗号",
+              "core": "从属分句位于句首时，通常用逗号与主句隔开。",
+              "method": "先找到从属分句结束位置，再放逗号。",
+              "examples": [
+                {
+                  "correct": "When the temperature rises, the reaction accelerates.",
+                  "incorrect": "When the temperature rises the reaction accelerates."
+                }
+              ],
+              "trap": "短从属分句有时可省逗号，但SAT标准题通常保留清晰边界。",
+              "notes": []
+            },
+            {
+              "id": "rule-012",
+              "sequence": 12,
+              "title": "后置从属分句的标点",
+              "core": "主句在前、必要的从属分句在后时，通常不加逗号；表示强烈对比或非必要补充时才可能加。",
+              "method": "问后半部分是否限定主句含义。",
+              "examples": [
+                {
+                  "correct": "The reaction slows because the solution cools.",
+                  "incorrect": "The reaction slows, because the solution cools."
+                }
+              ],
+              "trap": "because 从句通常是必要原因说明，不宜随意加逗号。",
+              "notes": []
+            },
+            {
+              "id": "rule-013",
+              "sequence": 13,
+              "title": "连接副词的标准结构",
+              "core": "however, therefore, moreover, nevertheless, consequently, instead, otherwise 等连接两个独立分句时，常用“IC; however, IC”。",
+              "method": "连接副词前用分号/句号，后用逗号。",
+              "examples": [
+                {
+                  "correct": "The sample was small; however, the result was consistent.",
+                  "incorrect": "The sample was small, however, the result was consistent."
+                }
+              ],
+              "trap": "不要把连接副词当并列连词。",
+              "notes": []
+            },
+            {
+              "id": "rule-014",
+              "sequence": 14,
+              "title": "连接副词作句内插入语",
+              "core": "however 等也可放在一个分句内部，此时用一对逗号隔开，不负责连接两个句子。",
+              "method": "删除插入语后，剩余句子仍应完整。",
+              "examples": [
+                {
+                  "correct": "The result, however, remained uncertain.",
+                  "incorrect": "The result; however, remained uncertain."
+                }
+              ],
+              "trap": "句内插入语不能用分号切断主干。",
+              "notes": []
+            },
+            {
+              "id": "rule-015",
+              "sequence": 15,
+              "title": "并列谓语不等于两个独立分句",
+              "core": "同一主语控制两个谓语时，通常不需要在 and/but 前加逗号，除非句子很长或需强调。",
+              "method": "检查第二个动词前是否出现了新的主语。",
+              "examples": [
+                {
+                  "correct": "The device collects data and transmits them.",
+                  "incorrect": "The device collects data, and transmits them."
+                }
+              ],
+              "trap": "有共同主语时不要机械套用“逗号+and”。",
+              "notes": []
+            },
+            {
+              "id": "rule-016",
+              "sequence": 16,
+              "title": "并列宾语、表语和短语",
+              "core": "并列的词或短语不构成独立分句，不能用分号或句号分开。",
+              "method": "数主语和限定动词，不要只看句子长度。",
+              "examples": [
+                {
+                  "correct": "The study examined cost, speed, and accuracy.",
+                  "incorrect": "The study examined cost; speed; and accuracy."
+                }
+              ],
+              "trap": "普通列表用逗号，不用分号，除非列表项内部已有逗号。",
+              "notes": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "commas-parentheticals",
+      "sequence": 3,
+      "kind": "chapter",
+      "label": "第3章",
+      "title": "逗号、插入语与补充成分",
+      "intro": [
+        "本章核心是区分必要成分与非必要成分，并掌握成对标点。"
+      ],
+      "sections": [
+        {
+          "id": "section-01",
+          "sequence": 1,
+          "title": "本章知识点",
+          "notes": [],
+          "lists": [],
+          "tables": [
+            {
+              "headers": [
+                "原PDF索引",
+                "原PDF重点：G0001-G0010、G0071-G0086、G0087-G0138，及大量交叉标签题。"
+              ],
+              "rows": []
+            }
+          ],
+          "rules": [
+            {
+              "id": "rule-017",
+              "sequence": 17,
+              "title": "主语与谓语之间不能随意加标点",
+              "core": "完整主语与其谓语直接相连时，不能插入逗号、分号、冒号或破折号。",
+              "method": "找主语中心词和第一个真正谓语；中间即使有很长修饰语，也不能把主语切断。",
+              "examples": [
+                {
+                  "correct": "The number of species in the orchard has decreased.",
+                  "incorrect": "The number of species in the orchard, has decreased."
+                }
+              ],
+              "trap": "介词短语会把主语拉长，但不改变主谓关系。",
+              "notes": []
+            },
+            {
+              "id": "rule-018",
+              "sequence": 18,
+              "title": "谓语与宾语/补语之间不能加逗号",
+              "core": "动词与其直接宾语、主语补语或宾语补语之间通常不加标点。",
+              "method": "删除修饰语后检查“动词 + 必要成分”是否被切断。",
+              "examples": [
+                {
+                  "correct": "The study revealed a clear pattern.",
+                  "incorrect": "The study revealed, a clear pattern."
+                }
+              ],
+              "trap": "冒号也不能直接放在动词后引出宾语列表。",
+              "notes": []
+            },
+            {
+              "id": "rule-019",
+              "sequence": 19,
+              "title": "介词与宾语之间不能加标点",
+              "core": "介词必须直接支配名词、代词或动名词，不能被逗号或冒号隔开。",
+              "method": "寻找 of, in, by, with, from, to 等介词。",
+              "examples": [
+                {
+                  "correct": "The method depends on accurate measurements.",
+                  "incorrect": "The method depends on, accurate measurements."
+                }
+              ],
+              "trap": "长介词短语常被误判为插入语。",
+              "notes": []
+            },
+            {
+              "id": "rule-020",
+              "sequence": 20,
+              "title": "句首引导成分后的逗号",
+              "core": "较长的介词短语、分词短语、不定式短语或副词从句位于句首时，通常用逗号与主句隔开。",
+              "method": "先找到主句的主语；主语之前的整体通常是引导成分。",
+              "examples": [
+                {
+                  "correct": "After analyzing the samples, the team revised the model.",
+                  "incorrect": "After analyzing the samples the team revised the model."
+                }
+              ],
+              "trap": "逗号位置应落在整个引导成分之后。",
+              "notes": []
+            },
+            {
+              "id": "rule-021",
+              "sequence": 21,
+              "title": "非限制性关系从句",
+              "core": "只提供附加信息、删除后仍能明确指代的关系从句，用逗号成对隔开，常由 which/who 引导。",
+              "method": "删除从句，检查核心名词是否仍唯一明确。",
+              "examples": [
+                {
+                  "correct": "The telescope, which was installed in 2020, detected the signal.",
+                  "incorrect": "The telescope which was installed in 2020, detected the signal."
+                }
+              ],
+              "trap": "成对标点不能只出现一边。",
+              "notes": []
+            },
+            {
+              "id": "rule-022",
+              "sequence": 22,
+              "title": "限制性关系从句",
+              "core": "用于确定“是哪一个”的必要从句通常不加逗号；美式考试中常用 that 指物。",
+              "method": "如果删除从句后指代范围改变或不清楚，该从句通常是限制性的。",
+              "examples": [
+                {
+                  "correct": "The telescope that detected the signal was newly installed.",
+                  "incorrect": "The telescope, that detected the signal, was newly installed."
+                }
+              ],
+              "trap": "that 引导的限制性从句通常不用逗号。",
+              "notes": []
+            },
+            {
+              "id": "rule-023",
+              "sequence": 23,
+              "title": "非限制性同位语",
+              "core": "同位语对前面的名词作补充说明，删除后句子仍完整时，用一对逗号或一对破折号隔开。",
+              "method": "把同位语暂时删除，检查主干。",
+              "examples": [
+                {
+                  "correct": "Maya Lin, an American architect, designed the memorial.",
+                  "incorrect": "Maya Lin an American architect, designed the memorial."
+                }
+              ],
+              "trap": "必须使用成对标点，不能只封闭一侧。",
+              "notes": []
+            },
+            {
+              "id": "rule-024",
+              "sequence": 24,
+              "title": "必要同位语：头衔 + 姓名",
+              "core": "头衔或类别词用于识别人名时通常不加逗号，如 novelist Toni Morrison。",
+              "method": "问姓名是否是必要识别信息。",
+              "examples": [
+                {
+                  "correct": "The novelist Toni Morrison won the prize.",
+                  "incorrect": "The novelist, Toni Morrison, won the prize."
+                }
+              ],
+              "trap": "若前面是泛指头衔，姓名通常不能被当作可删除插入语。",
+              "notes": []
+            },
+            {
+              "id": "rule-025",
+              "sequence": 25,
+              "title": "姓名后的补充头衔",
+              "core": "姓名已经唯一确定对象，后接职业、身份或说明时通常属于非必要信息，要用逗号隔开。",
+              "method": "先看姓名本身是否足以识别。",
+              "examples": [
+                {
+                  "correct": "Toni Morrison, a novelist, won the prize.",
+                  "incorrect": "Toni Morrison a novelist won the prize."
+                }
+              ],
+              "trap": "同一组词在不同位置可能从必要信息变成补充信息。",
+              "notes": []
+            },
+            {
+              "id": "rule-026",
+              "sequence": 26,
+              "title": "插入性连接词",
+              "core": "however, therefore, for example, in fact, moreover, of course 等位于句内时，用一对逗号隔开。",
+              "method": "删除插入语后主干仍应通顺。",
+              "examples": [
+                {
+                  "correct": "The method, for example, can detect small changes.",
+                  "incorrect": "The method for example, can detect small changes."
+                }
+              ],
+              "trap": "句首插入语一般只需后置逗号。",
+              "notes": []
+            },
+            {
+              "id": "rule-027",
+              "sequence": 27,
+              "title": "列举中的逗号",
+              "core": "三个或以上并列成分用逗号分隔；SAT通常接受并鼓励最后一项前的系列逗号。",
+              "method": "确保并列项处于同一语法层级。",
+              "examples": [
+                {
+                  "correct": "The device measures temperature, pressure, and salinity.",
+                  "incorrect": "The device measures temperature pressure, and salinity."
+                }
+              ],
+              "trap": "逗号不能替代缺失的并列连词结构。",
+              "notes": []
+            },
+            {
+              "id": "rule-028",
+              "sequence": 28,
+              "title": "并列形容词与累积形容词",
+              "core": "可互换顺序且可用 and 连接的并列形容词之间加逗号；层层限定的累积形容词不加。",
+              "method": "尝试交换形容词顺序或加入 and。",
+              "examples": [
+                {
+                  "correct": "a clear, concise explanation",
+                  "incorrect": "a small, wooden box"
+                }
+              ],
+              "trap": "“wooden small box”不自然，因此 small wooden 通常是累积修饰。",
+              "notes": []
+            },
+            {
+              "id": "rule-029",
+              "sequence": 29,
+              "title": "成对标点必须匹配",
+              "core": "逗号、破折号或括号引出的非必要成分通常需要同类标点关闭。",
+              "method": "从左侧标点开始，寻找对应的右侧边界。",
+              "examples": [
+                {
+                  "correct": "The alloy - unlike pure aluminum - resists corrosion.",
+                  "incorrect": "The alloy - unlike pure aluminum, resists corrosion."
+                }
+              ],
+              "trap": "不要混用“逗号开、破折号关”。",
+              "notes": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "semicolons-colons-dashes",
+      "sequence": 4,
+      "kind": "chapter",
+      "label": "第4章",
+      "title": "分号、冒号、破折号与综合标点",
+      "intro": [
+        "强标点的使用取决于空格前后的句法完整性，而不是停顿长短。"
+      ],
+      "sections": [
+        {
+          "id": "section-01",
+          "sequence": 1,
+          "title": "本章知识点",
+          "notes": [],
+          "lists": [],
+          "tables": [
+            {
+              "headers": [
+                "原PDF索引",
+                "原PDF重点：G0011-G0138“句界/插入语/标点选择”。"
+              ],
+              "rows": []
+            }
+          ],
+          "rules": [
+            {
+              "id": "rule-030",
+              "sequence": 30,
+              "title": "分号连接两个独立分句",
+              "core": "分号两侧必须都能独立成句；它不能连接完整句与短语。",
+              "method": "把分号替换成句号，若两边都成立，结构才可能正确。",
+              "examples": [
+                {
+                  "correct": "The evidence was limited; the conclusion was cautious.",
+                  "incorrect": "The evidence was limited; because the sample was small."
+                }
+              ],
+              "trap": "分号后若以 because/although/which 开头，通常不是独立句。",
+              "notes": []
+            },
+            {
+              "id": "rule-031",
+              "sequence": 31,
+              "title": "分号分隔复杂列表",
+              "core": "当列表项内部已有逗号时，可用分号分隔大项，避免层级混乱。",
+              "method": "先识别每个大项是否自身含逗号。",
+              "examples": [
+                {
+                  "correct": "The team visited Lima, Peru; Accra, Ghana; and Oslo, Norway.",
+                  "incorrect": "The team visited Lima, Peru, Accra, Ghana, and Oslo, Norway."
+                }
+              ],
+              "trap": "普通单词列表不需要分号。",
+              "notes": []
+            },
+            {
+              "id": "rule-032",
+              "sequence": 32,
+              "title": "冒号前必须是完整分句",
+              "core": "冒号用于引出解释、例子、列表、定义或强调，冒号前必须语法完整。",
+              "method": "遮住冒号后的内容，前半句应能独立成立。",
+              "examples": [
+                {
+                  "correct": "The study examined three variables: cost, speed, and accuracy.",
+                  "incorrect": "The study examined: cost, speed, and accuracy."
+                }
+              ],
+              "trap": "动词 examined 的宾语不能被冒号切断。",
+              "notes": []
+            },
+            {
+              "id": "rule-033",
+              "sequence": 33,
+              "title": "冒号后的内容形式灵活",
+              "core": "冒号后可以是单词、短语、列表或完整句，只要它说明或展开前面的完整陈述。",
+              "method": "检查后半部分是否回答“具体是什么/为什么/例如什么”。",
+              "examples": [
+                {
+                  "correct": "The result was unexpected: no sample showed contamination.",
+                  "incorrect": "The result was unexpected; no contamination."
+                }
+              ],
+              "trap": "后者语法可另成句，但不表达“解释/展开”的冒号关系。",
+              "notes": []
+            },
+            {
+              "id": "rule-034",
+              "sequence": 34,
+              "title": "破折号引出强调或解释",
+              "core": "单个破折号可在完整句后引出强调性补充，功能接近冒号；一对破折号可包围插入语。",
+              "method": "区分“单破折号引出尾部补充”和“双破折号包围句中插入”。",
+              "examples": [
+                {
+                  "correct": "One feature mattered most - reliability.",
+                  "incorrect": "One feature - mattered most reliability."
+                }
+              ],
+              "trap": "破折号不能随意切断主谓或动宾。",
+              "notes": []
+            },
+            {
+              "id": "rule-035",
+              "sequence": 35,
+              "title": "冒号与 such as / including 不重复",
+              "core": "such as、including、for example 等本身已引出例子，前面通常不再用冒号，除非冒号前已经是完整句且后面结构另有需要。",
+              "method": "检查冒号是否直接跟在动词、介词或引例词之前。",
+              "examples": [
+                {
+                  "correct": "The collection includes minerals such as quartz and mica.",
+                  "incorrect": "The collection includes: minerals such as quartz and mica."
+                }
+              ],
+              "trap": "“includes”后需要直接接宾语。",
+              "notes": []
+            },
+            {
+              "id": "rule-036",
+              "sequence": 36,
+              "title": "句号/分号与大写规则",
+              "core": "句号后开启新句，首词通常大写；分号后若不是专有名词，通常小写。",
+              "method": "比较选项中的标点与后续首字母大小写是否配套。",
+              "examples": [
+                {
+                  "correct": "The method failed. However, the team tried again.",
+                  "incorrect": "The method failed; However, the team tried again."
+                }
+              ],
+              "trap": "连接副词在分号后通常小写 however。",
+              "notes": []
+            },
+            {
+              "id": "rule-037",
+              "sequence": 37,
+              "title": "标点等价陷阱",
+              "core": "句号与分号、冒号与单破折号在部分结构中功能接近；若多个选项都能成立，要继续检查后面的大小写、连接词和成分完整性。",
+              "method": "不要只凭“停顿感”选标点。",
+              "examples": [
+                {
+                  "correct": "The finding was clear: the model needed revision.",
+                  "incorrect": "The finding was clear, the model needed revision."
+                }
+              ],
+              "trap": "逗号永远不能凭语气代替强标点。",
+              "notes": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "subject-verb-agreement",
+      "sequence": 5,
+      "kind": "chapter",
+      "label": "第5章",
+      "title": "主谓一致",
+      "intro": [
+        "核心不是看离动词最近的名词，而是找到真正的主语中心词。"
+      ],
+      "sections": [
+        {
+          "id": "section-01",
+          "sequence": 1,
+          "title": "本章知识点",
+          "notes": [],
+          "lists": [],
+          "tables": [
+            {
+              "headers": [
+                "原PDF索引",
+                "原PDF重点：G0143-G0186（44题），并在G0342-G0898等混合标签中反复出现。"
+              ],
+              "rows": []
+            }
+          ],
+          "rules": [
+            {
+              "id": "rule-038",
+              "sequence": 38,
+              "title": "单数主语与复数主语",
+              "core": "一般现在时中，第三人称单数主语用 -s 形式；复数主语和 I/you 用动词原形。be 动词单独变化。",
+              "method": "先把主语替换成 it 或 they。",
+              "examples": [
+                {
+                  "correct": "The device measures pressure. / The devices measure pressure.",
+                  "incorrect": "The devices measures pressure."
+                }
+              ],
+              "trap": "不要被主语后面的复数名词干扰。",
+              "notes": []
+            },
+            {
+              "id": "rule-039",
+              "sequence": 39,
+              "title": "介词短语中的名词不决定谓语",
+              "core": "of, in, with, among 等介词短语通常只是修饰主语，谓语与介词前的中心词一致。",
+              "method": "删除介词短语后再判断。",
+              "examples": [
+                {
+                  "correct": "The number of applicants is increasing.",
+                  "incorrect": "The number of applicants are increasing."
+                }
+              ],
+              "trap": "真正主语是 number，不是 applicants。",
+              "notes": []
+            },
+            {
+              "id": "rule-040",
+              "sequence": 40,
+              "title": "插入语和同位语不改变主语",
+              "core": "including, along with, together with, as well as, in addition to 等附加成分不构成并列主语。",
+              "method": "删除附加成分。",
+              "examples": [
+                {
+                  "correct": "The lead researcher, along with two assistants, is presenting.",
+                  "incorrect": "The lead researcher, along with two assistants, are presenting."
+                }
+              ],
+              "trap": "看到 with 不要自动按复数处理。",
+              "notes": []
+            },
+            {
+              "id": "rule-041",
+              "sequence": 41,
+              "title": "and 连接的并列主语",
+              "core": "两个不同的人或物由 and 连接时通常用复数谓语；若整体表示一个概念、一道菜或一个单位，可用单数。",
+              "method": "判断是两个独立实体还是固定整体。",
+              "examples": [
+                {
+                  "correct": "Speed and accuracy are important.",
+                  "incorrect": "Speed and accuracy is important."
+                }
+              ],
+              "trap": "固定整体如 bread and butter 可按语意为单数。",
+              "notes": []
+            },
+            {
+              "id": "rule-042",
+              "sequence": 42,
+              "title": "or / nor / either...or / neither...nor",
+              "core": "由 or/nor 连接的主语，谓语通常与离它最近的主语一致。",
+              "method": "看动词左边最近的并列主语。",
+              "examples": [
+                {
+                  "correct": "Neither the students nor the teacher is available.",
+                  "incorrect": "Neither the students nor the teacher are available."
+                }
+              ],
+              "trap": "考试中优先使用就近一致。",
+              "notes": []
+            },
+            {
+              "id": "rule-043",
+              "sequence": 43,
+              "title": "not only...but also 的并列主语",
+              "core": "连接两个主语时通常遵循就近一致；连接其他成分时保持平行即可。",
+              "method": "先确定该结构连接的是主语还是谓语/宾语。",
+              "examples": [
+                {
+                  "correct": "Not only the researchers but also the director is attending.",
+                  "incorrect": "Not only the researchers but also the director are attending."
+                }
+              ],
+              "trap": "不要把 but also 后的名词误当普通插入语。",
+              "notes": []
+            },
+            {
+              "id": "rule-044",
+              "sequence": 44,
+              "title": "each, every, either, neither, one",
+              "core": "这些词作主语或限定主语时通常按单数处理，即使后面有 of + 复数名词。",
+              "method": "抓住 each/every/one 本身。",
+              "examples": [
+                {
+                  "correct": "Each of the samples is labeled.",
+                  "incorrect": "Each of the samples are labeled."
+                }
+              ],
+              "trap": "each of + 复数名词仍是单数。",
+              "notes": []
+            },
+            {
+              "id": "rule-045",
+              "sequence": 45,
+              "title": "a number of 与 the number of",
+              "core": "a number of 表示“许多”，谓语复数；the number of 表示“数量”，谓语单数。",
+              "method": "根据冠词 a/the 判断中心意思。",
+              "examples": [
+                {
+                  "correct": "A number of studies have confirmed the result. / The number of studies has increased.",
+                  "incorrect": "The number of studies have increased."
+                }
+              ],
+              "trap": "两种结构外形相近但主语不同。",
+              "notes": []
+            },
+            {
+              "id": "rule-046",
+              "sequence": 46,
+              "title": "百分比、分数与部分量",
+              "core": "percent, half, most, some, all 等结构的单复数取决于 of 后名词：可数复数用复数，不可数/单数用单数。",
+              "method": "看 of 后真正被分割的对象。",
+              "examples": [
+                {
+                  "correct": "Most of the data are available. / Most of the water is clean.",
+                  "incorrect": "Most of the water are clean."
+                }
+              ],
+              "trap": "data 在正式SAT语境中常按复数处理。",
+              "notes": []
+            },
+            {
+              "id": "rule-047",
+              "sequence": 47,
+              "title": "时间、金钱、距离与整体数量",
+              "core": "作为一个整体单位时常用单数谓语；强调多个独立单位时可用复数。",
+              "method": "问句子是在谈一个总量还是多个对象。",
+              "examples": [
+                {
+                  "correct": "Ten years is a long time.",
+                  "incorrect": "Ten years are a long time."
+                }
+              ],
+              "trap": "数学表达或总金额也常按单数。",
+              "notes": []
+            },
+            {
+              "id": "rule-048",
+              "sequence": 48,
+              "title": "书名、作品名和学科名",
+              "core": "即使标题形式为复数，作为一部作品或一个名称时通常用单数谓语。",
+              "method": "把整个标题替换成 it。",
+              "examples": [
+                {
+                  "correct": "Great Expectations is a novel.",
+                  "incorrect": "Great Expectations are a novel."
+                }
+              ],
+              "trap": "引号或斜体中的标题整体视为一个单位。",
+              "notes": []
+            },
+            {
+              "id": "rule-049",
+              "sequence": 49,
+              "title": "动名词、不定式和从句作主语",
+              "core": "一个动作概念或一个完整从句作主语时通常按单数处理。",
+              "method": "把整个主语替换成 this activity/this fact。",
+              "examples": [
+                {
+                  "correct": "Analyzing the samples takes time. / What the team discovered is important.",
+                  "incorrect": "Analyzing the samples take time."
+                }
+              ],
+              "trap": "长主语容易让人误把内部名词当中心词。",
+              "notes": []
+            },
+            {
+              "id": "rule-050",
+              "sequence": 50,
+              "title": "there is / there are 与倒装",
+              "core": "there/here 不是实际主语，谓语与后面的真正主语一致。",
+              "method": "把句子还原为“真正主语 + 谓语”。",
+              "examples": [
+                {
+                  "correct": "There are several explanations.",
+                  "incorrect": "There is several explanations."
+                }
+              ],
+              "trap": "不要只看句首 there。",
+              "notes": []
+            },
+            {
+              "id": "rule-051",
+              "sequence": 51,
+              "title": "关系从句中的主谓一致",
+              "core": "关系词 who/which/that 的数由先行词决定，从句谓语与先行词一致。",
+              "method": "把关系词替换成先行词。",
+              "examples": [
+                {
+                  "correct": "The devices that measure pressure are new.",
+                  "incorrect": "The devices that measures pressure are new."
+                }
+              ],
+              "trap": "从句中的谓语和主句谓语要分别判断。",
+              "notes": []
+            },
+            {
+              "id": "rule-052",
+              "sequence": 52,
+              "title": "one of the ... who 与 the only one who",
+              "core": "one of the + 复数名词 + who 通常指复数名词，从句用复数；the only one who 指 one，从句用单数。",
+              "method": "确定 who 的先行词。",
+              "examples": [
+                {
+                  "correct": "She is one of the scientists who study coral. / She is the only one who studies coral.",
+                  "incorrect": "She is one of the scientists who studies coral."
+                }
+              ],
+              "trap": "不要一看到 one 就让所有后续动词都用单数。",
+              "notes": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pronouns",
+      "sequence": 6,
+      "kind": "chapter",
+      "label": "第6章",
+      "title": "代词指代与格",
+      "intro": [
+        "代词题必须同时检查“指谁、单复数、格、所有格和句法功能”。"
+      ],
+      "sections": [
+        {
+          "id": "section-01",
+          "sequence": 1,
+          "title": "本章知识点",
+          "notes": [],
+          "lists": [],
+          "tables": [
+            {
+              "headers": [
+                "原PDF索引",
+                "原PDF重点：G0007、G0187-G0256（70题），并大量交叉出现在其他标签。"
+              ],
+              "rows": []
+            }
+          ],
+          "rules": [
+            {
+              "id": "rule-053",
+              "sequence": 53,
+              "title": "代词与先行词单复数一致",
+              "core": "单数先行词用 it/he/she/one，复数先行词用 they/them；物主形式也必须一致。",
+              "method": "把代词替换成先行词，检查数是否匹配。",
+              "examples": [
+                {
+                  "correct": "The device stores its data. / The devices store their data.",
+                  "incorrect": "The devices store its data."
+                }
+              ],
+              "trap": "不要被更近但不是先行词的名词吸引。",
+              "notes": []
+            },
+            {
+              "id": "rule-054",
+              "sequence": 54,
+              "title": "指代必须清楚",
+              "core": "代词应有唯一、明确、逻辑合理的先行词；若句中有多个同数名词，常需要重复名词。",
+              "method": "问“它/他们究竟指哪一个”。",
+              "examples": [
+                {
+                  "correct": "The team revised the model because the model was inaccurate.",
+                  "incorrect": "The team revised the model because it was inaccurate."
+                }
+              ],
+              "trap": "后句中 it 可能指 team 或 model，需根据语意判断是否歧义。",
+              "notes": []
+            },
+            {
+              "id": "rule-055",
+              "sequence": 55,
+              "title": "主格与宾格",
+              "core": "作主语用 I/he/she/we/they/who；作动词或介词宾语用 me/him/her/us/them/whom。",
+              "method": "遮住并列的另一项，单独测试代词。",
+              "examples": [
+                {
+                  "correct": "The director invited Maya and me.",
+                  "incorrect": "The director invited Maya and I."
+                }
+              ],
+              "trap": "介词 between 后必须用宾格。",
+              "notes": []
+            },
+            {
+              "id": "rule-056",
+              "sequence": 56,
+              "title": "who 与 whom",
+              "core": "who 在从句中作主语，whom 作动词或介词宾语；whose 表所有关系。",
+              "method": "把从句改成 he/him：能用 he 则 who，能用 him 则 whom。",
+              "examples": [
+                {
+                  "correct": "The scientist who led the study spoke. / The scientist whom the team consulted spoke.",
+                  "incorrect": "The scientist whom led the study spoke."
+                }
+              ],
+              "trap": "不要只看前面的介词或名词，要看关系词在从句内部的角色。",
+              "notes": []
+            },
+            {
+              "id": "rule-057",
+              "sequence": 57,
+              "title": "物主限定词与物主代词",
+              "core": "my/your/his/her/its/our/their 后必须接名词；mine/yours/hers/ours/theirs 可独立使用。",
+              "method": "看后面是否紧跟名词。",
+              "examples": [
+                {
+                  "correct": "The team published its findings. / The findings are theirs.",
+                  "incorrect": "The team published theirs findings."
+                }
+              ],
+              "trap": "its 既不是 it is，也不带撇号。",
+              "notes": []
+            },
+            {
+              "id": "rule-058",
+              "sequence": 58,
+              "title": "its 与 it's",
+              "core": "its 表“它的”；it's 只能是 it is 或 it has 的缩写。",
+              "method": "把 it's 展开测试。",
+              "examples": [
+                {
+                  "correct": "The device lost its signal. / It's operating normally.",
+                  "incorrect": "The device lost it's signal."
+                }
+              ],
+              "trap": "所有格代词不加撇号。",
+              "notes": []
+            },
+            {
+              "id": "rule-059",
+              "sequence": 59,
+              "title": "their / there / they're",
+              "core": "their 是所有格，there 表地点或存在句，they're = they are。",
+              "method": "根据空格后的词判断：后接名词常需 their；后接形容词/分词可能需 they're。",
+              "examples": [
+                {
+                  "correct": "The researchers published their results. / They're available online.",
+                  "incorrect": "The researchers published they're results."
+                }
+              ],
+              "trap": "同音词必须按句法功能选。",
+              "notes": []
+            },
+            {
+              "id": "rule-060",
+              "sequence": 60,
+              "title": "反身代词",
+              "core": "myself/yourself/himself/herself/itself/ourselves/themselves 只能反指同一分句中的主语，或用于强调。",
+              "method": "若句中没有对应主语，反身代词通常错误。",
+              "examples": [
+                {
+                  "correct": "The researcher introduced herself. / The researcher herself verified the data.",
+                  "incorrect": "The director spoke with Maya and myself."
+                }
+              ],
+              "trap": "不要把反身代词当“更正式”的普通宾格。",
+              "notes": []
+            },
+            {
+              "id": "rule-061",
+              "sequence": 61,
+              "title": "指示代词 this/that/these/those",
+              "core": "this/that 指单数，these/those 指复数；用于概括前文时，最好加具体名词使指代清楚。",
+              "method": "检查数和具体指向。",
+              "examples": [
+                {
+                  "correct": "These results support the hypothesis. / This finding is important.",
+                  "incorrect": "This support the hypothesis."
+                }
+              ],
+              "trap": "裸 this 指整件事时可能含糊，SAT常偏好 this finding/this pattern。",
+              "notes": []
+            },
+            {
+              "id": "rule-062",
+              "sequence": 62,
+              "title": "one/ones 与 that/those 的替代",
+              "core": "one/ones 替代可数名词；that/those 常在比较中替代前面的单数/复数名词，避免重复。",
+              "method": "保持单复数和语意类别一致。",
+              "examples": [
+                {
+                  "correct": "The climate of Mars differs from that of Earth.",
+                  "incorrect": "The climate of Mars differs from those of Earth."
+                }
+              ],
+              "trap": "比较时替代词要与被替代名词同数。",
+              "notes": []
+            },
+            {
+              "id": "rule-063",
+              "sequence": 63,
+              "title": "关系代词的选择",
+              "core": "who/whom/whose 通常指人；which 指物或整件事；that 常用于限制性从句指人或物。",
+              "method": "先判断先行词，再判断从句中缺什么成分。",
+              "examples": [
+                {
+                  "correct": "The artist who created the mural lives nearby.",
+                  "incorrect": "The artist which created the mural lives nearby."
+                }
+              ],
+              "trap": "非限制性 which 从句前通常有逗号。",
+              "notes": []
+            },
+            {
+              "id": "rule-064",
+              "sequence": 64,
+              "title": "人称和视角一致",
+              "core": "同一语境中不要无理由从 one 切换到 you/they，或从第三人称切换到第一人称。",
+              "method": "检查段落中的泛指主体是否保持一致。",
+              "examples": [
+                {
+                  "correct": "A reader can adjust the settings to suit the reader's needs.",
+                  "incorrect": "A reader can adjust the settings to suit your needs."
+                }
+              ],
+              "trap": "SAT常考不一致的人称转换。",
+              "notes": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "modifiers",
+      "sequence": 7,
+      "kind": "chapter",
+      "label": "第7章",
+      "title": "修饰语",
+      "intro": [
+        "修饰语必须靠近被修饰对象，并在逻辑上由该对象执行或承受动作。"
+      ],
+      "sections": [
+        {
+          "id": "section-01",
+          "sequence": 1,
+          "title": "本章知识点",
+          "notes": [],
+          "lists": [],
+          "tables": [
+            {
+              "headers": [
+                "原PDF索引",
+                "原PDF重点：G0008-G0010、G0257-G0267（11题），以及大量“句法与语意完整性”题。"
+              ],
+              "rows": []
+            }
+          ],
+          "rules": [
+            {
+              "id": "rule-065",
+              "sequence": 65,
+              "title": "句首分词短语的逻辑主语",
+              "core": "句首 -ing/-ed 短语默认修饰紧接其后的主句主语；该主语必须能合理执行或承受分词动作。",
+              "method": "问“谁在做句首动作”。",
+              "examples": [
+                {
+                  "correct": "Using satellite data, the researchers mapped the coast.",
+                  "incorrect": "Using satellite data, the coast was mapped by the researchers."
+                }
+              ],
+              "trap": "被动主句常造成悬垂修饰。",
+              "notes": []
+            },
+            {
+              "id": "rule-066",
+              "sequence": 66,
+              "title": "过去分词表示被动或完成",
+              "core": "-ed/过去分词修饰的名词应是动作的承受者；-ing 分词通常表示主动或进行。",
+              "method": "判断名词与动作的主动/被动关系。",
+              "examples": [
+                {
+                  "correct": "Designed for cold climates, the device operates efficiently.",
+                  "incorrect": "Designing for cold climates, the device operates efficiently."
+                }
+              ],
+              "trap": "不要只根据时间选择分词，要看逻辑关系。",
+              "notes": []
+            },
+            {
+              "id": "rule-067",
+              "sequence": 67,
+              "title": "修饰语应紧邻被修饰词",
+              "core": "介词短语、分词短语和关系从句应尽量靠近所修饰的名词，避免歧义或错位。",
+              "method": "把修饰语移动到不同名词旁，观察意思是否改变。",
+              "examples": [
+                {
+                  "correct": "The team tested a sensor designed for deep water.",
+                  "incorrect": "Designed for deep water, the team tested a sensor."
+                }
+              ],
+              "trap": "后者暗示团队为深水而设计。",
+              "notes": []
+            },
+            {
+              "id": "rule-068",
+              "sequence": 68,
+              "title": "限制副词的位置",
+              "core": "only, almost, nearly, just, even 等应放在它真正限制的成分前，位置变化会改变意思。",
+              "method": "问“只有谁/只做什么/几乎多少”。",
+              "examples": [
+                {
+                  "correct": "The sensor detects only temperature changes.",
+                  "incorrect": "Only the sensor detects temperature changes."
+                }
+              ],
+              "trap": "两句都可语法正确，但含义不同。",
+              "notes": []
+            },
+            {
+              "id": "rule-069",
+              "sequence": 69,
+              "title": "形容词与副词",
+              "core": "形容词修饰名词或作系动词补语；副词修饰动词、形容词、副词或整个句子。",
+              "method": "看被修饰对象是什么。",
+              "examples": [
+                {
+                  "correct": "The result was significant. / The result changed significantly.",
+                  "incorrect": "The result changed significant."
+                }
+              ],
+              "trap": "feel, seem, become, remain 等系动词后常用形容词。",
+              "notes": []
+            },
+            {
+              "id": "rule-070",
+              "sequence": 70,
+              "title": "同位语与被说明名词",
+              "core": "同位语必须紧邻它所解释的名词，并保持数和身份逻辑一致。",
+              "method": "删除同位语，检查核心句；再检查同位语是否确实重命名前项。",
+              "examples": [
+                {
+                  "correct": "The method, a form of indirect measurement, is widely used.",
+                  "incorrect": "A form of indirect measurement, researchers use the method."
+                }
+              ],
+              "trap": "句首名词短语若无清晰对应对象，可能形成悬垂结构。",
+              "notes": []
+            },
+            {
+              "id": "rule-071",
+              "sequence": 71,
+              "title": "关系从句的就近修饰",
+              "core": "关系从句通常修饰它前面最近且语意合理的名词。",
+              "method": "把 who/which/that 替换成最近名词测试。",
+              "examples": [
+                {
+                  "correct": "The team interviewed artists who work in metal.",
+                  "incorrect": "The team interviewed the gallery who works in metal."
+                }
+              ],
+              "trap": "关系从句不能越过不相关名词寻找先行词。",
+              "notes": []
+            },
+            {
+              "id": "rule-072",
+              "sequence": 72,
+              "title": "比较短语的逻辑修饰",
+              "core": "compared with, unlike, similar to 等开头的比较短语应与主句主语形成同类比较。",
+              "method": "检查比较短语中的对象和主句主语是否同类。",
+              "examples": [
+                {
+                  "correct": "Compared with the old model, the new model is faster.",
+                  "incorrect": "Compared with the old model, researchers found the new model faster."
+                }
+              ],
+              "trap": "后者把 researchers 与 old model 比较。",
+              "notes": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "verb-forms",
+      "sequence": 8,
+      "kind": "chapter",
+      "label": "第8章",
+      "title": "动词形式与非谓语",
+      "intro": [
+        "先判断句子是否缺谓语，再在限定动词、不定式、动名词和分词之间选择。"
+      ],
+      "sections": [
+        {
+          "id": "section-01",
+          "sequence": 1,
+          "title": "本章知识点",
+          "notes": [],
+          "lists": [],
+          "tables": [
+            {
+              "headers": [
+                "原PDF索引",
+                "原PDF重点：G0268-G0302（35题），并与“句法与语意完整性”高度交叉。"
+              ],
+              "rows": []
+            }
+          ],
+          "rules": [
+            {
+              "id": "rule-073",
+              "sequence": 73,
+              "title": "限定动词与非谓语的根本区别",
+              "core": "每个分句需要限定动词；非谓语不能单独承担完整句的谓语。",
+              "method": "若句中已有谓语且没有连接词，空格通常需要非谓语；若没有谓语，通常需要限定动词。",
+              "examples": [
+                {
+                  "correct": "The team analyzed the samples. / The team, analyzing the samples, noticed a pattern.",
+                  "incorrect": "The team analyzing the samples."
+                }
+              ],
+              "trap": "数谓语是动词形式题的第一步。",
+              "notes": []
+            },
+            {
+              "id": "rule-074",
+              "sequence": 74,
+              "title": "不定式 to do",
+              "core": "不定式可表示目的、结果、计划，或作名词/形容词/副词成分；不能单独作主句谓语。",
+              "method": "看前面是否有需要 to do 的动词、名词或目的结构。",
+              "examples": [
+                {
+                  "correct": "The team used the sensor to measure salinity.",
+                  "incorrect": "The team to measure salinity."
+                }
+              ],
+              "trap": "to 也可能是介词，介词后需名词或动名词。",
+              "notes": []
+            },
+            {
+              "id": "rule-075",
+              "sequence": 75,
+              "title": "动名词 doing",
+              "core": "动名词在句中作名词，可作主语、宾语或介词宾语。",
+              "method": "若空格位于介词后或承担名词功能，考虑 -ing。",
+              "examples": [
+                {
+                  "correct": "Measuring salinity requires calibration. / The method is useful for measuring salinity.",
+                  "incorrect": "For measure salinity, the team calibrated the sensor."
+                }
+              ],
+              "trap": "不要把所有 -ing 都当进行时。",
+              "notes": []
+            },
+            {
+              "id": "rule-076",
+              "sequence": 76,
+              "title": "现在分词 doing",
+              "core": "现在分词常作修饰语或构成进行时，表示主动/进行关系。",
+              "method": "若前有 be，可能是进行时；若无 be，通常是修饰成分。",
+              "examples": [
+                {
+                  "correct": "The sensor measuring salinity is new. / The sensor is measuring salinity.",
+                  "incorrect": "The sensor measuring salinity."
+                }
+              ],
+              "trap": "第二个例句有完整谓语，第一句的 measuring 只修饰 sensor。",
+              "notes": []
+            },
+            {
+              "id": "rule-077",
+              "sequence": 77,
+              "title": "过去分词 done",
+              "core": "过去分词可构成完成时、被动语态，或作被动/完成意义的修饰语。",
+              "method": "have + done 是完成时；be + done 多为被动；单独 done 常作修饰语。",
+              "examples": [
+                {
+                  "correct": "The samples were collected in June. / The samples collected in June were frozen.",
+                  "incorrect": "The samples collected in June."
+                }
+              ],
+              "trap": "过去分词本身通常不能充当限定谓语。",
+              "notes": []
+            },
+            {
+              "id": "rule-078",
+              "sequence": 78,
+              "title": "完成分词 having done",
+              "core": "表示分词动作先于主句动作发生，常用于强调先后关系。",
+              "method": "只有当“先完成，再发生主句动作”的关系明确时才使用。",
+              "examples": [
+                {
+                  "correct": "Having reviewed the data, the team revised the model.",
+                  "incorrect": "Having reviewed the data, the model was revised."
+                }
+              ],
+              "trap": "仍要检查逻辑主语，不能因完成式而忽略悬垂修饰。",
+              "notes": []
+            },
+            {
+              "id": "rule-079",
+              "sequence": 79,
+              "title": "助动词后的固定形式",
+              "core": "modal + 动词原形；have + 过去分词；be + 现在分词构成进行时；be + 过去分词构成被动。",
+              "method": "先认助动词，再匹配后续形式。",
+              "examples": [
+                {
+                  "correct": "can detect / has detected / is detecting / was detected",
+                  "incorrect": "can detected / has detect / is detecteding"
+                }
+              ],
+              "trap": "选项常故意把助动词和错误词形混搭。",
+              "notes": []
+            },
+            {
+              "id": "rule-080",
+              "sequence": 80,
+              "title": "主动与被动的选择",
+              "core": "主语执行动作时用主动；主语承受动作且施事者不重要或由 by 引出时用被动。",
+              "method": "问“主语是谁，谁做动作”。",
+              "examples": [
+                {
+                  "correct": "Researchers developed the method. / The method was developed by researchers.",
+                  "incorrect": "The method developed researchers."
+                }
+              ],
+              "trap": "语态必须与句意和句法结构同时匹配。",
+              "notes": []
+            },
+            {
+              "id": "rule-081",
+              "sequence": 81,
+              "title": "并列动词的形式平行",
+              "core": "由 and/or/but 连接并共享主语或助动词的动词，应保持相同形式。",
+              "method": "找并列词两侧的动词结构。",
+              "examples": [
+                {
+                  "correct": "The device collects data and transmits them.",
+                  "incorrect": "The device collects data and transmitting them."
+                }
+              ],
+              "trap": "若前面有 has，则后面并列项也应是过去分词。",
+              "notes": []
+            },
+            {
+              "id": "rule-082",
+              "sequence": 82,
+              "title": "常见动词补语结构",
+              "core": "部分动词后接不定式，部分接动名词，部分接“宾语 + to do”；SAT主要通过句法和固定搭配判断。",
+              "method": "观察动词后是否已有宾语，并检查选项结构。",
+              "examples": [
+                {
+                  "correct": "The program enables students to practice. / The team avoided repeating the error.",
+                  "incorrect": "The program enables to practice students."
+                }
+              ],
+              "trap": "高频：allow/enable/require + object + to do；avoid/consider + doing。",
+              "notes": []
+            },
+            {
+              "id": "rule-083",
+              "sequence": 83,
+              "title": "with + 名词 + 非谓语",
+              "core": "with 后可形成附带结构：with + 名词 + doing/done/形容词/介词短语，表示伴随状态。",
+              "method": "判断名词与非谓语的主动或被动关系。",
+              "examples": [
+                {
+                  "correct": "The experiment ended with the participants waiting outside.",
+                  "incorrect": "The experiment ended with the participants waited outside."
+                }
+              ],
+              "trap": "with 结构内部通常不用限定过去式。",
+              "notes": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tense-voice-mood",
+      "sequence": 9,
+      "kind": "chapter",
+      "label": "第9章",
+      "title": "动词时态、语态与语气",
+      "intro": [
+        "时态由时间标志、事件先后和语境功能决定，而不是由单个词决定。"
+      ],
+      "sections": [
+        {
+          "id": "section-01",
+          "sequence": 1,
+          "title": "本章知识点",
+          "notes": [],
+          "lists": [],
+          "tables": [
+            {
+              "headers": [
+                "原PDF索引",
+                "原PDF重点：G0303-G0341（39题），并在其他标签中反复出现。"
+              ],
+              "rows": []
+            }
+          ],
+          "rules": [
+            {
+              "id": "rule-084",
+              "sequence": 84,
+              "title": "一般现在时：事实、规律和当前状态",
+              "core": "科学事实、定义、习惯和当前普遍状态通常用一般现在时。",
+              "method": "看句子是否描述恒常事实，而非特定过去事件。",
+              "examples": [
+                {
+                  "correct": "A magnesium atom has twelve protons.",
+                  "incorrect": "A magnesium atom had twelve protons."
+                }
+              ],
+              "trap": "背景材料即使谈历史人物，科学定义仍可用现在时。",
+              "notes": []
+            },
+            {
+              "id": "rule-085",
+              "sequence": 85,
+              "title": "一般过去时：已完成的过去事件",
+              "core": "有明确过去时间或历史叙述时用一般过去时。",
+              "method": "寻找 in 1903, last year, during the war 等完成时间标志。",
+              "examples": [
+                {
+                  "correct": "The city opened the museum in 1998.",
+                  "incorrect": "The city has opened the museum in 1998."
+                }
+              ],
+              "trap": "现在完成时通常不与明确结束的过去时间连用。",
+              "notes": []
+            },
+            {
+              "id": "rule-086",
+              "sequence": 86,
+              "title": "现在完成时：过去至今",
+              "core": "have/has + 过去分词表示过去发生并延续到现在、反复发生或对现在有影响。",
+              "method": "常见标志：since, for, in recent years, so far, over the past decade。",
+              "examples": [
+                {
+                  "correct": "Researchers have identified several patterns in recent years.",
+                  "incorrect": "Researchers identified several patterns in recent years."
+                }
+              ],
+              "trap": "若上下文强调“截至现在”，优先考虑现在完成时。",
+              "notes": []
+            },
+            {
+              "id": "rule-087",
+              "sequence": 87,
+              "title": "过去完成时：过去中的更早事件",
+              "core": "had + 过去分词用于两个过去事件中更早发生的一个。",
+              "method": "先画时间线：A先发生，B后发生且两者都在过去。",
+              "examples": [
+                {
+                  "correct": "By the time the team arrived, the storm had ended.",
+                  "incorrect": "By the time the team arrived, the storm ended."
+                }
+              ],
+              "trap": "若先后关系已由 before/after 十分清楚，过去完成时不一定必需，但题目会按语境选择。",
+              "notes": []
+            },
+            {
+              "id": "rule-088",
+              "sequence": 88,
+              "title": "将来表达",
+              "core": "will + 原形表示预测或未来事实；be going to 常表示计划或有迹象的预测。",
+              "method": "看时间点是否明确在未来。",
+              "examples": [
+                {
+                  "correct": "The mission will launch next year.",
+                  "incorrect": "The mission launched next year."
+                }
+              ],
+              "trap": "不要因主句现在时而忽略未来时间标志。",
+              "notes": []
+            },
+            {
+              "id": "rule-089",
+              "sequence": 89,
+              "title": "进行时",
+              "core": "be + doing 强调某一时刻正在进行或暂时状态，不适合表达恒常事实。",
+              "method": "问动作是否处于进行过程。",
+              "examples": [
+                {
+                  "correct": "The team is testing the device now.",
+                  "incorrect": "The device is containing three sensors."
+                }
+              ],
+              "trap": "contain, know, belong 等状态动词通常不用进行时。",
+              "notes": []
+            },
+            {
+              "id": "rule-090",
+              "sequence": 90,
+              "title": "时态一致与叙述中心",
+              "core": "同一时间层次的并列动作通常保持时态一致；变化必须有明确的时间逻辑。",
+              "method": "找段落的主时间轴。",
+              "examples": [
+                {
+                  "correct": "The researcher collected the samples and analyzed them.",
+                  "incorrect": "The researcher collected the samples and analyzes them."
+                }
+              ],
+              "trap": "不要为了形式多样而无理由换时态。",
+              "notes": []
+            },
+            {
+              "id": "rule-091",
+              "sequence": 91,
+              "title": "被动语态中的时态",
+              "core": "被动语态是 be 的相应时态 + 过去分词；时态信息体现在 be 上。",
+              "method": "先选时间，再选主动/被动。",
+              "examples": [
+                {
+                  "correct": "The bridge was completed in 2010. / The bridge has been repaired twice.",
+                  "incorrect": "The bridge has repaired twice."
+                }
+              ],
+              "trap": "完成被动为 has/have been + done。",
+              "notes": []
+            },
+            {
+              "id": "rule-092",
+              "sequence": 92,
+              "title": "条件句与虚拟关系",
+              "core": "真实条件常用 if + 现在时，主句 will；与过去事实相反常用 if + had done, would have done。",
+              "method": "判断条件是可能、假设还是与事实相反。",
+              "examples": [
+                {
+                  "correct": "If the temperature rises, the reaction will accelerate. / If the sensor had failed, the team would have repeated the test.",
+                  "incorrect": "If the sensor would have failed, the team had repeated the test."
+                }
+              ],
+              "trap": "不要在普通 if 条件从句中机械使用 will。",
+              "notes": []
+            },
+            {
+              "id": "rule-093",
+              "sequence": 93,
+              "title": "时间从句中的将来",
+              "core": "when, before, after, until 等时间从句谈未来时，常用一般现在时，主句用 will。",
+              "method": "从属词已表达未来关系，时间从句通常不用 will。",
+              "examples": [
+                {
+                  "correct": "When the mission launches, scientists will monitor the signal.",
+                  "incorrect": "When the mission will launch, scientists will monitor the signal."
+                }
+              ],
+              "trap": "这是标准英语中的常见时态搭配。",
+              "notes": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "syntax-completeness",
+      "sequence": 10,
+      "kind": "chapter",
+      "label": "第10章",
+      "title": "句法与语意完整性",
+      "intro": [
+        "原PDF中的最大标签覆盖多种实际现象。本章按“句子需要什么成分”重新拆解。"
+      ],
+      "sections": [
+        {
+          "id": "section-01",
+          "sequence": 1,
+          "title": "本章知识点",
+          "notes": [],
+          "lists": [],
+          "tables": [
+            {
+              "headers": [
+                "原PDF索引",
+                "原PDF重点：G0342-G0898（557题）。该标签含谓语、代词、标点、从句、非谓语和语意完整性等交叉题。"
+              ],
+              "rows": []
+            }
+          ],
+          "rules": [
+            {
+              "id": "rule-094",
+              "sequence": 94,
+              "title": "句子片段：只有短语没有谓语",
+              "core": "分词短语、不定式短语、介词短语和同位语不能单独成为完整句。",
+              "method": "寻找主语和限定动词。",
+              "examples": [
+                {
+                  "correct": "The sculpture is installed in Burnley.",
+                  "incorrect": "The sculpture installed in Burnley."
+                }
+              ],
+              "trap": "选项越长不代表越完整。",
+              "notes": []
+            },
+            {
+              "id": "rule-095",
+              "sequence": 95,
+              "title": "句子片段：只有从属分句",
+              "core": "从属连词或关系词引导的分句必须附着在独立分句上。",
+              "method": "删除从属词，观察原结构是否只是缺主句。",
+              "examples": [
+                {
+                  "correct": "Because the material is light, it is easy to transport.",
+                  "incorrect": "Because the material is light."
+                }
+              ],
+              "trap": "句号不能把从属分句独立出来。",
+              "notes": []
+            },
+            {
+              "id": "rule-096",
+              "sequence": 96,
+              "title": "混合结构 (mixed construction)",
+              "core": "句子开头建立一种结构后，后面必须按该结构完成，不能中途换框架。",
+              "method": "读到空格前，预测后面需要名词、从句还是谓语。",
+              "examples": [
+                {
+                  "correct": "The reason the method works is that it reduces friction.",
+                  "incorrect": "The reason the method works is because of reducing friction."
+                }
+              ],
+              "trap": "“the reason is that”比“the reason is because”更符合正式结构。",
+              "notes": []
+            },
+            {
+              "id": "rule-097",
+              "sequence": 97,
+              "title": "名词从句",
+              "core": "that, whether, what, how, why 等可引导名词从句，整体作主语、宾语或补语；从句内部仍需完整。",
+              "method": "确定空格是否需要一个“事实/问题/内容”。",
+              "examples": [
+                {
+                  "correct": "The study shows that the method works.",
+                  "incorrect": "The study shows the method works it."
+                }
+              ],
+              "trap": "that 可省略时也必须保证从句结构清楚。",
+              "notes": []
+            },
+            {
+              "id": "rule-098",
+              "sequence": 98,
+              "title": "关系从句",
+              "core": "关系从句修饰名词，关系词在从句内部承担主语、宾语或所有格功能。",
+              "method": "先找先行词，再检查从句缺什么。",
+              "examples": [
+                {
+                  "correct": "The method that the team developed is efficient.",
+                  "incorrect": "The method that the team developed it is efficient."
+                }
+              ],
+              "trap": "关系词已作宾语时，不要再重复代词。",
+              "notes": []
+            },
+            {
+              "id": "rule-099",
+              "sequence": 99,
+              "title": "状语从句与介词短语的区别",
+              "core": "because/although/while 后接完整从句；because of/despite/during 后接名词或动名词。",
+              "method": "看连接词后是否有主语+谓语。",
+              "examples": [
+                {
+                  "correct": "The test was delayed because the sensor failed. / The test was delayed because of sensor failure.",
+                  "incorrect": "The test was delayed because of the sensor failed."
+                }
+              ],
+              "trap": "连词和介词不能混用。",
+              "notes": []
+            },
+            {
+              "id": "rule-100",
+              "sequence": 100,
+              "title": "such as / including 的语法层级",
+              "core": "such as 和 including 引出例子或附加名词，不引出独立分句，也不承担主谓连接。",
+              "method": "检查后面是否是名词列表。",
+              "examples": [
+                {
+                  "correct": "The study examined metals such as copper and zinc.",
+                  "incorrect": "The study examined metals such as copper is conductive."
+                }
+              ],
+              "trap": "需要完整句时应改用 for example, copper is conductive。",
+              "notes": []
+            },
+            {
+              "id": "rule-101",
+              "sequence": 101,
+              "title": "并列结构中的省略",
+              "core": "并列项可共享主语、助动词或介词，但省略后仍须结构清晰、形式平行。",
+              "method": "把省略部分补回，检查两项是否完整。",
+              "examples": [
+                {
+                  "correct": "The device can collect data and transmit them.",
+                  "incorrect": "The device can collect data and transmitting them."
+                }
+              ],
+              "trap": "共享 can 时，两个动词都用原形。",
+              "notes": []
+            },
+            {
+              "id": "rule-102",
+              "sequence": 102,
+              "title": "陈述句与疑问句语序",
+              "core": "嵌入式疑问从句使用陈述语序；直接疑问句才使用助动词倒装。",
+              "method": "看问号是否属于整个句子，还是疑问内容嵌入主句。",
+              "examples": [
+                {
+                  "correct": "Researchers asked why the signal changed.",
+                  "incorrect": "Researchers asked why did the signal change."
+                }
+              ],
+              "trap": "whether/why/how 引导的名词从句不倒装。",
+              "notes": []
+            },
+            {
+              "id": "rule-103",
+              "sequence": 103,
+              "title": "形式主语 it 与存在句 there",
+              "core": "it 可作形式主语，真正主语后置；there 引出存在关系，真正主语在后。",
+              "method": "确认 it/there 是否有明确句法功能，而非模糊指代。",
+              "examples": [
+                {
+                  "correct": "It is important to calibrate the sensor. / There are two possible explanations.",
+                  "incorrect": "There is two possible explanations."
+                }
+              ],
+              "trap": "存在句还要检查主谓一致。",
+              "notes": []
+            },
+            {
+              "id": "rule-104",
+              "sequence": 104,
+              "title": "倒装与比较中的助动词",
+              "core": "在 than/as 比较或地点倒装中，助动词可替代前文谓语，保持句子完整并避免重复。",
+              "method": "补回省略的谓语测试。",
+              "examples": [
+                {
+                  "correct": "The sampled group responded faster than did the control group.",
+                  "incorrect": "The sampled group responded faster than the control group did responded."
+                }
+              ],
+              "trap": "助动词 did 已替代 responded。",
+              "notes": []
+            },
+            {
+              "id": "rule-105",
+              "sequence": 105,
+              "title": "逻辑主语与语意完整",
+              "core": "即使句法形式成立，也要保证动作的执行者、受事者和因果关系合理。",
+              "method": "问“谁做什么，谁被影响”。",
+              "examples": [
+                {
+                  "correct": "The researchers used the method to estimate the rate.",
+                  "incorrect": "The rate used the researchers to estimate the method."
+                }
+              ],
+              "trap": "专业词不熟也能通过角色关系排除。",
+              "notes": []
+            },
+            {
+              "id": "rule-106",
+              "sequence": 106,
+              "title": "固定搭配与介词选择",
+              "core": "部分形容词、名词和动词要求固定介词；介词后接名词/代词/动名词。",
+              "method": "观察选项是否只改变介词或后续词形。",
+              "examples": [
+                {
+                  "correct": "responsible for measuring / capable of detecting / based on evidence",
+                  "incorrect": "capable to detect / based in evidence"
+                }
+              ],
+              "trap": "先确保结构正确，再根据语意选搭配。",
+              "notes": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "parallelism",
+      "sequence": 11,
+      "kind": "chapter",
+      "label": "第11章",
+      "title": "平行结构",
+      "intro": [
+        "并列或对比的成分必须具有相同语法形式和层级。"
+      ],
+      "sections": [
+        {
+          "id": "section-01",
+          "sequence": 1,
+          "title": "本章知识点",
+          "notes": [],
+          "lists": [],
+          "tables": [
+            {
+              "headers": [
+                "原PDF索引",
+                "原PDF显式标签：G0901；但平行结构也广泛分布在动词形式、句法和比较题中。"
+              ],
+              "rows": []
+            }
+          ],
+          "rules": [
+            {
+              "id": "rule-107",
+              "sequence": 107,
+              "title": "列表中的平行",
+              "core": "并列名词、动词、形容词、短语或从句应保持同一形式。",
+              "method": "找到 and/or 以及逗号列表，比较每一项的词性和结构。",
+              "examples": [
+                {
+                  "correct": "The job requires collecting data, analyzing results, and writing reports.",
+                  "incorrect": "The job requires collecting data, to analyze results, and reports."
+                }
+              ],
+              "trap": "并列项必须处于同一层级。",
+              "notes": []
+            },
+            {
+              "id": "rule-108",
+              "sequence": 108,
+              "title": "并列谓语平行",
+              "core": "共享主语或助动词的谓语应使用一致形式。",
+              "method": "补回共享成分。",
+              "examples": [
+                {
+                  "correct": "The sensor can detect motion and measure distance.",
+                  "incorrect": "The sensor can detect motion and measures distance."
+                }
+              ],
+              "trap": "modal can 后两个动词都用原形。",
+              "notes": []
+            },
+            {
+              "id": "rule-109",
+              "sequence": 109,
+              "title": "关联连词平行",
+              "core": "both...and, either...or, neither...nor, not only...but also 两侧必须连接同类成分。",
+              "method": "比较连词后紧接的结构。",
+              "examples": [
+                {
+                  "correct": "The method is both accurate and inexpensive.",
+                  "incorrect": "The method both is accurate and inexpensive."
+                }
+              ],
+              "trap": "both 的位置决定它连接什么。",
+              "notes": []
+            },
+            {
+              "id": "rule-110",
+              "sequence": 110,
+              "title": "比较结构平行",
+              "core": "than 和 as 两侧应比较同类成分，必要时重复助动词或使用 that/those。",
+              "method": "把省略部分补全。",
+              "examples": [
+                {
+                  "correct": "The new sensor is more accurate than the old one is.",
+                  "incorrect": "The new sensor is more accurate than the old one accuracy."
+                }
+              ],
+              "trap": "比较不仅要语意同类，也要语法形式可对应。",
+              "notes": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "possessives-apostrophes",
+      "sequence": 12,
+      "kind": "chapter",
+      "label": "第12章",
+      "title": "所有格与撇号",
+      "intro": [
+        "先判断是否存在“所有关系”，再决定单数所有格、复数所有格或普通复数。"
+      ],
+      "sections": [
+        {
+          "id": "section-01",
+          "sequence": 1,
+          "title": "本章知识点",
+          "notes": [],
+          "lists": [],
+          "tables": [
+            {
+              "headers": [
+                "原PDF索引",
+                "原PDF显式标签：G0902-G0980（79题）；该区也混入其/它是、复数和其他结构题，因此本章按实际撇号规则整理。"
+              ],
+              "rows": []
+            }
+          ],
+          "rules": [
+            {
+              "id": "rule-111",
+              "sequence": 111,
+              "title": "普通复数不加撇号",
+              "core": "名词只是表示多个时，通常直接加 -s/-es；撇号不用于制造普通复数。",
+              "method": "问句中是否表达“谁的”。",
+              "examples": [
+                {
+                  "correct": "The researchers published several studies.",
+                  "incorrect": "The researcher's published several study's."
+                }
+              ],
+              "trap": "先判断数，再判断所有关系。",
+              "notes": []
+            },
+            {
+              "id": "rule-112",
+              "sequence": 112,
+              "title": "单数名词所有格",
+              "core": "单数名词通常加 \\’s，表示所属、来源、组成或关联。",
+              "method": "把结构改写成“of + 名词”测试。",
+              "examples": [
+                {
+                  "correct": "the scientist's discovery = the discovery of the scientist",
+                  "incorrect": "the scientists discovery"
+                }
+              ],
+              "trap": "不要因单数名词以 s 结尾就漏掉撇号。",
+              "notes": []
+            },
+            {
+              "id": "rule-113",
+              "sequence": 113,
+              "title": "规则复数名词所有格",
+              "core": "以 s 结尾的复数名词通常只在 s 后加撇号。",
+              "method": "先确认名词本身已经是复数。",
+              "examples": [
+                {
+                  "correct": "the researchers' findings",
+                  "incorrect": "the researcher's findings（若指多位研究者）"
+                }
+              ],
+              "trap": "撇号位置反映单复数。",
+              "notes": []
+            },
+            {
+              "id": "rule-114",
+              "sequence": 114,
+              "title": "不规则复数所有格",
+              "core": "不以 s 结尾的不规则复数按单数形式处理，加 \\’s。",
+              "method": "识别 children, people, men, women 等。",
+              "examples": [
+                {
+                  "correct": "children's books / people's choices",
+                  "incorrect": "childrens' books"
+                }
+              ],
+              "trap": "先写正确复数，再加所有格。",
+              "notes": []
+            },
+            {
+              "id": "rule-115",
+              "sequence": 115,
+              "title": "以 s 结尾的专有名词",
+              "core": "现代正式英语通常可写 James's / Charles's；具体考试选项会依据统一风格。核心是保持形式一致并确认所有关系。",
+              "method": "比较选项时优先选择完整、统一的所有格形式。",
+              "examples": [
+                {
+                  "correct": "James's theory",
+                  "incorrect": "James theory"
+                }
+              ],
+              "trap": "若来源材料只提供某一风格，按选项和句法判断。",
+              "notes": []
+            },
+            {
+              "id": "rule-116",
+              "sequence": 116,
+              "title": "共同所有与分别所有",
+              "core": "两人共同拥有同一物，只在最后一人后加 \\’s；分别拥有时，两人都加所有格。",
+              "method": "问是一个共同对象还是各自对象。",
+              "examples": [
+                {
+                  "correct": "Maya and Leo's laboratory / Maya's and Leo's laboratories",
+                  "incorrect": "Maya's and Leo laboratory"
+                }
+              ],
+              "trap": "名词单复数也会提示共同或分别所有。",
+              "notes": []
+            },
+            {
+              "id": "rule-117",
+              "sequence": 117,
+              "title": "复合名词和长短语的所有格",
+              "core": "复合名词或整体短语通常在最后一个词后加 \\’s。",
+              "method": "把整个所有者视为一个单位。",
+              "examples": [
+                {
+                  "correct": "the editor in chief's decision",
+                  "incorrect": "the editor's in chief decision"
+                }
+              ],
+              "trap": "撇号放在整个所有者短语末尾。",
+              "notes": []
+            },
+            {
+              "id": "rule-118",
+              "sequence": 118,
+              "title": "时间、距离和价值的所有格",
+              "core": "表示时间、距离、价值等度量关系时可用所有格。",
+              "method": "可改写为“of”或相应量词结构。",
+              "examples": [
+                {
+                  "correct": "a day's work / two weeks' notice",
+                  "incorrect": "two week's notice"
+                }
+              ],
+              "trap": "单数 day's，复数 weeks'。",
+              "notes": []
+            },
+            {
+              "id": "rule-119",
+              "sequence": 119,
+              "title": "物主代词不加撇号",
+              "core": "its, yours, hers, ours, theirs, whose 本身已经是所有格，不加撇号。",
+              "method": "检查撇号形式能否展开成“is/has”。",
+              "examples": [
+                {
+                  "correct": "The device lost its signal. / Whose data are these?",
+                  "incorrect": "The device lost it's signal. / Who's data are these?"
+                }
+              ],
+              "trap": "it's = it is/has；who's = who is/has。",
+              "notes": []
+            },
+            {
+              "id": "rule-120",
+              "sequence": 120,
+              "title": "缩写与所有格的区分",
+              "core": "撇号可能表示省略，也可能表示所有格；必须根据后续结构判断。",
+              "method": "尝试展开缩写，并检查后面是否需要名词。",
+              "examples": [
+                {
+                  "correct": "They're reviewing their data over there.",
+                  "incorrect": "Their reviewing they're data."
+                }
+              ],
+              "trap": "同音形式是SAT高频陷阱。",
+              "notes": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "comparisons",
+      "sequence": 13,
+      "kind": "chapter",
+      "label": "第13章",
+      "title": "比较结构",
+      "intro": [
+        "正确比较要求对象同类、数量一致、范围清楚，并使用合适的比较级形式。"
+      ],
+      "sections": [
+        {
+          "id": "section-01",
+          "sequence": 1,
+          "title": "本章知识点",
+          "notes": [],
+          "lists": [],
+          "tables": [
+            {
+              "headers": [
+                "原PDF索引",
+                "原PDF显式标签：G0139-G0141、G0981-G0985；实际比较题也散见修饰语、主谓一致和句法标签。"
+              ],
+              "rows": []
+            }
+          ],
+          "rules": [
+            {
+              "id": "rule-121",
+              "sequence": 121,
+              "title": "同类事物比较",
+              "core": "必须比较同一类别的对象：人的作品与人的作品、城市人口与城市人口，而不是作品与人。",
+              "method": "把比较两端写成完整名词短语。",
+              "examples": [
+                {
+                  "correct": "The climate of Mars differs from that of Earth.",
+                  "incorrect": "The climate of Mars differs from Earth."
+                }
+              ],
+              "trap": "后者字面上比较 climate 与 Earth。",
+              "notes": []
+            },
+            {
+              "id": "rule-122",
+              "sequence": 122,
+              "title": "that/those 替代重复名词",
+              "core": "that 替代单数名词，those 替代复数名词，用于保持比较对象一致。",
+              "method": "根据被替代名词的数选择。",
+              "examples": [
+                {
+                  "correct": "The wings of this species are larger than those of the other species.",
+                  "incorrect": "The wings of this species are larger than that of the other species."
+                }
+              ],
+              "trap": "不要把复数 wings 与单数 that 对应。",
+              "notes": []
+            },
+            {
+              "id": "rule-123",
+              "sequence": 123,
+              "title": "比较级与最高级",
+              "core": "两者比较用比较级；三者或以上、在一个范围内选最突出者用最高级。",
+              "method": "看比较范围和 than/of/in 结构。",
+              "examples": [
+                {
+                  "correct": "Of the three models, this one is the fastest.",
+                  "incorrect": "Of the three models, this one is faster."
+                }
+              ],
+              "trap": "比较级前通常不用 the，最高级通常用 the。",
+              "notes": []
+            },
+            {
+              "id": "rule-124",
+              "sequence": 124,
+              "title": "避免双重比较",
+              "core": "不要同时使用 more + -er 或 most + -est。",
+              "method": "检查形容词是否已经带比较级/最高级词尾。",
+              "examples": [
+                {
+                  "correct": "more efficient / faster / most reliable",
+                  "incorrect": "more faster / most reliableest"
+                }
+              ],
+              "trap": "长形容词常用 more/most，短形容词常用 -er/-est。",
+              "notes": []
+            },
+            {
+              "id": "rule-125",
+              "sequence": 125,
+              "title": "as...as 与 than 的完整结构",
+              "core": "同级比较用 as + 原级 + as；比较级通常与 than 搭配。",
+              "method": "检查比较标志和形容词形式是否匹配。",
+              "examples": [
+                {
+                  "correct": "The new sensor is as accurate as the old one. / It is more accurate than the old one.",
+                  "incorrect": "It is as more accurate as the old one."
+                }
+              ],
+              "trap": "不要混合两套结构。",
+              "notes": []
+            },
+            {
+              "id": "rule-126",
+              "sequence": 126,
+              "title": "fewer/less 与 number/amount",
+              "core": "fewer/number of 通常修饰可数复数；less/amount of 修饰不可数名词。",
+              "method": "判断名词能否逐个计数。",
+              "examples": [
+                {
+                  "correct": "fewer errors / less time / the number of samples / the amount of water",
+                  "incorrect": "less errors / the amount of samples"
+                }
+              ],
+              "trap": "时间、金钱、距离作为整体时常用 less。",
+              "notes": []
+            },
+            {
+              "id": "rule-127",
+              "sequence": 127,
+              "title": "比较范围排除自身",
+              "core": "一个成员与同组其他成员比较时，常用 any other、all other 等排除自身。",
+              "method": "检查是否出现“自己比自己更……”的逻辑问题。",
+              "examples": [
+                {
+                  "correct": "The Nile is longer than any other river in Africa.",
+                  "incorrect": "The Nile is longer than any river in Africa."
+                }
+              ],
+              "trap": "后者把 Nile 也包含在 any river 中。",
+              "notes": []
+            },
+            {
+              "id": "rule-128",
+              "sequence": 128,
+              "title": "than/as 后的省略与代词格",
+              "core": "比较从句可省略重复谓语，但省略后逻辑必须清楚；代词格取决于省略结构。",
+              "method": "补全隐含谓语。",
+              "examples": [
+                {
+                  "correct": "She runs faster than I do. / The team contacted Maya more often than me.",
+                  "incorrect": "She runs faster than me do."
+                }
+              ],
+              "trap": "若省略 do/is 等，主格与宾格可能产生不同含义。",
+              "notes": []
+            },
+            {
+              "id": "rule-129",
+              "sequence": 129,
+              "title": "between 与 among",
+              "core": "between 通常用于两个明确对象或逐一关系；among 用于三个以上的群体内部。",
+              "method": "看关系是否是两两对应还是群体内部。",
+              "examples": [
+                {
+                  "correct": "a comparison between the two models / variation among the five samples",
+                  "incorrect": "variation between the five samples（群体一般关系）"
+                }
+              ],
+              "trap": "现代英语允许 between 用于多项逐一关系，但SAT会偏好语意最精确的形式。",
+              "notes": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exam-checklist",
+      "sequence": 14,
+      "kind": "chapter",
+      "label": "第14章",
+      "title": "综合易错点与考场检查表",
+      "intro": [
+        "把所有规则压缩成可在20-30秒内执行的检查顺序。"
+      ],
+      "sections": [
+        {
+          "id": "section-01",
+          "sequence": 1,
+          "title": "本章知识点",
+          "notes": [],
+          "lists": [],
+          "tables": [
+            {
+              "headers": [
+                "原PDF索引",
+                "综合适用于全部题型。"
+              ],
+              "rows": []
+            }
+          ],
+          "rules": []
+        },
+        {
+          "id": "section-02",
+          "sequence": 2,
+          "title": "14.1 十大高频陷阱",
+          "notes": [],
+          "lists": [
+            {
+              "ordered": false,
+              "items": [
+                "离动词最近的名词不一定是主语。",
+                "句子很长不代表需要逗号；先找主干。",
+                "however/therefore 不是并列连词。",
+                "冒号前必须完整，动词或介词后不能直接加冒号。",
+                "关系词已在从句中作成分时，不再重复 it/them。",
+                "句首分词短语必须修饰紧随其后的主语。",
+                "its/their/whose 是所有格，不加撇号。",
+                "一个分句不能同时塞入两个没有连接关系的限定动词。",
+                "比较必须同类，并排除被比较对象自身。",
+                "语法正确不等于逻辑正确，最后检查动作执行者和时间线。"
+              ]
+            }
+          ],
+          "tables": [],
+          "rules": []
+        },
+        {
+          "id": "section-03",
+          "sequence": 3,
+          "title": "14.2 20秒检查顺序",
+          "notes": [],
+          "lists": [
+            {
+              "ordered": true,
+              "items": [
+                "圈出限定动词，判断有几个分句。",
+                "检查空格两侧是否都是完整句。",
+                "若考标点：先判句界，再判必要/非必要信息。",
+                "若考动词：先判缺不缺谓语，再判主谓、时态、语态。",
+                "若考代词：找先行词，检查单复数、格和清晰度。",
+                "若考修饰语：问“谁在做动作”，检查就近修饰。",
+                "若考撇号：先判复数，再判所有关系。",
+                "若考比较：把两端写完整，确认同类和范围。",
+                "把答案放回原句，检查是否出现句子残缺、重复谓语或逻辑荒谬。"
+              ]
+            }
+          ],
+          "tables": [],
+          "rules": []
+        },
+        {
+          "id": "section-04",
+          "sequence": 4,
+          "title": "14.3 选项形态反推考点",
+          "notes": [],
+          "lists": [],
+          "tables": [
+            {
+              "headers": [
+                "选项变化",
+                "优先检查"
+              ],
+              "rows": [
+                [
+                  "句号 / 分号 / 逗号 / 无标点",
+                  "句界与独立分句"
+                ],
+                [
+                  "单数动词 / 复数动词",
+                  "主谓一致"
+                ],
+                [
+                  "do / doing / done / to do",
+                  "限定动词与非谓语"
+                ],
+                [
+                  "has done / had done / did / does",
+                  "时态与主谓一致"
+                ],
+                [
+                  "its / it's / their / they're",
+                  "代词所有格与缩写"
+                ],
+                [
+                  "noun / noun's / nouns / nouns'",
+                  "复数与所有格"
+                ],
+                [
+                  "who / whom / whose / which",
+                  "关系代词与格"
+                ],
+                [
+                  "that / those / one / ones",
+                  "替代与比较"
+                ]
+              ]
+            }
+          ],
+          "rules": []
+        }
+      ]
+    }
+  ],
+  "appendices": [
+    {
+      "id": "punctuation-decision-tree",
+      "sequence": 15,
+      "kind": "appendix",
+      "label": "附录A",
+      "title": "标点决策树",
+      "intro": [
+        "只要先判断空格两侧的完整性，大多数标点题可以机械化完成。"
+      ],
+      "sections": [
+        {
+          "id": "section-01",
+          "sequence": 1,
+          "title": "本章知识点",
+          "notes": [],
+          "lists": [],
+          "tables": [
+            {
+              "headers": [
+                "决策树"
+              ],
+              "rows": [
+                [
+                  "步骤1：空格两侧都是独立分句 -> 句号 / 分号 / 逗号+FANBOYS；若使用连接副词 -> 分号+连接副词+逗号。 步骤2：前面是完整句，后面解释/列举 -> 冒号或单破折号。 步骤3：空格包围可删除信息 -> 一对逗号 / 一对破折号 / 一对括号。 步骤4：空格位于主谓、动宾、介宾之间 -> 通常不加标点。 步骤5：普通词语列表 -> 逗号；复杂列表内部已有逗号 -> 分号。"
+                ]
+              ]
+            },
+            {
+              "headers": [
+                "结构",
+                "常用答案",
+                "核心限制"
+              ],
+              "rows": [
+                [
+                  "IC ___ IC",
+                  "句号 / 分号 / 逗号+FANBOYS",
+                  "不能只用逗号"
+                ],
+                [
+                  "IC ___ however, IC",
+                  "分号或句号",
+                  "however 前不能只用逗号"
+                ],
+                [
+                  "IC ___ explanation/list",
+                  "冒号或破折号",
+                  "冒号前必须完整"
+                ],
+                [
+                  "S ___ V",
+                  "通常无标点",
+                  "不要切断主谓"
+                ],
+                [
+                  "V ___ O/C",
+                  "通常无标点",
+                  "不要在动词后直接加冒号"
+                ],
+                [
+                  "名词 ___ 非必要说明 ___ 谓语",
+                  "成对逗号/破折号",
+                  "两侧标点匹配"
+                ],
+                [
+                  "Introductory phrase ___ IC",
+                  "逗号",
+                  "逗号放在整个引导成分后"
+                ]
+              ]
+            }
+          ],
+          "rules": []
+        }
+      ]
+    },
+    {
+      "id": "form-structure-reference",
+      "sequence": 16,
+      "kind": "appendix",
+      "label": "附录B",
+      "title": "词形与结构速查表",
+      "intro": [
+        "用于最后一轮复习和做题时快速排除。"
+      ],
+      "sections": [
+        {
+          "id": "section-01",
+          "sequence": 1,
+          "title": "B.1 动词结构",
+          "notes": [],
+          "lists": [],
+          "tables": [
+            {
+              "headers": [
+                "前后结构",
+                "所需形式",
+                "例子"
+              ],
+              "rows": [
+                [
+                  "modal + ___",
+                  "动词原形",
+                  "can detect"
+                ],
+                [
+                  "have/has/had + ___",
+                  "过去分词",
+                  "has detected"
+                ],
+                [
+                  "be + ___（进行）",
+                  "现在分词",
+                  "is detecting"
+                ],
+                [
+                  "be + ___（被动）",
+                  "过去分词",
+                  "was detected"
+                ],
+                [
+                  "介词 + ___",
+                  "名词/代词/动名词",
+                  "for measuring"
+                ],
+                [
+                  "目的/计划 + ___",
+                  "to do",
+                  "to measure"
+                ],
+                [
+                  "句中已有谓语、无连接词",
+                  "非谓语",
+                  "using / designed / to reduce"
+                ],
+                [
+                  "句中缺谓语",
+                  "限定动词",
+                  "measures / measured / has measured"
+                ]
+              ]
+            }
+          ],
+          "rules": []
+        },
+        {
+          "id": "section-02",
+          "sequence": 2,
+          "title": "B.2 代词与所有格",
+          "notes": [],
+          "lists": [],
+          "tables": [
+            {
+              "headers": [
+                "类别",
+                "形式",
+                "功能"
+              ],
+              "rows": [
+                [
+                  "主格",
+                  "I, he, she, we, they, who",
+                  "作主语"
+                ],
+                [
+                  "宾格",
+                  "me, him, her, us, them, whom",
+                  "作动词/介词宾语"
+                ],
+                [
+                  "物主限定词",
+                  "my, your, his, her, its, our, their",
+                  "后接名词"
+                ],
+                [
+                  "物主代词",
+                  "mine, yours, his, hers, ours, theirs",
+                  "独立使用"
+                ],
+                [
+                  "反身代词",
+                  "myself, yourself, himself, herself, itself, ourselves, themselves",
+                  "反指主语或强调"
+                ],
+                [
+                  "缩写",
+                  "it's, they're, who's",
+                  "可展开为 is/are/has"
+                ],
+                [
+                  "所有格",
+                  "its, their, whose",
+                  "不加撇号"
+                ]
+              ]
+            }
+          ],
+          "rules": []
+        },
+        {
+          "id": "section-03",
+          "sequence": 3,
+          "title": "B.3 撇号",
+          "notes": [
+            "复习原则：先看结构，再看形式，最后看语意。",
+            "回到原PDF做题时，可按本文件首页的题号范围进行专项训练。",
+            "Source: SAT语法单项训练_全量版.pdf"
+          ],
+          "lists": [],
+          "tables": [
+            {
+              "headers": [
+                "基础形式",
+                "所有格形式"
+              ],
+              "rows": [
+                [
+                  "one scientist",
+                  "one scientist's finding"
+                ],
+                [
+                  "two scientists",
+                  "two scientists' findings"
+                ],
+                [
+                  "children",
+                  "children's books"
+                ],
+                [
+                  "Maya and Leo（共同）",
+                  "Maya and Leo's lab"
+                ],
+                [
+                  "Maya / Leo（分别）",
+                  "Maya's and Leo's labs"
+                ],
+                [
+                  "two weeks",
+                  "two weeks' notice"
+                ],
+                [
+                  "its / theirs / whose",
+                  "永不因所有格加撇号"
+                ]
+              ]
+            }
+          ],
+          "rules": []
+        }
+      ]
+    }
+  ]
+}
