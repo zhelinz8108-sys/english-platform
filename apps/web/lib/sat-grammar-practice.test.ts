@@ -9,6 +9,14 @@ import {
 const practice = JSON.parse(
   readFileSync(new URL('../data/sat-grammar-practice.json', import.meta.url), 'utf8'),
 ) as SatGrammarPracticeLibrary;
+const library = JSON.parse(
+  readFileSync(new URL('../data/sat-grammar-library.json', import.meta.url), 'utf8'),
+) as {
+  chapters: Array<{
+    id: string;
+    sections: Array<{ rules: Array<{ id: string }> }>;
+  }>;
+};
 
 describe('SAT grammar interactive practice library', () => {
   it('publishes every complete question and excludes source pages that are not questions', () => {
@@ -61,5 +69,44 @@ describe('SAT grammar interactive practice library', () => {
     expect(selectSatGrammarSessionItems(practice.items, 'random')).toHaveLength(
       SAT_GRAMMAR_RANDOM_SESSION_SIZE,
     );
+  });
+
+  it('classifies every question into a valid chapter and knowledge point', () => {
+    const pointToChapter = new Map(
+      library.chapters.flatMap((chapter) =>
+        chapter.sections.flatMap((section) =>
+          section.rules.map((rule) => [rule.id, chapter.id] as const),
+        ),
+      ),
+    );
+    expect(
+      practice.items.every(
+        (item) =>
+          item.knowledgePointTitle.length > 0 &&
+          pointToChapter.get(item.knowledgePointId) === item.chapterId,
+      ),
+    ).toBe(true);
+    expect(
+      Object.values(practice.summary.chapterCounts).reduce((sum, count) => sum + count, 0),
+    ).toBe(980);
+    expect(
+      Object.values(practice.summary.knowledgePointCounts).reduce((sum, count) => sum + count, 0),
+    ).toBe(980);
+    for (const chapterId of [
+      'clause-boundaries',
+      'commas-parentheticals',
+      'semicolons-colons-dashes',
+      'subject-verb-agreement',
+      'pronouns',
+      'modifiers',
+      'verb-forms',
+      'tense-voice-mood',
+      'syntax-completeness',
+      'parallelism',
+      'possessives-apostrophes',
+      'comparisons',
+    ]) {
+      expect(practice.summary.chapterCounts[chapterId]).toBeGreaterThan(0);
+    }
   });
 });

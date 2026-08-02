@@ -31,6 +31,10 @@ function allEntries(): SatGrammarEntry[] {
   return [...library.chapters, ...library.appendices];
 }
 
+function knowledgePointCount(pointId: string): number {
+  return practiceLibrary.summary.knowledgePointCounts[pointId] ?? 0;
+}
+
 export function getSatGrammarCatalog(): SatGrammarCatalog {
   return {
     title: library.title,
@@ -44,6 +48,7 @@ export function getSatGrammarCatalog(): SatGrammarCatalog {
           id: rule.id,
           title: rule.title,
           sectionTitle: section.title,
+          practiceCount: knowledgePointCount(rule.id),
         })),
       );
       const knowledgePoints = rules.length
@@ -52,6 +57,7 @@ export function getSatGrammarCatalog(): SatGrammarCatalog {
             id: section.id,
             title: section.title,
             sectionTitle: entry.title,
+            practiceCount: 0,
           }));
       return {
         id: entry.id,
@@ -62,6 +68,7 @@ export function getSatGrammarCatalog(): SatGrammarCatalog {
         summary: entry.intro[0] ?? '按知识点逐项学习并结合例句判断。',
         sectionCount: entry.sections.length,
         ruleCount: rules.length,
+        practiceCount: itemsForEntry(entry.id).length,
         knowledgePoints,
       };
     }),
@@ -90,10 +97,25 @@ export function getSatGrammarPracticeCount(entryId?: string): number {
   return entryId ? itemsForEntry(entryId).length : practiceLibrary.items.length;
 }
 
-export function getSatGrammarPracticeSet(entryId?: string): SatGrammarPracticeSet | null {
+export function getSatGrammarKnowledgePointPracticeCounts(entryId: string): Record<string, number> {
+  const entry = allEntries().find((candidate) => candidate.id === entryId);
+  if (!entry) return {};
+  return Object.fromEntries(
+    entry.sections.flatMap((section) =>
+      section.rules.map((rule) => [rule.id, knowledgePointCount(rule.id)]),
+    ),
+  );
+}
+
+export function getSatGrammarPracticeSet(
+  entryId?: string,
+  knowledgePointId?: string,
+): SatGrammarPracticeSet | null {
   if (!entryId) {
     return {
       chapterId: null,
+      knowledgePointId: null,
+      scopeLabel: '总题库',
       title: 'SAT语法综合练习',
       description: `完整收录 ${practiceLibrary.items.length} 道可作答题目。题干与选项均为原生文字；答案已核验的题目即时判分，待核验题目记录选择但不计入正确率。`,
       source: practiceLibrary.source,
@@ -104,13 +126,23 @@ export function getSatGrammarPracticeSet(entryId?: string): SatGrammarPracticeSe
 
   const entry = allEntries().find((candidate) => candidate.id === entryId);
   if (!entry) return null;
-  const items = itemsForEntry(entryId);
+  const point = knowledgePointId
+    ? entry.sections
+        .flatMap((section) => section.rules)
+        .find((rule) => rule.id === knowledgePointId)
+    : null;
+  if (knowledgePointId && !point) return null;
+  const items = point
+    ? practiceLibrary.items.filter((item) => item.knowledgePointId === point.id)
+    : itemsForEntry(entryId);
   return {
     chapterId: entryId,
-    title: `${entry.title} · 单项练习`,
+    knowledgePointId: point?.id ?? null,
+    scopeLabel: point ? '本考点题库' : '本章题库',
+    title: point ? `${entry.title} · ${point.title}` : `${entry.title} · 单项练习`,
     description: items.length
-      ? `围绕“${entry.title}”逐题练习；已核验题即时判分，待核验题只记录选择。`
-      : `“${entry.title}”暂时没有对应练习题。`,
+      ? `围绕“${point?.title ?? entry.title}”逐题练习；已核验题即时判分，待核验题只记录选择。`
+      : `“${point?.title ?? entry.title}”暂时没有对应练习题。`,
     source: practiceLibrary.source,
     totalCount: items.length,
     items,

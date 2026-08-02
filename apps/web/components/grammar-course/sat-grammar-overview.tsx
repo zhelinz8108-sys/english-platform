@@ -136,6 +136,7 @@ export function SatGrammarOverview({
                   {entry.ruleCount
                     ? `${entry.ruleCount} 个规则`
                     : `${entry.sectionCount} 个速查部分`}
+                  {entry.practiceCount ? ` · ${entry.practiceCount} 题` : ''}
                 </span>
                 <ChevronDown aria-hidden className={styles.entryChevron} size={18} />
               </summary>
@@ -145,15 +146,25 @@ export function SatGrammarOverview({
                     <li key={point.id}>
                       <Link href={`${courseBase}/${entry.id}#${point.id}`}>
                         <span>{point.title}</span>
-                        <ArrowRight aria-hidden size={14} />
+                        <small>
+                          {point.practiceCount ? `${point.practiceCount} 题` : '知识点'}
+                        </small>
                       </Link>
                     </li>
                   ))}
                 </ol>
-                <Link className={styles.entryLink} href={`${courseBase}/${entry.id}`}>
-                  阅读{entry.kind === 'chapter' ? '本章' : '附录'}
-                  <ArrowRight aria-hidden size={15} />
-                </Link>
+                <div className={styles.entryActions}>
+                  <Link className={styles.entryLink} href={`${courseBase}/${entry.id}`}>
+                    阅读{entry.kind === 'chapter' ? '本章' : '附录'}
+                    <ArrowRight aria-hidden size={15} />
+                  </Link>
+                  {entry.practiceCount ? (
+                    <Link className={styles.entryLink} href={`${courseBase}/${entry.id}/practice`}>
+                      <ListChecks size={14} />
+                      练习本章 · {entry.practiceCount} 题
+                    </Link>
+                  ) : null}
+                </div>
               </div>
             </details>
           ))}

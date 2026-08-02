@@ -27,12 +27,19 @@ from typing import Any, Iterable
 
 from PIL import Image
 
+from classify_sat_grammar_practice import (
+    CATEGORY_DEFAULT_RULE,
+    classify_question,
+    load_knowledge_points,
+)
+
 
 DEFAULT_SOURCE_ROOT = Path("D:/BaiduNetdiskDownload/SAT真题")
 DEFAULT_OUTPUT_DIR = Path("apps/web/public/content/sat-grammar/questions")
 DEFAULT_CATALOG = Path("apps/web/data/sat-grammar-practice.json")
 DEFAULT_CACHE_DIR = Path("tmp/pdfs/sat-grammar-ocr")
 DEFAULT_OFFICIAL_CATALOG = Path("scripts/data/sat-grammar-official-questions.json")
+DEFAULT_LIBRARY_CATALOG = Path("apps/web/data/sat-grammar-library.json")
 RELIABLE_ANSWER_STATUSES = {"original_answer", "inferred_duplicate"}
 ANSWERS = {"A", "B", "C", "D"}
 
@@ -167,6 +174,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--source-root", type=Path, default=DEFAULT_SOURCE_ROOT)
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--catalog", type=Path, default=DEFAULT_CATALOG)
+    parser.add_argument("--library-catalog", type=Path, default=DEFAULT_LIBRARY_CATALOG)
     parser.add_argument("--cache-dir", type=Path, default=DEFAULT_CACHE_DIR)
     parser.add_argument(
         "--official-catalog", type=Path, default=DEFAULT_OFFICIAL_CATALOG
@@ -1540,8 +1548,24 @@ def is_gradable(item: dict[str, Any]) -> bool:
     )
 
 
-def explanation_for(item: dict[str, Any], gradable: bool) -> str:
+def explanation_for(
+    item: dict[str, Any],
+    gradable: bool,
+    classification: dict[str, str],
+    knowledge_points: dict[str, dict[str, str]],
+) -> str:
     if gradable:
+        source_rule = CATEGORY_DEFAULT_RULE.get(str(item.get("subtopic") or ""))
+        source_chapter = (
+            knowledge_points[source_rule]["chapterId"]
+            if source_rule and source_rule in knowledge_points
+            else None
+        )
+        if source_chapter != classification["chapterId"]:
+            return (
+                f"正确答案：{item['answer']}。本题归入“{classification['knowledgePointTitle']}”。"
+                "请先定位空缺在句中的语法功能，再比较各选项的形式与句子主干是否匹配。"
+            )
         return str(
             item.get("chinese_explanation")
             or f"正确答案：{item['answer']}。请结合本题所属知识点复盘句子结构与选项差异。"
@@ -1557,15 +1581,14 @@ def build_record(
     item: dict[str, Any],
     question_text: str,
     choice_texts: list[str],
+    knowledge_points: dict[str, dict[str, str]],
 ) -> dict[str, Any]:
-    category = str(item.get("subtopic") or "综合语法")
-    chapter_id = CATEGORY_TO_ENTRY.get(category, "syntax-completeness")
+    classification = classify_question(item, question_text, choice_texts, knowledge_points)
     gradable = is_gradable(item)
     answer = item.get("answer") if gradable else None
     return {
         "id": item["id"],
-        "chapterId": chapter_id,
-        "category": category,
+        **classification,
         "officialSkill": item.get("official_skill") or "Form, Structure, and Sense",
         "difficulty": item.get("difficulty") or "Medium",
         "answer": answer,
@@ -1574,7 +1597,7 @@ def build_record(
         "gradable": gradable,
         "questionText": question_text,
         "choiceTexts": choice_texts,
-        "explanation": explanation_for(item, gradable),
+        "explanation": explanation_for(item, gradable, classification, knowledge_points),
     }
 
 
@@ -1768,6 +1791,7 @@ def main() -> None:
     args = parse_args()
     source_catalog = args.source_root / "output/data/sat_grammar_items.json"
     items: list[dict[str, Any]] = json.loads(source_catalog.read_text(encoding="utf-8"))
+    knowledge_points = load_knowledge_points(args.library_catalog)
     tesseract = resolve_tesseract(args.tesseract)
 
     extracted: dict[str, tuple[str, list[str]]] = {}
@@ -1884,7 +1908,7 @@ def main() -> None:
             excluded_non_questions.append(str(item["id"]))
             continue
         validation_issues.extend(item_issues)
-        records.append(build_record(item, question_text, choice_texts))
+        records.append(build_record(item, question_text, choice_texts, knowledge_points))
 
     if validation_issues:
         debug_path = args.cache_dir / "validation-failures.json"
@@ -1915,16 +1939,19 @@ def main() -> None:
 
     category_counts: dict[str, int] = {}
     chapter_counts: dict[str, int] = {}
+    knowledge_point_counts: dict[str, int] = {}
     for record in records:
         category_counts[record["category"]] = category_counts.get(record["category"], 0) + 1
         chapter_counts[record["chapterId"]] = chapter_counts.get(record["chapterId"], 0) + 1
+        point_id = record["knowledgePointId"]
+        knowledge_point_counts[point_id] = knowledge_point_counts.get(point_id, 0) + 1
 
     gradable_count = sum(bool(record["gradable"]) for record in records)
     pending_count = sum(record["answerStatus"] == "pending_verification" for record in records)
     conflict_count = sum(record["answerStatus"] == "conflict_review" for record in records)
 
     payload = {
-        "version": "2026-08-03-embedded",
+        "version": "2026-08-03-classified",
         "source": "SAT语法单项训练_全量版.pdf",
         "summary": {
             "sourceItemCount": len(items),
@@ -1939,6 +1966,7 @@ def main() -> None:
             "textItemCount": len(records),
             "categoryCounts": dict(sorted(category_counts.items())),
             "chapterCounts": dict(sorted(chapter_counts.items())),
+            "knowledgePointCounts": dict(sorted(knowledge_point_counts.items())),
         },
         "items": records,
     }

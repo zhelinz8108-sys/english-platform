@@ -351,8 +351,21 @@
   color: var(--brand-700);
 }
 
+.knowledgeList small {
+  flex: none;
+  color: var(--brand-600);
+  font-size: 10px;
+  font-weight: 700;
+}
+
 .entryLink {
   min-height: auto;
+}
+
+.entryActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 18px;
 }
 
 .emptyState {
@@ -573,6 +586,23 @@
   color: var(--brand-600);
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 11px;
+}
+
+.ruleHeaderTopline {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rulePracticeLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--brand-700);
+  font-size: 10.5px;
+  font-weight: 750;
+  text-decoration: none;
 }
 
 .ruleHeader h3 {

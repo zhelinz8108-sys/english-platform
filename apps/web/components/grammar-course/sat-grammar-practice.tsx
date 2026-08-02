@@ -162,7 +162,7 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
             <strong>{reviewCount}</strong>
           </div>
           <div>
-            <span>完整题库</span>
+            <span>{practice.scopeLabel}</span>
             <strong>{practice.totalCount}</strong>
           </div>
         </section>
@@ -177,7 +177,7 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
           </button>
           {mode === 'random' ? (
             <button className={styles.primaryButton} onClick={startFullSession} type="button">
-              进入完整题库
+              进入{practice.scopeLabel}
               <ArrowRight size={15} />
             </button>
           ) : (
@@ -216,16 +216,19 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
           {mode === 'full' ? <Shuffle size={15} /> : <ArrowLeft size={15} />}
           {mode === 'full'
             ? `随机 ${Math.min(SAT_GRAMMAR_RANDOM_SESSION_SIZE, practice.totalCount)} 题`
-            : '返回完整题库'}
+            : `返回${practice.scopeLabel}`}
         </button>
       </header>
 
       <section aria-label="练习进度" className={styles.practiceStatus}>
         <div>
           <span>
-            {mode === 'full' ? '完整题库' : '随机练习'}第 {index + 1} / {sessionItems.length} 题
+            {mode === 'full' ? practice.scopeLabel : '随机练习'}第 {index + 1} /{' '}
+            {sessionItems.length} 题
           </span>
-          <span>完整题库共 {practice.totalCount} 题</span>
+          <span>
+            {practice.scopeLabel}共 {practice.totalCount} 题
+          </span>
         </div>
         <div
           aria-label="当前练习作答进度"

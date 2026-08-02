@@ -72,10 +72,12 @@ export interface SatGrammarCatalogEntry {
   summary: string;
   sectionCount: number;
   ruleCount: number;
+  practiceCount?: number;
   knowledgePoints: Array<{
     id: string;
     title: string;
     sectionTitle: string;
+    practiceCount?: number;
   }>;
 }
 
@@ -97,6 +99,8 @@ export interface SatGrammarPracticeItem {
   id: string;
   chapterId: string;
   category: string;
+  knowledgePointId: string;
+  knowledgePointTitle: string;
   officialSkill: 'Boundaries' | 'Form, Structure, and Sense';
   difficulty: 'Easy' | 'Medium' | 'Hard';
   answer: SatGrammarPracticeAnswer | null;
@@ -123,12 +127,15 @@ export interface SatGrammarPracticeLibrary {
     textItemCount: number;
     categoryCounts: Record<string, number>;
     chapterCounts: Record<string, number>;
+    knowledgePointCounts: Record<string, number>;
   };
   items: SatGrammarPracticeItem[];
 }
 
 export interface SatGrammarPracticeSet {
   chapterId: string | null;
+  knowledgePointId: string | null;
+  scopeLabel: string;
   title: string;
   description: string;
   source: string;

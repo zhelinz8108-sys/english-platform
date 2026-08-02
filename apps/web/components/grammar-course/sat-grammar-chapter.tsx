@@ -55,11 +55,13 @@ export function SatGrammarChapter({
   previous,
   next,
   practiceCount,
+  knowledgePointPracticeCounts,
 }: {
   entry: SatGrammarEntry;
   previous: Pick<SatGrammarEntry, 'id' | 'label' | 'title'> | null;
   next: Pick<SatGrammarEntry, 'id' | 'label' | 'title'> | null;
   practiceCount: number;
+  knowledgePointPracticeCounts: Record<string, number>;
 }) {
   const pathname = usePathname();
   const grammarBase = grammarBasePath(pathname);
@@ -143,7 +145,18 @@ export function SatGrammarChapter({
               {section.rules.map((rule) => (
                 <section className={styles.ruleCard} id={rule.id} key={rule.id}>
                   <header className={styles.ruleHeader}>
-                    <span>{String(rule.sequence).padStart(3, '0')}</span>
+                    <div className={styles.ruleHeaderTopline}>
+                      <span>{String(rule.sequence).padStart(3, '0')}</span>
+                      {knowledgePointPracticeCounts[rule.id] ? (
+                        <Link
+                          className={styles.rulePracticeLink}
+                          href={`${courseBase}/${entry.id}/practice?point=${encodeURIComponent(rule.id)}`}
+                        >
+                          <ListChecks size={13} />
+                          练习此考点 · {knowledgePointPracticeCounts[rule.id]} 题
+                        </Link>
+                      ) : null}
+                    </div>
                     <h3>{rule.title}</h3>
                   </header>
 
