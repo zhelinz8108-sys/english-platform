@@ -95,8 +95,7 @@ export function getSatGrammarPracticeSet(entryId?: string): SatGrammarPracticeSe
     return {
       chapterId: null,
       title: 'SAT语法综合练习',
-      description:
-        '完整收录 985 道去重题目。答案已核验的题目即时判分；待核验题目记录选择但不计入正确率。',
+      description: `完整收录 ${practiceLibrary.items.length} 道可作答题目。题干与选项均为原生文字；答案已核验的题目即时判分，待核验题目记录选择但不计入正确率。`,
       source: practiceLibrary.source,
       totalCount: practiceLibrary.items.length,
       items: practiceLibrary.items,

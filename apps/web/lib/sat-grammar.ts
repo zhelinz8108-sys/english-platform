@@ -103,10 +103,7 @@ export interface SatGrammarPracticeItem {
   answerStatus: SatGrammarPracticeAnswerStatus;
   answerCandidates: SatGrammarPracticeAnswer[];
   gradable: boolean;
-  asset: string | null;
-  assetWidth: number | null;
-  assetHeight: number | null;
-  questionText: string | null;
+  questionText: string;
   choiceTexts: string[];
   explanation: string;
 }
@@ -121,6 +118,7 @@ export interface SatGrammarPracticeLibrary {
     gradableItemCount: number;
     pendingVerificationCount: number;
     conflictReviewCount: number;
+    embeddedItemCount: number;
     imageItemCount: number;
     textItemCount: number;
     categoryCounts: Record<string, number>;

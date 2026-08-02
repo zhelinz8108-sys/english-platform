@@ -1,6 +1,4 @@
-import { existsSync, readFileSync } from 'node:fs';
-import { resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import type { SatGrammarPracticeLibrary } from './sat-grammar';
 
@@ -9,19 +7,20 @@ const practice = JSON.parse(
 ) as SatGrammarPracticeLibrary;
 
 describe('SAT grammar interactive practice library', () => {
-  it('publishes all 985 deduplicated source questions', () => {
+  it('publishes every complete question and excludes source pages that are not questions', () => {
     expect(practice.summary).toMatchObject({
       sourceItemCount: 985,
-      interactiveItemCount: 985,
-      excludedItemCount: 0,
-      gradableItemCount: 449,
-      pendingVerificationCount: 535,
+      interactiveItemCount: 980,
+      excludedItemCount: 5,
+      gradableItemCount: 448,
+      pendingVerificationCount: 531,
       conflictReviewCount: 1,
-      imageItemCount: 955,
-      textItemCount: 30,
+      embeddedItemCount: 980,
+      imageItemCount: 0,
+      textItemCount: 980,
     });
-    expect(practice.items).toHaveLength(985);
-    expect(new Set(practice.items.map((item) => item.id)).size).toBe(985);
+    expect(practice.items).toHaveLength(980);
+    expect(new Set(practice.items.map((item) => item.id)).size).toBe(980);
   });
 
   it('grades only source-backed answers and labels every record', () => {
@@ -40,21 +39,16 @@ describe('SAT grammar interactive practice library', () => {
     ).toBe(true);
   });
 
-  it('ships an answer-free image or a native text surface for every question', () => {
-    const publicDirectory = fileURLToPath(new URL('../public', import.meta.url));
+  it('ships every question as selectable native text with four complete choices', () => {
     expect(
-      practice.items.every((item) => {
-        if (item.asset) {
-          return (
-            item.assetWidth !== null &&
-            item.assetWidth > 0 &&
-            item.assetHeight !== null &&
-            item.assetHeight > 0 &&
-            existsSync(resolve(publicDirectory, item.asset.replace(/^\//, '')))
-          );
-        }
-        return item.questionText !== null && item.questionText.length > 0;
-      }),
+      practice.items.every(
+        (item) =>
+          item.questionText.length >= 45 &&
+          item.questionText.includes('Which choice completes the text') &&
+          item.choiceTexts.length === 4 &&
+          item.choiceTexts.every((choice) => choice.trim().length > 0) &&
+          !('asset' in item),
+      ),
     ).toBe(true);
   });
 });

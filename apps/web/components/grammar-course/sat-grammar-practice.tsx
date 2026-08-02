@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ArrowLeft, ArrowRight, Check, CircleAlert, RotateCcw, Shuffle, X } from 'lucide-react';
@@ -246,37 +245,15 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
           </span>
         </header>
 
-        {item.asset && item.assetWidth && item.assetHeight ? (
-          <div className={styles.questionImage}>
-            <Image
-              alt={`${item.id} SAT语法题题干与四个选项`}
-              height={item.assetHeight}
-              priority={index === 0}
-              sizes="(max-width: 900px) 100vw, 920px"
-              src={item.asset}
-              width={item.assetWidth}
-            />
-          </div>
-        ) : (
-          <section aria-label={`${item.id} 题面`} className={styles.textQuestion}>
-            <p>{item.questionText || '该题的原始文本题面正在整理。'}</p>
-            {item.choiceTexts.length === 4 ? (
-              <ol className={styles.textChoices}>
-                {item.choiceTexts.map((choice, choiceIndex) => (
-                  <li key={answers[choiceIndex]}>
-                    <strong>{answers[choiceIndex]}</strong>
-                    <span>{choice}</span>
-                  </li>
-                ))}
-              </ol>
-            ) : null}
-          </section>
-        )}
+        <section aria-label={`${item.id} 题面`} className={styles.textQuestion}>
+          <p>{item.questionText}</p>
+        </section>
 
         <section aria-label="选择答案" className={styles.answerPanel}>
           <p>{gradable ? '选择答案（提交后即时判分）' : '选择答案（本题待核验，不计分）'}</p>
           <div className={styles.answerChoices}>
-            {answers.map((answer) => {
+            {answers.map((answer, answerIndex) => {
+              const choice = item.choiceTexts[answerIndex] ?? '';
               const state = revealed
                 ? gradable
                   ? answer === item.answer
@@ -292,7 +269,8 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
                   : 'idle';
               return (
                 <button
-                  aria-label={`选择 ${answer}`}
+                  aria-label={`选择 ${answer}：${choice}`}
+                  aria-pressed={selected === answer}
                   className={styles.answerChoice}
                   data-state={state}
                   disabled={revealed}
@@ -300,7 +278,8 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
                   onClick={() => setSelected(answer)}
                   type="button"
                 >
-                  {answer}
+                  <strong className={styles.answerLetter}>{answer}</strong>
+                  <span className={styles.answerText}>{choice}</span>
                 </button>
               );
             })}
@@ -350,7 +329,8 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
       </article>
 
       <p className={styles.sourceNote}>
-        题目来源：{practice.source}。题库共 985 道；只有答案来源一致且可核验的题目计入正确率。
+        题目来源：{practice.source}。共收录 {practice.totalCount}{' '}
+        道完整可作答题；只有答案来源一致且可核验的题目计入正确率。
       </p>
     </div>
   );

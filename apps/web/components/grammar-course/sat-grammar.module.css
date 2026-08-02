@@ -832,69 +832,20 @@
   color: #95651c;
 }
 
-.questionImage {
-  overflow: hidden;
-  border: 1px solid #e2e9e6;
-  border-radius: 11px;
-  background: #fff;
-}
-
-.questionImage img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
 .textQuestion {
-  padding: 20px;
+  padding: 22px 24px;
   border: 1px solid #e2e9e6;
   border-radius: 11px;
-  background: #fff;
+  background: #fbfcfb;
 }
 
 .textQuestion > p {
   margin: 0;
   color: var(--ink-950);
   font-family: Georgia, 'Times New Roman', serif;
-  font-size: 16px;
-  line-height: 1.75;
+  font-size: 17px;
+  line-height: 1.82;
   white-space: pre-line;
-}
-
-.textChoices {
-  display: grid;
-  gap: 0;
-  margin: 18px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-.textChoices li {
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 12px 0;
-  color: #46534f;
-  font-family: Georgia, 'Times New Roman', serif;
-  font-size: 15px;
-  line-height: 1.65;
-}
-
-.textChoices li + li {
-  border-top: 1px solid #e8eeeb;
-}
-
-.textChoices strong {
-  display: grid;
-  width: 26px;
-  height: 26px;
-  flex: 0 0 26px;
-  place-items: center;
-  border-radius: 50%;
-  background: var(--sat-soft);
-  color: var(--brand-700);
-  font-family: inherit;
-  font-size: 12px;
 }
 
 .answerPanel {
@@ -914,15 +865,40 @@
 }
 
 .answerChoice {
-  min-height: 46px;
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  min-height: 56px;
+  padding: 13px 15px;
   border: 1px solid var(--sat-border);
   border-radius: 9px;
   background: #fff;
   color: var(--ink-900);
   font: inherit;
-  font-size: 14px;
-  font-weight: 800;
+  text-align: left;
   cursor: pointer;
+}
+
+.answerLetter {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  place-items: center;
+  border: 1px solid #c8d8d3;
+  border-radius: 50%;
+  background: var(--sat-soft);
+  color: var(--brand-700);
+  font-size: 12px;
+  line-height: 1;
+}
+
+.answerText {
+  padding-top: 2px;
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.55;
 }
 
 .answerChoice:hover:not(:disabled),
@@ -948,6 +924,10 @@
   border-color: #d6b46f;
   background: #fff8e9;
   color: #8a601c;
+}
+
+.answerChoice:disabled {
+  cursor: default;
 }
 
 .answerFeedback {
