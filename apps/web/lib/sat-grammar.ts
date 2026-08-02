@@ -135,3 +135,16 @@ export interface SatGrammarPracticeSet {
   totalCount: number;
   items: SatGrammarPracticeItem[];
 }
+
+export type SatGrammarPracticeMode = 'full' | 'random';
+
+export const SAT_GRAMMAR_RANDOM_SESSION_SIZE = 20;
+
+export function selectSatGrammarSessionItems(
+  items: SatGrammarPracticeItem[],
+  mode: SatGrammarPracticeMode,
+): SatGrammarPracticeItem[] {
+  return mode === 'full'
+    ? items
+    : items.slice(0, Math.min(SAT_GRAMMAR_RANDOM_SESSION_SIZE, items.length));
+}

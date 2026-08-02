@@ -1,6 +1,10 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import type { SatGrammarPracticeLibrary } from './sat-grammar';
+import {
+  SAT_GRAMMAR_RANDOM_SESSION_SIZE,
+  selectSatGrammarSessionItems,
+  type SatGrammarPracticeLibrary,
+} from './sat-grammar';
 
 const practice = JSON.parse(
   readFileSync(new URL('../data/sat-grammar-practice.json', import.meta.url), 'utf8'),
@@ -50,5 +54,12 @@ describe('SAT grammar interactive practice library', () => {
           !('asset' in item),
       ),
     ).toBe(true);
+  });
+
+  it('opens the full library by default and limits only explicit random sessions', () => {
+    expect(selectSatGrammarSessionItems(practice.items, 'full')).toHaveLength(980);
+    expect(selectSatGrammarSessionItems(practice.items, 'random')).toHaveLength(
+      SAT_GRAMMAR_RANDOM_SESSION_SIZE,
+    );
   });
 });

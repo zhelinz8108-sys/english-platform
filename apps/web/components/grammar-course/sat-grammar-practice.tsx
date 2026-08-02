@@ -7,13 +7,14 @@ import { useMemo, useState } from 'react';
 import type {
   SatGrammarPracticeAnswer,
   SatGrammarPracticeItem,
+  SatGrammarPracticeMode,
   SatGrammarPracticeSet,
 } from '@/lib/sat-grammar';
+import { SAT_GRAMMAR_RANDOM_SESSION_SIZE, selectSatGrammarSessionItems } from '@/lib/sat-grammar';
 import { grammarBasePath } from './grammar-api';
 import styles from './sat-grammar.module.css';
 
 const answers: SatGrammarPracticeAnswer[] = ['A', 'B', 'C', 'D'];
-const sessionSize = 20;
 const difficultyLabels = { Easy: '简单', Medium: '中等', Hard: '困难' } as const;
 const verificationLabels = {
   original_answer: '答案已核验',
@@ -46,17 +47,14 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
   const courseBase = `${grammarBase}/sat`;
   const returnHref = practice.chapterId ? `${courseBase}/${practice.chapterId}` : courseBase;
   const [pool, setPool] = useState(practice.items);
-  const [offset, setOffset] = useState(0);
+  const [mode, setMode] = useState<SatGrammarPracticeMode>('full');
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<SatGrammarPracticeAnswer | null>(null);
   const [revealed, setRevealed] = useState(false);
   const [results, setResults] = useState<PracticeResult[]>([]);
   const [completed, setCompleted] = useState(false);
 
-  const sessionItems = useMemo(
-    () => pool.slice(offset, Math.min(offset + sessionSize, pool.length)),
-    [offset, pool],
-  );
+  const sessionItems = useMemo(() => selectSatGrammarSessionItems(pool, mode), [mode, pool]);
   const item = sessionItems[index] ?? null;
   const gradedResults = results.filter((result) => result.gradable);
   const correctCount = gradedResults.filter((result) => result.correct).length;
@@ -80,15 +78,15 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
     resetQuestionState();
   }
 
-  function nextSequentialSession() {
-    const nextOffset = offset + sessionSize >= pool.length ? 0 : offset + sessionSize;
-    setOffset(nextOffset);
+  function startFullSession() {
+    setMode('full');
+    setPool(practice.items);
     resetQuestionState();
   }
 
   function startRandomSession() {
+    setMode('random');
     setPool(shuffleItems(practice.items));
-    setOffset(0);
     resetQuestionState();
   }
 
@@ -175,11 +173,11 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
           </button>
           <button className={styles.secondaryButton} onClick={startRandomSession} type="button">
             <Shuffle size={15} />
-            随机一组
+            随机 {Math.min(SAT_GRAMMAR_RANDOM_SESSION_SIZE, practice.totalCount)} 题
           </button>
-          {practice.totalCount > sessionSize ? (
-            <button className={styles.primaryButton} onClick={nextSequentialSession} type="button">
-              下一组
+          {mode === 'random' ? (
+            <button className={styles.primaryButton} onClick={startFullSession} type="button">
+              进入完整题库
               <ArrowRight size={15} />
             </button>
           ) : (
@@ -210,21 +208,27 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
           <h1>{practice.title}</h1>
           <p>{practice.description}</p>
         </div>
-        <button className={styles.secondaryButton} onClick={startRandomSession} type="button">
-          <Shuffle size={15} />
-          随机一组
+        <button
+          className={styles.secondaryButton}
+          onClick={mode === 'full' ? startRandomSession : startFullSession}
+          type="button"
+        >
+          {mode === 'full' ? <Shuffle size={15} /> : <ArrowLeft size={15} />}
+          {mode === 'full'
+            ? `随机 ${Math.min(SAT_GRAMMAR_RANDOM_SESSION_SIZE, practice.totalCount)} 题`
+            : '返回完整题库'}
         </button>
       </header>
 
       <section aria-label="练习进度" className={styles.practiceStatus}>
         <div>
           <span>
-            本组第 {index + 1} / {sessionItems.length} 题
+            {mode === 'full' ? '完整题库' : '随机练习'}第 {index + 1} / {sessionItems.length} 题
           </span>
           <span>完整题库共 {practice.totalCount} 题</span>
         </div>
         <div
-          aria-label="本组作答进度"
+          aria-label="当前练习作答进度"
           aria-valuemax={100}
           aria-valuemin={0}
           aria-valuenow={progress}
