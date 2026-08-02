@@ -90,17 +90,24 @@ export interface SatGrammarCatalog {
 
 export type SatGrammarPracticeAnswer = 'A' | 'B' | 'C' | 'D';
 
+export type SatGrammarPracticeAnswerStatus =
+  'original_answer' | 'inferred_duplicate' | 'pending_verification' | 'conflict_review';
+
 export interface SatGrammarPracticeItem {
   id: string;
   chapterId: string;
   category: string;
   officialSkill: 'Boundaries' | 'Form, Structure, and Sense';
   difficulty: 'Easy' | 'Medium' | 'Hard';
-  answer: SatGrammarPracticeAnswer;
-  answerStatus: 'original_answer' | 'inferred_duplicate';
-  asset: string;
-  assetWidth: number;
-  assetHeight: number;
+  answer: SatGrammarPracticeAnswer | null;
+  answerStatus: SatGrammarPracticeAnswerStatus;
+  answerCandidates: SatGrammarPracticeAnswer[];
+  gradable: boolean;
+  asset: string | null;
+  assetWidth: number | null;
+  assetHeight: number | null;
+  questionText: string | null;
+  choiceTexts: string[];
   explanation: string;
 }
 
@@ -111,6 +118,11 @@ export interface SatGrammarPracticeLibrary {
     sourceItemCount: number;
     interactiveItemCount: number;
     excludedItemCount: number;
+    gradableItemCount: number;
+    pendingVerificationCount: number;
+    conflictReviewCount: number;
+    imageItemCount: number;
+    textItemCount: number;
     categoryCounts: Record<string, number>;
     chapterCounts: Record<string, number>;
   };

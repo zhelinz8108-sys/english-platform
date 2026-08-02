@@ -9,36 +9,52 @@ const practice = JSON.parse(
 ) as SatGrammarPracticeLibrary;
 
 describe('SAT grammar interactive practice library', () => {
-  it('publishes 275 complete, source-answered questions', () => {
+  it('publishes all 985 deduplicated source questions', () => {
     expect(practice.summary).toMatchObject({
       sourceItemCount: 985,
-      interactiveItemCount: 275,
-      excludedItemCount: 710,
+      interactiveItemCount: 985,
+      excludedItemCount: 0,
+      gradableItemCount: 449,
+      pendingVerificationCount: 535,
+      conflictReviewCount: 1,
+      imageItemCount: 955,
+      textItemCount: 30,
     });
-    expect(practice.items).toHaveLength(275);
-    expect(new Set(practice.items.map((item) => item.id)).size).toBe(275);
+    expect(practice.items).toHaveLength(985);
+    expect(new Set(practice.items.map((item) => item.id)).size).toBe(985);
   });
 
-  it('contains only gradable four-choice records with chapter mappings', () => {
+  it('grades only source-backed answers and labels every record', () => {
     expect(
       practice.items.every(
         (item) =>
-          ['A', 'B', 'C', 'D'].includes(item.answer) &&
-          ['original_answer', 'inferred_duplicate'].includes(item.answerStatus) &&
           item.chapterId.length > 0 &&
           item.explanation.length > 0 &&
-          item.assetWidth > 0 &&
-          item.assetHeight > 0,
+          (item.gradable
+            ? item.answer !== null &&
+              ['A', 'B', 'C', 'D'].includes(item.answer) &&
+              ['original_answer', 'inferred_duplicate'].includes(item.answerStatus)
+            : item.answer === null &&
+              ['pending_verification', 'conflict_review'].includes(item.answerStatus)),
       ),
     ).toBe(true);
   });
 
-  it('ships every safe question image referenced by the catalog', () => {
+  it('ships an answer-free image or a native text surface for every question', () => {
     const publicDirectory = fileURLToPath(new URL('../public', import.meta.url));
     expect(
-      practice.items.every((item) =>
-        existsSync(resolve(publicDirectory, item.asset.replace(/^\//, ''))),
-      ),
+      practice.items.every((item) => {
+        if (item.asset) {
+          return (
+            item.assetWidth !== null &&
+            item.assetWidth > 0 &&
+            item.assetHeight !== null &&
+            item.assetHeight > 0 &&
+            existsSync(resolve(publicDirectory, item.asset.replace(/^\//, '')))
+          );
+        }
+        return item.questionText !== null && item.questionText.length > 0;
+      }),
     ).toBe(true);
   });
 });

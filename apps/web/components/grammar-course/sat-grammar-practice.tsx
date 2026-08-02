@@ -16,6 +16,17 @@ import styles from './sat-grammar.module.css';
 const answers: SatGrammarPracticeAnswer[] = ['A', 'B', 'C', 'D'];
 const sessionSize = 20;
 const difficultyLabels = { Easy: '简单', Medium: '中等', Hard: '困难' } as const;
+const verificationLabels = {
+  original_answer: '答案已核验',
+  inferred_duplicate: '同题答案已核验',
+  pending_verification: '答案待核验',
+  conflict_review: '答案来源冲突',
+} as const;
+
+interface PracticeResult {
+  correct: boolean | null;
+  gradable: boolean;
+}
 
 function shuffleItems(items: SatGrammarPracticeItem[]): SatGrammarPracticeItem[] {
   const shuffled = [...items];
@@ -40,7 +51,7 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
   const [index, setIndex] = useState(0);
   const [selected, setSelected] = useState<SatGrammarPracticeAnswer | null>(null);
   const [revealed, setRevealed] = useState(false);
-  const [results, setResults] = useState<boolean[]>([]);
+  const [results, setResults] = useState<PracticeResult[]>([]);
   const [completed, setCompleted] = useState(false);
 
   const sessionItems = useMemo(
@@ -48,10 +59,14 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
     [offset, pool],
   );
   const item = sessionItems[index] ?? null;
-  const correctCount = results.filter(Boolean).length;
-  const accuracy = results.length ? Math.round((correctCount / results.length) * 100) : 0;
+  const gradedResults = results.filter((result) => result.gradable);
+  const correctCount = gradedResults.filter((result) => result.correct).length;
+  const reviewCount = results.length - gradedResults.length;
+  const accuracy = gradedResults.length
+    ? Math.round((correctCount / gradedResults.length) * 100)
+    : null;
   const progress = sessionItems.length
-    ? Math.round(((results.length + (revealed ? 0 : 0)) / sessionItems.length) * 100)
+    ? Math.round((results.length / sessionItems.length) * 100)
     : 0;
 
   function resetQuestionState() {
@@ -80,7 +95,11 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
 
   function submitAnswer() {
     if (!item || !selected || revealed) return;
-    setResults((current) => [...current, selected === item.answer]);
+    const gradable = item.gradable && item.answer !== null;
+    setResults((current) => [
+      ...current,
+      { correct: gradable ? selected === item.answer : null, gradable },
+    ]);
     setRevealed(true);
   }
 
@@ -108,7 +127,7 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
         </header>
         <div className={styles.practiceEmpty}>
           <CircleAlert aria-hidden size={19} />
-          <p>本章暂时没有题面完整且答案可核验的互动题，可以先学习知识点。</p>
+          <p>本章暂时没有对应练习题，可以先学习知识点。</p>
         </div>
       </div>
     );
@@ -128,17 +147,25 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
         </header>
         <section aria-label="本组成绩" className={styles.practiceResult}>
           <div>
-            <span>正确率</span>
-            <strong>{accuracy}%</strong>
+            <span>已完成</span>
+            <strong>{results.length}</strong>
           </div>
           <div>
-            <span>答对</span>
+            <span>已核验题正确率</span>
+            <strong>{accuracy === null ? '—' : `${accuracy}%`}</strong>
+          </div>
+          <div>
+            <span>已核验题答对</span>
             <strong>
-              {correctCount}/{sessionItems.length}
+              {correctCount}/{gradedResults.length}
             </strong>
           </div>
           <div>
-            <span>题库</span>
+            <span>待核验题</span>
+            <strong>{reviewCount}</strong>
+          </div>
+          <div>
+            <span>完整题库</span>
             <strong>{practice.totalCount}</strong>
           </div>
         </section>
@@ -167,7 +194,9 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
     );
   }
 
-  const isCorrect = revealed && selected === item.answer;
+  const gradable = item.gradable && item.answer !== null;
+  const isCorrect = gradable && revealed && selected === item.answer;
+  const feedbackStatus = gradable ? (isCorrect ? 'correct' : 'incorrect') : 'pending';
 
   return (
     <div className={styles.page}>
@@ -193,7 +222,7 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
           <span>
             本组第 {index + 1} / {sessionItems.length} 题
           </span>
-          <span>题库共 {practice.totalCount} 题</span>
+          <span>完整题库共 {practice.totalCount} 题</span>
         </div>
         <div
           aria-label="本组作答进度"
@@ -212,28 +241,51 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
           <span>{item.id}</span>
           <span>{item.category}</span>
           <span>{difficultyLabels[item.difficulty]}</span>
+          <span data-verification={gradable ? 'verified' : 'pending'}>
+            {verificationLabels[item.answerStatus]}
+          </span>
         </header>
 
-        <div className={styles.questionImage}>
-          <Image
-            alt={`${item.id} SAT语法题题干与四个选项`}
-            height={item.assetHeight}
-            priority={index === 0}
-            sizes="(max-width: 900px) 100vw, 920px"
-            src={item.asset}
-            width={item.assetWidth}
-          />
-        </div>
+        {item.asset && item.assetWidth && item.assetHeight ? (
+          <div className={styles.questionImage}>
+            <Image
+              alt={`${item.id} SAT语法题题干与四个选项`}
+              height={item.assetHeight}
+              priority={index === 0}
+              sizes="(max-width: 900px) 100vw, 920px"
+              src={item.asset}
+              width={item.assetWidth}
+            />
+          </div>
+        ) : (
+          <section aria-label={`${item.id} 题面`} className={styles.textQuestion}>
+            <p>{item.questionText || '该题的原始文本题面正在整理。'}</p>
+            {item.choiceTexts.length === 4 ? (
+              <ol className={styles.textChoices}>
+                {item.choiceTexts.map((choice, choiceIndex) => (
+                  <li key={answers[choiceIndex]}>
+                    <strong>{answers[choiceIndex]}</strong>
+                    <span>{choice}</span>
+                  </li>
+                ))}
+              </ol>
+            ) : null}
+          </section>
+        )}
 
         <section aria-label="选择答案" className={styles.answerPanel}>
-          <p>选择答案</p>
+          <p>{gradable ? '选择答案（提交后即时判分）' : '选择答案（本题待核验，不计分）'}</p>
           <div className={styles.answerChoices}>
             {answers.map((answer) => {
               const state = revealed
-                ? answer === item.answer
-                  ? 'correct'
+                ? gradable
+                  ? answer === item.answer
+                    ? 'correct'
+                    : answer === selected
+                      ? 'incorrect'
+                      : 'idle'
                   : answer === selected
-                    ? 'incorrect'
+                    ? 'recorded'
                     : 'idle'
                 : selected === answer
                   ? 'selected'
@@ -256,10 +308,22 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
         </section>
 
         {revealed ? (
-          <section className={styles.answerFeedback} data-correct={isCorrect}>
+          <section className={styles.answerFeedback} data-status={feedbackStatus}>
             <header>
-              {isCorrect ? <Check aria-hidden size={18} /> : <X aria-hidden size={18} />}
-              <strong>{isCorrect ? '回答正确' : `回答错误，正确答案是 ${item.answer}`}</strong>
+              {!gradable ? (
+                <CircleAlert aria-hidden size={18} />
+              ) : isCorrect ? (
+                <Check aria-hidden size={18} />
+              ) : (
+                <X aria-hidden size={18} />
+              )}
+              <strong>
+                {!gradable
+                  ? '选择已记录，答案待核验'
+                  : isCorrect
+                    ? '回答正确'
+                    : `回答错误，正确答案是 ${item.answer}`}
+              </strong>
             </header>
             <p>{item.explanation}</p>
           </section>
@@ -278,7 +342,7 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
               onClick={submitAnswer}
               type="button"
             >
-              提交答案
+              {gradable ? '提交答案' : '记录选择'}
               <Check size={15} />
             </button>
           )}
@@ -286,7 +350,7 @@ export function SatGrammarPractice({ practice }: { practice: SatGrammarPracticeS
       </article>
 
       <p className={styles.sourceNote}>
-        题目来源：{practice.source}。互动题仅采用题面完整且答案可核验的记录。
+        题目来源：{practice.source}。题库共 985 道；只有答案来源一致且可核验的题目计入正确率。
       </p>
     </div>
   );
