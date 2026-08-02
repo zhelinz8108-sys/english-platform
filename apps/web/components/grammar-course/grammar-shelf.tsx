@@ -2,14 +2,21 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { ArrowRight, BookOpenText } from 'lucide-react';
+import { ArrowRight, BookCopy, BookOpenText } from 'lucide-react';
 import { grammarBasePath } from './grammar-api';
 import styles from './sat-grammar.module.css';
 
 export function GrammarShelf({
-  summary,
+  satSummary,
+  otherSummary,
 }: {
-  summary: {
+  satSummary: {
+    chapterCount: number;
+    appendixCount: number;
+    ruleCount: number;
+    examplePairCount: number;
+  };
+  otherSummary: {
     chapterCount: number;
     appendixCount: number;
     ruleCount: number;
@@ -41,8 +48,30 @@ export function GrammarShelf({
             <strong>SAT语法</strong>
             <p>从句子边界与标点开始，系统学习动词、代词、修饰语、平行结构、所有格与比较。</p>
             <span className={styles.courseMeta}>
-              {summary.chapterCount} 章 · {summary.appendixCount} 个附录 · {summary.ruleCount}{' '}
-              个规则 · {summary.examplePairCount} 组正误例句
+              {satSummary.chapterCount} 章 · {satSummary.appendixCount} 个附录 ·{' '}
+              {satSummary.ruleCount} 个规则 · {satSummary.examplePairCount} 组正误例句
+            </span>
+          </span>
+          <span className={styles.courseAction}>
+            进入课程
+            <ArrowRight aria-hidden size={16} />
+          </span>
+        </Link>
+
+        <Link className={styles.courseCard} href={`${base}/other`}>
+          <span className={styles.courseIcon}>
+            <BookCopy aria-hidden size={22} />
+          </span>
+          <span className={styles.courseCopy}>
+            <small>Grammar Beyond SAT</small>
+            <strong>其他语法</strong>
+            <p>
+              汇总剑桥初级、中级与高级英语语法中，SAT
+              课程尚未覆盖的时态语义、情态、冠词、数量词、介词和高级句式。
+            </p>
+            <span className={styles.courseMeta}>
+              {otherSummary.chapterCount} 章 · {otherSummary.ruleCount} 个非重复知识点 ·{' '}
+              {otherSummary.examplePairCount} 组正误例句
             </span>
           </span>
           <span className={styles.courseAction}>
