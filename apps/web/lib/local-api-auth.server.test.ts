@@ -37,13 +37,7 @@ describe('authorizeLocalApiRequest', () => {
 
   it('allows an explicitly enabled local demo after same-origin validation', async () => {
     const fetcher = vi.fn<typeof fetch>();
-    const response = await authorizeLocalApiRequest(
-      request(),
-      fetcher,
-      undefined,
-      undefined,
-      true,
-    );
+    const response = await authorizeLocalApiRequest(request(), fetcher, undefined, undefined, true);
 
     expect(response).toBeNull();
     expect(fetcher).not.toHaveBeenCalled();
