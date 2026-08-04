@@ -53,7 +53,10 @@ if (-not $accessKeyId -or -not $accessKeySecret) {
 }
 
 New-Item -ItemType Directory -Path $stagingPath -Force | Out-Null
-New-Item -ItemType Directory -Path (Split-Path -Parent $statePath) -Force | Out-Null
+$stateParent = Split-Path -Parent $statePath
+if (-not (Test-Path -LiteralPath $stateParent -PathType Container)) {
+  New-Item -ItemType Directory -Path $stateParent -Force | Out-Null
+}
 $resolvedStaging = (Resolve-Path -LiteralPath $stagingPath).Path.TrimEnd('\')
 
 $state = @{}
