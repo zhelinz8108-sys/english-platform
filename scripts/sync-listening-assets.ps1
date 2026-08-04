@@ -61,7 +61,7 @@ try {
       $candidate = Get-ChildItem -LiteralPath $repositoryRoot -File |
         Where-Object {
           $_.Extension -eq '.csv' -and
-          (Get-Content -LiteralPath $_.FullName -TotalCount 1) -match 'AccessKeyId'
+          (Get-Content -LiteralPath $_.FullName -TotalCount 1) -match 'AccessKey\s*ID'
         } |
         Select-Object -First 1
       if (-not $candidate) {
@@ -70,14 +70,24 @@ try {
       $CredentialsCsv = $candidate.FullName
     }
     $credential = Import-Csv -LiteralPath $CredentialsCsv | Select-Object -First 1
-    if (-not $credential.AccessKeyId -or -not $credential.AccessKeySecret) {
-      throw 'The credential CSV must contain AccessKeyId and AccessKeySecret.'
+    $accessKeyId = if ($credential.AccessKeyId) {
+      $credential.AccessKeyId
+    } else {
+      $credential.'AccessKey ID'
+    }
+    $accessKeySecret = if ($credential.AccessKeySecret) {
+      $credential.AccessKeySecret
+    } else {
+      $credential.'AccessKey Secret'
+    }
+    if (-not $accessKeyId -or -not $accessKeySecret) {
+      throw 'The credential CSV must contain AccessKeyId/AccessKeySecret or the official AccessKey ID/AccessKey Secret headers.'
     }
     $env:S3_ENDPOINT = $Endpoint
     $env:S3_REGION = $Region
     $env:S3_BUCKET = $Bucket
-    $env:S3_ACCESS_KEY = $credential.AccessKeyId
-    $env:S3_SECRET_KEY = $credential.AccessKeySecret
+    $env:S3_ACCESS_KEY = $accessKeyId
+    $env:S3_SECRET_KEY = $accessKeySecret
     $env:S3_FORCE_PATH_STYLE = 'false'
   }
 
@@ -105,4 +115,6 @@ try {
     [Environment]::SetEnvironmentVariable($name, $previous[$name], 'Process')
   }
   $credential = $null
+  $accessKeyId = $null
+  $accessKeySecret = $null
 }
