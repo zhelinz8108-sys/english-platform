@@ -138,8 +138,8 @@ def save_derivative(
 
 
 def separation_input(source: Path, destination: Path) -> tuple[Path, bool]:
-    """Return an input Demucs can decode, extracting MP4 audio when needed."""
-    if source.suffix.lower() != ".mp4":
+    """Return a WAV input Demucs can decode across inconsistent containers."""
+    if source.suffix.lower() == ".wav":
         return source, False
     wave_path = destination.with_name(f"{destination.stem}.source.wav")
     wave_path.unlink(missing_ok=True)
