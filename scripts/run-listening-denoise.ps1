@@ -61,7 +61,7 @@ $resolvedStaging = (Resolve-Path -LiteralPath $stagingPath).Path.TrimEnd('\')
 
 $state = @{}
 if (Test-Path -LiteralPath $statePath -PathType Leaf) {
-  $loadedState = Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json
+  $loadedState = Get-Content -LiteralPath $statePath -Raw -Encoding UTF8 | ConvertFrom-Json
   foreach ($property in $loadedState.PSObject.Properties) {
     $state[$property.Name] = [int]$property.Value
   }
@@ -118,7 +118,7 @@ try {
         throw "Denoise batch failed for $collection from sequence $nextSequence."
       }
 
-      $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
+      $manifest = Get-Content -LiteralPath $manifestPath -Raw -Encoding UTF8 | ConvertFrom-Json
       if ($manifest.entries.Count -eq 0) {
         Remove-Item -LiteralPath $batchDirectory -Recurse -Force
         break
