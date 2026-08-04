@@ -6,7 +6,16 @@ import type { ApiRequest } from '../common/request.js';
 import { LearningService } from './learning.service.js';
 
 const listeningQuery = z.object({
-  collection: z.enum(['minute-earth', 'bbc-6-minute-english']).optional(),
+  collection: z
+    .enum([
+      'bbc-english-in-a-minute',
+      'bbc-6-minute-english',
+      'voa-standard-english',
+      'minute-earth',
+      'scientific-american-60-second',
+      'short-wave',
+    ])
+    .optional(),
   query: z.string().trim().max(120).optional(),
   pageSize: z.coerce.number().int().min(1).max(2000).default(300),
 });

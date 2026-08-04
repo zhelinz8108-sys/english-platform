@@ -35,6 +35,20 @@ describe('authorizeLocalApiRequest', () => {
     );
   });
 
+  it('allows an explicitly enabled local demo after same-origin validation', async () => {
+    const fetcher = vi.fn<typeof fetch>();
+    const response = await authorizeLocalApiRequest(
+      request(),
+      fetcher,
+      undefined,
+      undefined,
+      true,
+    );
+
+    expect(response).toBeNull();
+    expect(fetcher).not.toHaveBeenCalled();
+  });
+
   it('fails closed when the API rejects or cannot verify the session', async () => {
     const rejected = vi.fn<typeof fetch>().mockResolvedValue(new Response('{}', { status: 401 }));
     const unavailable = vi.fn<typeof fetch>().mockRejectedValue(new Error('offline'));

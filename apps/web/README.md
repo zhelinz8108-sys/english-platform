@@ -19,8 +19,12 @@ X-CSRF-Token。关键命令使用 Idempotency-Key，错误按 RFC 7807 展示。
 
 无后端演示模式通过 `/api/local-listening` 读取生成的听力目录，并从本地源目录按需流式播放音频和 PDF：
 
-- `MINUTE_EARTH_SOURCE_DIR`：Minute Earth 根目录。
+- `BBC_MINUTE_SOURCE_DIR`：BBC 一分钟英语根目录。
 - `BBC_LISTENING_SOURCE_DIR`：BBC 资料根目录。
+- `VOA_STANDARD_SOURCE_DIR`：VOA 常速英语解压目录。
+- `MINUTE_EARTH_SOURCE_DIR`：MinuteEarth 根目录。
+- `SCIENTIFIC_AMERICAN_SOURCE_DIR`：科学美国人 60 秒解压目录。
+- `SHORT_WAVE_SOURCE_DIR`：NPR Short Wave 根目录。
 - `ENABLE_LOCAL_LISTENING=true`：在非演示模式显式启用本地媒体接口。
 
 目录由 `scripts/build-local-listening-library.py` 生成。脚本只把目录、原文和词汇写入仓库，不复制大体积音频；生产环境仍应把媒体上传至 COS，并通过正式 API 返回签名地址。

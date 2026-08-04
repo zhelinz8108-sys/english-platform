@@ -27,6 +27,29 @@ function listeningSourceHash(item) {
   return createHash('sha256').update(canonical, 'utf8').digest('hex');
 }
 
+function audioProfile(item) {
+  const extension = path.extname(item.audioPath).toLowerCase();
+  const profiles = {
+    '.aac': 'audio/aac',
+    '.m4a': 'audio/mp4',
+    '.mp3': 'audio/mpeg',
+    '.mp4': 'audio/mp4',
+    '.ogg': 'audio/ogg',
+    '.opus': 'audio/ogg',
+    '.wav': 'audio/wav',
+    '.wma': 'audio/x-ms-wma',
+  };
+  return {
+    extension: Object.hasOwn(profiles, extension) ? extension : '.mp3',
+    mediaType: profiles[extension] ?? 'audio/mpeg',
+  };
+}
+
+function defaultObjectKey(item) {
+  const profile = audioProfile(item);
+  return `tenants/${tenantId}/toefl/listening/${collection}/${String(item.sequence).padStart(4, '0')}${profile.extension}`;
+}
+
 function assertItem(item) {
   if (typeof item?.id !== 'string' || !item.id.trim())
     throw new Error('Item source ID is missing.');
@@ -158,7 +181,8 @@ try {
     async function uploadNext() {
       while (nextIndex < prepared.length) {
         const { item, audioFile, sizeBytes } = prepared[nextIndex++];
-        const objectKey = `tenants/${tenantId}/toefl/listening/${collection}/${String(item.sequence).padStart(4, '0')}.mp3`;
+        const objectKey = defaultObjectKey(item);
+        const { mediaType } = audioProfile(item);
         const current = await objectMetadata(objectKey, { tolerateForbidden: true });
         const currentSize = Number(current?.ContentLength);
         const currentSha256 = current?.Metadata?.sha256;
@@ -175,7 +199,7 @@ try {
               Bucket: bucket,
               Key: objectKey,
               Body: bytes,
-              ContentType: 'audio/mpeg',
+              ContentType: mediaType,
               ContentLength: bytes.length,
               Metadata: { sha256, 'tenant-id': tenantId, 'file-id': fileId },
             }),
@@ -235,17 +259,16 @@ try {
         const current = existing.rows[0];
         let fileId = current?.file_object_id ?? uuidv7();
         const assetId = current?.id ?? uuidv7();
-        let objectKey =
-          current?.storage_key ??
-          `tenants/${tenantId}/toefl/listening/${collection}/${String(item.sequence).padStart(4, '0')}.mp3`;
+        let objectKey = current?.storage_key ?? defaultObjectKey(item);
+        const { mediaType } = audioProfile(item);
 
         let sizeBytes = preparedSizeBytes;
         let sha256 = null;
         if (registerOnly) {
-          const defaultObjectKey = `tenants/${tenantId}/toefl/listening/${collection}/${String(item.sequence).padStart(4, '0')}.mp3`;
+          const expectedObjectKey = defaultObjectKey(item);
           let metadata = await objectMetadata(objectKey);
-          if (!metadata && objectKey !== defaultObjectKey) {
-            objectKey = defaultObjectKey;
+          if (!metadata && objectKey !== expectedObjectKey) {
+            objectKey = expectedObjectKey;
             metadata = await objectMetadata(objectKey);
           }
           if (!metadata) {
@@ -267,7 +290,7 @@ try {
               Bucket: bucket,
               Key: objectKey,
               Body: bytes,
-              ContentType: 'audio/mpeg',
+              ContentType: mediaType,
               ContentLength: bytes.length,
               Metadata: { sha256, 'tenant-id': tenantId, 'file-id': fileId },
             }),
@@ -282,7 +305,8 @@ try {
             if (sha256) {
               await sql`
               update file_objects
-              set size_bytes = ${sizeBytes}, sha256 = ${sha256}, status = 'ready', updated_at = now()
+              set size_bytes = ${sizeBytes}, sha256 = ${sha256}, media_type = ${mediaType},
+                  status = 'ready', updated_at = now()
               where tenant_id = ${tenantId}::uuid and id = ${fileId}::uuid
             `.execute(transaction);
             }
@@ -300,7 +324,7 @@ try {
               status, created_by_membership_id, created_at, updated_at
             ) values (
               ${fileId}::uuid, ${tenantId}::uuid, ${objectKey}, 'content_attachment',
-              'audio/mpeg', ${sizeBytes}, ${sha256}, 'ready',
+              ${mediaType}, ${sizeBytes}, ${sha256}, 'ready',
               ${ownerMembershipId}::uuid, now(), now()
             )
           `.execute(transaction);

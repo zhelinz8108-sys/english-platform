@@ -7,7 +7,9 @@ import {
 
 export const dynamic = 'force-dynamic';
 
-const collectionIds = new Set<LocalListeningCollectionId>(['minute-earth', 'bbc-6-minute-english']);
+const collectionIds = new Set<LocalListeningCollectionId>(
+  getLocalListeningCollections().map((collection) => collection.id),
+);
 
 export function GET(request: Request) {
   if (!localListeningEnabled()) {

@@ -2850,9 +2850,20 @@ strong {
   color: var(--brand-700);
 }
 
-.listening-collection-tab span {
+.listening-collection-tab-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.listening-collection-tab-copy strong {
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 15px;
+  font-weight: 600;
+}
+
+.listening-collection-tab-copy span {
+  color: var(--ink-500);
+  font-size: 10px;
 }
 
 .listening-collection-tab small {

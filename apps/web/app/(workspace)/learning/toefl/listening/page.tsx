@@ -15,13 +15,22 @@ import { useWorkspace } from '@/components/workspace-provider';
 import { ApiProblemError, apiRequest, isDemoMode, tenantPath } from '@/lib/api';
 import { createProgressEventId, recordSelfStudyProgress } from '@/lib/self-study-progress';
 
-type ListeningCollectionId = 'minute-earth' | 'bbc-6-minute-english';
+type ListeningCollectionId =
+  | 'bbc-english-in-a-minute'
+  | 'bbc-6-minute-english'
+  | 'voa-standard-english'
+  | 'minute-earth'
+  | 'scientific-american-60-second'
+  | 'short-wave';
 type BbcYearFilter = number | 'all' | 'latest';
 
 interface ListeningCollection {
   id: ListeningCollectionId;
   label: string;
   description: string;
+  difficulty: string;
+  audience: string;
+  rank: number;
   count: number;
 }
 
@@ -132,16 +141,58 @@ interface ListeningResponse {
 
 const fallbackCollections: ListeningCollection[] = [
   {
-    id: 'minute-earth',
-    label: 'Minute Earth',
-    description: '科学与地球主题短篇，含音频、英文原文和 TOEFL/SAT 词汇。',
-    count: 270,
+    id: 'bbc-english-in-a-minute',
+    label: 'BBC 一分钟英语',
+    description: '一分钟语法与用法短讲，适合建立基础听辨与高频表达。',
+    difficulty: 'A2',
+    audience: '初一–初二',
+    rank: 1,
+    count: 268,
   },
   {
     id: 'bbc-6-minute-english',
     label: 'BBC 6 Minute English',
-    description: 'BBC 六分钟英语，含音频、原版对话稿和全库首次出现词汇。',
+    description: 'BBC 六分钟英语，含音频、原版对话稿和重点词汇。',
+    difficulty: 'B1–B2',
+    audience: '初三优秀生–高中',
+    rank: 2,
     count: 863,
+  },
+  {
+    id: 'voa-standard-english',
+    label: 'VOA 常速英语新闻',
+    description: '常速国际新闻报道，配套英文逐字稿，训练真实新闻语速。',
+    difficulty: 'B2',
+    audience: '高一–高二',
+    rank: 3,
+    count: 1546,
+  },
+  {
+    id: 'minute-earth',
+    label: 'MinuteEarth',
+    description: '科学与地球主题短篇，含音频、英文原文和 TOEFL/SAT 词汇。',
+    difficulty: 'B2',
+    audience: '高中；配合画面更易理解',
+    rank: 4,
+    count: 270,
+  },
+  {
+    id: 'scientific-american-60-second',
+    label: '科学美国人 60 秒',
+    description: '一分钟科学新闻与研究解读，语速快、信息密度高。',
+    difficulty: 'B2+–C1',
+    audience: '高中优秀生–大学',
+    rank: 5,
+    count: 773,
+  },
+  {
+    id: 'short-wave',
+    label: 'Short Wave',
+    description: 'NPR 科学播客，包含自然对话、采访与完整英文逐字稿。',
+    difficulty: 'B2+–C1',
+    audience: '高中优秀生–大学',
+    rank: 6,
+    count: 699,
   },
 ];
 
@@ -579,7 +630,7 @@ export default function ToeflListeningPage() {
             返回托福
           </ButtonLink>
         }
-        description="选择 Minute Earth 或 BBC 6 Minute English，学习音频、原文与重点词汇。"
+        description="按难度从 A2 到 C1 选择资料库，学习音频、英文原文与重点词汇。"
         eyebrow="英语 · 听力"
         title="听力资料库"
       />
@@ -611,8 +662,13 @@ export default function ToeflListeningPage() {
             role="tab"
             type="button"
           >
-            <span>{collection.label}</span>
-            <small>{collection.count} 组</small>
+            <span className="listening-collection-tab-copy">
+              <strong>{collection.label}</strong>
+              <span>
+                {collection.difficulty} · {collection.audience}
+              </span>
+            </span>
+            <small>{collection.count.toLocaleString('zh-CN')} 组</small>
           </button>
         ))}
       </div>
@@ -624,7 +680,7 @@ export default function ToeflListeningPage() {
           </span>
           <div>
             <strong>选择一个听力资料库</strong>
-            <p>点击上方 Minute Earth 或 BBC 6 Minute English 后，再展开具体学习内容。</p>
+            <p>点击上方任一资料库后，再展开具体学习内容；资料已按难度从易到难排列。</p>
           </div>
         </div>
       ) : null}

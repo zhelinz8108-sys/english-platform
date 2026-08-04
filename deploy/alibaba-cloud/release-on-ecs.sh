@@ -73,7 +73,13 @@ import_mounts=(
   -v "${staging_dir}/apps/api/scripts:/app/apps/api/scripts:ro"
   -v "${staging_dir}/apps/web/data:/app/apps/web/data:ro"
 )
-for collection in minute-earth bbc-6-minute-english; do
+for collection in \
+  bbc-english-in-a-minute \
+  bbc-6-minute-english \
+  voa-standard-english \
+  minute-earth \
+  scientific-american-60-second \
+  short-wave; do
   "${compose[@]}" run --rm --no-deps --interactive=false "${import_mounts[@]}" --entrypoint node api \
     apps/api/scripts/import-listening-library.mjs \
     "--collection=${collection}" \

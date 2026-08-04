@@ -46,7 +46,14 @@ export class LearningService {
   listListening(
     request: ApiRequest,
     input: {
-      collection?: 'minute-earth' | 'bbc-6-minute-english' | undefined;
+      collection?:
+        | 'bbc-english-in-a-minute'
+        | 'bbc-6-minute-english'
+        | 'voa-standard-english'
+        | 'minute-earth'
+        | 'scientific-american-60-second'
+        | 'short-wave'
+        | undefined;
       query?: string | undefined;
       pageSize: number;
     },
@@ -116,16 +123,58 @@ export class LearningService {
         })),
         collections: [
           {
-            id: 'minute-earth',
-            label: 'Minute Earth',
-            description: '科学与地理主题短篇，含音频、英文原文和 TOEFL/SAT 词汇。',
-            count: counts.get('minute-earth') ?? 0,
+            id: 'bbc-english-in-a-minute',
+            label: 'BBC 一分钟英语',
+            description: '一分钟语法与用法短讲，适合建立基础听辨与高频表达。',
+            difficulty: 'A2',
+            audience: '初一–初二',
+            rank: 1,
+            count: counts.get('bbc-english-in-a-minute') ?? 0,
           },
           {
             id: 'bbc-6-minute-english',
             label: 'BBC 6 Minute English',
             description: 'BBC 六分钟英语，含音频、原版对话稿和重点词汇。',
+            difficulty: 'B1–B2',
+            audience: '初三优秀生–高中',
+            rank: 2,
             count: counts.get('bbc-6-minute-english') ?? 0,
+          },
+          {
+            id: 'voa-standard-english',
+            label: 'VOA 常速英语新闻',
+            description: '常速国际新闻报道，配套英文逐字稿，训练真实新闻语速。',
+            difficulty: 'B2',
+            audience: '高一–高二',
+            rank: 3,
+            count: counts.get('voa-standard-english') ?? 0,
+          },
+          {
+            id: 'minute-earth',
+            label: 'MinuteEarth',
+            description: '科学与地理主题短篇，含音频、英文原文和 TOEFL/SAT 词汇。',
+            difficulty: 'B2',
+            audience: '高中；配合画面更易理解',
+            rank: 4,
+            count: counts.get('minute-earth') ?? 0,
+          },
+          {
+            id: 'scientific-american-60-second',
+            label: '科学美国人 60 秒',
+            description: '一分钟科学新闻与研究解读，语速快、信息密度高。',
+            difficulty: 'B2+–C1',
+            audience: '高中优秀生–大学',
+            rank: 5,
+            count: counts.get('scientific-american-60-second') ?? 0,
+          },
+          {
+            id: 'short-wave',
+            label: 'Short Wave',
+            description: 'NPR 科学播客，包含自然对话、采访与完整英文逐字稿。',
+            difficulty: 'B2+–C1',
+            audience: '高中优秀生–大学',
+            rank: 6,
+            count: counts.get('short-wave') ?? 0,
           },
         ],
         page: {

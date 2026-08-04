@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Build the local Minute Earth + BBC listening catalogue used by demo mode."""
+"""Build the complete local listening catalogue used by demo and production import."""
 
 from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import html
 import json
 import logging
@@ -32,11 +33,21 @@ except ImportError:  # IPA is helpful but catalogue generation can continue with
 logging.getLogger("pypdf").setLevel(logging.ERROR)
 
 
-AUDIO_EXTENSIONS = {".mp3", ".wav", ".m4a", ".aac", ".flac", ".ogg", ".opus", ".wma"}
+AUDIO_EXTENSIONS = {".mp3", ".mp4", ".wav", ".m4a", ".aac", ".flac", ".ogg", ".opus", ".wma"}
+LEGACY_AUDIO_EXTENSIONS = AUDIO_EXTENSIONS - {".mp4"}
 DOCUMENT_EXTENSIONS = {".pdf", ".docx"}
+TRANSCRIPT_EXTENSIONS = {".srt", ".lrc", ".txt", ".pdf", ".docx"}
 DUPLICATE_SUFFIX = re.compile(r"\s*\(\d+\)$")
 DATE_PATTERN = re.compile(r"(?<!\d)(20\d{6}|\d{6})(?!\d)")
 BBC_YEAR_PATTERN = re.compile(r"(?<!\d)(20\d{2})(?!\d)")
+MONTH_PATTERN = re.compile(r"(?<!\d)(20\d{4})(?!\d)")
+SRT_TIMECODE_PATTERN = re.compile(
+    r"^\s*\d{1,2}:\d{2}(?::\d{2})?[,.]\d{2,3}\s*-->\s*\d{1,2}:\d{2}(?::\d{2})?[,.]\d{2,3}.*$"
+)
+INLINE_TIMESTAMP_PATTERN = re.compile(
+    r"^\s*(?:\[\d{1,2}:\d{2}(?::\d{2})?(?:[.:-]\d{1,3})?(?:\s*-\s*\d{1,2}:\d{2}(?::\d{2})?(?:[.:-]\d{1,3})?)?\]\s*)+"
+)
+CJK_PATTERN = re.compile(r"[\u3400-\u9fff]")
 WORD_PATTERN = re.compile(r"\b[A-Za-z][A-Za-z'-]{3,}\b")
 TERM_PATTERN = re.compile(
     r"^(?:[A-Za-z(][A-Za-z'()/-]*)(?: [A-Za-z(][A-Za-z'()/-]*){0,7}$"
@@ -144,6 +155,10 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--minute-earth-root", type=Path, required=True)
     parser.add_argument("--minute-earth-study-content", type=Path, required=True)
     parser.add_argument("--bbc-root", type=Path, required=True)
+    parser.add_argument("--bbc-minute-root", type=Path)
+    parser.add_argument("--voa-standard-root", type=Path)
+    parser.add_argument("--scientific-american-root", type=Path)
+    parser.add_argument("--short-wave-root", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument(
         "--dictionary",
@@ -190,6 +205,104 @@ def audio_duration(path: Path) -> int | None:
         return round(float(audio.info.length))
     except Exception:
         return None
+
+
+def stable_source_id(prefix: str, path: Path, root: Path, title: str) -> str:
+    relative = path.relative_to(root).as_posix().casefold()
+    digest = hashlib.sha1(relative.encode("utf-8")).hexdigest()[:12]
+    return f"{prefix}-{digest}-{slug(title)[:36]}".rstrip("-")
+
+
+def read_text_fallback(path: Path) -> str:
+    for encoding in ("utf-8-sig", "utf-16", "gb18030", "cp1252"):
+        try:
+            return path.read_text(encoding=encoding)
+        except (UnicodeDecodeError, UnicodeError):
+            continue
+    return path.read_text(encoding="utf-8", errors="replace")
+
+
+def english_only_transcript(text: str) -> str:
+    text = html.unescape(text).replace("\x00", "").replace("\r\n", "\n").replace("\r", "\n")
+    kept: list[str] = []
+    previous = ""
+    for raw_line in text.splitlines():
+        line = INLINE_TIMESTAMP_PATTERN.sub("", raw_line)
+        line = re.sub(r"<[^>]+>", "", line)
+        line = re.sub(r"\{\\[^}]+\}", "", line)
+        line = re.sub(r"[ \t]+", " ", line).strip()
+        if not line or line.isdigit() or SRT_TIMECODE_PATTERN.fullmatch(line):
+            continue
+        latin_words = re.findall(r"[A-Za-z][A-Za-z'’-]*", line)
+        if CJK_PATTERN.search(line):
+            english_segments = re.split(r"[\u3400-\u9fff]+", line)
+            line = max(
+                english_segments,
+                key=lambda segment: len(re.findall(r"[A-Za-z][A-Za-z'’-]*", segment)),
+            ).strip(" ：:，,。；;\t")
+            latin_words = re.findall(r"[A-Za-z][A-Za-z'’-]*", line)
+        if not latin_words or len(latin_words) < 3:
+            continue
+        normalized = line.casefold()
+        if normalized in {
+            "bbc learning english",
+            "english in a minute",
+            "this is not a word-for-word transcript",
+        }:
+            continue
+        if normalized == previous:
+            continue
+        kept.append(line)
+        previous = normalized
+    return "\n".join(kept).strip()
+
+
+@lru_cache(maxsize=None)
+def extract_transcript(path: Path) -> tuple[str, int]:
+    if path.suffix.casefold() in {".pdf", ".docx"}:
+        text, _ = extract_document(path)
+    else:
+        text = read_text_fallback(path)
+    transcript = english_only_transcript(text)
+    return transcript, len(re.findall(r"\b[A-Za-z][A-Za-z'’-]*\b", transcript))
+
+
+def normalized_file_key(value: str) -> str:
+    value = DUPLICATE_SUFFIX.sub("", value.casefold())
+    value = value.replace("&", " and ")
+    return "".join(re.findall(r"[a-z0-9\u3400-\u9fff]+", value))
+
+
+def same_parent_transcript(audio: Path, candidates: list[Path]) -> Path | None:
+    siblings = [candidate for candidate in candidates if candidate.parent == audio.parent]
+    if not siblings:
+        return None
+    direct = [candidate for candidate in siblings if candidate.stem.casefold() == audio.stem.casefold()]
+    if direct:
+        return preferred_transcript(direct)
+    audio_key = normalized_file_key(audio.stem)
+    exact = [candidate for candidate in siblings if normalized_file_key(candidate.stem) == audio_key]
+    if len(exact) == 1:
+        return preferred_transcript(exact)
+    audio_date = normalized_date_token(audio.stem) or normalized_date_token(audio.parent.name)
+    dated = [
+        candidate
+        for candidate in siblings
+        if audio_date
+        and (normalized_date_token(candidate.stem) or normalized_date_token(candidate.parent.name))
+        == audio_date
+    ]
+    if len(dated) == 1:
+        return dated[0]
+    sibling_media = [path for path in audio.parent.iterdir() if path.is_file() and path.suffix.casefold() in AUDIO_EXTENSIONS]
+    if len(siblings) == 1 and len(sibling_media) == 1:
+        return siblings[0]
+    return None
+
+
+def preferred_transcript(paths: list[Path]) -> Path:
+    priority = {".srt": 0, ".lrc": 1, ".txt": 2, ".pdf": 3, ".docx": 4}
+    return sorted(paths, key=lambda path: (priority.get(path.suffix.casefold(), 9), len(path.name), path.name))[0]
 
 
 def clean_pdf_text(text: str) -> str:
@@ -897,7 +1010,7 @@ def build_minute_earth(root: Path, study_path: Path) -> list[dict[str, Any]]:
     episodes = document.get("episodes", [])
     audio_candidates: dict[int, list[Path]] = {}
     for path in root.rglob("*"):
-        if not path.is_file() or path.suffix.lower() not in AUDIO_EXTENSIONS:
+        if not path.is_file() or path.suffix.lower() not in LEGACY_AUDIO_EXTENSIONS:
             continue
         match = re.match(r"^(\d{3})", path.name)
         if not match:
@@ -1009,7 +1122,7 @@ def build_bbc(root: Path, workers: int) -> list[dict[str, Any]]:
         if path.is_file() and path.suffix.casefold() in DOCUMENT_EXTENSIONS
     ]
     for path in root.rglob("*"):
-        if not path.is_file() or path.suffix.lower() not in AUDIO_EXTENSIONS:
+        if not path.is_file() or path.suffix.lower() not in LEGACY_AUDIO_EXTENSIONS:
             continue
         relative_parent = path.parent.relative_to(root).as_posix().casefold()
         key = relative_parent + "/" + canonical_stem(path).casefold()
@@ -1072,6 +1185,243 @@ def build_bbc(root: Path, workers: int) -> list[dict[str, Any]]:
     return items
 
 
+def year_from_path(path: Path, root: Path) -> int | None:
+    for part in path.relative_to(root).parts:
+        match = BBC_YEAR_PATTERN.search(part)
+        if match:
+            return int(match.group(1))
+    token = normalized_date_token(path.stem)
+    return int(token[:4]) if token else None
+
+
+def bbc_minute_episode_number(value: str) -> int | None:
+    value = value.casefold()
+    value = re.sub(r"^\d{6,8}", "", value)
+    if re.fullmatch(r"\d{2,3}", value):
+        return int(value)
+    match = re.match(r"(?:eiam[_ -]*)?(\d{2,3})(?:bbc|[_ -])", value)
+    return int(match.group(1)) if match else None
+
+
+def bbc_minute_title(value: str) -> str:
+    value = DUPLICATE_SUFFIX.sub("", value).strip(" \\_-")
+    value = re.sub(r"^\d+-\d+\s*", "", value)
+    value = re.sub(r"^\d{6,8}[_ -]*", "", value)
+    value = re.sub(r"^eiam[_ -]*(?:\d{2,3}[_ -]*)?", "", value, flags=re.IGNORECASE)
+    value = re.sub(r"^\d{2,3}bbc[_ -]*learning[_ -]*english[_ -]*", "", value, flags=re.IGNORECASE)
+    value = re.sub(r"^\d{2,3}bbc[_ -]*english[_ -]*in[_ -]*a[_ -]*minute[_ -]*", "", value, flags=re.IGNORECASE)
+    value = re.sub(r"\.(?:en(?:-gb)?|eng)$", "", value, flags=re.IGNORECASE)
+    value = re.sub(r"english\s+in\s+(?:a|m)\s+minute", "", value, flags=re.IGNORECASE)
+    value = re.sub(r"[_-]+", " ", value)
+    value = re.sub(r"\s+", " ", value).strip(" ._-")
+    return value or "BBC English in a Minute"
+
+
+def bbc_minute_key(path: Path) -> str:
+    if any("第三季" in part for part in path.parts):
+        session = re.search(r"session[_ -]*(\d+)", path.stem, flags=re.IGNORECASE)
+        if session:
+            return f"season-3:{int(session.group(1)):02d}"
+        if re.fullmatch(r"\d{1,2}", path.stem):
+            return f"season-3:{int(path.stem):02d}"
+    number = bbc_minute_episode_number(path.stem)
+    if number is not None:
+        return f"number:{number:03d}"
+    title_key = normalized_file_key(bbc_minute_title(path.stem))
+    title_aliases = {
+        "5waystousehard": "5waysusehard",
+        "5verbsfollowedbyverbing": "5verbsing",
+        "goondoingvsgoontodowhatsthedifference": "goondoingtodo",
+        "toovsenoughwhatsthedifference": "tooenough",
+        "usingdifferenttensestobepolite": "politetenses",
+        "verbstouseinsteadofwalk": "4wordsforwalk",
+    }
+    return f"title:{title_aliases.get(title_key, title_key)}"
+
+
+def preferred_bbc_minute_document(paths: list[Path]) -> Path:
+    def rank(path: Path) -> tuple[int, int, int, str]:
+        suffix = path.suffix.casefold()
+        official = bool(re.match(r"(?:\d{6,8}[_ -]*)?eiam", path.stem, flags=re.IGNORECASE))
+        translated = bool(CJK_PATTERN.search(path.stem))
+        return (
+            0 if suffix == ".srt" else 1 if official else 2 if suffix == ".pdf" else 3,
+            1 if translated else 0,
+            len(path.name),
+            path.name,
+        )
+
+    return sorted(paths, key=rank)[0]
+
+
+def build_bbc_minute(root: Path, workers: int) -> list[dict[str, Any]]:
+    media_groups: dict[str, list[Path]] = {}
+    document_groups: dict[str, list[Path]] = {}
+    for path in root.rglob("*"):
+        if not path.is_file():
+            continue
+        suffix = path.suffix.casefold()
+        if suffix in AUDIO_EXTENSIONS:
+            media_groups.setdefault(bbc_minute_key(path), []).append(path)
+        elif suffix in TRANSCRIPT_EXTENSIONS:
+            document_groups.setdefault(bbc_minute_key(path), []).append(path)
+
+    def choose_media(paths: list[Path]) -> Path:
+        priority = {".mp3": 0, ".m4a": 1, ".mp4": 2}
+        return sorted(paths, key=lambda path: (priority.get(path.suffix.casefold(), 9), len(path.name), path.as_posix()))[0]
+
+    pairings: list[tuple[str, Path, Path, Path]] = []
+    for key, paths in media_groups.items():
+        documents = document_groups.get(key, [])
+        if not documents:
+            continue
+        audio = choose_media(paths)
+        transcript_document = preferred_bbc_minute_document(documents)
+        metadata_document = sorted(
+            documents,
+            key=lambda path: (
+                normalized_date_token(path.stem) is None,
+                year_from_path(path, root) is None,
+                len(path.name),
+            ),
+        )[0]
+        pairings.append((key, audio, transcript_document, metadata_document))
+
+    pairings.sort(
+        key=lambda pairing: (
+            year_from_path(pairing[3], root) or 9999,
+            bbc_minute_episode_number(pairing[1].stem) or 9999,
+            bbc_minute_title(pairing[2].stem).casefold(),
+        )
+    )
+    extracted: dict[Path, tuple[str, int]] = {}
+    with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
+        futures = {
+            pool.submit(extract_transcript, document): document
+            for _, _, document, _ in pairings
+        }
+        for future in as_completed(futures):
+            extracted[futures[future]] = future.result()
+
+    items: list[dict[str, Any]] = []
+    for audio, transcript_document, metadata_document in (
+        (audio, transcript_document, metadata_document)
+        for _, audio, transcript_document, metadata_document in pairings
+    ):
+        transcript, transcript_words = extracted.get(transcript_document, ("", 0))
+        if transcript_words < 8:
+            continue
+        sequence = len(items) + 1
+        title = bbc_minute_title(transcript_document.stem)
+        date_token = normalized_date_token(metadata_document.stem)
+        source_year = year_from_path(metadata_document, root)
+        items.append(
+            {
+                "id": stable_source_id("bbc-minute", audio, root, title),
+                "collection": "bbc-english-in-a-minute",
+                "sequence": sequence,
+                "title": title,
+                "year": source_year,
+                "publishedAt": date_token,
+                "durationSeconds": audio_duration(audio),
+                "sizeBytes": audio.stat().st_size,
+                "audioPath": audio.relative_to(root).as_posix(),
+                "documentPath": transcript_document.relative_to(root).as_posix(),
+                "transcriptWordCount": transcript_words,
+                "transcript": transcript,
+                "vocabulary": [],
+            }
+        )
+    return items
+
+
+def build_simple_transcript_collection(
+    root: Path,
+    *,
+    collection: str,
+    id_prefix: str,
+    title_for_audio: Any,
+    workers: int,
+) -> list[dict[str, Any]]:
+    audios = sorted(
+        (path for path in root.rglob("*") if path.is_file() and path.suffix.casefold() in AUDIO_EXTENSIONS),
+        key=lambda path: path.relative_to(root).as_posix().casefold(),
+    )
+    transcript_candidates = [
+        path
+        for path in root.rglob("*")
+        if path.is_file() and path.suffix.casefold() in TRANSCRIPT_EXTENSIONS
+    ]
+    pairings = [
+        (audio, same_parent_transcript(audio, transcript_candidates))
+        for audio in audios
+    ]
+    selected_documents = sorted({document for _, document in pairings if document is not None})
+    extracted: dict[Path, tuple[str, int]] = {}
+    with ThreadPoolExecutor(max_workers=max(1, workers)) as pool:
+        futures = {
+            pool.submit(extract_transcript, document): document for document in selected_documents
+        }
+        for future in as_completed(futures):
+            extracted[futures[future]] = future.result()
+
+    prepared: list[tuple[Path, Path, str, int]] = []
+    for audio, document in pairings:
+        if document is None:
+            continue
+        transcript, words = extracted.get(document, ("", 0))
+        if words < 8:
+            continue
+        prepared.append((audio, document, transcript, words))
+
+    prepared.sort(
+        key=lambda pairing: (
+            normalized_date_token(pairing[0].stem)
+            or normalized_date_token(pairing[0].parent.name)
+            or "99999999",
+            pairing[0].relative_to(root).as_posix().casefold(),
+        )
+    )
+    items: list[dict[str, Any]] = []
+    for sequence, (audio, document, transcript, transcript_words) in enumerate(prepared, start=1):
+        title = str(title_for_audio(audio))
+        date_token = normalized_date_token(audio.stem) or normalized_date_token(audio.parent.name)
+        source_year = year_from_path(audio, root)
+        items.append(
+            {
+                "id": stable_source_id(id_prefix, audio, root, title),
+                "collection": collection,
+                "sequence": sequence,
+                "title": title,
+                "year": source_year,
+                "publishedAt": date_token,
+                "durationSeconds": audio_duration(audio),
+                "sizeBytes": audio.stat().st_size,
+                "audioPath": audio.relative_to(root).as_posix(),
+                "documentPath": document.relative_to(root).as_posix(),
+                "transcriptWordCount": transcript_words,
+                "transcript": transcript,
+                "vocabulary": [],
+            }
+        )
+    return items
+
+
+def short_wave_title(path: Path) -> str:
+    value = re.sub(r"^\d{6}[_ -]*", "", DUPLICATE_SUFFIX.sub("", path.stem))
+    return re.sub(r"\s+", " ", value.replace("_", " ")).strip() or "NPR Short Wave"
+
+
+def scientific_american_title(path: Path) -> str:
+    date_token = normalized_date_token(path.stem)
+    category_match = re.search(r"sa[_ -]*(science|tech|earth|mind|health)", path.stem, flags=re.IGNORECASE)
+    if date_token:
+        date_label = f"{date_token[:4]}-{date_token[4:6]}-{date_token[6:8]}"
+        category = category_match.group(1).title() if category_match else "Science"
+        return f"Scientific American 60-Second · {date_label} · {category}"
+    return re.sub(r"\s+", " ", DUPLICATE_SUFFIX.sub("", path.stem).replace("_", " ")).strip()
+
+
 def apply_transcript_overrides(items: list[dict[str, Any]], path: Path) -> int:
     if not path.is_file():
         return 0
@@ -1101,6 +1451,44 @@ def main() -> None:
     args = parse_args()
     minute_items = build_minute_earth(args.minute_earth_root.resolve(), args.minute_earth_study_content.resolve())
     bbc_items = build_bbc(args.bbc_root.resolve(), args.workers)
+    bbc_minute_items = (
+        build_bbc_minute(args.bbc_minute_root.resolve(), args.workers)
+        if args.bbc_minute_root
+        else []
+    )
+    voa_items = (
+        build_simple_transcript_collection(
+            args.voa_standard_root.resolve(),
+            collection="voa-standard-english",
+            id_prefix="voa-standard",
+            title_for_audio=lambda path: path.stem,
+            workers=args.workers,
+        )
+        if args.voa_standard_root
+        else []
+    )
+    scientific_american_items = (
+        build_simple_transcript_collection(
+            args.scientific_american_root.resolve(),
+            collection="scientific-american-60-second",
+            id_prefix="scientific-american",
+            title_for_audio=scientific_american_title,
+            workers=args.workers,
+        )
+        if args.scientific_american_root
+        else []
+    )
+    short_wave_items = (
+        build_simple_transcript_collection(
+            args.short_wave_root.resolve(),
+            collection="short-wave",
+            id_prefix="short-wave",
+            title_for_audio=short_wave_title,
+            workers=args.workers,
+        )
+        if args.short_wave_root
+        else []
+    )
     transcript_overrides_path = (
         args.transcript_overrides.resolve()
         if args.transcript_overrides
@@ -1140,24 +1528,75 @@ def main() -> None:
         context_translation_cache_path,
         args.translate_missing,
     )
+    collection_definitions = [
+        {
+            "id": "bbc-english-in-a-minute",
+            "label": "BBC 一分钟英语",
+            "description": "一分钟语法与用法短讲，适合建立基础听辨与高频表达。",
+            "difficulty": "A2",
+            "audience": "初一–初二",
+            "rank": 1,
+            "count": len(bbc_minute_items),
+        },
+        {
+            "id": "bbc-6-minute-english",
+            "label": "BBC 6 Minute English",
+            "description": "BBC 六分钟英语，含音频、原版对话稿和重点词汇。",
+            "difficulty": "B1–B2",
+            "audience": "初三优秀生–高中",
+            "rank": 2,
+            "count": len(bbc_items),
+        },
+        {
+            "id": "voa-standard-english",
+            "label": "VOA 常速英语新闻",
+            "description": "常速国际新闻报道，配套英文逐字稿，训练真实新闻语速。",
+            "difficulty": "B2",
+            "audience": "高一–高二",
+            "rank": 3,
+            "count": len(voa_items),
+        },
+        {
+            "id": "minute-earth",
+            "label": "MinuteEarth",
+            "description": "科学与地球主题短篇，含音频、英文原文和 TOEFL/SAT 词汇。",
+            "difficulty": "B2",
+            "audience": "高中；配合画面更易理解",
+            "rank": 4,
+            "count": len(minute_items),
+        },
+        {
+            "id": "scientific-american-60-second",
+            "label": "科学美国人 60 秒",
+            "description": "一分钟科学新闻与研究解读，语速快、信息密度高。",
+            "difficulty": "B2+–C1",
+            "audience": "高中优秀生–大学",
+            "rank": 5,
+            "count": len(scientific_american_items),
+        },
+        {
+            "id": "short-wave",
+            "label": "Short Wave",
+            "description": "NPR 科学播客，包含自然对话、采访与完整英文逐字稿。",
+            "difficulty": "B2+–C1",
+            "audience": "高中优秀生–大学",
+            "rank": 6,
+            "count": len(short_wave_items),
+        },
+    ]
+    all_items = (
+        bbc_minute_items
+        + bbc_items
+        + voa_items
+        + minute_items
+        + scientific_american_items
+        + short_wave_items
+    )
     output = {
-        "schemaVersion": 5,
+        "schemaVersion": 6,
         "generatedAt": datetime.now(UTC).isoformat(),
-        "collections": [
-            {
-                "id": "minute-earth",
-                "label": "Minute Earth",
-                "description": "科学与地球主题短篇，含音频、英文原文和 TOEFL/SAT 词汇。",
-                "count": len(minute_items),
-            },
-            {
-                "id": "bbc-6-minute-english",
-                "label": "BBC 6 Minute English",
-                "description": "2008-2026 年 BBC 六分钟英语，含音频、原版对话稿和全库首次出现词汇。",
-                "count": len(bbc_items),
-            },
-        ],
-        "items": minute_items + bbc_items,
+        "collections": collection_definitions,
+        "items": all_items,
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(output, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
@@ -1171,6 +1610,10 @@ def main() -> None:
     )
     print(f"Minute Earth: {len(minute_items)} items")
     print(f"BBC: {len(bbc_items)} unique audio items, {paired_bbc} transcripts extracted")
+    print(f"BBC English in a Minute: {len(bbc_minute_items)} paired items")
+    print(f"VOA Standard English: {len(voa_items)} paired items")
+    print(f"Scientific American 60-Second: {len(scientific_american_items)} paired items")
+    print(f"Short Wave: {len(short_wave_items)} paired items")
     print(f"BBC vocabulary: {vocabulary_bbc} items")
     print(f"BBC vocabulary deduplicated: {removed_bbc_vocabulary} repeated cards removed")
     print(f"Transcript overrides applied: {applied_transcript_overrides}")

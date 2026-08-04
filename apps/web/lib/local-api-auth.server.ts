@@ -37,9 +37,12 @@ export async function authorizeLocalApiRequest(
   fetcher: FetchLike = fetch,
   apiOrigin = process.env.API_ORIGIN?.replace(/\/$/, '') ?? 'http://localhost:4000',
   webOrigin = process.env.WEB_ORIGIN,
+  allowLocalDemo = false,
 ): Promise<Response | null> {
   const originProblem = validateSameOrigin(request, webOrigin);
   if (originProblem) return originProblem;
+
+  if (allowLocalDemo) return null;
 
   const cookie = request.headers.get('cookie');
   if (!cookie?.includes('access_token=')) {

@@ -33,6 +33,7 @@ COPY --from=build --chown=node:node /app/apps/web/data/commonlit-reading ./apps/
 COPY --from=build --chown=node:node /app/apps/web/data/commonlit-reading-answers ./apps/web/data/commonlit-reading-answers
 COPY --from=build --chown=node:node /app/apps/web/data/commonlit-reading-vocabulary ./apps/web/data/commonlit-reading-vocabulary
 COPY --from=build --chown=node:node /app/apps/web/data/vocabulary-book-content ./apps/web/data/vocabulary-book-content
+COPY --from=build --chown=node:node /app/apps/web/data/listening-library.json ./apps/web/data/listening-library.json
 COPY --from=build --chown=node:node /app/apps/web/package.json ./apps/web/package.json
 COPY --from=build --chown=node:node /app/apps/web/next.config.ts ./apps/web/next.config.ts
 COPY --from=build --chown=node:node /app/packages/shared/dist ./packages/shared/dist

@@ -9,6 +9,7 @@ interface LibraryItem {
   audioPath: string | null;
   documentPath: string | null;
   transcriptWordCount: number;
+  transcript: string;
   vocabulary: Array<{
     word: string;
     partOfSpeech: string;
@@ -19,7 +20,13 @@ interface LibraryItem {
 }
 
 interface LibraryDocument {
-  collections: Array<{ id: string; count: number }>;
+  collections: Array<{
+    id: string;
+    difficulty: string;
+    audience: string;
+    rank: number;
+    count: number;
+  }>;
   items: LibraryItem[];
 }
 
@@ -98,5 +105,39 @@ describe('local listening library', () => {
         collection.count,
       );
     }
+  });
+
+  it('adds the remaining local listening sources in difficulty order', () => {
+    expect(library.collections.map(({ id, count }) => ({ id, count }))).toEqual([
+      { id: 'bbc-english-in-a-minute', count: 268 },
+      { id: 'bbc-6-minute-english', count: 863 },
+      { id: 'voa-standard-english', count: 1546 },
+      { id: 'minute-earth', count: 270 },
+      { id: 'scientific-american-60-second', count: 773 },
+      { id: 'short-wave', count: 699 },
+    ]);
+    expect(library.collections.map((collection) => collection.rank)).toEqual([1, 2, 3, 4, 5, 6]);
+    expect(
+      library.collections.every((collection) => collection.difficulty && collection.audience),
+    ).toBe(true);
+
+    const newlyAdded = library.items.filter((item) =>
+      [
+        'bbc-english-in-a-minute',
+        'voa-standard-english',
+        'scientific-american-60-second',
+        'short-wave',
+      ].includes(item.collection),
+    );
+    expect(newlyAdded).toHaveLength(3286);
+    expect(
+      newlyAdded.every(
+        (item) =>
+          item.audioPath &&
+          item.documentPath &&
+          item.transcriptWordCount >= 8 &&
+          !/[\u3400-\u9fff]/u.test(item.transcript),
+      ),
+    ).toBe(true);
   });
 });

@@ -2964,9 +2964,12 @@ export interface components {
         };
         ToeflListeningCollection: {
             /** @enum {string} */
-            id: "minute-earth" | "bbc-6-minute-english";
+            id: "bbc-english-in-a-minute" | "bbc-6-minute-english" | "voa-standard-english" | "minute-earth" | "scientific-american-60-second" | "short-wave";
             label: string;
             description: string;
+            difficulty: string;
+            audience: string;
+            rank: number;
             count: number;
         };
         ToeflListeningAsset: {
@@ -5736,7 +5739,7 @@ export interface operations {
     listToeflListeningAssets: {
         parameters: {
             query?: {
-                collection?: "minute-earth" | "bbc-6-minute-english";
+                collection?: "bbc-english-in-a-minute" | "bbc-6-minute-english" | "voa-standard-english" | "minute-earth" | "scientific-american-60-second" | "short-wave";
                 query?: string;
                 pageSize?: number;
             };

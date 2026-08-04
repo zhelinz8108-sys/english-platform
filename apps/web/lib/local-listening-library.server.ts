@@ -1,10 +1,16 @@
 import 'server-only';
 import { createHash } from 'node:crypto';
 import path from 'node:path';
+import { readFileSync } from 'node:fs';
 import { readFile, stat } from 'node:fs/promises';
-import libraryDocument from '@/data/listening-library.json';
 
-export type LocalListeningCollectionId = 'minute-earth' | 'bbc-6-minute-english';
+export type LocalListeningCollectionId =
+  | 'bbc-english-in-a-minute'
+  | 'bbc-6-minute-english'
+  | 'voa-standard-english'
+  | 'minute-earth'
+  | 'scientific-american-60-second'
+  | 'short-wave';
 
 export interface LocalVocabularyEntry {
   word: string;
@@ -129,10 +135,13 @@ export interface LocalListeningCheckResult {
   };
 }
 
-interface LocalListeningCollection {
+export interface LocalListeningCollection {
   id: LocalListeningCollectionId;
   label: string;
   description: string;
+  difficulty: string;
+  audience: string;
+  rank: number;
   count: number;
 }
 
@@ -143,7 +152,17 @@ interface LocalListeningLibrary {
   items: LocalListeningItem[];
 }
 
-const library = libraryDocument as LocalListeningLibrary;
+function listeningLibraryPath(): string {
+  const cwd = process.cwd();
+  return cwd.endsWith(`${path.sep}apps${path.sep}web`)
+    ? path.join(cwd, 'data', 'listening-library.json')
+    : path.join(cwd, 'apps', 'web', 'data', 'listening-library.json');
+}
+
+// Keep the 25 MB generated catalog out of the Next.js/Turbopack module graph.
+// Parsing it at server startup makes local development substantially faster and
+// avoids embedding thousands of transcript strings in the route bundle.
+const library = JSON.parse(readFileSync(listeningLibraryPath(), 'utf8')) as LocalListeningLibrary;
 const itemById = new Map(library.items.map((item) => [item.id, item]));
 let questionBankCache: {
   modifiedAtMs: number;
@@ -151,11 +170,19 @@ let questionBankCache: {
 } | null = null;
 
 const sourceRoots: Record<LocalListeningCollectionId, string> = {
-  'minute-earth':
-    process.env.MINUTE_EARTH_SOURCE_DIR ?? 'D:\\留学\\托福\\听力\\Minute Earth_仅讲话',
+  'bbc-english-in-a-minute':
+    process.env.BBC_MINUTE_SOURCE_DIR ?? 'D:\\留学\\托福\\听力\\bbc一分钟英语',
   'bbc-6-minute-english':
     process.env.BBC_LISTENING_SOURCE_DIR ??
     'D:\\留学\\托福\\听力\\【BBC】08-23年+bbc+6分钟英语等多个文件',
+  'voa-standard-english':
+    process.env.VOA_STANDARD_SOURCE_DIR ?? 'D:\\留学\\托福\\听力\\VOA常速英语\\已解压',
+  'minute-earth':
+    process.env.MINUTE_EARTH_SOURCE_DIR ?? 'D:\\留学\\托福\\听力\\Minute Earth_仅讲话',
+  'scientific-american-60-second':
+    process.env.SCIENTIFIC_AMERICAN_SOURCE_DIR ??
+    'D:\\留学\\托福\\听力\\750套科学美国人60秒\\已解压',
+  'short-wave': process.env.SHORT_WAVE_SOURCE_DIR ?? 'D:\\留学\\托福\\听力\\Short Wave',
 };
 
 function questionBankPath(): string {
@@ -343,10 +370,14 @@ export async function resolveLocalListeningMedia(
       type === 'document'
         ? extension === '.docx'
           ? 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
-          : 'application/pdf'
+          : extension === '.pdf'
+            ? 'application/pdf'
+            : extension === '.srt'
+              ? 'application/x-subrip; charset=utf-8'
+              : 'text/plain; charset=utf-8'
         : extension === '.wav'
           ? 'audio/wav'
-          : extension === '.m4a'
+          : extension === '.m4a' || extension === '.mp4'
             ? 'audio/mp4'
             : 'audio/mpeg';
     return { path: candidate, size: info.size, contentType };

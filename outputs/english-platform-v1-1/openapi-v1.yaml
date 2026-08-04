@@ -2258,7 +2258,13 @@ paths:
           in: query
           schema:
             type: string
-            enum: [minute-earth, bbc-6-minute-english]
+            enum:
+              - bbc-english-in-a-minute
+              - bbc-6-minute-english
+              - voa-standard-english
+              - minute-earth
+              - scientific-american-60-second
+              - short-wave
         - name: query
           in: query
           schema:
@@ -6186,15 +6192,28 @@ components:
     ToeflListeningCollection:
       type: object
       additionalProperties: false
-      required: [id, label, description, count]
+      required: [id, label, description, difficulty, audience, rank, count]
       properties:
         id:
           type: string
-          enum: [minute-earth, bbc-6-minute-english]
+          enum:
+            - bbc-english-in-a-minute
+            - bbc-6-minute-english
+            - voa-standard-english
+            - minute-earth
+            - scientific-american-60-second
+            - short-wave
         label:
           type: string
         description:
           type: string
+        difficulty:
+          type: string
+        audience:
+          type: string
+        rank:
+          type: integer
+          minimum: 1
         count:
           type: integer
           minimum: 0
