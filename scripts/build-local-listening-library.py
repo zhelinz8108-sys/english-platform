@@ -471,7 +471,13 @@ def extract_official_vocabulary(path: Path) -> list[dict[str, str]]:
 
 def context_candidates(transcript: str) -> list[str]:
     candidates: list[str] = []
-    for raw in re.split(r"\n+|(?<=[.!?])\s+", transcript):
+    # Some VOA transcripts join sentences without a space (``word.Next``).
+    # Splitting before a following capital keeps decimals and abbreviations such
+    # as ``3.5`` intact while still recovering usable context sentences.
+    for raw in re.split(
+        r"\n+|(?<=[.!?])\s+|(?<=[.!?])(?=[\"'“”‘’]?[A-Z])",
+        transcript,
+    ):
         sentence = " ".join(raw.split())
         if (
             8 <= len(sentence) <= 1200
@@ -584,6 +590,17 @@ def add_context_vocabulary(items: list[dict[str, Any]]) -> None:
     for item, transcript in zip(items, transcripts, strict=True):
         if item["vocabulary"] or not transcript:
             continue
+        transcript_word_count = len(WORD_PATTERN.findall(transcript))
+        if transcript_word_count <= 180:
+            target_count = 8
+        elif transcript_word_count <= 500:
+            target_count = 10
+        elif transcript_word_count <= 900:
+            target_count = 14
+        elif transcript_word_count <= 1_600:
+            target_count = 16
+        else:
+            target_count = 20
         term_frequency: Counter[str] = Counter()
         for match in WORD_PATTERN.finditer(transcript):
             original = match.group(0)
@@ -606,7 +623,7 @@ def add_context_vocabulary(items: list[dict[str, Any]]) -> None:
         ranked.sort(key=lambda entry: (-entry[0], entry[1]))
 
         vocabulary: list[dict[str, str]] = []
-        for _, word in ranked[:80]:
+        for _, word in ranked[: max(80, target_count * 10)]:
             ipa = american_ipa(word)
             if english_ipa is not None and not ipa:
                 continue
@@ -623,7 +640,7 @@ def add_context_vocabulary(items: list[dict[str, Any]]) -> None:
                     "context": sentence,
                 }
             )
-            if len(vocabulary) == 10:
+            if len(vocabulary) == target_count:
                 break
         item["vocabulary"] = vocabulary
 

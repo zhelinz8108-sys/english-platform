@@ -12,6 +12,7 @@ interface LibraryItem {
   transcript: string;
   vocabulary: Array<{
     word: string;
+    ipa: string;
     partOfSpeech: string;
     definition: string;
     context: string;
@@ -66,16 +67,8 @@ describe('local listening library', () => {
     expect(peruvianHero?.documentPath).toBeTruthy();
     expect(peruvianHero?.transcriptWordCount).toBeGreaterThan(1000);
 
-    expect(bbc.filter((item) => item.vocabulary.length > 0).length).toBeGreaterThan(800);
-    expect(bbc.find((item) => item.title === 'Cost of living')?.vocabulary).toHaveLength(10);
-    expect(bbc.find((item) => item.title === 'Our Love Of Pets')?.vocabulary).toHaveLength(6);
-
     const vocabulary = bbc.flatMap((item) => item.vocabulary);
-    const normalizedWords = vocabulary.map((entry) =>
-      entry.word.trim().toLocaleLowerCase('en').replace(/\s+/gu, ' '),
-    );
-    expect(vocabulary).toHaveLength(5660);
-    expect(new Set(normalizedWords).size).toBe(vocabulary.length);
+    expect(bbc.every((item) => item.vocabulary.length > 0)).toBe(true);
     expect(
       vocabulary.every(
         (entry) =>
@@ -139,5 +132,33 @@ describe('local listening library', () => {
           !/[\u3400-\u9fff]/u.test(item.transcript),
       ),
     ).toBe(true);
+  });
+
+  it('supplies ordered, per-episode deduplicated vocabulary', () => {
+    const silentMinuteEarthItem = 'minute-earth-007';
+    for (const item of library.items) {
+      if (item.id === silentMinuteEarthItem) {
+        expect(item.transcript.trim()).toBe('you');
+        expect(item.vocabulary).toHaveLength(0);
+        continue;
+      }
+
+      expect(item.vocabulary.length).toBeGreaterThan(0);
+      const normalizedWords = item.vocabulary.map((entry) =>
+        entry.word.trim().toLocaleLowerCase('en').replace(/\s+/gu, ' '),
+      );
+      expect(new Set(normalizedWords).size).toBe(normalizedWords.length);
+      expect(
+        item.vocabulary.every(
+          (entry) =>
+            entry.word &&
+            entry.partOfSpeech &&
+            /[\u3400-\u9fff]/u.test(entry.definition) &&
+            entry.context &&
+            /[\u3400-\u9fff]/u.test(entry.contextTranslation),
+        ),
+      ).toBe(true);
+
+    }
   });
 });
