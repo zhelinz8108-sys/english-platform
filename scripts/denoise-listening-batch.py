@@ -82,14 +82,35 @@ def save_derivative(
     temporary.unlink(missing_ok=True)
 
     if destination.suffix.lower() == ".mp3":
-        save_audio(
-            narration,
-            temporary,
-            samplerate=separator.samplerate,
-            bitrate=bitrate,
-            preset=2,
-            clip="rescale",
-        )
+        wave_path = destination.with_name(f"{destination.stem}.partial.wav")
+        wave_path.unlink(missing_ok=True)
+        try:
+            save_audio(
+                narration,
+                wave_path,
+                samplerate=separator.samplerate,
+                clip="rescale",
+            )
+            subprocess.run(
+                [
+                    imageio_ffmpeg.get_ffmpeg_exe(),
+                    "-hide_banner",
+                    "-loglevel",
+                    "error",
+                    "-y",
+                    "-i",
+                    str(wave_path),
+                    "-vn",
+                    "-c:a",
+                    "libmp3lame",
+                    "-b:a",
+                    f"{bitrate}k",
+                    str(temporary),
+                ],
+                check=True,
+            )
+        finally:
+            wave_path.unlink(missing_ok=True)
     elif destination.suffix.lower() == ".wav":
         save_audio(
             narration,
