@@ -158,7 +158,6 @@ describe('local listening library', () => {
             /[\u3400-\u9fff]/u.test(entry.contextTranslation),
         ),
       ).toBe(true);
-
     }
   });
 });
