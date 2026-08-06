@@ -2793,6 +2793,103 @@ paths:
           $ref: '#/components/responses/NotFound'
         '409':
           $ref: '#/components/responses/Conflict'
+  /api/v1/tenants/{tenantId}/learning/ap/catalog:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags: [AP Learning]
+      summary: List AP subjects, embedded question papers, answer documents, and media
+      operationId: listApLibrary
+      responses:
+        '200':
+          description: AP library catalog
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/learning/ap/documents/{documentId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags: [AP Learning]
+      summary: Get a native AP question or answer document
+      operationId: getApDocument
+      responses:
+        '200':
+          description: Selectable native page blocks, detected questions, and matched answers
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/learning/ap/documents/{documentId}/resource:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags: [AP Learning]
+      summary: Create a short-lived URL for the original AP document
+      operationId: getApDocumentResource
+      responses:
+        '200':
+          description: Signed object URL
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [url, expiresAt]
+                properties:
+                  url: { type: string, format: uri }
+                  expiresAt: { type: string, format: date-time }
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/learning/ap/media/{mediaId}/resource:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - name: mediaId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags: [AP Learning]
+      summary: Create a short-lived URL for AP audio or video
+      operationId: getApMediaResource
+      responses:
+        '200':
+          description: Signed object URL
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [url, expiresAt]
+                properties:
+                  url: { type: string, format: uri }
+                  expiresAt: { type: string, format: date-time }
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     accessCookie:

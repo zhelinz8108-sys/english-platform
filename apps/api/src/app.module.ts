@@ -15,6 +15,8 @@ import { FilesService } from './files/files.service.js';
 import { HealthController } from './health.controller.js';
 import { LearningController } from './learning/learning.controller.js';
 import { LearningService } from './learning/learning.service.js';
+import { ApLibraryController } from './learning/ap-library.controller.js';
+import { ApLibraryService } from './learning/ap-library.service.js';
 import { DatabaseService } from './infrastructure/database.service.js';
 import { EventsService } from './infrastructure/events.service.js';
 import { IdempotencyService } from './infrastructure/idempotency.service.js';
@@ -42,6 +44,7 @@ import { SelfStudyService } from './progress/self-study.service.js';
     AdminController,
     FilesController,
     LearningController,
+    ApLibraryController,
     VocabularyAssessmentController,
     GrammarPracticeController,
     SelfStudyController,
@@ -59,6 +62,7 @@ import { SelfStudyService } from './progress/self-study.service.js';
     AdminService,
     FilesService,
     LearningService,
+    ApLibraryService,
     VocabularyAssessmentService,
     GrammarPracticeService,
     SelfStudyService,

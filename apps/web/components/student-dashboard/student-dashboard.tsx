@@ -116,6 +116,7 @@ const workspaceNavGroups: WorkspaceNavGroup[] = [
       { label: '口语', href: '/student/learning/toefl#speaking', icon: MessageCircle },
       { label: '写作', href: '/student/learning/toefl#writing', icon: PenLine },
       { label: '托福', href: '/student/learning/toefl', icon: ClipboardList },
+      { label: 'AP', href: '/student/learning/ap', icon: GraduationCap },
     ],
   },
   {
@@ -366,7 +367,7 @@ function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => voi
                   <button
                     aria-controls="english-learning-modules"
                     aria-expanded={learningOpen}
-                    className={`${styles.navItem} ${styles.navParent} ${pathname.includes('/learning/') ? styles.navParentActive : ''}`}
+                    className={`${styles.navItem} ${styles.navParent} ${pathname.includes('/learning/english') || pathname.includes('/learning/toefl') ? styles.navParentActive : ''}`}
                     onClick={() => setLearningOpen((value) => !value)}
                     type="button"
                   >
@@ -384,7 +385,7 @@ function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => voi
                     id="english-learning-modules"
                   >
                     {group.items
-                      .filter((item) => item.label !== '托福')
+                      .filter((item) => item.label !== '托福' && item.label !== 'AP')
                       .map((item) => renderNavItem(item, true))}
                     {group.items.some((item) => item.label === '托福') ? (
                       <div className={styles.toeflNavRoot}>
@@ -457,6 +458,9 @@ function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => voi
                       </div>
                     ) : null}
                   </div>
+                  {group.items
+                    .filter((item) => item.label === 'AP')
+                    .map((item) => renderNavItem(item))}
                 </>
               ) : (
                 group.items.map((item) => renderNavItem(item))
