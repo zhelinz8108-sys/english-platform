@@ -2,7 +2,7 @@
 """Build the AP library catalog and native, selectable document payloads.
 
 The source directory is intentionally kept outside the repository.  This script
-deduplicates source files by SHA-256, extracts PDF text and embedded figures,
+deduplicates source files by SHA-256, extracts PDF text,
 matches question documents with scoring/answer documents, and writes small
 gzip JSON shards that can be uploaded to object storage.
 """

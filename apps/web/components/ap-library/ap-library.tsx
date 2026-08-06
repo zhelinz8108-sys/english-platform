@@ -394,6 +394,7 @@ export function ApDocumentView({ documentId }: { documentId: string }) {
   const [showSolutions, setShowSolutions] = useState(false);
   const [loadingSolutions, setLoadingSolutions] = useState(false);
   const [originalUrl, setOriginalUrl] = useState('');
+  const [showOriginal, setShowOriginal] = useState(false);
   const [solutionResources, setSolutionResources] = useState<Record<string, string>>({});
   const [error, setError] = useState('');
   useEffect(() => {
@@ -449,10 +450,10 @@ export function ApDocumentView({ documentId }: { documentId: string }) {
     }
   }, [currentTenant.id, payload, showSolutions, solutions.length]);
 
-  const openOriginal = useCallback(async () => {
+  const toggleOriginal = useCallback(async () => {
     if (!payload) return;
     if (originalUrl) {
-      window.open(originalUrl, '_blank', 'noopener,noreferrer');
+      setShowOriginal((value) => !value);
       return;
     }
     const result = await apiRequest<{ url: string }>(
@@ -462,7 +463,7 @@ export function ApDocumentView({ documentId }: { documentId: string }) {
       ),
     );
     setOriginalUrl(result.url);
-    window.open(result.url, '_blank', 'noopener,noreferrer');
+    setShowOriginal(true);
   }, [currentTenant.id, originalUrl, payload]);
 
   useEffect(() => {
@@ -472,7 +473,10 @@ export function ApDocumentView({ documentId }: { documentId: string }) {
         currentTenant.id,
         `/learning/ap/documents/${encodeURIComponent(payload.document.id)}/resource`,
       ),
-    ).then((result) => setOriginalUrl(result.url));
+    ).then((result) => {
+      setOriginalUrl(result.url);
+      setShowOriginal(true);
+    });
   }, [currentTenant.id, originalUrl, payload]);
 
   if (error) return <div className={styles.error}>{error}</div>;
@@ -505,13 +509,15 @@ export function ApDocumentView({ documentId }: { documentId: string }) {
               {showSolutions ? '收起答案解析' : '查看答案解析'}
             </button>
           ) : null}
-          <button
-            className={`${styles.button} ${styles.buttonSecondary}`}
-            onClick={() => void openOriginal()}
-            type="button"
-          >
-            打开原始文件
-          </button>
+          {payload.content.textStatus !== 'scan' ? (
+            <button
+              className={`${styles.button} ${styles.buttonSecondary}`}
+              onClick={() => void toggleOriginal()}
+              type="button"
+            >
+              {showOriginal ? '收起原卷图表' : '查看原卷图表'}
+            </button>
+          ) : null}
         </div>
       </header>
       {payload.content.textStatus === 'scan' ? (
@@ -543,10 +549,26 @@ export function ApDocumentView({ documentId }: { documentId: string }) {
           ))}
         </section>
       ) : null}
-      {payload.content.textStatus === 'scan' && originalUrl ? (
-        <iframe className={styles.pdfFrame} src={originalUrl} title={payload.document.title} />
+      {payload.content.textStatus === 'scan' ? (
+        originalUrl ? (
+          <iframe className={styles.pdfFrame} src={originalUrl} title={payload.document.title} />
+        ) : (
+          <div className={styles.loading}>正在载入内嵌原卷…</div>
+        )
       ) : (
-        <NativePages content={payload.content} />
+        <>
+          <NativePages content={payload.content} />
+          {showOriginal && originalUrl ? (
+            <section className={styles.solutionPanel}>
+              <h2>原卷与图表</h2>
+              <iframe
+                className={styles.pdfFrame}
+                src={originalUrl}
+                title={payload.document.title}
+              />
+            </section>
+          ) : null}
+        </>
       )}
     </div>
   );
