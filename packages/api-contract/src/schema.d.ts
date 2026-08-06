@@ -1657,6 +1657,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/tenants/{tenantId}/learning/ap/documents/{documentId}/embed": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                documentId: string;
+            };
+            cookie?: never;
+        };
+        /** Stream an original AP PDF inline with byte-range support */
+        get: operations["embedApDocument"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/tenants/{tenantId}/learning/ap/media/{mediaId}/resource": {
         parameters: {
             query?: never;
@@ -6466,6 +6487,44 @@ export interface operations {
                     };
                 };
             };
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+        };
+    };
+    embedApDocument: {
+        parameters: {
+            query?: never;
+            header?: {
+                Range?: string;
+            };
+            path: {
+                /** @description Tenant UUID from the current user's active membership list. */
+                tenantId: components["parameters"]["TenantId"];
+                documentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Complete inline PDF */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                };
+            };
+            /** @description Partial inline PDF response */
+            206: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": string;
+                };
+            };
+            400: components["responses"]["ValidationProblem"];
             401: components["responses"]["Unauthorized"];
             404: components["responses"]["NotFound"];
         };

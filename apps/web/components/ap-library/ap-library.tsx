@@ -5,7 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Icon } from '@/components/icon';
 import { useWorkspace } from '@/components/workspace-provider';
-import { apiRequest, tenantPath } from '@/lib/api';
+import { apiRequest, resolveApiRequestUrl, tenantPath } from '@/lib/api';
 import styles from './ap-library.module.css';
 
 type DocumentType = 'question' | 'answer' | 'combined' | 'reference';
@@ -432,16 +432,17 @@ export function ApDocumentView({ documentId }: { documentId: string }) {
       setSolutions(values);
       const scanned = values.filter((value) => value.content.textStatus === 'scan');
       if (scanned.length) {
-        const resources = await Promise.all(
-          scanned.map(async (value) => {
-            const result = await apiRequest<{ url: string }>(
-              tenantPath(
-                currentTenant.id,
-                `/learning/ap/documents/${encodeURIComponent(value.document.id)}/resource`,
+        const resources = scanned.map(
+          (value) =>
+            [
+              value.document.id,
+              resolveApiRequestUrl(
+                tenantPath(
+                  currentTenant.id,
+                  `/learning/ap/documents/${encodeURIComponent(value.document.id)}/embed`,
+                ),
               ),
-            );
-            return [value.document.id, result.url] as const;
-          }),
+            ] as const,
         );
         setSolutionResources(Object.fromEntries(resources));
       }
@@ -450,33 +451,34 @@ export function ApDocumentView({ documentId }: { documentId: string }) {
     }
   }, [currentTenant.id, payload, showSolutions, solutions.length]);
 
-  const toggleOriginal = useCallback(async () => {
+  const toggleOriginal = useCallback(() => {
     if (!payload) return;
     if (originalUrl) {
       setShowOriginal((value) => !value);
       return;
     }
-    const result = await apiRequest<{ url: string }>(
-      tenantPath(
-        currentTenant.id,
-        `/learning/ap/documents/${encodeURIComponent(payload.document.id)}/resource`,
+    setOriginalUrl(
+      resolveApiRequestUrl(
+        tenantPath(
+          currentTenant.id,
+          `/learning/ap/documents/${encodeURIComponent(payload.document.id)}/embed`,
+        ),
       ),
     );
-    setOriginalUrl(result.url);
     setShowOriginal(true);
   }, [currentTenant.id, originalUrl, payload]);
 
   useEffect(() => {
     if (!payload || payload.content.textStatus !== 'scan' || originalUrl) return;
-    void apiRequest<{ url: string }>(
-      tenantPath(
-        currentTenant.id,
-        `/learning/ap/documents/${encodeURIComponent(payload.document.id)}/resource`,
+    setOriginalUrl(
+      resolveApiRequestUrl(
+        tenantPath(
+          currentTenant.id,
+          `/learning/ap/documents/${encodeURIComponent(payload.document.id)}/embed`,
+        ),
       ),
-    ).then((result) => {
-      setOriginalUrl(result.url);
-      setShowOriginal(true);
-    });
+    );
+    setShowOriginal(true);
   }, [currentTenant.id, originalUrl, payload]);
 
   if (error) return <div className={styles.error}>{error}</div>;
@@ -512,7 +514,7 @@ export function ApDocumentView({ documentId }: { documentId: string }) {
           {payload.content.textStatus !== 'scan' ? (
             <button
               className={`${styles.button} ${styles.buttonSecondary}`}
-              onClick={() => void toggleOriginal()}
+              onClick={toggleOriginal}
               type="button"
             >
               {showOriginal ? '收起原卷图表' : '查看原卷图表'}
@@ -551,7 +553,17 @@ export function ApDocumentView({ documentId }: { documentId: string }) {
       ) : null}
       {payload.content.textStatus === 'scan' ? (
         originalUrl ? (
-          <iframe className={styles.pdfFrame} src={originalUrl} title={payload.document.title} />
+          <div className={styles.pdfViewer}>
+            <iframe
+              className={styles.pdfFrame}
+              loading="eager"
+              src={originalUrl}
+              title={payload.document.title}
+            />
+            <a className={styles.pdfFallback} href={originalUrl} target="_blank" rel="noreferrer">
+              如果浏览器仍未显示，点击单独打开原卷
+            </a>
+          </div>
         ) : (
           <div className={styles.loading}>正在载入内嵌原卷…</div>
         )

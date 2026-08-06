@@ -1,6 +1,7 @@
 import { GetObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { Inject, Injectable } from '@nestjs/common';
+import type { Readable } from 'node:stream';
 import { gunzipSync } from 'node:zlib';
 import { ProblemException } from '../common/problem.js';
 import { requirePrincipal, requireTenant, type ApiRequest } from '../common/request.js';
@@ -99,5 +100,44 @@ export class ApLibraryService {
       { expiresIn },
     );
     return { url, expiresAt: new Date(Date.now() + expiresIn * 1000).toISOString() };
+  }
+
+  async documentStream(
+    request: ApiRequest,
+    documentId: string,
+    range?: string,
+  ): Promise<{
+    body: Readable;
+    statusCode: number;
+    contentLength?: number;
+    contentRange?: string;
+    etag?: string;
+    lastModified?: Date;
+  }> {
+    authorize(request);
+    const document = documentsById.get(documentId);
+    if (!document || document.mediaType !== 'application/pdf') {
+      throw ProblemException.notFound();
+    }
+    const normalizedRange = range?.trim();
+    if (normalizedRange && !/^bytes=(?:\d+-\d*|-\d+)$/u.test(normalizedRange)) {
+      throw ProblemException.badRequest('invalid_range', 'Range 请求头格式无效。');
+    }
+    const response = await this.s3.send(
+      new GetObjectCommand({
+        Bucket: this.config.values.S3_BUCKET,
+        Key: document.originalStorageKey,
+        ...(normalizedRange ? { Range: normalizedRange } : {}),
+      }),
+    );
+    if (!response.Body) throw ProblemException.notFound('AP 原卷文件不存在。');
+    return {
+      body: response.Body as Readable,
+      statusCode: response.ContentRange ? 206 : 200,
+      ...(response.ContentLength === undefined ? {} : { contentLength: response.ContentLength }),
+      ...(response.ContentRange === undefined ? {} : { contentRange: response.ContentRange }),
+      ...(response.ETag === undefined ? {} : { etag: response.ETag }),
+      ...(response.LastModified === undefined ? {} : { lastModified: response.LastModified }),
+    };
   }
 }

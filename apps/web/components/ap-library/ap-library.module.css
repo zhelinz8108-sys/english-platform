@@ -371,6 +371,22 @@
   width: 100%;
 }
 
+.pdfViewer {
+  display: grid;
+  gap: 10px;
+}
+
+.pdfFallback {
+  color: #176e68;
+  font-size: 13px;
+  justify-self: end;
+  text-decoration: none;
+}
+
+.pdfFallback:hover {
+  text-decoration: underline;
+}
+
 .loading,
 .empty {
   color: #677777;

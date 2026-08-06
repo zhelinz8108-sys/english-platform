@@ -2863,6 +2863,45 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/learning/ap/documents/{documentId}/embed:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - name: documentId
+        in: path
+        required: true
+        schema:
+          type: string
+    get:
+      tags: [AP Learning]
+      summary: Stream an original AP PDF inline with byte-range support
+      operationId: embedApDocument
+      parameters:
+        - name: Range
+          in: header
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Complete inline PDF
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '206':
+          description: Partial inline PDF response
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
   /api/v1/tenants/{tenantId}/learning/ap/media/{mediaId}/resource:
     parameters:
       - $ref: '#/components/parameters/TenantId'
