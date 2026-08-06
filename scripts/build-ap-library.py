@@ -88,21 +88,28 @@ ANSWER_RE = re.compile(
     r"(?:answers?|(?<=\d)ans\b|\bans\b|answer\s*key|scoring\s*(?:guidelines?|comments?)|"
     r"sample\s*responses?|student\s*(?:responses?|performance)|chief\s*reader|q\s*&\s*a|"
     r"(?:^|\s)qa(?:\s|$)|\bsgs?\b|\bscoring\b|mark\s*scheme|rubrics?|solutions?|"
-    r"评分|答案|解析|答题|范文)",
+    r"(?:^|\s)apc(?:\s|$)|cr\s*report|"
+    r"评分|答案|解析|答题卡|答题纸|范文)",
     re.I,
 )
 REFERENCE_RE = re.compile(
     r"(?:scoring\s*(?:statistics|distribution|dist)|score\s*distribution|course\s*description|course\s*overview|"
     r"syllabus|ced(?:[_-]|\.)|textbook|review.book|教材|讲义|课件|考纲|大纲|词汇|"
-    r"知识点|公式|闪卡|复习资料|备考指南)",
+    r"知识点|公式|闪卡|复习资料|备考指南|本科申请|留学申请|棕榈大道)",
     re.I,
 )
 QUESTION_RE = re.compile(
-    r"(?:free.response|\bfrq\b|practice.exam|released.exam|multiple.choice|\bmcq\b|"
-    r"question|\bq[1-9]\b|真题|试题|模拟题|练习题|选择题|简答题)",
+    r"(?:question.paper|\bqp\b|free.response|\bfrq\b|practice.exam|released.exam|multiple.choice|\bmcq\b|"
+    r"question|\bq[1-9]\b|真题|试卷|试题|样题|模拟题|练习题|选择题|简答题)",
     re.I,
 )
-COMBINED_RE = re.compile(r"(?:exam.and.answers|questions?.and.answers?|试题.{0,6}答案|真题.{0,6}解析)", re.I)
+COMBINED_RE = re.compile(
+    r"(?:exam.and.answers|questions?.and.answers?|"
+    r"(?:试卷|试题|真题|样题|选择题).{0,12}(?:答案|解析)|"
+    r"(?:答案|解析).{0,12}(?:试卷|试题|真题|样题|选择题))",
+    re.I,
+)
+NO_ANSWER_RE = re.compile(r"(?:no\s+answers?|无答案|没答案)", re.I)
 YEAR_RE = re.compile(r"(?<!\d)(19\d{2}|20\d{2})(?!\d)")
 SHORT_YEAR_RE = re.compile(r"(?:^|\D)(0[0-9]|1[0-9]|2[0-6])(?:\D|$)")
 QUESTION_NUMBER_RE = re.compile(r"(?:^|[_\-\s])q(?:uestion)?[_\-\s]*([1-9])(?:\D|$)", re.I)
@@ -143,14 +150,35 @@ def extract_year(parts: Iterable[str]) -> int | None:
 
 
 def classify(path: Path) -> str:
-    value = normalized(" ".join(path.parts[-4:]))
-    if COMBINED_RE.search(value):
-        return "combined"
-    if REFERENCE_RE.search(value):
+    # Classify the file name before its folders. AP archives commonly group every
+    # file below folders such as "简答题" or "Scoring"; treating the whole path
+    # as one label caused question papers to inherit an answer role from a parent.
+    filename = normalized(path.stem)
+    parents = normalized(" ".join(path.parent.parts[-3:]))
+    if REFERENCE_RE.search(filename):
         return "reference"
-    if ANSWER_RE.search(value):
+    if NO_ANSWER_RE.search(filename):
+        return "question"
+    if COMBINED_RE.search(filename):
+        return "combined"
+    if ANSWER_RE.search(filename):
         return "answer"
-    if QUESTION_RE.search(value):
+    if QUESTION_RE.search(filename):
+        return "question"
+    # A short/full year embedded in an otherwise neutral file name (for example
+    # ``arthistory_01.pdf``) identifies an exam paper. This check intentionally
+    # follows the explicit answer/reference markers above.
+    if extract_year((path.stem,)):
+        return "question"
+    if YEAR_RE.fullmatch(normalized(path.parent.name)):
+        return "question"
+    if REFERENCE_RE.search(parents):
+        return "reference"
+    if COMBINED_RE.search(parents):
+        return "combined"
+    if ANSWER_RE.search(parents):
+        return "answer"
+    if QUESTION_RE.search(parents):
         return "question"
     # Most files grouped under a year in the AP archive are exam materials.
     return "question" if extract_year(path.parts[-4:]) else "reference"
