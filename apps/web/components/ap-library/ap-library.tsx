@@ -295,14 +295,15 @@ function NativePages({ content, compact = false }: { content: NativeDocument; co
               {block.text}
             </p>
           ))}
-          {!compact && page.questions.length ? (
+          {!compact && page.questions.some((question) => question.options.length >= 2) ? (
             <div className={styles.interactive}>
-              {page.questions.map((question) => (
-                <fieldset className={styles.question} key={`${page.number}-${question.number}`}>
-                  <legend>
-                    {question.number}. {question.prompt}
-                  </legend>
-                  {question.options.length ? (
+              {page.questions
+                .filter((question) => question.options.length >= 2)
+                .map((question) => (
+                  <fieldset className={styles.question} key={`${page.number}-${question.number}`}>
+                    <legend>
+                      {question.number}. {question.prompt}
+                    </legend>
                     <div className={styles.options}>
                       {question.options.map((option) => {
                         const key = `${page.number}-${question.number}`;
@@ -322,9 +323,8 @@ function NativePages({ content, compact = false }: { content: NativeDocument; co
                         );
                       })}
                     </div>
-                  ) : null}
-                </fieldset>
-              ))}
+                  </fieldset>
+                ))}
             </div>
           ) : null}
         </article>
