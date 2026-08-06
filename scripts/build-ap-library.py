@@ -85,14 +85,14 @@ SUBJECTS = {
 }
 
 ANSWER_RE = re.compile(
-    r"(?:answer|answers|answer.key|scoring.guideline|scoring.comment|sample.response|"
-    r"student.response|student.performance|chief.reader|q\s*&\s*a|[_-]qa(?:[_-]|\.)|"
-    r"\bsgs?\b|\bscoring\b|mark.scheme|rubric|solutions?|"
+    r"(?:answers?|(?<=\d)ans\b|\bans\b|answer\s*key|scoring\s*(?:guidelines?|comments?)|"
+    r"sample\s*responses?|student\s*(?:responses?|performance)|chief\s*reader|q\s*&\s*a|"
+    r"(?:^|\s)qa(?:\s|$)|\bsgs?\b|\bscoring\b|mark\s*scheme|rubrics?|solutions?|"
     r"评分|答案|解析|答题|范文)",
     re.I,
 )
 REFERENCE_RE = re.compile(
-    r"(?:scoring.statistics|score.distribution|course.description|course.overview|"
+    r"(?:scoring\s*(?:statistics|distribution|dist)|score\s*distribution|course\s*description|course\s*overview|"
     r"syllabus|ced(?:[_-]|\.)|textbook|review.book|教材|讲义|课件|考纲|大纲|词汇|"
     r"知识点|公式|闪卡|复习资料|备考指南)",
     re.I,
@@ -393,6 +393,57 @@ def write_typescript_catalog(catalog: dict[str, Any], destination: Path) -> None
     )
 
 
+def reclassify_only(output_root: Path) -> dict[str, Any]:
+    """Refresh document roles and answer links without re-extracting PDFs."""
+    catalog_path = output_root / "catalog.json"
+    if not catalog_path.exists():
+        raise SystemExit("Build the AP catalog before running --reclassify-only.")
+    catalog = json.loads(catalog_path.read_text("utf-8"))
+    documents = catalog["documents"]
+    media = catalog["media"]
+    for document in documents:
+        document["documentType"] = classify(Path(document["relativePath"]))
+        document["answerDocumentIds"] = []
+    pair_answers(documents)
+
+    subject_rows = []
+    subject_ids = sorted({item["subjectId"] for item in [*documents, *media]})
+    for subject_id in subject_ids:
+        mapping = next(value for value in SUBJECTS.values() if value[0] == subject_id)
+        subject_docs = [item for item in documents if item["subjectId"] == subject_id]
+        subject_media = [item for item in media if item["subjectId"] == subject_id]
+        subject_rows.append(
+            {
+                "id": subject_id,
+                "label": mapping[1],
+                "category": mapping[2],
+                "questionDocumentCount": sum(
+                    item["documentType"] in {"question", "combined"} for item in subject_docs
+                ),
+                "answerDocumentCount": sum(item["documentType"] == "answer" for item in subject_docs),
+                "referenceDocumentCount": sum(
+                    item["documentType"] == "reference" for item in subject_docs
+                ),
+                "mediaCount": len(subject_media),
+            }
+        )
+    catalog["subjects"] = subject_rows
+    catalog["summary"].update(
+        {
+            "questionDocumentCount": sum(
+                item["documentType"] in {"question", "combined"} for item in documents
+            ),
+            "answerDocumentCount": sum(item["documentType"] == "answer" for item in documents),
+            "referenceDocumentCount": sum(
+                item["documentType"] == "reference" for item in documents
+            ),
+        }
+    )
+    catalog_path.write_text(json.dumps(catalog, ensure_ascii=False, indent=2), encoding="utf-8")
+    write_typescript_catalog(catalog, Path("apps/api/src/learning/ap-catalog.generated.ts"))
+    return catalog
+
+
 def run_ocr_only(source_root: Path, output_root: Path, workers: int) -> dict[str, Any]:
     catalog_path = output_root / "catalog.json"
     if not catalog_path.exists():
@@ -561,11 +612,16 @@ def main() -> None:
     parser.add_argument("--catalog-only", action="store_true")
     parser.add_argument("--ocr-scans", action="store_true")
     parser.add_argument("--ocr-only", action="store_true")
+    parser.add_argument("--reclassify-only", action="store_true")
     args = parser.parse_args()
     catalog = (
-        run_ocr_only(args.source, args.output, args.workers)
-        if args.ocr_only
-        else build(args.source, args.output, args.workers, not args.catalog_only, args.ocr_scans)
+        reclassify_only(args.output)
+        if args.reclassify_only
+        else (
+            run_ocr_only(args.source, args.output, args.workers)
+            if args.ocr_only
+            else build(args.source, args.output, args.workers, not args.catalog_only, args.ocr_scans)
+        )
     )
     print(json.dumps(catalog["summary"], ensure_ascii=False, indent=2))
 
