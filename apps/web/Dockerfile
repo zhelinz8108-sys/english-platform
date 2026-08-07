@@ -6,7 +6,12 @@ FROM base AS deps
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY apps/web/package.json apps/web/package.json
 COPY packages/shared/package.json packages/shared/package.json
-RUN pnpm install --frozen-lockfile --filter @english/web...
+RUN set -eu; \
+  for attempt in 1 2 3 4; do \
+    if pnpm install --frozen-lockfile --filter @english/web...; then exit 0; fi; \
+    if [ "$attempt" -eq 4 ]; then exit 1; fi; \
+    sleep "$((attempt * 10))"; \
+  done
 
 FROM deps AS build
 ARG API_ORIGIN=http://api:4000

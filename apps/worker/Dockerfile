@@ -6,7 +6,12 @@ FROM base AS deps
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY apps/worker/package.json apps/worker/package.json
 COPY packages/shared/package.json packages/shared/package.json
-RUN pnpm install --frozen-lockfile --filter @english/worker...
+RUN set -eu; \
+  for attempt in 1 2 3 4; do \
+    if pnpm install --frozen-lockfile --filter @english/worker...; then exit 0; fi; \
+    if [ "$attempt" -eq 4 ]; then exit 1; fi; \
+    sleep "$((attempt * 10))"; \
+  done
 
 FROM deps AS build
 COPY tsconfig.base.json ./
