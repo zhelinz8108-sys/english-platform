@@ -30,6 +30,7 @@ interface DocumentSummary {
   mediaType: string;
   documentType: DocumentType;
   answerDocumentIds: string[];
+  pageRanges?: Array<{ start: number; end: number }>;
   hasEmbeddedAnswers?: boolean;
   pageCount?: number;
   questionCount?: number;
@@ -104,6 +105,11 @@ function useApCatalog() {
 
 function basePath(pathname: string) {
   return pathname.startsWith('/student/') ? '/student/learning/ap' : '/learning/ap';
+}
+
+function pageFragment(document: DocumentSummary) {
+  const firstPage = document.pageRanges?.[0]?.start;
+  return firstPage && firstPage > 1 ? `#page=${firstPage}` : '';
 }
 
 export function ApCatalogView({ subjectId }: { subjectId?: string }) {
@@ -463,7 +469,7 @@ export function ApDocumentView({ documentId }: { documentId: string }) {
           currentTenant.id,
           `/learning/ap/documents/${encodeURIComponent(payload.document.id)}/embed`,
         ),
-      ),
+      ) + pageFragment(payload.document),
     );
     setShowOriginal(true);
   }, [currentTenant.id, originalUrl, payload]);
@@ -476,7 +482,7 @@ export function ApDocumentView({ documentId }: { documentId: string }) {
           currentTenant.id,
           `/learning/ap/documents/${encodeURIComponent(payload.document.id)}/embed`,
         ),
-      ),
+      ) + pageFragment(payload.document),
     );
     setShowOriginal(true);
   }, [currentTenant.id, originalUrl, payload]);

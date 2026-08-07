@@ -24,6 +24,9 @@ export interface ApDocumentSummary {
   documentType: ApDocumentType;
   answerDocumentIds: string[];
   duplicatePaths?: string[];
+  sourceDocumentId?: string;
+  collectionYears?: number[];
+  pageRanges?: Array<{ start: number; end: number }>;
   hasEmbeddedAnswers?: boolean;
   pageCount?: number;
   questionCount?: number;

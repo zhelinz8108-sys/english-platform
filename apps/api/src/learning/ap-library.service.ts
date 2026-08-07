@@ -19,6 +19,25 @@ function authorize(request: ApiRequest): void {
   requireTenant(request);
 }
 
+function selectDocumentPages(
+  content: ApNativeDocument,
+  document: ApDocumentSummary,
+): ApNativeDocument {
+  const pageRanges = document.pageRanges ?? [];
+  const pages = pageRanges.length
+    ? content.pages.filter((page) =>
+        pageRanges.some((range) => page.number >= range.start && page.number <= range.end),
+      )
+    : content.pages;
+  return {
+    ...content,
+    documentId: document.id,
+    title: document.title,
+    documentType: document.documentType,
+    pages,
+  };
+}
+
 @Injectable()
 export class ApLibraryService {
   private readonly s3: S3Client;
@@ -63,7 +82,10 @@ export class ApLibraryService {
     );
     if (!response.Body) throw ProblemException.notFound('AP 试卷正文不存在。');
     const compressed = Buffer.from(await response.Body.transformToByteArray());
-    const content = JSON.parse(gunzipSync(compressed).toString('utf8')) as ApNativeDocument;
+    const sourceContent = JSON.parse(
+      gunzipSync(compressed).toString('utf8'),
+    ) as ApNativeDocument;
+    const content = selectDocumentPages(sourceContent, document);
     return {
       document,
       content,

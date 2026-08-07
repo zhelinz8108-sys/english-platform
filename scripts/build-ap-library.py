@@ -111,6 +111,9 @@ COMBINED_RE = re.compile(
 )
 NO_ANSWER_RE = re.compile(r"(?:no\s+answers?|无答案|没答案)", re.I)
 YEAR_RE = re.compile(r"(?<!\d)(19\d{2}|20\d{2})(?!\d)")
+FULL_YEAR_RANGE_RE = re.compile(
+    r"(?<!\d)((?:19|20)\d{2})\s*[-–—~至到]\s*((?:19|20)\d{2})(?!\d)"
+)
 SHORT_YEAR_RE = re.compile(r"(?:^|\D)(0[0-9]|1[0-9]|2[0-6])(?:\D|$)")
 QUESTION_NUMBER_RE = re.compile(r"(?:^|[_\-\s])q(?:uestion)?[_\-\s]*([1-9])(?:\D|$)", re.I)
 QUESTION_START_RE = re.compile(r"^\s*(?:question\s+)?(\d{1,3})[.)]\s+(.*)", re.I)
@@ -241,6 +244,192 @@ def pair_answers(documents: list[dict[str, Any]]) -> None:
         question["answerDocumentIds"] = [answer["id"] for score, answer in ranked[:5] if score >= 72]
         if question["documentType"] == "combined":
             question["hasEmbeddedAnswers"] = True
+
+
+def collection_year_span(title: str) -> tuple[int, int] | None:
+    """Return a genuine multi-year AP collection range from a visible title."""
+    match = FULL_YEAR_RANGE_RE.search(title)
+    if not match:
+        return None
+    first, last = (int(value) for value in match.groups())
+    if first >= last or last - first < 2 or last - first > 40:
+        return None
+    return first, last
+
+
+def native_payload(output_root: Path, document: dict[str, Any]) -> dict[str, Any] | None:
+    path = output_root / "native" / f"{document['sha256']}.json.gz"
+    if not path.exists():
+        return None
+    try:
+        with gzip.open(path, "rt", encoding="utf-8") as stream:
+            return json.load(stream)
+    except (OSError, EOFError, json.JSONDecodeError):
+        return None
+
+
+def strong_page_year(text: str, expected_years: set[int]) -> int | None:
+    """Identify the exam year in a page heading, ignoring citation/copyright years."""
+    heading = " ".join(text.split())[:700]
+    candidates: list[tuple[int, int]] = []
+    for year in expected_years:
+        token = str(year)
+        score = 0
+        if re.search(
+            rf"(?i)\b{token}\b\s+(?:AP|Calculus|Chemistry|English|Human|Physics|Scoring|Solutions?)",
+            heading,
+        ):
+            score += 8
+        if re.search(rf"(?i)from\s+the\s+\b{token}\b\s+administration", heading):
+            score += 10
+        if re.search(
+            rf"(?i)\b{token}\b.{0,90}(?:exam|free-response|multiple-choice|scoring|solutions?)",
+            heading,
+        ):
+            score += 5
+        if re.search(
+            rf"(?i)(?:exam|free-response|multiple-choice|scoring|solutions?).{0,90}\b{token}\b",
+            heading,
+        ):
+            score += 4
+        if heading.startswith(token):
+            score += 3
+        if score:
+            candidates.append((score, year))
+    if not candidates:
+        return None
+    candidates.sort(reverse=True)
+    return candidates[0][1] if candidates[0][0] >= 5 else None
+
+
+def coalesce_page_numbers(numbers: list[int]) -> list[dict[str, int]]:
+    if not numbers:
+        return []
+    ranges: list[dict[str, int]] = []
+    start = previous = numbers[0]
+    for number in numbers[1:]:
+        if number == previous + 1:
+            previous = number
+            continue
+        ranges.append({"start": start, "end": previous})
+        start = previous = number
+    ranges.append({"start": start, "end": previous})
+    return ranges
+
+
+def collection_year_details(
+    document: dict[str, Any], output_root: Path, first: int, last: int
+) -> dict[int, dict[str, Any]]:
+    payload = native_payload(output_root, document)
+    expected = set(range(first, last + 1))
+    details: dict[int, dict[str, Any]] = {}
+    if payload:
+        pages = payload.get("pages", [])
+        current_year: int | None = None
+        detectable_years = set(range(1950, 2030))
+        pages_by_year: dict[int, list[int]] = defaultdict(list)
+        question_counts: Counter[int] = Counter()
+        for index, page in enumerate(pages, 1):
+            text = " ".join(str(block.get("text", "")) for block in page.get("blocks", []))
+            detected = strong_page_year(text, detectable_years)
+            if detected is not None:
+                current_year = detected if detected in expected else None
+            if current_year is not None:
+                page_number = int(page.get("number") or index)
+                pages_by_year[current_year].append(page_number)
+                question_counts[current_year] += len(page.get("questions", []))
+
+        # Collection cover/contents pages belong with the newest exam when the
+        # first detected section is the range's final year.
+        assigned = [number for values in pages_by_year.values() for number in values]
+        if assigned and min(assigned) > 1:
+            first_assigned_year = next(
+                (
+                    year
+                    for year, values in pages_by_year.items()
+                    if values and min(values) == min(assigned)
+                ),
+                None,
+            )
+            if first_assigned_year is not None:
+                cover_year = last if last not in pages_by_year else first_assigned_year
+                pages_by_year[cover_year] = (
+                    list(range(1, min(assigned))) + pages_by_year.get(cover_year, [])
+                )
+
+        for year, numbers in pages_by_year.items():
+            details[year] = {
+                "pageRanges": coalesce_page_numbers(sorted(set(numbers))),
+                "pageCount": len(set(numbers)),
+                "questionCount": question_counts[year],
+            }
+
+    # Short collections in this archive are annual compilations. Some years are
+    # scanned and therefore absent from the text layer, but still need a row.
+    if last - first <= 10:
+        years = range(first, last + 1)
+    else:
+        # Long historical collections (notably Calculus 1969-1998) only contain
+        # selected released administrations, so never fabricate every year.
+        years = sorted(details)
+    return {year: details.get(year, {}) for year in years}
+
+
+def concrete_collection_title(
+    document: dict[str, Any], subject_label: str, year: int
+) -> str:
+    title = FULL_YEAR_RANGE_RE.sub(str(year), document["title"], count=1)
+    title = re.sub(r"\s+", " ", title).strip(" -")
+    if re.match(r"^\d{4}(?:\D|$)", title):
+        title = f"{subject_label} {title}"
+    return title
+
+
+def expand_year_collections(
+    documents: list[dict[str, Any]], output_root: Path
+) -> list[dict[str, Any]]:
+    """Hide range-labelled source bundles and expose concrete yearly entries."""
+    physical_documents = [item for item in documents if not item.get("sourceDocumentId")]
+    subject_labels = {value[0]: value[1] for value in SUBJECTS.values()}
+    expanded: list[dict[str, Any]] = []
+    for document in physical_documents:
+        span = (
+            collection_year_span(document["title"])
+            if document["documentType"] in {"question", "combined"}
+            else None
+        )
+        if not span:
+            expanded.append(document)
+            continue
+        first, last = span
+        details = collection_year_details(document, output_root, first, last)
+        if not details:
+            expanded.append(document)
+            continue
+
+        source = dict(document)
+        source["documentType"] = "reference"
+        source["answerDocumentIds"] = []
+        source["collectionYears"] = sorted(details)
+        expanded.append(source)
+
+        for year, year_details in details.items():
+            virtual = dict(document)
+            virtual.update(year_details)
+            virtual["id"] = stable_id(f"{document['id']}:year:{year}")
+            virtual["title"] = concrete_collection_title(
+                document, subject_labels[document["subjectId"]], year
+            )
+            virtual["year"] = year
+            virtual["sourceDocumentId"] = document["id"]
+            virtual["answerDocumentIds"] = []
+            virtual.pop("duplicatePaths", None)
+            if not year_details:
+                virtual.pop("pageCount", None)
+                virtual.pop("questionCount", None)
+            expanded.append(virtual)
+    pair_answers(expanded)
+    return expanded
 
 
 def extract_questions(lines: list[str]) -> list[dict[str, Any]]:
@@ -427,12 +616,17 @@ def reclassify_only(output_root: Path) -> dict[str, Any]:
     if not catalog_path.exists():
         raise SystemExit("Build the AP catalog before running --reclassify-only.")
     catalog = json.loads(catalog_path.read_text("utf-8"))
-    documents = catalog["documents"]
+    documents = [item for item in catalog["documents"] if not item.get("sourceDocumentId")]
     media = catalog["media"]
     for document in documents:
         document["documentType"] = classify(Path(document["relativePath"]))
         document["answerDocumentIds"] = []
-    pair_answers(documents)
+        document.pop("collectionYears", None)
+    documents = expand_year_collections(documents, output_root)
+    catalog["documents"] = sorted(
+        documents,
+        key=lambda item: (item["subjectId"], -(item.get("year") or 0), item["title"]),
+    )
 
     subject_rows = []
     subject_ids = sorted({item["subjectId"] for item in [*documents, *media]})
@@ -587,6 +781,8 @@ def build(source_root: Path, output_root: Path, workers: int, extract: bool, ocr
         result_by_id = {result["id"]: result for result in results}
         for document in documents:
             document.update(result_by_id.get(document["id"], {}))
+
+    documents = expand_year_collections(documents, output_root)
 
     subject_rows = []
     subject_ids = sorted({item["subjectId"] for item in documents})
