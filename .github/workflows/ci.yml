@@ -159,6 +159,18 @@ jobs:
           ECS_USER: ${{ secrets.ECS_USER }}
         run: |
           set -euo pipefail
+          deploy_log=/tmp/english-platform-deploy.log
+          : > "$deploy_log"
+          exec > >(tee -a "$deploy_log") 2>&1
+          report_deploy_failure() {
+            status=$?
+            trap - ERR
+            summary="$(tail -n 40 "$deploy_log" | tr '\n' ' ' | cut -c1-4000)"
+            summary="${summary//'%'/'%25'}"
+            printf '::error title=ECS deployment failed::%s\n' "$summary"
+            exit "$status"
+          }
+          trap report_deploy_failure ERR
           ssh_options=(
             -i "$HOME/.ssh/production_deploy_key"
             -o IdentitiesOnly=yes
