@@ -1,4 +1,5 @@
 FROM node:24.14.0-alpine AS base
+ENV COREPACK_NPM_REGISTRY=https://registry.npmmirror.com
 RUN corepack enable
 WORKDIR /app
 
