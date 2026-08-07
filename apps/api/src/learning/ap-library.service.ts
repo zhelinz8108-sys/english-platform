@@ -82,9 +82,7 @@ export class ApLibraryService {
     );
     if (!response.Body) throw ProblemException.notFound('AP 试卷正文不存在。');
     const compressed = Buffer.from(await response.Body.transformToByteArray());
-    const sourceContent = JSON.parse(
-      gunzipSync(compressed).toString('utf8'),
-    ) as ApNativeDocument;
+    const sourceContent = JSON.parse(gunzipSync(compressed).toString('utf8')) as ApNativeDocument;
     const content = selectDocumentPages(sourceContent, document);
     return {
       document,
