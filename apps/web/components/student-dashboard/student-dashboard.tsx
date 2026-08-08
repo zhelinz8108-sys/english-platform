@@ -117,6 +117,7 @@ const workspaceNavGroups: WorkspaceNavGroup[] = [
       { label: '写作', href: '/student/learning/toefl#writing', icon: PenLine },
       { label: '托福', href: '/student/learning/toefl', icon: ClipboardList },
       { label: 'AP', href: '/student/learning/ap', icon: GraduationCap },
+      { label: 'A Level', href: '/student/learning/alevel', icon: School },
     ],
   },
   {

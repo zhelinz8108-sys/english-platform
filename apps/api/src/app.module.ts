@@ -17,6 +17,8 @@ import { LearningController } from './learning/learning.controller.js';
 import { LearningService } from './learning/learning.service.js';
 import { ApLibraryController } from './learning/ap-library.controller.js';
 import { ApLibraryService } from './learning/ap-library.service.js';
+import { AlevelLibraryController } from './learning/alevel-library.controller.js';
+import { AlevelLibraryService } from './learning/alevel-library.service.js';
 import { DatabaseService } from './infrastructure/database.service.js';
 import { EventsService } from './infrastructure/events.service.js';
 import { IdempotencyService } from './infrastructure/idempotency.service.js';
@@ -45,6 +47,7 @@ import { SelfStudyService } from './progress/self-study.service.js';
     FilesController,
     LearningController,
     ApLibraryController,
+    AlevelLibraryController,
     VocabularyAssessmentController,
     GrammarPracticeController,
     SelfStudyController,
@@ -63,6 +66,7 @@ import { SelfStudyService } from './progress/self-study.service.js';
     FilesService,
     LearningService,
     ApLibraryService,
+    AlevelLibraryService,
     VocabularyAssessmentService,
     GrammarPracticeService,
     SelfStudyService,

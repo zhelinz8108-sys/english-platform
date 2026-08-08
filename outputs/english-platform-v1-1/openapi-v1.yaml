@@ -2929,6 +2929,158 @@ paths:
           $ref: '#/components/responses/Unauthorized'
         '404':
           $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/learning/alevel/catalog:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+    get:
+      tags: [A Level Learning]
+      summary: List Cambridge International AS and A Level subjects and counts
+      operationId: listAlevelLibrary
+      responses:
+        '200':
+          description: Sharded A Level library catalog summary
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/learning/alevel/subjects/{subjectId}/documents:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - name: subjectId
+        in: path
+        required: true
+        schema: { type: string }
+    get:
+      tags: [A Level Learning]
+      summary: Page and filter A Level papers for one syllabus subject
+      operationId: listAlevelSubjectDocuments
+      parameters:
+        - name: q
+          in: query
+          schema: { type: string }
+        - name: year
+          in: query
+          schema: { type: integer }
+        - name: session
+          in: query
+          schema: { type: string, enum: [feb-mar, may-june, oct-nov] }
+        - name: level
+          in: query
+          schema: { type: string, enum: [AS, A2] }
+        - name: paper
+          in: query
+          schema: { type: integer }
+        - name: variant
+          in: query
+          schema: { type: integer }
+        - name: collection
+          in: query
+          schema: { type: string, enum: [past-paper, topic, support] }
+        - name: page
+          in: query
+          schema: { type: integer, minimum: 1, default: 1 }
+        - name: pageSize
+          in: query
+          schema: { type: integer, minimum: 1, maximum: 100, default: 40 }
+      responses:
+        '200':
+          description: Paginated A Level document summaries and facets
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/learning/alevel/documents/{documentId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - name: documentId
+        in: path
+        required: true
+        schema: { type: string }
+    get:
+      tags: [A Level Learning]
+      summary: Get an A Level paper, native text, and related resources
+      operationId: getAlevelDocument
+      responses:
+        '200':
+          description: A Level native document payload
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/learning/alevel/documents/{documentId}/embed:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - name: documentId
+        in: path
+        required: true
+        schema: { type: string }
+    get:
+      tags: [A Level Learning]
+      summary: Stream an original A Level PDF inline with byte-range support
+      operationId: embedAlevelDocument
+      parameters:
+        - name: Range
+          in: header
+          required: false
+          schema: { type: string }
+      responses:
+        '200':
+          description: Complete inline PDF
+          content:
+            application/pdf:
+              schema: { type: string, format: binary }
+        '206':
+          description: Partial inline PDF response
+          content:
+            application/pdf:
+              schema: { type: string, format: binary }
+        '400':
+          $ref: '#/components/responses/ValidationProblem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /api/v1/tenants/{tenantId}/learning/alevel/resources/{resourceId}:
+    parameters:
+      - $ref: '#/components/parameters/TenantId'
+      - name: resourceId
+        in: path
+        required: true
+        schema: { type: string }
+    get:
+      tags: [A Level Learning]
+      summary: Create a short-lived URL for an A Level exam attachment
+      operationId: getAlevelResource
+      responses:
+        '200':
+          description: Signed object URL
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [url, expiresAt]
+                properties:
+                  url: { type: string, format: uri }
+                  expiresAt: { type: string, format: date-time }
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
 components:
   securitySchemes:
     accessCookie:
