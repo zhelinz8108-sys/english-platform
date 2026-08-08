@@ -583,15 +583,6 @@ export function AlevelDocumentView({ documentId }: { documentId: string }) {
     [currentTenant.id],
   );
 
-  useEffect(() => {
-    if (!activeResource) return;
-    const closeOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setActiveResource(null);
-    };
-    window.addEventListener('keydown', closeOnEscape);
-    return () => window.removeEventListener('keydown', closeOnEscape);
-  }, [activeResource]);
-
   if (error) return <div className={styles.error}>{error}</div>;
   if (!payload) return <div className={styles.loading}>正在载入 A Level 题卷…</div>;
   const document = payload.document;
@@ -601,6 +592,16 @@ export function AlevelDocumentView({ documentId }: { documentId: string }) {
       `/learning/alevel/documents/${encodeURIComponent(document.id)}/embed`,
     ),
   );
+  const displayedDocument = activeResource?.document ?? document;
+  const displayedUrl = activeResource
+    ? resolveApiRequestUrl(
+        tenantPath(
+          currentTenant.id,
+          `/learning/alevel/documents/${encodeURIComponent(activeResource.document.id)}/embed`,
+        ),
+      )
+    : originalUrl;
+  const showingOriginal = !activeResource;
   return (
     <div className={styles.shell}>
       <Link className={styles.back} href={`${base}/${document.subjectId}`}>
@@ -621,21 +622,39 @@ export function AlevelDocumentView({ documentId }: { documentId: string }) {
         <div className={styles.actions}>
           <a
             className={`${styles.button} ${styles.buttonSecondary}`}
-            href={originalUrl}
+            href={displayedUrl}
             rel="noreferrer"
             target="_blank"
           >
-            在新标签页打开原卷
+            在新标签页打开{showingOriginal ? '原卷' : '当前资料'}
           </a>
         </div>
       </header>
       {payload.relatedDocuments.length ? (
         <section className={styles.solutionPanel}>
-          <h2>答案与配套资料</h2>
-          <div className={styles.counts}>
+          <div className={styles.resourceSwitchHeader}>
+            <div>
+              <p className={styles.eyebrow}>PAPER AND SUPPORTING RESOURCES</p>
+              <h2>试卷与配套资料</h2>
+              <p>在同一阅读区切换原卷、答案与其他配套资料。</p>
+            </div>
+          </div>
+          <div className={styles.resourceTabs}>
+            <button
+              aria-pressed={showingOriginal}
+              className={`${styles.button} ${showingOriginal ? styles.resourceTabActive : styles.buttonSecondary}`}
+              onClick={() => {
+                setActiveResource(null);
+                setDownload(null);
+              }}
+              type="button"
+            >
+              原卷
+            </button>
             {payload.relatedDocuments.map((resource) => (
               <button
-                className={`${styles.button} ${styles.buttonSecondary}`}
+                aria-pressed={activeResource?.document.id === resource.id}
+                className={`${styles.button} ${activeResource?.document.id === resource.id ? styles.resourceTabActive : styles.buttonSecondary}`}
                 key={resource.id}
                 onClick={() => void openResource(resource)}
                 type="button"
@@ -657,52 +676,21 @@ export function AlevelDocumentView({ documentId }: { documentId: string }) {
           ) : null}
         </section>
       ) : null}
-      {activeResource ? (
-        <div
-          aria-labelledby="alevel-resource-title"
-          aria-modal="true"
-          className={styles.resourceOverlay}
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) setActiveResource(null);
-          }}
-          role="dialog"
-        >
-          <section className={styles.resourceDialog}>
-            <header className={styles.resourceDialogHeader}>
-              <div>
-                <p className={styles.eyebrow}>OFFICIAL ANSWER AND SUPPORTING RESOURCE</p>
-                <h2 id="alevel-resource-title">{resourceActionLabel(activeResource.document)}</h2>
-                <p>{activeResource.document.title}</p>
-              </div>
-              <button
-                className={`${styles.button} ${styles.buttonSecondary}`}
-                onClick={() => setActiveResource(null)}
-                type="button"
-              >
-                ← 返回原卷
-              </button>
-            </header>
-            <AlevelPdfReader
-              src={resolveApiRequestUrl(
-                tenantPath(
-                  currentTenant.id,
-                  `/learning/alevel/documents/${encodeURIComponent(activeResource.document.id)}/embed`,
-                ),
-              )}
-              title={activeResource.document.title}
-            />
-          </section>
-        </div>
-      ) : null}
       <section className={styles.embeddedPaper}>
         <div>
           <div>
-            <p className={styles.eyebrow}>ORIGINAL EMBEDDED PAPER</p>
-            <h2>原卷</h2>
-            <p>逐页显示原 PDF，保留原题的公式、图表、字体和页面排版。</p>
+            <p className={styles.eyebrow}>
+              {showingOriginal ? 'ORIGINAL EMBEDDED PAPER' : 'OFFICIAL SUPPORTING RESOURCE'}
+            </p>
+            <h2>{showingOriginal ? '原卷' : resourceActionLabel(displayedDocument)}</h2>
+            <p>
+              {showingOriginal
+                ? '逐页显示原 PDF，保留原题的公式、图表、字体和页面排版。'
+                : displayedDocument.title}
+            </p>
           </div>
         </div>
-        <AlevelPdfReader src={originalUrl} title={document.title} />
+        <AlevelPdfReader src={displayedUrl} title={displayedDocument.title} />
       </section>
       {payload.content.multipleChoice ? (
         <MultipleChoiceAnswerSheet interaction={payload.content.multipleChoice} />

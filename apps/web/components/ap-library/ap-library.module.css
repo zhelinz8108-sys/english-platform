@@ -363,57 +363,35 @@
   white-space: pre-wrap;
 }
 
-.resourceOverlay {
-  position: fixed;
-  z-index: 100;
-  inset: 0;
-  display: grid;
-  overflow: auto;
-  background: rgba(20, 32, 31, 0.48);
-  padding: 28px;
-}
-
-.resourceDialog {
-  display: grid;
-  width: min(1180px, 100%);
-  gap: 18px;
-  margin: auto;
-  border: 1px solid #c6dfda;
-  border-radius: 16px;
-  background: #f6fbfa;
-  box-shadow: 0 24px 60px rgba(7, 28, 26, 0.3);
-  padding: 22px;
-}
-
-.resourceDialogHeader {
-  align-items: flex-start;
-  display: flex;
-  gap: 18px;
-  justify-content: space-between;
-}
-
-.resourceDialogHeader > div {
+.resourceSwitchHeader > div {
   display: grid;
   gap: 6px;
 }
 
-.resourceDialogHeader h2,
-.resourceDialogHeader p {
+.resourceSwitchHeader h2,
+.resourceSwitchHeader p {
   margin: 0;
 }
 
-.resourceDialogHeader h2 {
+.resourceSwitchHeader h2 {
   color: #174f4b;
 }
 
-.resourceDialogHeader p:not(.eyebrow) {
+.resourceSwitchHeader p:not(.eyebrow) {
   color: #687878;
   font-size: 13px;
 }
 
-.resourceDialog .pdfCanvasViewport {
-  min-height: min(70vh, 900px);
-  max-height: min(70vh, 900px);
+.resourceTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.resourceTabActive {
+  background: #176e68;
+  border-color: #176e68;
+  color: #fff;
 }
 
 .pdfFrame {
@@ -819,20 +797,6 @@
   .embeddedPaper,
   .answerSheet {
     padding: 14px;
-  }
-  .resourceOverlay {
-    padding: 12px;
-  }
-  .resourceDialog {
-    padding: 14px;
-  }
-  .resourceDialogHeader {
-    align-items: stretch;
-    flex-direction: column;
-  }
-  .resourceDialog .pdfCanvasViewport {
-    min-height: 68vh;
-    max-height: 68vh;
   }
   .answerSheetHeader {
     align-items: flex-start;
