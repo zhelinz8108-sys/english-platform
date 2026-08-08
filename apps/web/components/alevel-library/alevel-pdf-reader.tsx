@@ -133,8 +133,11 @@ export function AlevelPdfReader({ src, title }: { src: string; title: string }) 
         const pdfPage = await pdf.getPage(pageNumber);
         if (generation !== renderGenerationRef.current) return;
         const baseViewport = pdfPage.getViewport({ scale: 1 });
-        const contentWidth = Math.min(Math.max(availableWidth - 48, 320), 920);
-        const fitScale = Math.min(Math.max(contentWidth / baseViewport.width, 0.85), 1.9);
+        // The A Level reader is intentionally a wide, document-first workspace.
+        // Keep the page close to the full available reading width instead of
+        // capping it at the former narrow 920px desktop layout.
+        const contentWidth = Math.min(Math.max(availableWidth - 48, 320), 1560);
+        const fitScale = Math.min(Math.max(contentWidth / baseViewport.width, 0.85), 2.6);
         const viewport = pdfPage.getViewport({ scale: fitScale * zoom });
         const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
         const context = canvas.getContext('2d');
