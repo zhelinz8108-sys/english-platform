@@ -42,7 +42,8 @@ export function AlevelPdfReader({ src, title }: { src: string; title: string }) 
 
   useEffect(() => {
     let cancelled = false;
-    let loadingTask: { destroy: () => Promise<void>; promise: Promise<PDFDocumentProxy> } | null = null;
+    let loadingTask: { destroy: () => Promise<void>; promise: Promise<PDFDocumentProxy> } | null =
+      null;
 
     setLoading(true);
     setError('');
@@ -156,7 +157,11 @@ export function AlevelPdfReader({ src, title }: { src: string; title: string }) 
           <strong>{title}</strong>
         </div>
         <div className={styles.pdfReaderControls}>
-          <button disabled={page <= 1 || loading} onClick={() => updatePage(page - 1)} type="button">
+          <button
+            disabled={page <= 1 || loading}
+            onClick={() => updatePage(page - 1)}
+            type="button"
+          >
             上一页
           </button>
           <label>
@@ -175,15 +180,29 @@ export function AlevelPdfReader({ src, title }: { src: string; title: string }) 
             />
             页 / {pageCount || '—'}
           </label>
-          <button disabled={pageCount === 0 || page >= pageCount} onClick={() => updatePage(page + 1)} type="button">
+          <button
+            disabled={pageCount === 0 || page >= pageCount}
+            onClick={() => updatePage(page + 1)}
+            type="button"
+          >
             下一页
           </button>
           <span className={styles.pdfReaderDivider} />
-          <button aria-label="缩小页面" disabled={zoom <= MIN_ZOOM} onClick={() => setZoom((value) => Math.max(MIN_ZOOM, value - ZOOM_STEP))} type="button">
+          <button
+            aria-label="缩小页面"
+            disabled={zoom <= MIN_ZOOM}
+            onClick={() => setZoom((value) => Math.max(MIN_ZOOM, value - ZOOM_STEP))}
+            type="button"
+          >
             −
           </button>
           <output>{Math.round(zoom * 100)}%</output>
-          <button aria-label="放大页面" disabled={zoom >= MAX_ZOOM} onClick={() => setZoom((value) => Math.min(MAX_ZOOM, value + ZOOM_STEP))} type="button">
+          <button
+            aria-label="放大页面"
+            disabled={zoom >= MAX_ZOOM}
+            onClick={() => setZoom((value) => Math.min(MAX_ZOOM, value + ZOOM_STEP))}
+            type="button"
+          >
             +
           </button>
         </div>
@@ -191,8 +210,14 @@ export function AlevelPdfReader({ src, title }: { src: string; title: string }) 
       <div className={styles.pdfCanvasViewport} ref={viewportRef}>
         {loading ? <p className={styles.pdfReaderStatus}>正在加载原卷…</p> : null}
         {error ? <p className={styles.pdfReaderError}>{error}</p> : null}
-        <canvas aria-label={`${title}，第 ${page} 页`} className={styles.pdfCanvas} ref={canvasRef} />
-        {rendering && !error ? <p className={styles.pdfReaderStatus}>正在渲染第 {page} 页…</p> : null}
+        <canvas
+          aria-label={`${title}，第 ${page} 页`}
+          className={styles.pdfCanvas}
+          ref={canvasRef}
+        />
+        {rendering && !error ? (
+          <p className={styles.pdfReaderStatus}>正在渲染第 {page} 页…</p>
+        ) : null}
       </div>
       <footer className={styles.pdfReaderFooter}>
         <span>仅显示当前页，不显示缩略图栏。</span>
