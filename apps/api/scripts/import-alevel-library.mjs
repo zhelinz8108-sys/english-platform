@@ -75,7 +75,10 @@ try {
 } catch {}
 
 let cursor = 0;
-let completed = entries.filter((entry) => state.completed[entry.key] !== undefined).length;
+// Count every selected entry exactly once during this run. Entries already present in
+// the resume state are reported as reused by upload(), so seeding this counter from
+// the state would double-count them and could make progress exceed the selected total.
+let completed = 0;
 let uploaded = 0;
 let reused = 0;
 let lastWrite = Date.now();
