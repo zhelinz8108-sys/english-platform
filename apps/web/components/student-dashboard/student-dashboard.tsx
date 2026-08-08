@@ -854,6 +854,7 @@ function MotivationCard() {
 export function StudentShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const [navigationOpen, setNavigationOpen] = useState(false);
+  const isAlevelDocument = pathname.includes('/learning/alevel/documents/');
 
   useEffect(() => {
     document.body.style.overflow = navigationOpen ? 'hidden' : '';
@@ -868,7 +869,7 @@ export function StudentShell({ children }: { children: ReactNode }) {
       <div className={styles.page}>
         <DashboardHeader onMenu={() => setNavigationOpen(true)} />
         <main
-          className={`${styles.main} ${pathname === '/student' ? '' : styles.routeMain}`}
+          className={`${styles.main} ${pathname === '/student' ? '' : styles.routeMain} ${isAlevelDocument ? styles.documentReaderMain : ''}`}
           id="main-content"
         >
           {children}

@@ -395,6 +395,157 @@
   gap: 7px;
 }
 
+.pdfReader {
+  overflow: hidden;
+  border: 1px solid #d7dfdc;
+  border-radius: 12px;
+  background: #424746;
+}
+
+.pdfReaderToolbar,
+.pdfReaderFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: #fff;
+  color: #344647;
+  padding: 13px 16px;
+}
+
+.pdfReaderTitle {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.pdfReaderTitle > span {
+  color: #307f78;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.pdfReaderTitle > strong {
+  overflow: hidden;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pdfReaderControls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 7px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.pdfReaderControls button {
+  min-height: 32px;
+  border: 1px solid #cbd7d4;
+  border-radius: 6px;
+  background: #fff;
+  color: #175852;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 650;
+  padding: 5px 9px;
+}
+
+.pdfReaderControls button:hover:not(:disabled) {
+  border-color: #5d9f98;
+  background: #eef8f6;
+}
+
+.pdfReaderControls button:disabled {
+  cursor: default;
+  opacity: 0.42;
+}
+
+.pdfReaderControls label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.pdfReaderControls input {
+  width: 45px;
+  min-height: 32px;
+  border: 1px solid #cbd7d4;
+  border-radius: 6px;
+  background: #fff;
+  color: #243a3b;
+  font: inherit;
+  padding: 4px 5px;
+  text-align: center;
+}
+
+.pdfReaderControls output {
+  min-width: 39px;
+  color: #637070;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+.pdfReaderDivider {
+  width: 1px;
+  height: 24px;
+  background: #d7dfdc;
+}
+
+.pdfCanvasViewport {
+  position: relative;
+  display: grid;
+  min-height: min(78vh, 1040px);
+  max-height: min(78vh, 1040px);
+  place-items: start center;
+  overflow: auto;
+  background: #424746;
+  padding: 28px 24px;
+}
+
+.pdfCanvas {
+  display: block;
+  max-width: none;
+  background: #fff;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.34);
+}
+
+.pdfReaderStatus,
+.pdfReaderError {
+  position: absolute;
+  z-index: 1;
+  top: 16px;
+  left: 50%;
+  margin: 0;
+  border-radius: 999px;
+  background: rgba(21, 32, 31, 0.82);
+  color: #fff;
+  font-size: 11px;
+  padding: 7px 12px;
+  transform: translateX(-50%);
+}
+
+.pdfReaderError {
+  max-width: calc(100% - 40px);
+  background: #8c3d35;
+  text-align: center;
+}
+
+.pdfReaderFooter {
+  border-top: 1px solid #d7dfdc;
+  color: #657271;
+  font-size: 10px;
+}
+
+.pdfReaderFooter a {
+  color: #176e68;
+  font-weight: 700;
+}
+
 .answerSheetHeader {
   align-items: center;
   display: flex;
@@ -554,6 +705,21 @@
   }
   .pdfFrame {
     min-height: 520px;
+  }
+  .pdfReaderToolbar,
+  .pdfReaderFooter {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .pdfReaderControls {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+  .pdfCanvasViewport {
+    min-height: 68vh;
+    max-height: 68vh;
+    padding: 18px 12px;
   }
   .embeddedPaper,
   .answerSheet {

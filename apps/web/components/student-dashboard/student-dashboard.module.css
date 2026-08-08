@@ -738,6 +738,10 @@
   padding-top: 22px;
 }
 
+.documentReaderMain {
+  width: min(100%, 1720px);
+}
+
 .welcome {
   margin-bottom: 28px;
 }

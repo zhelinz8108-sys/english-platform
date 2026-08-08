@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Icon } from '@/components/icon';
 import { useWorkspace } from '@/components/workspace-provider';
 import { apiRequest, resolveApiRequestUrl, tenantPath } from '@/lib/api';
+import { AlevelPdfReader } from './alevel-pdf-reader';
 import styles from '@/components/ap-library/ap-library.module.css';
 
 type Session = 'feb-mar' | 'may-june' | 'oct-nov';
@@ -630,8 +631,7 @@ export function AlevelDocumentView({ documentId }: { documentId: string }) {
           {activeResource ? (
             <div>
               <h3>{activeResource.document.title}</h3>
-              <iframe
-                className={styles.pdfFrame}
+              <AlevelPdfReader
                 src={resolveApiRequestUrl(
                   tenantPath(
                     currentTenant.id,
@@ -657,11 +657,13 @@ export function AlevelDocumentView({ documentId }: { documentId: string }) {
       ) : null}
       <section className={styles.embeddedPaper}>
         <div>
-          <p className={styles.eyebrow}>ORIGINAL EMBEDDED PAPER</p>
-          <h2>原卷</h2>
-          <p>直接显示原始 PDF，完整保留公式、图表、字体和页面排版。</p>
+          <div>
+            <p className={styles.eyebrow}>ORIGINAL EMBEDDED PAPER</p>
+            <h2>原卷</h2>
+            <p>逐页显示原 PDF，保留原题的公式、图表、字体和页面排版。</p>
+          </div>
         </div>
-        <iframe className={styles.pdfFrame} src={originalUrl} title={document.title} />
+        <AlevelPdfReader src={originalUrl} title={document.title} />
       </section>
       {payload.content.multipleChoice ? (
         <MultipleChoiceAnswerSheet interaction={payload.content.multipleChoice} />
