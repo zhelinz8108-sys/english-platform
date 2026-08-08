@@ -44,6 +44,14 @@ class AlevelFilenameTest(unittest.TestCase):
             BUILD.classify(answer, "application/pdf", {})[0], "topic_answer"
         )
 
+    def test_syllabus_code_ignores_years_in_legacy_names(self) -> None:
+        path = Path("English - 8695") / "2011_2012_8695_question_paper.pdf"
+        self.assertEqual(BUILD.infer_syllabus_code(path, {}), "8695")
+
+    def test_directory_code_is_used_when_filename_only_has_a_year(self) -> None:
+        path = Path("Information Technology - 9626") / "2022_syllabus.pdf"
+        self.assertEqual(BUILD.infer_syllabus_code(path, {}), "9626")
+
 
 class AlevelPairingTest(unittest.TestCase):
     def item(self, item_id: str, role: str, component: str | None) -> dict:

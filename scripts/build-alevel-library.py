@@ -223,19 +223,34 @@ def display_title(item: dict[str, Any]) -> str:
     return re.sub(r"\s+", " ", title).strip(" -")
 
 
+def infer_syllabus_code(path: Path, official: dict[str, Any]) -> str | None:
+    if official.get("syllabusCode"):
+        return str(official["syllabusCode"])
+
+    def non_year_codes(value: str) -> list[str]:
+        return [
+            match
+            for match in re.findall(r"(?<!\d)(\d{4})(?!\d)", value)
+            if not 1900 <= int(match) <= 2099
+        ]
+
+    stem_codes = non_year_codes(path.stem)
+    if stem_codes:
+        return stem_codes[0]
+    directory_codes = non_year_codes(path.parts[0]) if path.parts else []
+    return directory_codes[0] if directory_codes else None
+
+
 def scan_file(root: Path, path: Path) -> dict[str, Any] | None:
-    relative = path.relative_to(root).as_posix()
+    relative_path = path.relative_to(root)
+    relative = relative_path.as_posix()
     if relative == "_papacambridge_manifest.json":
         return None
     media_type = sniff_media_type(path)
     official = official_parts(path)
     document_type, collection_type = classify(path, media_type, official)
-    parent = path.relative_to(root).parts[0]
-    code_match = re.search(r"(?<!\d)(\d{4})(?!\d)", path.stem)
-    directory_codes = re.findall(r"(?<!\d)(\d{4})(?!\d)", parent)
-    syllabus_code = official.get("syllabusCode") or (code_match.group(1) if code_match else None)
-    if not syllabus_code and directory_codes:
-        syllabus_code = directory_codes[0]
+    parent = relative_path.parts[0]
+    syllabus_code = infer_syllabus_code(relative_path, official)
     year = official.get("year")
     if year is None:
         years = [int(value) for value in YEAR_RE.findall(path.stem)]
@@ -461,6 +476,12 @@ def main() -> None:
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as executor:
         scanned = list(executor.map(cached_scan, paths))
     raw_items = [item for item in scanned if item is not None]
+    for item in raw_items:
+        relative_path = Path(item["relativePath"])
+        syllabus_code = infer_syllabus_code(relative_path, official_parts(relative_path))
+        if item.get("syllabusCode") != syllabus_code:
+            item["syllabusCode"] = syllabus_code
+            scan_cache_dirty = True
     output.mkdir(parents=True, exist_ok=True)
     if scan_cache_dirty:
         scan_cache_path.write_text(
@@ -471,7 +492,7 @@ def main() -> None:
     pair_resources(items)
     fingerprint = hashlib.sha256(
         "\n".join(
-            f"{item['relativePath']}:{item['sha256']}:{item['documentType']}"
+            f"{item['relativePath']}:{item['sha256']}:{item['documentType']}:{item.get('syllabusCode') or ''}"
             for item in sorted(items, key=lambda value: value["relativePath"])
         ).encode("utf-8")
     ).hexdigest()[:12]
@@ -514,6 +535,7 @@ def main() -> None:
                 cached_document
                 and cached_document.get("documentType") == item["documentType"]
                 and cached_document.get("relatedResourceIds") == item["relatedResourceIds"]
+                and cached_document.get("syllabusCode") == item.get("syllabusCode")
             ):
                 item.update({
                     "textStatus": native["textStatus"],
