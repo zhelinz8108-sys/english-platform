@@ -131,6 +131,13 @@ const resourceLabels: Partial<Record<DocumentType, string>> = {
   reference: '参考资料',
 };
 
+function resourceActionLabel(resource: DocumentSummary) {
+  if (resource.documentType === 'mark_scheme' || resource.documentType === 'topic_answer') {
+    return '查看完整答案与评分标准';
+  }
+  return `查看${resourceLabels[resource.documentType] ?? '相关资料'}`;
+}
+
 function basePath(pathname: string) {
   return pathname.startsWith('/student/') ? '/student/learning/alevel' : '/learning/alevel';
 }
@@ -576,6 +583,15 @@ export function AlevelDocumentView({ documentId }: { documentId: string }) {
     [currentTenant.id],
   );
 
+  useEffect(() => {
+    if (!activeResource) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setActiveResource(null);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [activeResource]);
+
   if (error) return <div className={styles.error}>{error}</div>;
   if (!payload) return <div className={styles.loading}>正在载入 A Level 题卷…</div>;
   const document = payload.document;
@@ -624,24 +640,10 @@ export function AlevelDocumentView({ documentId }: { documentId: string }) {
                 onClick={() => void openResource(resource)}
                 type="button"
               >
-                {resourceLabels[resource.documentType] ?? '相关资料'} · {resource.title}
+                {resourceActionLabel(resource)} · {resource.title}
               </button>
             ))}
           </div>
-          {activeResource ? (
-            <div>
-              <h3>{activeResource.document.title}</h3>
-              <AlevelPdfReader
-                src={resolveApiRequestUrl(
-                  tenantPath(
-                    currentTenant.id,
-                    `/learning/alevel/documents/${encodeURIComponent(activeResource.document.id)}/embed`,
-                  ),
-                )}
-                title={activeResource.document.title}
-              />
-            </div>
-          ) : null}
           {download ? (
             download.document.mediaType.startsWith('audio/') ? (
               <audio controls src={download.url} />
@@ -654,6 +656,43 @@ export function AlevelDocumentView({ documentId }: { documentId: string }) {
             )
           ) : null}
         </section>
+      ) : null}
+      {activeResource ? (
+        <div
+          aria-labelledby="alevel-resource-title"
+          aria-modal="true"
+          className={styles.resourceOverlay}
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) setActiveResource(null);
+          }}
+          role="dialog"
+        >
+          <section className={styles.resourceDialog}>
+            <header className={styles.resourceDialogHeader}>
+              <div>
+                <p className={styles.eyebrow}>OFFICIAL ANSWER AND SUPPORTING RESOURCE</p>
+                <h2 id="alevel-resource-title">{resourceActionLabel(activeResource.document)}</h2>
+                <p>{activeResource.document.title}</p>
+              </div>
+              <button
+                className={`${styles.button} ${styles.buttonSecondary}`}
+                onClick={() => setActiveResource(null)}
+                type="button"
+              >
+                ← 返回原卷
+              </button>
+            </header>
+            <AlevelPdfReader
+              src={resolveApiRequestUrl(
+                tenantPath(
+                  currentTenant.id,
+                  `/learning/alevel/documents/${encodeURIComponent(activeResource.document.id)}/embed`,
+                ),
+              )}
+              title={activeResource.document.title}
+            />
+          </section>
+        </div>
       ) : null}
       <section className={styles.embeddedPaper}>
         <div>
