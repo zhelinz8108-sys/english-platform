@@ -443,6 +443,12 @@
   white-space: nowrap;
 }
 
+.pdfReaderPageIndicator {
+  color: #176e68;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}
+
 .pdfReaderControls button {
   min-height: 32px;
   border: 1px solid #cbd7d4;
@@ -498,20 +504,53 @@
 
 .pdfCanvasViewport {
   position: relative;
-  display: grid;
+  display: block;
   min-height: min(78vh, 1040px);
   max-height: min(78vh, 1040px);
-  place-items: start center;
   overflow: auto;
+  overscroll-behavior: contain;
   background: #424746;
   padding: 28px 24px;
+  scroll-behavior: smooth;
+}
+
+.pdfPages {
+  display: grid;
+  width: 100%;
+  gap: 24px;
+  justify-items: center;
+}
+
+.pdfPage {
+  position: relative;
+  display: grid;
+  width: min(100%, 920px);
+  min-height: 260px;
+  place-items: center;
+  background: #fff;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.34);
+}
+
+.pdfPageLoading {
+  position: absolute;
+  color: #6d7978;
+  font-size: 12px;
+}
+
+.pdfPageReady .pdfPageLoading {
+  display: none;
 }
 
 .pdfCanvas {
   display: block;
   max-width: none;
   background: #fff;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.34);
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.pdfPageReady .pdfCanvas {
+  opacity: 1;
 }
 
 .pdfReaderStatus,
@@ -720,6 +759,9 @@
     min-height: 68vh;
     max-height: 68vh;
     padding: 18px 12px;
+  }
+  .pdfPages {
+    gap: 14px;
   }
   .embeddedPaper,
   .answerSheet {
