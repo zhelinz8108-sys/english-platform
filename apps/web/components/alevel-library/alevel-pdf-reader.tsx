@@ -96,7 +96,7 @@ export function AlevelPdfReader({ src, title }: { src: string; title: string }) 
   useEffect(() => {
     const pdf = documentRef.current;
     const canvas = canvasRef.current;
-    if (!pdf || !canvas || !availableWidth) return;
+    if (!pdf || !canvas || !availableWidth || !pageCount) return;
     let cancelled = false;
     renderTaskRef.current?.cancel();
     renderTaskRef.current = null;
@@ -145,7 +145,7 @@ export function AlevelPdfReader({ src, title }: { src: string; title: string }) 
     return () => {
       cancelled = true;
     };
-  }, [availableWidth, page, zoom]);
+  }, [availableWidth, page, pageCount, zoom]);
 
   const updatePage = (value: number) => setPage(clampPage(value, pageCount));
 
