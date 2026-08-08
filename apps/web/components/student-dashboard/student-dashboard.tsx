@@ -116,8 +116,8 @@ const workspaceNavGroups: WorkspaceNavGroup[] = [
       { label: '口语', href: '/student/learning/toefl#speaking', icon: MessageCircle },
       { label: '写作', href: '/student/learning/toefl#writing', icon: PenLine },
       { label: '托福', href: '/student/learning/toefl', icon: ClipboardList },
-      { label: 'AP', href: '/student/learning/ap', icon: GraduationCap },
       { label: 'A Level', href: '/student/learning/alevel', icon: School },
+      { label: 'AP', href: '/student/learning/ap', icon: GraduationCap },
     ],
   },
   {
@@ -241,7 +241,9 @@ function Brand() {
 function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => void }) {
   const pathname = usePathname();
   const [activeHash, setActiveHash] = useState('');
-  const [learningOpen, setLearningOpen] = useState(pathname.includes('/learning/'));
+  const englishLearningActive =
+    pathname.includes('/learning/english') || pathname.includes('/learning/toefl');
+  const [learningOpen, setLearningOpen] = useState(englishLearningActive);
   const [toeflOpen, setToeflOpen] = useState(pathname.includes('/learning/toefl'));
   const [toeflSectionsOpen, setToeflSectionsOpen] = useState<Record<ToeflNavSectionId, boolean>>({
     reading: true,
@@ -287,9 +289,9 @@ function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => voi
   }, [pathname]);
 
   useEffect(() => {
-    if (pathname.includes('/learning/')) setLearningOpen(true);
+    if (englishLearningActive) setLearningOpen(true);
     if (pathname.includes('/learning/toefl')) setToeflOpen(true);
-  }, [pathname]);
+  }, [englishLearningActive, pathname]);
 
   function resolveLearningHref(href: string): string {
     return currentTenant.roles.includes('student')
@@ -368,7 +370,7 @@ function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => voi
                   <button
                     aria-controls="english-learning-modules"
                     aria-expanded={learningOpen}
-                    className={`${styles.navItem} ${styles.navParent} ${pathname.includes('/learning/english') || pathname.includes('/learning/toefl') ? styles.navParentActive : ''}`}
+                    className={`${styles.navItem} ${styles.navParent} ${englishLearningActive ? styles.navParentActive : ''}`}
                     onClick={() => setLearningOpen((value) => !value)}
                     type="button"
                   >
@@ -386,7 +388,10 @@ function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => voi
                     id="english-learning-modules"
                   >
                     {group.items
-                      .filter((item) => item.label !== '托福' && item.label !== 'AP')
+                      .filter(
+                        (item) =>
+                          item.label !== '托福' && item.label !== 'AP' && item.label !== 'A Level',
+                      )
                       .map((item) => renderNavItem(item, true))}
                     {group.items.some((item) => item.label === '托福') ? (
                       <div className={styles.toeflNavRoot}>
@@ -460,7 +465,7 @@ function DashboardSidebar({ open, onClose }: { open: boolean; onClose: () => voi
                     ) : null}
                   </div>
                   {group.items
-                    .filter((item) => item.label === 'AP')
+                    .filter((item) => item.label === 'A Level' || item.label === 'AP')
                     .map((item) => renderNavItem(item))}
                 </>
               ) : (
