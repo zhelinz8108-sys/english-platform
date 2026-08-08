@@ -372,6 +372,126 @@
   width: 100%;
 }
 
+.embeddedPaper,
+.answerSheet {
+  background: #fff;
+  border: 1px solid #d7dfdc;
+  border-radius: 14px;
+  display: grid;
+  gap: 18px;
+  padding: 20px;
+}
+
+.embeddedPaper h2,
+.embeddedPaper p,
+.answerSheet h2,
+.answerSheet p {
+  margin: 0;
+}
+
+.embeddedPaper > div,
+.answerSheetHeader > div {
+  display: grid;
+  gap: 7px;
+}
+
+.answerSheetHeader {
+  align-items: center;
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.answerSheetHeader > strong,
+.score {
+  color: #176e68;
+  white-space: nowrap;
+}
+
+.answerSheetGrid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.answerRow {
+  align-items: center;
+  background: #f8fbfa;
+  border: 1px solid #d9e5e2;
+  border-radius: 10px;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  margin: 0;
+  padding: 10px 12px;
+}
+
+.answerRow legend {
+  color: #243637;
+  float: left;
+  font-weight: 800;
+  min-width: 32px;
+  padding: 5px 0;
+}
+
+.answerRow > div {
+  display: flex;
+  gap: 6px;
+}
+
+.answerChoice {
+  cursor: pointer;
+  display: block;
+}
+
+.answerChoice input {
+  height: 1px;
+  opacity: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.answerChoice span {
+  align-items: center;
+  background: #fff;
+  border: 1px solid #cfdad7;
+  border-radius: 8px;
+  color: #2d4141;
+  display: flex;
+  font-weight: 800;
+  height: 34px;
+  justify-content: center;
+  width: 38px;
+}
+
+.answerChoice:has(input:checked) span {
+  background: #176e68;
+  border-color: #176e68;
+  color: #fff;
+}
+
+.answerRow small {
+  color: #687878;
+  grid-column: 1 / -1;
+}
+
+.answerRowCorrect {
+  background: #edf8f1;
+  border-color: #79ae8a;
+}
+
+.answerRowWrong {
+  background: #fff3f0;
+  border-color: #d99d92;
+}
+
+.answerSheetActions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 .pdfViewer {
   display: grid;
   gap: 10px;
@@ -434,5 +554,16 @@
   }
   .pdfFrame {
     min-height: 520px;
+  }
+  .embeddedPaper,
+  .answerSheet {
+    padding: 14px;
+  }
+  .answerSheetHeader {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .answerSheetGrid {
+    grid-template-columns: 1fr;
   }
 }

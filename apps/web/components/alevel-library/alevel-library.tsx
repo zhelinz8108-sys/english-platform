@@ -54,6 +54,7 @@ interface DocumentSummary {
   textStatus?: 'native' | 'scan' | 'error';
   pageCount?: number | null;
   questionCount?: number;
+  interactionMode?: 'multiple-choice';
 }
 
 interface Catalog {
@@ -72,6 +73,13 @@ interface NativeDocument {
   documentId: string;
   title: string;
   textStatus: 'native' | 'scan' | 'error';
+  renderMode?: 'embedded-pdf';
+  multipleChoice?: {
+    kind: 'multiple-choice';
+    questionCount: number;
+    choices: Array<'A' | 'B' | 'C' | 'D'>;
+    answerKey?: Record<string, 'A' | 'B' | 'C' | 'D'>;
+  } | null;
   pages: Array<{
     number: number;
     blocks: Array<{ type: 'text'; text: string }>;
@@ -413,56 +421,109 @@ export function AlevelCatalogView({ subjectId }: { subjectId?: string }) {
   );
 }
 
-function NativePages({ content, compact = false }: { content: NativeDocument; compact?: boolean }) {
+function MultipleChoiceAnswerSheet({
+  interaction,
+}: {
+  interaction: NonNullable<NativeDocument['multipleChoice']>;
+}) {
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  const [submitted, setSubmitted] = useState(false);
+  const questionNumbers = Array.from(
+    { length: interaction.questionCount },
+    (_, index) => index + 1,
+  );
+  const answered = Object.keys(answers).length;
+  const answerKey = interaction.answerKey;
+  const gradableQuestionCount = answerKey ? Object.keys(answerKey).length : 0;
+  const score = answerKey
+    ? questionNumbers.filter((number) => answers[String(number)] === answerKey[String(number)])
+        .length
+    : null;
+
   return (
-    <div className={compact ? styles.solutionDocument : styles.pages}>
-      {content.pages.map((page) => (
-        <article className={compact ? undefined : styles.page} key={page.number}>
-          {compact ? null : <span className={styles.pageNumber}>PAGE {page.number}</span>}
-          {page.blocks.map((block, index) => (
-            <p
-              className={compact ? styles.solutionText : styles.block}
-              key={`${page.number}-${index}`}
+    <section className={styles.answerSheet}>
+      <div className={styles.answerSheetHeader}>
+        <div>
+          <p className={styles.eyebrow}>INTERACTIVE ANSWER SHEET</p>
+          <h2>选择题答题卡</h2>
+          <p>在上方原卷中阅读题目，然后在这里选择答案。</p>
+        </div>
+        <strong>
+          已答 {answered} / {interaction.questionCount}
+        </strong>
+      </div>
+      <div className={styles.answerSheetGrid}>
+        {questionNumbers.map((number) => {
+          const key = String(number);
+          const correctAnswer = answerKey?.[key];
+          const isCorrect = submitted && correctAnswer && answers[key] === correctAnswer;
+          const isWrong =
+            submitted && correctAnswer && answers[key] && answers[key] !== correctAnswer;
+          return (
+            <fieldset
+              className={`${styles.answerRow} ${isCorrect ? styles.answerRowCorrect : ''} ${isWrong ? styles.answerRowWrong : ''}`}
+              key={number}
             >
-              {block.text}
-            </p>
-          ))}
-          {!compact && page.questions.some((question) => question.options.length >= 2) ? (
-            <div className={styles.interactive}>
-              {page.questions
-                .filter((question) => question.options.length >= 2)
-                .map((question) => (
-                  <fieldset className={styles.question} key={`${page.number}-${question.number}`}>
-                    <legend>
-                      {question.number}. {question.prompt}
-                    </legend>
-                    <div className={styles.options}>
-                      {question.options.map((option) => {
-                        const key = `${page.number}-${question.number}`;
-                        return (
-                          <label className={styles.option} key={option.label}>
-                            <input
-                              checked={answers[key] === option.label}
-                              name={key}
-                              onChange={() =>
-                                setAnswers((current) => ({ ...current, [key]: option.label }))
-                              }
-                              type="radio"
-                            />
-                            <strong>{option.label}</strong>
-                            <span>{option.text}</span>
-                          </label>
-                        );
-                      })}
-                    </div>
-                  </fieldset>
+              <legend>{number}</legend>
+              <div>
+                {interaction.choices.map((choice) => (
+                  <label className={styles.answerChoice} key={choice}>
+                    <input
+                      checked={answers[key] === choice}
+                      name={`alevel-question-${number}`}
+                      onChange={() => {
+                        setAnswers((current) => ({ ...current, [key]: choice }));
+                        setSubmitted(false);
+                      }}
+                      type="radio"
+                    />
+                    <span>{choice}</span>
+                  </label>
                 ))}
-            </div>
-          ) : null}
-        </article>
-      ))}
-    </div>
+              </div>
+              {submitted && answerKey ? (
+                <small>
+                  {correctAnswer
+                    ? isCorrect
+                      ? '正确'
+                      : `正确答案：${correctAnswer}`
+                    : '评分标准未提供本题答案，本题不计分'}
+                </small>
+              ) : null}
+            </fieldset>
+          );
+        })}
+      </div>
+      <div className={styles.answerSheetActions}>
+        <button
+          className={styles.button}
+          disabled={!answered}
+          onClick={() => setSubmitted(true)}
+          type="button"
+        >
+          {answerKey ? '提交并批改' : '保存作答'}
+        </button>
+        <button
+          className={`${styles.button} ${styles.buttonSecondary}`}
+          disabled={!answered}
+          onClick={() => {
+            setAnswers({});
+            setSubmitted(false);
+          }}
+          type="button"
+        >
+          清空答题卡
+        </button>
+        {submitted && score !== null ? (
+          <strong className={styles.score}>
+            得分：{score} / {gradableQuestionCount}
+            {gradableQuestionCount < interaction.questionCount
+              ? `（${interaction.questionCount - gradableQuestionCount} 题不计分）`
+              : ''}
+          </strong>
+        ) : null}
+      </div>
+    </section>
   );
 }
 
@@ -473,7 +534,6 @@ export function AlevelDocumentView({ documentId }: { documentId: string }) {
   const [payload, setPayload] = useState<DocumentPayload | null>(null);
   const [activeResource, setActiveResource] = useState<DocumentPayload | null>(null);
   const [download, setDownload] = useState<{ document: DocumentSummary; url: string } | null>(null);
-  const [showOriginal, setShowOriginal] = useState(false);
   const [error, setError] = useState('');
   useEffect(() => {
     let active = true;
@@ -524,7 +584,6 @@ export function AlevelDocumentView({ documentId }: { documentId: string }) {
       `/learning/alevel/documents/${encodeURIComponent(document.id)}/embed`,
     ),
   );
-  const scan = document.textStatus !== 'native';
   return (
     <div className={styles.shell}>
       <Link className={styles.back} href={`${base}/${document.subjectId}`}>
@@ -543,15 +602,14 @@ export function AlevelDocumentView({ documentId }: { documentId: string }) {
           {document.pageCount ? <span>{document.pageCount} 页</span> : null}
         </div>
         <div className={styles.actions}>
-          {!scan ? (
-            <button
-              className={`${styles.button} ${styles.buttonSecondary}`}
-              onClick={() => setShowOriginal((value) => !value)}
-              type="button"
-            >
-              {showOriginal ? '收起原卷图表' : '查看原卷图表'}
-            </button>
-          ) : null}
+          <a
+            className={`${styles.button} ${styles.buttonSecondary}`}
+            href={originalUrl}
+            rel="noreferrer"
+            target="_blank"
+          >
+            在新标签页打开原卷
+          </a>
         </div>
       </header>
       {payload.relatedDocuments.length ? (
@@ -572,20 +630,16 @@ export function AlevelDocumentView({ documentId }: { documentId: string }) {
           {activeResource ? (
             <div>
               <h3>{activeResource.document.title}</h3>
-              {activeResource.content.textStatus === 'native' ? (
-                <NativePages compact content={activeResource.content} />
-              ) : (
-                <iframe
-                  className={styles.pdfFrame}
-                  src={resolveApiRequestUrl(
-                    tenantPath(
-                      currentTenant.id,
-                      `/learning/alevel/documents/${encodeURIComponent(activeResource.document.id)}/embed`,
-                    ),
-                  )}
-                  title={activeResource.document.title}
-                />
-              )}
+              <iframe
+                className={styles.pdfFrame}
+                src={resolveApiRequestUrl(
+                  tenantPath(
+                    currentTenant.id,
+                    `/learning/alevel/documents/${encodeURIComponent(activeResource.document.id)}/embed`,
+                  ),
+                )}
+                title={activeResource.document.title}
+              />
             </div>
           ) : null}
           {download ? (
@@ -601,28 +655,17 @@ export function AlevelDocumentView({ documentId }: { documentId: string }) {
           ) : null}
         </section>
       ) : null}
-      {scan ? (
-        <>
-          <div className={styles.notice}>
-            这份资料没有可靠的可提取文字层，已直接内嵌原始 PDF，不使用整页截图替代题目。
-          </div>
-          <iframe className={styles.pdfFrame} src={originalUrl} title={document.title} />
-        </>
-      ) : (
-        <>
-          <NativePages content={payload.content} />
-          {showOriginal ? (
-            <section className={styles.solutionPanel}>
-              <h2>原卷图表与排版</h2>
-              <iframe
-                className={styles.pdfFrame}
-                src={originalUrl}
-                title={`${document.title} 原卷`}
-              />
-            </section>
-          ) : null}
-        </>
-      )}
+      <section className={styles.embeddedPaper}>
+        <div>
+          <p className={styles.eyebrow}>ORIGINAL EMBEDDED PAPER</p>
+          <h2>原卷</h2>
+          <p>直接显示原始 PDF，完整保留公式、图表、字体和页面排版。</p>
+        </div>
+        <iframe className={styles.pdfFrame} src={originalUrl} title={document.title} />
+      </section>
+      {payload.content.multipleChoice ? (
+        <MultipleChoiceAnswerSheet interaction={payload.content.multipleChoice} />
+      ) : null}
     </div>
   );
 }

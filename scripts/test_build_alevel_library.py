@@ -77,5 +77,38 @@ class AlevelPairingTest(unittest.TestCase):
         self.assertEqual(question["relatedResourceIds"], ["mark-scheme", "threshold"])
 
 
+class AlevelInteractionTest(unittest.TestCase):
+    def test_multiple_choice_cover_is_detected_without_parsing_question_layout(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "9706_m25_qp_12.pdf"
+            document = BUILD.fitz.open()
+            page = document.new_page()
+            page.insert_text(
+                (72, 72),
+                "Paper 1 Multiple Choice\nThere are thirty questions on this paper.\n"
+                "For each question there are four possible answers A, B, C and D.",
+            )
+            document.save(path)
+            document.close()
+            self.assertEqual(
+                BUILD.inspect_multiple_choice(path),
+                {
+                    "kind": "multiple-choice",
+                    "questionCount": 30,
+                    "choices": ["A", "B", "C", "D"],
+                },
+            )
+
+    def test_mark_scheme_answer_table_becomes_answer_key(self) -> None:
+        with tempfile.TemporaryDirectory() as temporary:
+            path = Path(temporary) / "9706_m25_ms_12.pdf"
+            document = BUILD.fitz.open()
+            page = document.new_page()
+            page.insert_text((72, 72), "Question\nAnswer\nMarks\n1\nA\n1\n2\nC\n1\n3\nD\n1")
+            document.save(path)
+            document.close()
+            self.assertEqual(BUILD.extract_answer_key(path, 3), {"1": "A", "2": "C", "3": "D"})
+
+
 if __name__ == "__main__":
     unittest.main()

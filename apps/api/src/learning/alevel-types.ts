@@ -52,6 +52,7 @@ export interface AlevelDocumentSummary {
   textStatus?: 'native' | 'scan' | 'error';
   pageCount?: number | null;
   questionCount?: number;
+  interactionMode?: 'multiple-choice';
 }
 
 export interface AlevelCatalog {
@@ -76,6 +77,13 @@ export interface AlevelNativeDocument {
   documentId: string;
   title: string;
   textStatus: 'native' | 'scan' | 'error';
+  renderMode?: 'embedded-pdf';
+  multipleChoice?: {
+    kind: 'multiple-choice';
+    questionCount: number;
+    choices: Array<'A' | 'B' | 'C' | 'D'>;
+    answerKey?: Record<string, 'A' | 'B' | 'C' | 'D'>;
+  } | null;
   pages: Array<{
     number: number;
     width: number;

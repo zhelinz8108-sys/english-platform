@@ -2,10 +2,10 @@
 import type { AlevelCatalog } from './alevel-types.js';
 
 export const alevelCatalog = {
-  schemaVersion: 1,
-  releaseVersion: '20260808-179d36665596',
+  schemaVersion: 2,
+  releaseVersion: '20260808-916faae3a657',
   storagePrefix:
-    'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596',
+    'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657',
   source: 'D:\\留学\\Alevel-CIE',
   subjects: [
     {
@@ -22,7 +22,7 @@ export const alevelCatalog = {
       markSchemeCount: 432,
       resourceCount: 608,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/accounting-9706.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/accounting-9706.json.gz',
     },
     {
       id: 'afrikaan-8679',
@@ -38,7 +38,7 @@ export const alevelCatalog = {
       markSchemeCount: 21,
       resourceCount: 63,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/afrikaan-8679.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/afrikaan-8679.json.gz',
     },
     {
       id: 'afrikaans-8779',
@@ -51,7 +51,7 @@ export const alevelCatalog = {
       markSchemeCount: 8,
       resourceCount: 20,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/afrikaans-8779.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/afrikaans-8779.json.gz',
     },
     {
       id: 'afrikaans-9679',
@@ -64,7 +64,7 @@ export const alevelCatalog = {
       markSchemeCount: 23,
       resourceCount: 50,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/afrikaans-9679.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/afrikaans-9679.json.gz',
     },
     {
       id: 'applied-ict-9713',
@@ -77,7 +77,7 @@ export const alevelCatalog = {
       markSchemeCount: 145,
       resourceCount: 229,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/applied-ict-9713.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/applied-ict-9713.json.gz',
     },
     {
       id: 'arabic-8680',
@@ -93,7 +93,7 @@ export const alevelCatalog = {
       markSchemeCount: 52,
       resourceCount: 123,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/arabic-8680.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/arabic-8680.json.gz',
     },
     {
       id: 'arabic-9680',
@@ -109,7 +109,7 @@ export const alevelCatalog = {
       markSchemeCount: 97,
       resourceCount: 166,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/arabic-9680.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/arabic-9680.json.gz',
     },
     {
       id: 'art-and-design-9704',
@@ -125,7 +125,7 @@ export const alevelCatalog = {
       markSchemeCount: 45,
       resourceCount: 110,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/art-and-design-9704.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/art-and-design-9704.json.gz',
     },
     {
       id: 'art-and-design-9479',
@@ -138,7 +138,7 @@ export const alevelCatalog = {
       markSchemeCount: 57,
       resourceCount: 101,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/art-and-design-9479.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/art-and-design-9479.json.gz',
     },
     {
       id: 'biblical-studies-9484',
@@ -151,7 +151,7 @@ export const alevelCatalog = {
       markSchemeCount: 32,
       resourceCount: 40,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/biblical-studies-9484.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/biblical-studies-9484.json.gz',
     },
     {
       id: 'biology-9184',
@@ -164,7 +164,7 @@ export const alevelCatalog = {
       markSchemeCount: 11,
       resourceCount: 18,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/biology-9184.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/biology-9184.json.gz',
     },
     {
       id: 'biology-9700',
@@ -180,7 +180,7 @@ export const alevelCatalog = {
       markSchemeCount: 717,
       resourceCount: 1038,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/biology-9700.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/biology-9700.json.gz',
     },
     {
       id: 'business-studies-9707',
@@ -193,7 +193,7 @@ export const alevelCatalog = {
       markSchemeCount: 152,
       resourceCount: 201,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/business-studies-9707.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/business-studies-9707.json.gz',
     },
     {
       id: 'cambridge-international-project-qualification-9980',
@@ -206,7 +206,7 @@ export const alevelCatalog = {
       markSchemeCount: 14,
       resourceCount: 45,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/cambridge-international-project-qualification-9980.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/cambridge-international-project-qualification-9980.json.gz',
     },
     {
       id: 'chemistry-9185',
@@ -219,7 +219,7 @@ export const alevelCatalog = {
       markSchemeCount: 7,
       resourceCount: 13,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/chemistry-9185.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/chemistry-9185.json.gz',
     },
     {
       id: 'chemistry-9701',
@@ -235,7 +235,7 @@ export const alevelCatalog = {
       markSchemeCount: 707,
       resourceCount: 1056,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/chemistry-9701.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/chemistry-9701.json.gz',
     },
     {
       id: 'chinese-8238',
@@ -248,7 +248,7 @@ export const alevelCatalog = {
       markSchemeCount: 24,
       resourceCount: 57,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/chinese-8238.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/chinese-8238.json.gz',
     },
     {
       id: 'chinese-8669',
@@ -261,7 +261,7 @@ export const alevelCatalog = {
       markSchemeCount: 0,
       resourceCount: 10,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/chinese-8669.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/chinese-8669.json.gz',
     },
     {
       id: 'chinese-8681',
@@ -277,7 +277,7 @@ export const alevelCatalog = {
       markSchemeCount: 52,
       resourceCount: 103,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/chinese-8681.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/chinese-8681.json.gz',
     },
     {
       id: 'chinese-9715',
@@ -293,7 +293,7 @@ export const alevelCatalog = {
       markSchemeCount: 87,
       resourceCount: 144,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/chinese-9715.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/chinese-9715.json.gz',
     },
     {
       id: 'chinese-9868',
@@ -306,7 +306,7 @@ export const alevelCatalog = {
       markSchemeCount: 24,
       resourceCount: 37,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/chinese-9868.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/chinese-9868.json.gz',
     },
     {
       id: 'classical-studies-9274',
@@ -321,7 +321,7 @@ export const alevelCatalog = {
       markSchemeCount: 172,
       resourceCount: 200,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/classical-studies-9274.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/classical-studies-9274.json.gz',
     },
     {
       id: 'computer-science-9608',
@@ -334,7 +334,7 @@ export const alevelCatalog = {
       markSchemeCount: 156,
       resourceCount: 329,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/computer-science-9608.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/computer-science-9608.json.gz',
     },
     {
       id: 'computer-science-for-first-examination-in-2021-9618',
@@ -347,7 +347,7 @@ export const alevelCatalog = {
       markSchemeCount: 108,
       resourceCount: 169,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/computer-science-for-first-examination-in-2021-9618.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/computer-science-for-first-examination-in-2021-9618.json.gz',
     },
     {
       id: 'computing-9691',
@@ -362,7 +362,7 @@ export const alevelCatalog = {
       markSchemeCount: 142,
       resourceCount: 187,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/computing-9691.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/computing-9691.json.gz',
     },
     {
       id: 'design-and-technology-9481',
@@ -375,7 +375,7 @@ export const alevelCatalog = {
       markSchemeCount: 40,
       resourceCount: 63,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/design-and-technology-9481.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/design-and-technology-9481.json.gz',
     },
     {
       id: 'design-and-technology-9705',
@@ -391,7 +391,7 @@ export const alevelCatalog = {
       markSchemeCount: 123,
       resourceCount: 174,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/design-and-technology-9705.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/design-and-technology-9705.json.gz',
     },
     {
       id: 'design-and-textiles-9631',
@@ -407,7 +407,7 @@ export const alevelCatalog = {
       markSchemeCount: 31,
       resourceCount: 53,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/design-and-textiles-9631.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/design-and-textiles-9631.json.gz',
     },
     {
       id: 'divinity-9011-and-8041',
@@ -423,7 +423,7 @@ export const alevelCatalog = {
       markSchemeCount: 94,
       resourceCount: 153,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/divinity-9011-and-8041.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/divinity-9011-and-8041.json.gz',
     },
     {
       id: 'drama-9482',
@@ -436,7 +436,7 @@ export const alevelCatalog = {
       markSchemeCount: 30,
       resourceCount: 46,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/drama-9482.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/drama-9482.json.gz',
     },
     {
       id: 'economics-9708',
@@ -452,7 +452,7 @@ export const alevelCatalog = {
       markSchemeCount: 487,
       resourceCount: 593,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/economics-9708.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/economics-9708.json.gz',
     },
     {
       id: 'english-8287',
@@ -465,7 +465,7 @@ export const alevelCatalog = {
       markSchemeCount: 4,
       resourceCount: 5,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/english-8287.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/english-8287.json.gz',
     },
     {
       id: 'english-8693',
@@ -478,7 +478,7 @@ export const alevelCatalog = {
       markSchemeCount: 49,
       resourceCount: 80,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/english-8693.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/english-8693.json.gz',
     },
     {
       id: 'english-8695',
@@ -493,7 +493,7 @@ export const alevelCatalog = {
       markSchemeCount: 161,
       resourceCount: 207,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/english-8695.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/english-8695.json.gz',
     },
     {
       id: 'english-9093',
@@ -506,7 +506,7 @@ export const alevelCatalog = {
       markSchemeCount: 318,
       resourceCount: 381,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/english-9093.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/english-9093.json.gz',
     },
     {
       id: 'english-literature-9276',
@@ -519,7 +519,7 @@ export const alevelCatalog = {
       markSchemeCount: 10,
       resourceCount: 16,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/english-literature-9276.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/english-literature-9276.json.gz',
     },
     {
       id: 'english-literature-9695',
@@ -535,7 +535,7 @@ export const alevelCatalog = {
       markSchemeCount: 480,
       resourceCount: 565,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/english-literature-9695.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/english-literature-9695.json.gz',
     },
     {
       id: 'english-general-paper-8021',
@@ -548,7 +548,7 @@ export const alevelCatalog = {
       markSchemeCount: 94,
       resourceCount: 173,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/english-general-paper-8021.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/english-general-paper-8021.json.gz',
     },
     {
       id: 'environmental-management-8291',
@@ -564,7 +564,7 @@ export const alevelCatalog = {
       markSchemeCount: 180,
       resourceCount: 258,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/environmental-management-8291.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/environmental-management-8291.json.gz',
     },
     {
       id: 'food-studies-9336',
@@ -580,7 +580,7 @@ export const alevelCatalog = {
       markSchemeCount: 21,
       resourceCount: 60,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/food-studies-9336.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/food-studies-9336.json.gz',
     },
     {
       id: 'french-8682',
@@ -596,7 +596,7 @@ export const alevelCatalog = {
       markSchemeCount: 238,
       resourceCount: 368,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/french-8682.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/french-8682.json.gz',
     },
     {
       id: 'french-9716',
@@ -612,7 +612,7 @@ export const alevelCatalog = {
       markSchemeCount: 289,
       resourceCount: 415,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/french-9716.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/french-9716.json.gz',
     },
     {
       id: 'french-language-as-level-only-8028',
@@ -625,7 +625,7 @@ export const alevelCatalog = {
       markSchemeCount: 9,
       resourceCount: 21,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/french-language-as-level-only-8028.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/french-language-as-level-only-8028.json.gz',
     },
     {
       id: 'french-literature-8670',
@@ -641,7 +641,7 @@ export const alevelCatalog = {
       markSchemeCount: 44,
       resourceCount: 95,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/french-literature-8670.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/french-literature-8670.json.gz',
     },
     {
       id: 'french-language-and-literature-9898',
@@ -654,7 +654,7 @@ export const alevelCatalog = {
       markSchemeCount: 9,
       resourceCount: 14,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/french-language-and-literature-9898.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/french-language-and-literature-9898.json.gz',
     },
     {
       id: 'general-paper-8001',
@@ -670,7 +670,7 @@ export const alevelCatalog = {
       markSchemeCount: 59,
       resourceCount: 111,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/general-paper-8001.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/general-paper-8001.json.gz',
     },
     {
       id: 'general-paper-8004',
@@ -686,7 +686,7 @@ export const alevelCatalog = {
       markSchemeCount: 64,
       resourceCount: 121,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/general-paper-8004.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/general-paper-8004.json.gz',
     },
     {
       id: 'geography-9696',
@@ -702,7 +702,7 @@ export const alevelCatalog = {
       markSchemeCount: 370,
       resourceCount: 824,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/geography-9696.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/geography-9696.json.gz',
     },
     {
       id: 'german-8027',
@@ -715,7 +715,7 @@ export const alevelCatalog = {
       markSchemeCount: 12,
       resourceCount: 30,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/german-8027.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/german-8027.json.gz',
     },
     {
       id: 'german-8683',
@@ -731,7 +731,7 @@ export const alevelCatalog = {
       markSchemeCount: 108,
       resourceCount: 187,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/german-8683.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/german-8683.json.gz',
     },
     {
       id: 'german-9717',
@@ -747,7 +747,7 @@ export const alevelCatalog = {
       markSchemeCount: 143,
       resourceCount: 220,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/german-9717.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/german-9717.json.gz',
     },
     {
       id: 'german-language-and-literature-9897',
@@ -760,7 +760,7 @@ export const alevelCatalog = {
       markSchemeCount: 9,
       resourceCount: 13,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/german-language-and-literature-9897.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/german-language-and-literature-9897.json.gz',
     },
     {
       id: 'global-perspectives-8275',
@@ -773,7 +773,7 @@ export const alevelCatalog = {
       markSchemeCount: 9,
       resourceCount: 18,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/global-perspectives-8275.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/global-perspectives-8275.json.gz',
     },
     {
       id: 'global-perspectives-8987',
@@ -786,7 +786,7 @@ export const alevelCatalog = {
       markSchemeCount: 28,
       resourceCount: 57,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/global-perspectives-8987.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/global-perspectives-8987.json.gz',
     },
     {
       id: 'global-perspectives-and-research-9239',
@@ -799,7 +799,7 @@ export const alevelCatalog = {
       markSchemeCount: 120,
       resourceCount: 216,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/global-perspectives-and-research-9239.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/global-perspectives-and-research-9239.json.gz',
     },
     {
       id: 'hindi-8687',
@@ -815,7 +815,7 @@ export const alevelCatalog = {
       markSchemeCount: 25,
       resourceCount: 56,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/hindi-8687.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/hindi-8687.json.gz',
     },
     {
       id: 'hindi-9687',
@@ -831,7 +831,7 @@ export const alevelCatalog = {
       markSchemeCount: 28,
       resourceCount: 59,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/hindi-9687.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/hindi-9687.json.gz',
     },
     {
       id: 'hindi-literature-8675',
@@ -847,7 +847,7 @@ export const alevelCatalog = {
       markSchemeCount: 5,
       resourceCount: 24,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/hindi-literature-8675.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/hindi-literature-8675.json.gz',
     },
     {
       id: 'hinduism-9014',
@@ -860,7 +860,7 @@ export const alevelCatalog = {
       markSchemeCount: 8,
       resourceCount: 18,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/hinduism-9014.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/hinduism-9014.json.gz',
     },
     {
       id: 'hinduism-9487',
@@ -873,7 +873,7 @@ export const alevelCatalog = {
       markSchemeCount: 32,
       resourceCount: 43,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/hinduism-9487.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/hinduism-9487.json.gz',
     },
     {
       id: 'history-9279',
@@ -886,7 +886,7 @@ export const alevelCatalog = {
       markSchemeCount: 3,
       resourceCount: 9,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/history-9279.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/history-9279.json.gz',
     },
     {
       id: 'history-9389',
@@ -899,7 +899,7 @@ export const alevelCatalog = {
       markSchemeCount: 168,
       resourceCount: 192,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/history-9389.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/history-9389.json.gz',
     },
     {
       id: 'history-9489',
@@ -912,7 +912,7 @@ export const alevelCatalog = {
       markSchemeCount: 138,
       resourceCount: 163,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/history-9489.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/history-9489.json.gz',
     },
     {
       id: 'history-9697',
@@ -925,7 +925,7 @@ export const alevelCatalog = {
       markSchemeCount: 169,
       resourceCount: 211,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/history-9697.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/history-9697.json.gz',
     },
     {
       id: 'information-technology-9626',
@@ -938,7 +938,7 @@ export const alevelCatalog = {
       markSchemeCount: 175,
       resourceCount: 286,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/information-technology-9626.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/information-technology-9626.json.gz',
     },
     {
       id: 'islamic-studies-9013-and-8053',
@@ -954,7 +954,7 @@ export const alevelCatalog = {
       markSchemeCount: 49,
       resourceCount: 91,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/islamic-studies-9013-and-8053.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/islamic-studies-9013-and-8053.json.gz',
     },
     {
       id: 'islamic-studies-9488',
@@ -967,7 +967,7 @@ export const alevelCatalog = {
       markSchemeCount: 36,
       resourceCount: 50,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/islamic-studies-9488.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/islamic-studies-9488.json.gz',
     },
     {
       id: 'japanese-8281',
@@ -983,7 +983,7 @@ export const alevelCatalog = {
       markSchemeCount: 18,
       resourceCount: 38,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/japanese-8281.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/japanese-8281.json.gz',
     },
     {
       id: 'law-9084',
@@ -999,7 +999,7 @@ export const alevelCatalog = {
       markSchemeCount: 389,
       resourceCount: 470,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/law-9084.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/law-9084.json.gz',
     },
     {
       id: 'marathi-8688',
@@ -1012,7 +1012,7 @@ export const alevelCatalog = {
       markSchemeCount: 0,
       resourceCount: 14,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/marathi-8688.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/marathi-8688.json.gz',
     },
     {
       id: 'marathi-9688',
@@ -1025,7 +1025,7 @@ export const alevelCatalog = {
       markSchemeCount: 0,
       resourceCount: 15,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/marathi-9688.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/marathi-9688.json.gz',
     },
     {
       id: 'marine-science-9693',
@@ -1041,7 +1041,7 @@ export const alevelCatalog = {
       markSchemeCount: 197,
       resourceCount: 252,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/marine-science-9693.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/marine-science-9693.json.gz',
     },
     {
       id: 'mathematics-9231',
@@ -1057,7 +1057,7 @@ export const alevelCatalog = {
       markSchemeCount: 277,
       resourceCount: 354,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/mathematics-9231.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/mathematics-9231.json.gz',
     },
     {
       id: 'mathematics-9280',
@@ -1070,7 +1070,7 @@ export const alevelCatalog = {
       markSchemeCount: 28,
       resourceCount: 47,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/mathematics-9280.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/mathematics-9280.json.gz',
     },
     {
       id: 'mathematics-9709',
@@ -1086,7 +1086,7 @@ export const alevelCatalog = {
       markSchemeCount: 857,
       resourceCount: 961,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/mathematics-9709.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/mathematics-9709.json.gz',
     },
     {
       id: 'media-studies-9607',
@@ -1099,7 +1099,7 @@ export const alevelCatalog = {
       markSchemeCount: 67,
       resourceCount: 101,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/media-studies-9607.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/media-studies-9607.json.gz',
     },
     {
       id: 'music-9483',
@@ -1112,7 +1112,7 @@ export const alevelCatalog = {
       markSchemeCount: 41,
       resourceCount: 147,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/music-9483.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/music-9483.json.gz',
     },
     {
       id: 'music-9703-and-8663',
@@ -1125,7 +1125,7 @@ export const alevelCatalog = {
       markSchemeCount: 51,
       resourceCount: 164,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/music-9703-and-8663.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/music-9703-and-8663.json.gz',
     },
     {
       id: 'nepal-studies-8024',
@@ -1138,7 +1138,7 @@ export const alevelCatalog = {
       markSchemeCount: 9,
       resourceCount: 16,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/nepal-studies-8024.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/nepal-studies-8024.json.gz',
     },
     {
       id: 'physical-education-9396',
@@ -1153,7 +1153,7 @@ export const alevelCatalog = {
       markSchemeCount: 100,
       resourceCount: 132,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/physical-education-9396.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/physical-education-9396.json.gz',
     },
     {
       id: 'physical-science-8780',
@@ -1166,7 +1166,7 @@ export const alevelCatalog = {
       markSchemeCount: 28,
       resourceCount: 44,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/physical-science-8780.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/physical-science-8780.json.gz',
     },
     {
       id: 'physics-9702',
@@ -1182,7 +1182,7 @@ export const alevelCatalog = {
       markSchemeCount: 745,
       resourceCount: 1074,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/physics-9702.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/physics-9702.json.gz',
     },
     {
       id: 'portuguese-8672',
@@ -1198,7 +1198,7 @@ export const alevelCatalog = {
       markSchemeCount: 15,
       resourceCount: 41,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/portuguese-8672.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/portuguese-8672.json.gz',
     },
     {
       id: 'portuguese-8684',
@@ -1214,7 +1214,7 @@ export const alevelCatalog = {
       markSchemeCount: 44,
       resourceCount: 92,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/portuguese-8684.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/portuguese-8684.json.gz',
     },
     {
       id: 'portuguese-9718',
@@ -1230,7 +1230,7 @@ export const alevelCatalog = {
       markSchemeCount: 66,
       resourceCount: 115,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/portuguese-9718.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/portuguese-9718.json.gz',
     },
     {
       id: 'psychology-9698',
@@ -1246,7 +1246,7 @@ export const alevelCatalog = {
       markSchemeCount: 203,
       resourceCount: 257,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/psychology-9698.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/psychology-9698.json.gz',
     },
     {
       id: 'psychology-9990',
@@ -1259,7 +1259,7 @@ export const alevelCatalog = {
       markSchemeCount: 221,
       resourceCount: 263,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/psychology-9990.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/psychology-9990.json.gz',
     },
     {
       id: 'sociology-9699',
@@ -1275,7 +1275,7 @@ export const alevelCatalog = {
       markSchemeCount: 387,
       resourceCount: 476,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/sociology-9699.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/sociology-9699.json.gz',
     },
     {
       id: 'spanish-8022',
@@ -1288,7 +1288,7 @@ export const alevelCatalog = {
       markSchemeCount: 36,
       resourceCount: 82,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/spanish-8022.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/spanish-8022.json.gz',
     },
     {
       id: 'spanish-8278',
@@ -1301,7 +1301,7 @@ export const alevelCatalog = {
       markSchemeCount: 0,
       resourceCount: 0,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/spanish-8278.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/spanish-8278.json.gz',
     },
     {
       id: 'spanish-8673',
@@ -1317,7 +1317,7 @@ export const alevelCatalog = {
       markSchemeCount: 68,
       resourceCount: 138,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/spanish-8673.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/spanish-8673.json.gz',
     },
     {
       id: 'spanish-8685',
@@ -1330,7 +1330,7 @@ export const alevelCatalog = {
       markSchemeCount: 96,
       resourceCount: 159,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/spanish-8685.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/spanish-8685.json.gz',
     },
     {
       id: 'spanish-9719',
@@ -1346,7 +1346,7 @@ export const alevelCatalog = {
       markSchemeCount: 303,
       resourceCount: 422,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/spanish-9719.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/spanish-9719.json.gz',
     },
     {
       id: 'spanish-8665',
@@ -1362,7 +1362,7 @@ export const alevelCatalog = {
       markSchemeCount: 110,
       resourceCount: 224,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/spanish-8665.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/spanish-8665.json.gz',
     },
     {
       id: 'spanish-9844',
@@ -1375,7 +1375,7 @@ export const alevelCatalog = {
       markSchemeCount: 36,
       resourceCount: 52,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/spanish-9844.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/spanish-9844.json.gz',
     },
     {
       id: 'sport-and-physical-education-8386',
@@ -1388,7 +1388,7 @@ export const alevelCatalog = {
       markSchemeCount: 12,
       resourceCount: 16,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/sport-and-physical-education-8386.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/sport-and-physical-education-8386.json.gz',
     },
     {
       id: 'tamil-9689',
@@ -1404,7 +1404,7 @@ export const alevelCatalog = {
       markSchemeCount: 56,
       resourceCount: 128,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/tamil-9689.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/tamil-9689.json.gz',
     },
     {
       id: 'telugu-8690',
@@ -1417,7 +1417,7 @@ export const alevelCatalog = {
       markSchemeCount: 0,
       resourceCount: 26,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/telugu-8690.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/telugu-8690.json.gz',
     },
     {
       id: 'telugu-9690',
@@ -1432,7 +1432,7 @@ export const alevelCatalog = {
       markSchemeCount: 0,
       resourceCount: 27,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/telugu-9690.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/telugu-9690.json.gz',
     },
     {
       id: 'thinking-skills-9694',
@@ -1448,7 +1448,7 @@ export const alevelCatalog = {
       markSchemeCount: 417,
       resourceCount: 497,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/thinking-skills-9694.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/thinking-skills-9694.json.gz',
     },
     {
       id: 'travel-and-tourism-9395',
@@ -1464,7 +1464,7 @@ export const alevelCatalog = {
       markSchemeCount: 250,
       resourceCount: 534,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/travel-and-tourism-9395.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/travel-and-tourism-9395.json.gz',
     },
     {
       id: 'urdu-8686',
@@ -1480,7 +1480,7 @@ export const alevelCatalog = {
       markSchemeCount: 109,
       resourceCount: 264,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/urdu-8686.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/urdu-8686.json.gz',
     },
     {
       id: 'urdu-9676',
@@ -1496,7 +1496,7 @@ export const alevelCatalog = {
       markSchemeCount: 37,
       resourceCount: 103,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/urdu-9676.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/urdu-9676.json.gz',
     },
     {
       id: 'urdu-9686',
@@ -1512,7 +1512,7 @@ export const alevelCatalog = {
       markSchemeCount: 104,
       resourceCount: 201,
       indexStorageKey:
-        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-179d36665596/subjects/urdu-9686.json.gz',
+        'tenants/019f8d4f-c7ce-77b8-979a-206f28f8fda4/learning/alevel/releases/20260808-916faae3a657/subjects/urdu-9686.json.gz',
     },
   ],
   summary: {

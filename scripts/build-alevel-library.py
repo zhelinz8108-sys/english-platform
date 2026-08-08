@@ -25,7 +25,7 @@ import fitz
 fitz.TOOLS.mupdf_display_errors(False)
 
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 SOURCE_DEFAULT = Path(r"D:\留学\Alevel-CIE")
 OUTPUT_DEFAULT = Path("output/alevel-library")
 GENERATED_DEFAULT = Path("apps/api/src/learning/alevel-catalog.generated.ts")
@@ -39,8 +39,29 @@ OFFICIAL_RE = re.compile(
     re.I,
 )
 YEAR_RE = re.compile(r"(?<!\d)(19\d{2}|20\d{2})(?!\d)")
-QUESTION_LINE_RE = re.compile(r"^\s*(?:question\s+)?(\d{1,3})[.)]?\s+(.*)", re.I)
-OPTION_LINE_RE = re.compile(r"^\s*[([]?([A-D])[).\]]\s+(.*)", re.I)
+MULTIPLE_CHOICE_RE = re.compile(
+    r"\bmultiple\s+choice\b|multiple\s+choice\s+answer\s+sheet", re.I
+)
+QUESTION_COUNT_RE = re.compile(
+    r"(?:there\s+are|answer\s+all)\s+([a-z-]+|\d{1,3})\s+questions?", re.I
+)
+
+NUMBER_WORDS = {
+    "ten": 10,
+    "fifteen": 15,
+    "twenty": 20,
+    "twenty-five": 25,
+    "thirty": 30,
+    "thirty-five": 35,
+    "forty": 40,
+    "forty-five": 45,
+    "fifty": 50,
+    "sixty": 60,
+    "seventy": 70,
+    "eighty": 80,
+    "ninety": 90,
+    "one-hundred": 100,
+}
 
 ROLE_TYPES = {
     "qp": "question",
@@ -341,59 +362,82 @@ def pair_resources(items: list[dict[str, Any]]) -> None:
         question["relatedResourceIds"] = [item["id"] for item in related]
 
 
-def extract_native(path: Path) -> dict[str, Any]:
+def parse_question_count(text: str) -> int | None:
+    match = QUESTION_COUNT_RE.search(text)
+    if not match:
+        return None
+    raw = match.group(1).lower()
+    value = int(raw) if raw.isdigit() else NUMBER_WORDS.get(raw)
+    return value if value and 1 <= value <= 100 else None
+
+
+def inspect_multiple_choice(path: Path) -> dict[str, Any] | None:
     document: fitz.Document | None = None
     try:
         document = fitz.open(path)
-        pages = []
-        question_numbers: set[int] = set()
-        extracted_chars = 0
-        for page_number, page in enumerate(document, 1):
-            blocks = []
-            lines: list[str] = []
-            for raw in page.get_text("blocks"):
-                text = re.sub(r"\s+", " ", raw[4]).strip()
-                if not text:
-                    continue
-                extracted_chars += len(text)
-                blocks.append({
-                    "type": "text",
-                    "text": text,
-                    "bbox": [round(float(value), 2) for value in raw[:4]],
-                })
-                lines.extend(part.strip() for part in raw[4].splitlines() if part.strip())
-            questions = []
-            current: dict[str, Any] | None = None
-            for line in lines:
-                qmatch = QUESTION_LINE_RE.match(line)
-                if qmatch:
-                    number = int(qmatch.group(1))
-                    if 0 < number < 200:
-                        if current:
-                            questions.append(current)
-                        current = {"number": number, "prompt": qmatch.group(2), "options": []}
-                        question_numbers.add(number)
-                        continue
-                option = OPTION_LINE_RE.match(line)
-                if option and current:
-                    current["options"].append({"label": option.group(1), "text": option.group(2)})
-                elif current:
-                    current["prompt"] = f"{current['prompt']} {line}".strip()
-            if current:
-                questions.append(current)
-            pages.append({
-                "number": page_number,
-                "width": round(float(page.rect.width), 2),
-                "height": round(float(page.rect.height), 2),
-                "blocks": blocks,
-                "questions": questions,
-            })
-        status = "native" if extracted_chars >= 80 else "scan"
+        if not document.page_count:
+            return None
+        cover_text = document[0].get_text("text")
+        if not MULTIPLE_CHOICE_RE.search(cover_text):
+            return None
+        question_count = parse_question_count(cover_text)
+        if not question_count:
+            return None
         return {
-            "textStatus": status,
+            "kind": "multiple-choice",
+            "questionCount": question_count,
+            "choices": ["A", "B", "C", "D"],
+        }
+    except Exception:
+        return None
+    finally:
+        if document is not None:
+            document.close()
+
+
+def extract_answer_key(path: Path, question_count: int) -> dict[str, str]:
+    document: fitz.Document | None = None
+    try:
+        document = fitz.open(path)
+        lines = [
+            line.strip()
+            for page in document
+            for line in page.get_text("text").splitlines()
+            if line.strip()
+        ]
+        answers: dict[str, str] = {}
+        for index in range(len(lines) - 2):
+            if not lines[index].isdigit():
+                continue
+            number = int(lines[index])
+            answer = lines[index + 1].upper()
+            marks = lines[index + 2]
+            if 1 <= number <= question_count and answer in {"A", "B", "C", "D"} and marks == "1":
+                answers[str(number)] = answer
+        minimum = max(3, int(question_count * 0.8))
+        return answers if len(answers) >= minimum else {}
+    except Exception:
+        return {}
+    finally:
+        if document is not None:
+            document.close()
+
+
+def extract_native(path: Path) -> dict[str, Any]:
+    """Inspect a PDF without flattening its layout into unreliable web text.
+
+    Cambridge papers contain formula fonts, positioned tables and diagrams that
+    cannot be reconstructed from the raw PDF text layer. The browser embeds the
+    original PDF; generated metadata therefore keeps only document-level facts.
+    """
+    document: fitz.Document | None = None
+    try:
+        document = fitz.open(path)
+        return {
+            "textStatus": "native",
             "pageCount": len(document),
-            "questionCount": len(question_numbers),
-            "pages": pages if status == "native" else [],
+            "questionCount": 0,
+            "pages": [],
         }
     except Exception as error:
         return {
@@ -491,9 +535,12 @@ def main() -> None:
     items, duplicate_count = deduplicate(raw_items)
     pair_resources(items)
     fingerprint = hashlib.sha256(
-        "\n".join(
-            f"{item['relativePath']}:{item['sha256']}:{item['documentType']}:{item.get('syllabusCode') or ''}"
-            for item in sorted(items, key=lambda value: value["relativePath"])
+        (
+            f"schema:{SCHEMA_VERSION}\n"
+            + "\n".join(
+                f"{item['relativePath']}:{item['sha256']}:{item['documentType']}:{item.get('syllabusCode') or ''}"
+                for item in sorted(items, key=lambda value: value["relativePath"])
+            )
         ).encode("utf-8")
     ).hexdigest()[:12]
     release_version = f"{datetime.now(timezone.utc):%Y%m%d}-{fingerprint}"
@@ -513,6 +560,7 @@ def main() -> None:
         payload_path = output / "documents" / f"{item['id']}.json.gz"
         cached_native: dict[str, Any] | None = None
         cached_document: dict[str, Any] | None = None
+        cached_schema_version: int | None = None
         if payload_path.exists() and not args.metadata_only:
             try:
                 with gzip.open(payload_path, "rt", encoding="utf-8") as stream:
@@ -520,28 +568,30 @@ def main() -> None:
                 if cached_payload.get("document", {}).get("sha256") == item["sha256"]:
                     cached_native = cached_payload.get("content")
                     cached_document = cached_payload.get("document")
+                    cached_schema_version = cached_payload.get("schemaVersion")
             except (OSError, json.JSONDecodeError):
                 pass
         if cached_native is not None:
             native = {
                 "textStatus": cached_native.get("textStatus", "error"),
                 "pageCount": cached_document.get("pageCount") if cached_document else len(cached_native.get("pages", [])),
-                "questionCount": cached_document.get("questionCount") if cached_document else sum(
-                    len(page.get("questions", [])) for page in cached_native.get("pages", [])
-                ),
-                "pages": cached_native.get("pages", []),
+                "questionCount": 0,
+                "pages": [],
             }
             if (
-                cached_document
+                cached_schema_version == SCHEMA_VERSION
+                and cached_document
                 and cached_document.get("documentType") == item["documentType"]
                 and cached_document.get("relatedResourceIds") == item["relatedResourceIds"]
                 and cached_document.get("syllabusCode") == item.get("syllabusCode")
             ):
                 item.update({
-                    "textStatus": native["textStatus"],
-                    "pageCount": native.get("pageCount"),
-                    "questionCount": native.get("questionCount", 0),
+                    "textStatus": cached_document.get("textStatus", native["textStatus"]),
+                    "pageCount": cached_document.get("pageCount"),
+                    "questionCount": cached_document.get("questionCount", 0),
                 })
+                if cached_document.get("interactionMode") == "multiple-choice":
+                    item["interactionMode"] = "multiple-choice"
                 return item
         elif (
             not args.metadata_only
@@ -551,11 +601,45 @@ def main() -> None:
             native = extract_native(source_path)
         else:
             native = {"textStatus": "scan", "pageCount": None, "questionCount": 0, "pages": []}
+
+        multiple_choice = None
+        if item["mediaType"] == "application/pdf" and item["documentType"] in {
+            "question", "topic_question",
+        }:
+            multiple_choice = inspect_multiple_choice(source_path)
+            if multiple_choice:
+                for related_id in item["relatedResourceIds"]:
+                    related_item = by_id[related_id]
+                    if (
+                        related_item["documentType"] == "mark_scheme"
+                        and related_item["mediaType"] == "application/pdf"
+                    ):
+                        answer_key = extract_answer_key(
+                            source / Path(related_item["relativePath"]),
+                            multiple_choice["questionCount"],
+                        )
+                        if answer_key:
+                            multiple_choice["answerKey"] = answer_key
+                            break
+
         item.update({
             "textStatus": native["textStatus"],
             "pageCount": native.get("pageCount"),
-            "questionCount": native.get("questionCount", 0),
+            "questionCount": multiple_choice["questionCount"] if multiple_choice else 0,
         })
+        if multiple_choice:
+            item["interactionMode"] = "multiple-choice"
+        else:
+            item.pop("interactionMode", None)
+        if (
+            cached_schema_version == SCHEMA_VERSION
+            and cached_document
+            and cached_document.get("documentType") == item["documentType"]
+            and cached_document.get("relatedResourceIds") == item["relatedResourceIds"]
+            and cached_document.get("syllabusCode") == item.get("syllabusCode")
+            and cached_native.get("multipleChoice") == multiple_choice
+        ):
+            return item
         related = [public_summary(by_id[value]) for value in item["relatedResourceIds"]]
         payload = {
             "schemaVersion": SCHEMA_VERSION,
@@ -564,7 +648,9 @@ def main() -> None:
                 "documentId": item["id"],
                 "title": item["title"],
                 "textStatus": native["textStatus"],
-                "pages": native.get("pages", []),
+                "renderMode": "embedded-pdf",
+                "pages": [],
+                "multipleChoice": multiple_choice,
             },
             "relatedDocuments": related,
         }
